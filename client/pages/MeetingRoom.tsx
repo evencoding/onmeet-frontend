@@ -23,6 +23,64 @@ export default function MeetingRoom() {
   const [showParticipants, setShowParticipants] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [participants, setParticipants] = useState<Participant[]>([
+    {
+      id: "1",
+      name: "Akbar Husain",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+      isHost: true,
+      isVideoOn: true,
+      isMuted: false,
+    },
+    {
+      id: "2",
+      name: "Ameesh Menon",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+      isVideoOn: true,
+      isMuted: false,
+    },
+    {
+      id: "3",
+      name: "Jonathan Sasi",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+      isVideoOn: false,
+      isMuted: true,
+    },
+    {
+      id: "4",
+      name: "Riska Thakur",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+      isVideoOn: true,
+      isMuted: false,
+    },
+    {
+      id: "5",
+      name: "Natalia",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+      isVideoOn: true,
+      isMuted: true,
+    },
+    {
+      id: "6",
+      name: "Aila Thakur",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+      isVideoOn: true,
+      isMuted: false,
+    },
+  ]);
+
+  const handleInviteParticipants = (newMembers: any[]) => {
+    const newParticipants = newMembers.map((member) => ({
+      id: member.id,
+      name: member.name,
+      avatar: member.avatar,
+      isHost: false,
+      isVideoOn: true,
+      isMuted: false,
+    }));
+    setParticipants((prev) => [...prev, ...newParticipants]);
+  };
 
   const speakers = [
     {
