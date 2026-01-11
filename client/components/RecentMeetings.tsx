@@ -131,18 +131,8 @@ export default function RecentMeetings() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-xl font-bold text-foreground">최근 회의</h2>
-          <p className="text-xs text-text-sub mt-1">
-            총 {filteredMeetings.length}개
-            {searchQuery && ` (${searchQuery} 검색 결과)`}
-          </p>
-        </div>
-      </div>
-
       {/* Search Input */}
-      <div className="relative mb-6">
+      <div className="relative">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <input
@@ -150,7 +140,7 @@ export default function RecentMeetings() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="회의 제목, 설명 또는 팀으로 검색..."
-            className="w-full pl-12 pr-10 py-3 bg-white/60 border border-border/50 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm text-foreground placeholder-text-sub"
+            className="w-full pl-12 pr-10 py-3 bg-white/60 border border-border/50 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm text-foreground placeholder-text-sub -mt-0.5"
           />
           {searchQuery && (
             <button
@@ -162,6 +152,11 @@ export default function RecentMeetings() {
           )}
         </div>
       </div>
+
+      <p className="text-xs text-text-sub mt-2.5">
+        총 {filteredMeetings.length}개
+        {searchQuery && ` (${searchQuery} 검색 결과)`}
+      </p>
 
       {/* Results */}
       {filteredMeetings.length === 0 ? (
