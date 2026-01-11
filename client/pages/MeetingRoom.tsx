@@ -4,7 +4,7 @@ import MeetingRoomHeader from "@/components/MeetingRoomHeader";
 import ParticipantsPanel from "@/components/ParticipantsPanel";
 import InviteParticipantModal from "@/components/InviteParticipantModal";
 import { ChevronLeft, ChevronRight, Mic, MicOff, Video, VideoOff, Phone, Circle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Participant {
   id: string;
