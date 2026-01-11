@@ -1,4 +1,4 @@
-import { Calendar, FileText, ClipboardList, Clock, TrendingUp, LayoutGrid, Plus, MoreVertical, Search, Menu } from "lucide-react";
+import { Calendar, FileText, ClipboardList, Clock, LayoutGrid, Plus, MoreVertical, Search, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
