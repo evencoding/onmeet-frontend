@@ -113,19 +113,27 @@ export default function Sidebar({
       >
         <div className="flex items-center justify-between w-full">
           {!isCollapsed && (
-            <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              title="메인 화면으로 이동"
+            >
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
                 O
               </div>
               <span className="font-bold text-lg text-foreground tracking-tight">
                 ONMEET
               </span>
-            </div>
+            </button>
           )}
           {isCollapsed && (
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
+            <button
+              onClick={() => navigate("/")}
+              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold hover:opacity-80 transition-opacity"
+              title="메인 화면으로 이동"
+            >
               O
-            </div>
+            </button>
           )}
           {onToggleCollapse && (
             <button
