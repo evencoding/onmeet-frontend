@@ -24,6 +24,7 @@ interface Team {
 interface SidebarProps {
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
+  onTeamSelect?: (teamId: string) => void;
 }
 
 export default function Sidebar({ isCollapsed = false, onToggleCollapse }: SidebarProps) {
