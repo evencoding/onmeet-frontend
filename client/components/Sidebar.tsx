@@ -335,18 +335,9 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
   return (
     <div className="space-y-2">
       {/* Company Information */}
-      <div className="w-full px-4 py-3 bg-gradient-to-br from-brand-50 to-brand-50/50 border border-brand-200/40 rounded-xl">
-        <div className="text-xs font-semibold text-brand-600 uppercase tracking-wide mb-1">
-          회사 정보
-        </div>
-        <div>
-          <div className="text-sm font-medium text-foreground">Acme Corporation</div>
-          <div className="text-xs text-text-sub mt-1">
-            서울시 강남구 테헤란로 123
-          </div>
-          <div className="text-xs text-muted-foreground mt-2">
-            팀: 12명 | 회의실: 3개
-          </div>
+      <div className="w-full px-4 py-4 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl text-center">
+        <div className="text-base font-bold text-white">
+          Acme Corporation
         </div>
       </div>
 
