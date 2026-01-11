@@ -109,7 +109,7 @@ export default function OngoingMeetings() {
         {meetings.map((meeting) => (
           <div
             key={meeting.id}
-            className="bg-white border border-border rounded-2xl p-4 shadow-card hover:shadow-hover transition-shadow"
+            className="bg-gradient-to-br from-white via-surface-subtle to-white border border-border/50 rounded-2xl p-5 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 backdrop-blur-xs"
           >
             {/* Host Info */}
             <div className="flex items-center gap-3 mb-4">
