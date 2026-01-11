@@ -220,6 +220,12 @@ export default function Summary() {
           </div>
         )}
       </div>
+
+      {/* Meeting Detail Panel */}
+      <MeetingDetailPanel
+        meeting={selectedMeeting}
+        onClose={() => setSelectedMeeting(null)}
+      />
     </Layout>
   );
 }
