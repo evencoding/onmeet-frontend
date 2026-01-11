@@ -107,11 +107,22 @@ export default function Sidebar() {
           <button
             key={item.id}
             onClick={() => {
-              if (item.id === "schedule") {
-                navigate("/schedule");
-              }
-              if (item.id === "summary") {
-                navigate("/summary");
+              switch (item.id) {
+                case "today":
+                  navigate("/");
+                  break;
+                case "records":
+                  navigate("/records");
+                  break;
+                case "summary":
+                  navigate("/summary");
+                  break;
+                case "schedule":
+                  navigate("/schedule");
+                  break;
+                case "board":
+                  navigate("/board");
+                  break;
               }
             }}
             className={cn(
