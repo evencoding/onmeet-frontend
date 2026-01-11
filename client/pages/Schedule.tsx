@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
 import CalendarView from "@/components/CalendarView";
-import { Clock, MapPin, Users } from "lucide-react";
+import { Clock, MapPin, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { format, isSameDay } from "date-fns";
 import { ko } from "date-fns/locale";
 
