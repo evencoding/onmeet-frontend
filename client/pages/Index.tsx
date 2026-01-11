@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
 import IntroCard from "@/components/IntroCard";
 import OngoingMeetings from "@/components/OngoingMeetings";
+import RecentMeetings from "@/components/RecentMeetings";
 import CreateMeetingModal from "@/components/CreateMeetingModal";
 import { useState } from "react";
 
@@ -17,12 +18,19 @@ export default function Index() {
 
   return (
     <Layout>
-      <div className="max-w-4xl space-y-6">
+      <div className="space-y-10">
         {/* Intro Card */}
         <IntroCard onCreateMeeting={handleCreateMeeting} />
 
         {/* Ongoing Meetings */}
-        <OngoingMeetings />
+        <div className="max-w-4xl">
+          <OngoingMeetings />
+        </div>
+
+        {/* Recent Meetings */}
+        <div className="max-w-4xl">
+          <RecentMeetings />
+        </div>
       </div>
 
       {/* Create Meeting Modal */}
