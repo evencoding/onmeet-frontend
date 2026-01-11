@@ -21,6 +21,8 @@ interface Team {
 }
 
 export default function Sidebar() {
+  const navigate = useNavigate();
+
   const navItems: NavItem[] = [
     {
       id: "today",
@@ -44,7 +46,7 @@ export default function Sidebar() {
       id: "schedule",
       label: "일정",
       icon: <Clock className="w-5 h-5" />,
-      hasMenu: true,
+      hasMenu: false,
     },
     {
       id: "board",
