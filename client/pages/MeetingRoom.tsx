@@ -96,21 +96,23 @@ export default function MeetingRoom() {
               </div>
 
               {/* Main Video Display */}
-              <div className="flex-1 rounded-3xl overflow-hidden shadow-lg border border-border/30 group relative">
+              <div className="rounded-3xl overflow-hidden shadow-lg border border-border/30 group relative w-full h-full max-h-96">
                 <img
                   src={speakers[currentSpeaker].image}
                   alt={speakers[currentSpeaker].name}
                   className="w-full h-full object-cover"
                 />
                 {/* Recording Indicator */}
-                <div className="absolute top-6 left-6 flex items-center gap-2 bg-red-500/80 px-3 py-1.5 rounded-full text-white text-sm font-semibold">
-                  <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                  REC
-                </div>
+                {isRecording && (
+                  <div className="absolute top-6 left-6 flex items-center gap-2 bg-red-500/80 px-3 py-1.5 rounded-full text-white text-sm font-semibold">
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                    REC
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Controls Bar */}
+            {/* Controls Bar - Fixed at bottom */}
             <div className="px-6 py-4 border-t border-border/30 bg-white/40 backdrop-blur-md flex items-center justify-center gap-3">
               <button
                 onClick={() => setIsMuted(!isMuted)}
