@@ -287,9 +287,9 @@ export default function ParticipantsPanel({ count = 5 }: ParticipantsPanelProps)
                           className={`px-3 py-2 rounded-2xl text-sm font-medium ${
                             msg.isOwn
                               ? "bg-brand-500 text-white rounded-br-none"
-                              : "bg-blue-500 text-white rounded-bl-none"
+                              : "rounded-bl-none"
                           }`}
-                          style={!msg.isOwn ? { backgroundColor: "#5B6CFF" } : {}}
+                          style={!msg.isOwn ? { backgroundColor: "#E6E0F2", color: "#1F1F2E" } : {}}
                         >
                           {msg.message}
                         </div>
