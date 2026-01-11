@@ -91,7 +91,7 @@ export default function MeetingRoom() {
               </div>
 
               {/* Main Video Display */}
-              <div className="flex-1 rounded-3xl overflow-hidden shadow-lg border border-border/30 group">
+              <div className="flex-1 rounded-3xl overflow-hidden shadow-lg border border-border/30 group relative">
                 <img
                   src={speakers[currentSpeaker].image}
                   alt={speakers[currentSpeaker].name}
