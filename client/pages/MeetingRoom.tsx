@@ -63,7 +63,7 @@ export default function MeetingRoom() {
           {/* Video Area */}
           <div className={`${showParticipants ? "flex-1" : "w-full"} flex flex-col bg-gradient-to-br from-bg-DEFAULT via-white/20 to-bg-DEFAULT`}>
             {/* Main Video Feed */}
-            <div className="flex-1 p-6 flex flex-col">
+            <div className="flex-1 overflow-hidden p-6 flex flex-col justify-between">
               {/* Thumbnail Carousel */}
               <div className="flex items-center gap-3 mb-6">
                 <button className="p-2 hover:bg-white/40 rounded-lg transition-colors">
