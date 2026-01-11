@@ -209,7 +209,10 @@ export default function Sidebar({ isCollapsed = false, onToggleCollapse, onTeamS
             {teams.map((team) => (
               <button
                 key={team.id}
-                onClick={() => setSelectedTeamId(team.id)}
+                onClick={() => {
+                  setSelectedTeamId(team.id);
+                  onTeamSelect?.(team.id);
+                }}
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
                   selectedTeamId === team.id
