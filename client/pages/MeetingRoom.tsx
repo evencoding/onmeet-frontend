@@ -47,8 +47,11 @@ export default function MeetingRoom() {
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
-      <div className="hidden md:block md:w-72">
-        <Sidebar />
+      <div className="hidden md:block transition-all duration-300">
+        <Sidebar
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
       </div>
 
       {/* Main Content */}
