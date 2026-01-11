@@ -158,15 +158,15 @@ export default function Sidebar() {
               className={cn(
                 "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors group",
                 team.hasCheckmark
-                  ? "bg-accent text-accent-foreground"
-                  : "text-foreground hover:bg-secondary"
+                  ? "bg-secondary text-primary"
+                  : "text-foreground hover:bg-secondary/50"
               )}
             >
-              <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold", team.color)}>
+              <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white", team.color)}>
                 {team.hasCheckmark ? "✓" : team.icon}
               </div>
               <span className="text-sm font-medium flex-1 text-left">{team.name}</span>
-              <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
             </button>
           ))}
         </div>
