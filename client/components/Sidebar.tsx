@@ -110,6 +110,9 @@ export default function Sidebar() {
               if (item.id === "schedule") {
                 navigate("/schedule");
               }
+              if (item.id === "summary") {
+                navigate("/summary");
+              }
             }}
             className={cn(
               "w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group",
