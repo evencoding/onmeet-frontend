@@ -10,6 +10,8 @@ import Index from "./pages/Index";
 import MeetingRoom from "./pages/MeetingRoom";
 import Schedule from "./pages/Schedule";
 import Summary from "./pages/Summary";
+import MeetingRecords from "./pages/MeetingRecords";
+import TeamBoard from "./pages/TeamBoard";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Landing from "./pages/Landing";
