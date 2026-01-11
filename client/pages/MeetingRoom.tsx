@@ -151,7 +151,7 @@ export default function MeetingRoom() {
           </div>
 
           {/* Right Panel - Participants */}
-          <ParticipantsPanel count={6} />
+          {showParticipants && <ParticipantsPanel count={6} />}
         </div>
       </main>
     </div>
