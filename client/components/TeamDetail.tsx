@@ -1,4 +1,4 @@
-import { Users, MessageSquare, Settings, Mail } from "lucide-react";
+import { Users, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
