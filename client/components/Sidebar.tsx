@@ -175,24 +175,55 @@ export default function Sidebar() {
 
       {/* User Profile */}
       <div className="px-3 py-4 border-t border-border/30 bg-white/30">
-        <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/40 rounded-xl transition-all duration-200 group">
-          <img
-            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop"
-            alt="User"
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <div className="flex-1 text-left">
-            <div className="text-sm font-medium text-foreground">김지롱</div>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-green-400"></div>
-              <span className="text-xs text-muted-foreground">활동 중</span>
-            </div>
-          </div>
-          <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-secondary rounded">
-            <MoreVertical className="w-4 h-4 text-muted-foreground" />
-          </button>
-        </button>
+        <UserProfile />
       </div>
+    </div>
+  );
+}
+
+function UserProfile() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  if (!user) {
+    return (
+      <button
+        onClick={() => navigate("/login")}
+        className="w-full px-4 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-200"
+      >
+        로그인
+      </button>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/40 rounded-xl transition-all duration-200 group">
+        <img
+          src={user.avatar}
+          alt={user.name}
+          className="w-10 h-10 rounded-full object-cover"
+        />
+        <div className="flex-1 text-left">
+          <div className="text-sm font-medium text-foreground">{user.name}</div>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-green-400"></div>
+            <span className="text-xs text-muted-foreground">활동 중</span>
+          </div>
+        </div>
+        <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-secondary rounded">
+          <MoreVertical className="w-4 h-4 text-muted-foreground" />
+        </button>
+      </button>
+
+      {/* Logout Button */}
+      <button
+        onClick={logout}
+        className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-border/60 bg-white/40 text-foreground text-sm font-medium rounded-xl hover:bg-white/60 transition-all duration-200"
+      >
+        <LogOut className="w-4 h-4" />
+        로그아웃
+      </button>
     </div>
   );
 }
