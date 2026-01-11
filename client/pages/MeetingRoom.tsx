@@ -147,8 +147,8 @@ export default function MeetingRoom() {
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <MeetingRoomHeader
-          title="meeting title"
-          onInvite={() => setIsInviteModalOpen(true)}
+          title={guestInfo ? `${guestInfo.name} (게스트)` : "meeting title"}
+          onInvite={() => !guestInfo && setIsInviteModalOpen(true)}
           onToggleParticipants={() => setShowParticipants(!showParticipants)}
         />
 
