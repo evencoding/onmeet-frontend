@@ -47,9 +47,11 @@ export default function Layout({ children, showAIPanel = false }: LayoutProps) {
           </div>
 
           {/* Right panel - AI Meeting Search */}
-          <div className="hidden lg:block">
-            <AIMeetingSearch />
-          </div>
+          {showAIPanel && (
+            <div className="hidden lg:block">
+              <AIMeetingSearch />
+            </div>
+          )}
         </div>
       </main>
     </div>
