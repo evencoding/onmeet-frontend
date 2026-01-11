@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import AddTeamModal from "@/components/AddTeamModal";
 
 interface NavItem {
   id: string;
