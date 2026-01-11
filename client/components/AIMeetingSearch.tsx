@@ -107,7 +107,7 @@ export default function AIMeetingSearch() {
   };
 
   return (
-    <div className="w-80 border-l border-border bg-background flex flex-col">
+    <div className="w-80 border-l border-border/30 bg-white/40 backdrop-blur-md flex flex-col">
       {/* Header */}
       <div className="px-6 py-4 border-b border-border">
         <h2 className="text-sm font-semibold text-foreground mb-3">AI로 찾는 회의들</h2>
