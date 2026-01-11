@@ -148,8 +148,9 @@ export default function MeetingRoom() {
         {/* Header */}
         <MeetingRoomHeader
           title={guestInfo ? `${guestInfo.name} (게스트)` : "meeting title"}
-          onInvite={() => !guestInfo && setIsInviteModalOpen(true)}
+          onInvite={() => setIsInviteModalOpen(true)}
           onToggleParticipants={() => setShowParticipants(!showParticipants)}
+          isGuest={!!guestInfo}
         />
 
         {/* Meeting Content */}
