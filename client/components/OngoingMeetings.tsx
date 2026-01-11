@@ -109,53 +109,58 @@ export default function OngoingMeetings() {
         {meetings.map((meeting) => (
           <div
             key={meeting.id}
-            className="bg-gradient-to-br from-white via-surface-subtle to-white border border-border/50 rounded-2xl p-5 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 backdrop-blur-xs"
+            className="bg-gradient-to-br from-white via-white/90 to-surface-subtle border border-border/40 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 backdrop-blur-sm group overflow-hidden relative"
           >
-            {/* Host Info */}
-            <div className="flex items-center gap-3 mb-4">
-              <img
-                src={meeting.hostAvatar}
-                alt={meeting.hostName}
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <div className="flex-1">
-                <h3 className="text-sm font-semibold text-foreground">
-                  {meeting.hostName}
-                </h3>
-                <p className="text-xs text-muted-foreground">{meeting.time}</p>
-              </div>
-            </div>
+            {/* Subtle overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-50/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
 
-            {/* Stats */}
-            <div className="space-y-2 mb-4 pb-4 border-t border-border pt-3">
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Participants</span>
-                <span className="font-medium">{meeting.attendeesCount} members</span>
-              </div>
-            </div>
-
-            {/* Attendees */}
-            <div className="flex items-center gap-2 mb-4">
-              {meeting.attendees.map((attendee, idx) => (
+            <div className="relative z-10">
+              {/* Host Info */}
+              <div className="flex items-center gap-4 mb-6">
                 <img
-                  key={idx}
-                  src={attendee.avatar}
-                  alt={attendee.name}
-                  className="w-6 h-6 rounded-full border border-border"
+                  src={meeting.hostAvatar}
+                  alt={meeting.hostName}
+                  className="w-14 h-14 rounded-full object-cover shadow-md ring-1 ring-border/20"
                 />
-              ))}
-              {meeting.attendeesCount > meeting.attendees.length && (
-                <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-xs font-semibold text-foreground">
-                  +{meeting.attendeesCount - meeting.attendees.length}
+                <div className="flex-1">
+                  <h3 className="text-base font-bold text-foreground">
+                    {meeting.hostName}
+                  </h3>
+                  <p className="text-xs text-text-sub font-medium">{meeting.time}</p>
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Action Button */}
-            <button className="w-full px-4 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-medium rounded-lg hover:from-brand-600 hover:to-brand-700 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 active:scale-95">
-              <Eye className="w-4 h-4" />
-              View details
-            </button>
+              {/* Stats */}
+              <div className="space-y-3 mb-6 pb-6 border-t border-border/30 pt-4">
+                <div className="flex justify-between text-xs">
+                  <span className="text-text-sub font-medium">참석자</span>
+                  <span className="font-semibold text-foreground">{meeting.attendeesCount}명</span>
+                </div>
+              </div>
+
+              {/* Attendees */}
+              <div className="flex items-center gap-2 mb-6">
+                {meeting.attendees.map((attendee, idx) => (
+                  <img
+                    key={idx}
+                    src={attendee.avatar}
+                    alt={attendee.name}
+                    className="w-7 h-7 rounded-full border-2 border-white shadow-sm hover:scale-110 transition-transform duration-200"
+                  />
+                ))}
+                {meeting.attendeesCount > meeting.attendees.length && (
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-brand-50 to-brand-100 flex items-center justify-center text-xs font-bold text-brand-600 border border-border/30">
+                    +{meeting.attendeesCount - meeting.attendees.length}
+                  </div>
+                )}
+              </div>
+
+              {/* Action Button */}
+              <button className="w-full px-5 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 flex items-center justify-center gap-2 group/btn">
+                <Eye className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-200" />
+                상세 보기
+              </button>
+            </div>
           </div>
         ))}
       </div>
