@@ -239,7 +239,7 @@ export default function Sidebar({ isCollapsed = false, onToggleCollapse }: Sideb
   );
 }
 
-function UserProfile() {
+function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -247,10 +247,36 @@ function UserProfile() {
     return (
       <button
         onClick={() => navigate("/login")}
-        className="w-full px-4 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-200"
+        className={cn(
+          "bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-200",
+          isCollapsed ? "w-10 h-10 p-2 flex items-center justify-center" : "w-full px-4 py-3"
+        )}
+        title={isCollapsed ? "로그인" : ""}
       >
-        로그인
+        {isCollapsed ? "🔑" : "로그인"}
       </button>
+    );
+  }
+
+  if (isCollapsed) {
+    return (
+      <div className="w-full space-y-2 flex flex-col items-center">
+        <div title={user.name} className="relative">
+          <img
+            src={user.avatar}
+            alt={user.name}
+            className="w-10 h-10 rounded-full object-cover"
+          />
+          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 border border-white"></div>
+        </div>
+        <button
+          onClick={logout}
+          className="p-2 hover:bg-secondary rounded transition-colors"
+          title="로그아웃"
+        >
+          <LogOut className="w-4 h-4 text-muted-foreground" />
+        </button>
+      </div>
     );
   }
 
