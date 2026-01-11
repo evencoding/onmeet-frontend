@@ -334,22 +334,20 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
 
   return (
     <div className="space-y-2">
-      <div className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/40 rounded-xl transition-all duration-200 group">
-        <img
-          src={user.avatar}
-          alt={user.name}
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <div className="flex-1 text-left">
-          <div className="text-sm font-medium text-foreground">{user.name}</div>
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-green-400"></div>
-            <span className="text-xs text-muted-foreground">활동 중</span>
+      {/* Company Information */}
+      <div className="w-full px-4 py-3 bg-gradient-to-br from-brand-50 to-brand-50/50 border border-brand-200/40 rounded-xl">
+        <div className="text-xs font-semibold text-brand-600 uppercase tracking-wide mb-1">
+          회사 정보
+        </div>
+        <div>
+          <div className="text-sm font-medium text-foreground">Acme Corporation</div>
+          <div className="text-xs text-text-sub mt-1">
+            서울시 강남구 테헤란로 123
+          </div>
+          <div className="text-xs text-muted-foreground mt-2">
+            팀: 12명 | 회의실: 3개
           </div>
         </div>
-        <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-secondary rounded">
-          <MoreVertical className="w-4 h-4 text-muted-foreground" />
-        </button>
       </div>
 
       {/* Logout Button */}
