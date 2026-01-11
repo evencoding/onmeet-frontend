@@ -52,7 +52,10 @@ export default function MeetingRoom() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <MeetingRoomHeader title="meeting title" />
+        <MeetingRoomHeader
+          title="meeting title"
+          onToggleParticipants={() => setShowParticipants(!showParticipants)}
+        />
 
         {/* Meeting Content */}
         <div className="flex-1 overflow-hidden flex">
