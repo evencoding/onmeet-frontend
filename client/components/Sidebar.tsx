@@ -150,10 +150,10 @@ export default function Sidebar() {
             <button
               key={team.id}
               className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors group",
+                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
                 team.hasCheckmark
-                  ? "bg-secondary text-primary"
-                  : "text-foreground hover:bg-secondary/50"
+                  ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
+                  : "text-foreground hover:bg-white/40"
               )}
             >
               <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white", team.color)}>
