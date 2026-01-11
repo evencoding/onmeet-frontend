@@ -1,5 +1,7 @@
-import { Calendar, FileText, ClipboardList, Clock, LayoutGrid, Plus, MoreVertical, Search, Menu } from "lucide-react";
+import { Calendar, FileText, ClipboardList, Clock, LayoutGrid, Plus, MoreVertical, Search, Menu, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface NavItem {
   id: string;
