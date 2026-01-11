@@ -12,7 +12,7 @@
    * A different format will require also updating the theme in tailwind.config.ts.
   */
   :root {
-    --background: 250 20% 97%;
+    --background: 260 33% 97%;
     --foreground: 240 10% 20%;
 
     --card: 0 0% 100%;
@@ -21,42 +21,42 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 20%;
 
-    --primary: 270 100% 55%;
+    --primary: 267 100% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 250 15% 90%;
-    --secondary-foreground: 270 100% 55%;
+    --secondary: 260 33% 91%;
+    --secondary-foreground: 267 100% 55%;
 
     --muted: 240 10% 70%;
     --muted-foreground: 240 10% 50%;
 
-    --accent: 270 100% 55%;
+    --accent: 267 100% 55%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 250 15% 90%;
-    --input: 250 15% 95%;
-    --ring: 270 100% 55%;
+    --border: 265 33% 92%;
+    --input: 260 33% 95%;
+    --ring: 267 100% 55%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 250 20% 97%;
+    --sidebar-background: 260 33% 97%;
 
     --sidebar-foreground: 240 10% 30%;
 
-    --sidebar-primary: 270 100% 55%;
+    --sidebar-primary: 267 100% 55%;
 
     --sidebar-primary-foreground: 0 0% 100%;
 
-    --sidebar-accent: 270 85% 90%;
+    --sidebar-accent: 260 33% 91%;
 
-    --sidebar-accent-foreground: 270 100% 55%;
+    --sidebar-accent-foreground: 267 100% 55%;
 
-    --sidebar-border: 250 15% 90%;
+    --sidebar-border: 265 33% 92%;
 
-    --sidebar-ring: 270 100% 55%;
+    --sidebar-ring: 267 100% 55%;
   }
 
   .dark {
