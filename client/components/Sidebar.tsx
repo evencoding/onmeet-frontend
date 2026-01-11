@@ -160,46 +160,46 @@ export default function Sidebar({
         {navItems.map((item) => {
           const isActive = location.pathname === item.route;
           return (
-          <div key={item.id} title={isCollapsed ? item.label : ""}>
-            <button
-              onClick={() => navigate(item.route)}
-              className={cn(
-                "w-full flex items-center rounded-xl transition-all duration-200 group",
-                isCollapsed
-                  ? "justify-center p-3"
-                  : "justify-between px-4 py-3",
-                isActive
-                  ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
-                  : "text-foreground hover:bg-white/40",
-              )}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className={cn(
-                    "flex-shrink-0",
-                    isActive ? "text-primary" : "text-muted-foreground",
+            <div key={item.id} title={isCollapsed ? item.label : ""}>
+              <button
+                onClick={() => navigate(item.route)}
+                className={cn(
+                  "w-full flex items-center rounded-xl transition-all duration-200 group",
+                  isCollapsed
+                    ? "justify-center p-3"
+                    : "justify-between px-4 py-3",
+                  isActive
+                    ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
+                    : "text-foreground hover:bg-white/40",
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={cn(
+                      "flex-shrink-0",
+                      isActive ? "text-primary" : "text-muted-foreground",
+                    )}
+                  >
+                    {item.icon}
+                  </div>
+                  {!isCollapsed && (
+                    <span className="text-sm font-medium">{item.label}</span>
                   )}
-                >
-                  {item.icon}
                 </div>
                 {!isCollapsed && (
-                  <span className="text-sm font-medium">{item.label}</span>
+                  <div className="flex items-center gap-2">
+                    {item.badge && (
+                      <span className="bg-primary text-primary-foreground text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center">
+                        {item.badge}
+                      </span>
+                    )}
+                    {item.hasMenu && (
+                      <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    )}
+                  </div>
                 )}
-              </div>
-              {!isCollapsed && (
-                <div className="flex items-center gap-2">
-                  {item.badge && (
-                    <span className="bg-primary text-primary-foreground text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center">
-                      {item.badge}
-                    </span>
-                  )}
-                  {item.hasMenu && (
-                    <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  )}
-                </div>
-              )}
-            </button>
-          </div>
+              </button>
+            </div>
           );
         })}
       </div>
