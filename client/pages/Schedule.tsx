@@ -184,29 +184,29 @@ export default function Schedule() {
                 </div>
               )}
             </div>
-          </div>
-        </div>
 
-        {/* Upcoming Meetings Summary */}
-        <div className="bg-gradient-to-r from-brand-50 to-brand-50 border border-brand-200 rounded-3xl p-6">
-          <h3 className="text-lg font-bold text-foreground mb-4">앞으로의 회의</h3>
-          <div className="grid grid-cols-4 gap-4">
-            {allMeetings.slice(0, 4).map((meeting) => (
-              <div
-                key={meeting.id}
-                className="bg-white/60 rounded-xl p-3 border border-border/30 hover:shadow-md transition-all"
-              >
-                <p className="text-sm font-semibold text-foreground truncate">
-                  {meeting.title}
-                </p>
-                <p className="text-xs text-text-sub">
-                  {format(meeting.date, "M월 d일", { locale: ko })}
-                </p>
-                <p className="text-xs text-brand-600 font-medium">
-                  {meeting.time}
-                </p>
+            {/* Upcoming Meetings Summary */}
+            <div className="bg-gradient-to-r from-brand-50 to-brand-50 border border-brand-200 rounded-3xl p-6">
+              <h3 className="text-lg font-bold text-foreground mb-4">앞으로의 회의</h3>
+              <div className="grid grid-cols-4 gap-4">
+                {allMeetings.slice(0, 4).map((meeting) => (
+                  <div
+                    key={meeting.id}
+                    className="bg-white/60 rounded-xl p-3 border border-border/30 hover:shadow-md transition-all"
+                  >
+                    <p className="text-sm font-semibold text-foreground truncate">
+                      {meeting.title}
+                    </p>
+                    <p className="text-xs text-text-sub">
+                      {format(meeting.date, "M월 d일", { locale: ko })}
+                    </p>
+                    <p className="text-xs text-brand-600 font-medium">
+                      {meeting.time}
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>
