@@ -110,10 +110,55 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     },
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const previousParticipantsRef = useRef<Participant[]>([]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // 참가자 변화 감시 - 입장/퇴장 메시지 자동 추가
+  useEffect(() => {
+    if (!participants || participants.length === 0) return;
+
+    const previousParticipants = previousParticipantsRef.current;
+
+    // 새로 입장한 참가자 찾기
+    const newParticipants = participants.filter(
+      (p) => !previousParticipants.find((prev) => prev.id === p.id)
+    );
+
+    // 퇴장한 참가자 찾기
+    const leftParticipants = previousParticipants.filter(
+      (p) => !participants.find((curr) => curr.id === p.id)
+    );
+
+    // 입장 메시지 추가
+    newParticipants.forEach((participant) => {
+      const systemMessage: ChatMessage = {
+        id: `system-join-${Date.now()}-${participant.id}`,
+        sender: `${participant.name}님이 입장하셨습니다`,
+        avatar: "",
+        message: "",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      setMessages((prev) => [...prev, systemMessage]);
+    });
+
+    // 퇴장 메시지 추가
+    leftParticipants.forEach((participant) => {
+      const systemMessage: ChatMessage = {
+        id: `system-leave-${Date.now()}-${participant.id}`,
+        sender: `${participant.name}님이 퇴장하셨습니다`,
+        avatar: "",
+        message: "",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      setMessages((prev) => [...prev, systemMessage]);
+    });
+
+    // 현재 참가자 목록을 이전 목록으로 업데이트
+    previousParticipantsRef.current = participants;
+  }, [participants]);
 
   useEffect(() => {
     scrollToBottom();
