@@ -45,12 +45,6 @@ export default function Sidebar() {
       hasMenu: true,
     },
     {
-      id: "trend",
-      label: "트렌드",
-      icon: <TrendingUp className="w-5 h-5" />,
-      hasMenu: true,
-    },
-    {
       id: "board",
       label: "팀 보드",
       icon: <LayoutGrid className="w-5 h-5" />,
