@@ -3,6 +3,8 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
+const navigate = useNavigate();
+
 interface NavItem {
   id: string;
   label: string;
