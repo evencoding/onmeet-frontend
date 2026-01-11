@@ -97,21 +97,30 @@ export default function CalendarView({ onSelectDate, meetings = [] }: CalendarVi
               <span className={`text-xs font-semibold mb-1 ${isSelected ? "text-white" : "text-foreground"}`}>
                 {format(date, "d")}
               </span>
-              <div className="text-xs space-y-0.5 w-full">
+              <div className="text-xs space-y-1 w-full flex-1">
                 {dateMeetings.slice(0, 2).map((meeting) => (
                   <div
                     key={meeting.id}
-                    className={`truncate text-xs font-medium px-1.5 py-0.5 rounded ${
+                    className={`text-xs font-medium px-1.5 py-1 rounded ${
                       isSelected
                         ? "bg-white/20"
                         : "bg-brand-500/20 text-brand-600"
                     }`}
                   >
-                    {meeting.title}
+                    <div className="truncate text-xs font-semibold">
+                      {meeting.title}
+                    </div>
+                    <div className={`truncate text-xs font-normal ${
+                      isSelected
+                        ? "text-white/80"
+                        : "text-brand-600/80"
+                    }`}>
+                      {meeting.time}
+                    </div>
                   </div>
                 ))}
                 {dateMeetings.length > 2 && (
-                  <div className="text-xs text-text-sub px-1.5">
+                  <div className={`text-xs px-1.5 ${isSelected ? "text-white/70" : "text-text-sub"}`}>
                     +{dateMeetings.length - 2}
                   </div>
                 )}
