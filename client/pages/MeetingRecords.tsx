@@ -1,5 +1,11 @@
 import Layout from "@/components/Layout";
-import { Clock, MapPin, Users, Download, Share2 } from "lucide-react";
+import { Clock, MapPin, Users, Download, Share2, Play, Search, Filter } from "lucide-react";
+import { useState } from "react";
+
+interface Participant {
+  name: string;
+  avatar: string;
+}
 
 interface MeetingRecord {
   id: string;
@@ -8,11 +14,18 @@ interface MeetingRecord {
   duration: string;
   location: string;
   participants: number;
+  participantList: Participant[];
   recordingUrl?: string;
   notes?: string;
+  transcript?: string;
+  hasTranscript?: boolean;
 }
 
 export default function MeetingRecords() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [selectedRecord, setSelectedRecord] = useState<string | null>(null);
+
   const records: MeetingRecord[] = [
     {
       id: "1",
@@ -21,8 +34,16 @@ export default function MeetingRecords() {
       duration: "30분",
       location: "회의실 A",
       participants: 5,
+      participantList: [
+        { name: "김철수", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+        { name: "이영희", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
+        { name: "박민준", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+        { name: "정호준", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
+        { name: "조예성", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+      ],
       recordingUrl: "#",
       notes: "주간 목표 검토 및 진도 확인",
+      hasTranscript: true,
     },
     {
       id: "2",
@@ -31,8 +52,15 @@ export default function MeetingRecords() {
       duration: "1시간",
       location: "온라인",
       participants: 8,
+      participantList: [
+        { name: "김철수", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+        { name: "이영희", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
+        { name: "박민준", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+        { name: "정호준", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
+      ],
       recordingUrl: "#",
       notes: "Q1 프로젝트 진행 상황 논의",
+      hasTranscript: true,
     },
     {
       id: "3",
@@ -41,8 +69,13 @@ export default function MeetingRecords() {
       duration: "45분",
       location: "회의실 B",
       participants: 4,
+      participantList: [
+        { name: "김철수", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+        { name: "이영희", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
+      ],
       recordingUrl: "#",
       notes: "신규 UI 디자인 검토",
+      hasTranscript: false,
     },
     {
       id: "4",
@@ -51,10 +84,26 @@ export default function MeetingRecords() {
       duration: "1.5시간",
       location: "온라인",
       participants: 6,
+      participantList: [
+        { name: "김철수", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+        { name: "이영희", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
+        { name: "박민준", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+      ],
       recordingUrl: "#",
       notes: "월간 진행 상황 보고",
+      hasTranscript: true,
     },
   ];
+
+  const filteredRecords = records.filter((record) => {
+    const matchesSearch = record.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesFilter =
+      filterType === "all" ||
+      (filterType === "transcript" && record.hasTranscript);
+    return matchesSearch && matchesFilter;
+  });
 
   return (
     <Layout>
