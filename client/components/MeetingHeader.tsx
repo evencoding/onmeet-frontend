@@ -1,4 +1,4 @@
-import { Search, Share2, RotateCcw, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 
 export default function MeetingHeader() {
   return (
