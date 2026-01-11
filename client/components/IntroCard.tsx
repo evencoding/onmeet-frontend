@@ -23,7 +23,9 @@ export default function IntroCard({ onCreateMeeting }: IntroCardProps) {
             className="flex-1 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 uppercase letter-spacing-wider">
             회의 생성하기
           </button>
-          <button className="flex-1 px-6 py-3 border border-border/60 bg-white/70 text-foreground text-sm font-semibold rounded-xl hover:bg-white hover:border-border hover:shadow-md transition-all duration-300 uppercase letter-spacing-wider">
+          <button
+            onClick={() => navigate("/meeting")}
+            className="flex-1 px-6 py-3 border border-border/60 bg-white/70 text-foreground text-sm font-semibold rounded-xl hover:bg-white hover:border-border hover:shadow-md transition-all duration-300 uppercase letter-spacing-wider">
             회의 참여하기
           </button>
         </div>
