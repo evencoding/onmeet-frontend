@@ -24,6 +24,7 @@ interface Meeting {
 
 export default function Summary() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
 
   // Sample meetings data with summaries
   const allMeetings: Meeting[] = [
