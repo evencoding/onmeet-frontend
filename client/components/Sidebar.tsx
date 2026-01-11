@@ -84,125 +84,156 @@ export default function Sidebar({ isCollapsed = false, onToggleCollapse }: Sideb
   ];
 
   return (
-    <div className="w-full md:w-72 bg-gradient-to-b from-bg-DEFAULT via-white/40 to-bg-DEFAULT border-r border-border/30 flex flex-col h-screen">
+    <div className={cn(
+      "bg-gradient-to-b from-bg-DEFAULT via-white/40 to-bg-DEFAULT border-r border-border/30 flex flex-col h-screen transition-all duration-300",
+      isCollapsed ? "w-20" : "w-72"
+    )}>
       {/* Header */}
-      <div className="px-6 py-5 border-b border-border/30 bg-white/50">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <div className={cn("border-b border-border/30 bg-white/50 flex flex-col items-center justify-between", isCollapsed ? "px-2 py-4" : "px-6 py-5")}>
+        <div className="flex items-center justify-between w-full">
+          {!isCollapsed && (
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
+                O
+              </div>
+              <span className="font-bold text-lg text-foreground tracking-tight">
+                ONMEET
+              </span>
+            </div>
+          )}
+          {isCollapsed && (
             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
               O
             </div>
-            <span className="font-bold text-lg text-foreground tracking-tight">
-              ONMEET
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="p-2 hover:bg-secondary rounded-lg transition-colors">
+          )}
+          {onToggleCollapse && (
+            <button
+              onClick={onToggleCollapse}
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              title={isCollapsed ? "사이드바 확대" : "사이드바 축소"}
+            >
+              {isCollapsed ? (
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              ) : (
+                <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+              )}
+            </button>
+          )}
+        </div>
+        {!isCollapsed && (
+          <div className="flex items-center gap-2 mt-4 w-full">
+            <button className="p-2 hover:bg-secondary rounded-lg transition-colors flex-1">
               <Search className="w-5 h-5 text-muted-foreground" />
             </button>
-            <button className="p-2 hover:bg-secondary rounded-lg transition-colors">
+            <button className="p-2 hover:bg-secondary rounded-lg transition-colors flex-1">
               <Menu className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Main Navigation */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2">
+      <div className="flex-1 overflow-y-auto px-2 py-4 space-y-2">
         {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => {
-              switch (item.id) {
-                case "today":
-                  navigate("/");
-                  break;
-                case "records":
-                  navigate("/records");
-                  break;
-                case "summary":
-                  navigate("/summary");
-                  break;
-                case "schedule":
-                  navigate("/schedule");
-                  break;
-                case "board":
-                  navigate("/board");
-                  break;
-              }
-            }}
-            className={cn(
-              "w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group",
-              item.isActive
-                ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
-                : "text-foreground hover:bg-white/40"
-            )}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className={cn(
-                  "flex-shrink-0",
-                  item.isActive ? "text-primary" : "text-muted-foreground"
-                )}
-              >
-                {item.icon}
-              </div>
-              <span className="text-sm font-medium">{item.label}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {item.badge && (
-                <span className="bg-primary text-primary-foreground text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center">
-                  {item.badge}
-                </span>
-              )}
-              {item.hasMenu && (
-                <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-              )}
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Teams Section */}
-      <div className="px-3 py-4 border-t border-border/30 bg-white/30">
-        <div className="flex items-center justify-between px-4 mb-3">
-          <span className="text-xs font-semibold text-muted-foreground uppercase">
-            Teams
-          </span>
-          <button className="p-1 hover:bg-secondary rounded transition-colors">
-            <MoreVertical className="w-4 h-4 text-muted-foreground" />
-          </button>
-        </div>
-
-        <div className="space-y-2 mb-3">
-          {teams.map((team) => (
+          <div key={item.id} title={isCollapsed ? item.label : ""}>
             <button
-              key={team.id}
+              onClick={() => {
+                switch (item.id) {
+                  case "today":
+                    navigate("/");
+                    break;
+                  case "records":
+                    navigate("/records");
+                    break;
+                  case "summary":
+                    navigate("/summary");
+                    break;
+                  case "schedule":
+                    navigate("/schedule");
+                    break;
+                  case "board":
+                    navigate("/board");
+                    break;
+                }
+              }}
               className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
-                team.hasCheckmark
+                "w-full flex items-center rounded-xl transition-all duration-200 group",
+                isCollapsed ? "justify-center p-3" : "justify-between px-4 py-3",
+                item.isActive
                   ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
                   : "text-foreground hover:bg-white/40"
               )}
             >
-              <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white", team.color)}>
-                {team.hasCheckmark ? "✓" : team.icon}
+              <div className="flex items-center gap-3">
+                <div
+                  className={cn(
+                    "flex-shrink-0",
+                    item.isActive ? "text-primary" : "text-muted-foreground"
+                  )}
+                >
+                  {item.icon}
+                </div>
+                {!isCollapsed && <span className="text-sm font-medium">{item.label}</span>}
               </div>
-              <span className="text-sm font-medium flex-1 text-left">{team.name}</span>
-              <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
+              {!isCollapsed && (
+                <div className="flex items-center gap-2">
+                  {item.badge && (
+                    <span className="bg-primary text-primary-foreground text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center">
+                      {item.badge}
+                    </span>
+                  )}
+                  {item.hasMenu && (
+                    <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  )}
+                </div>
+              )}
             </button>
-          ))}
-        </div>
-
-        <button className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-colors">
-          <Plus className="w-5 h-5" />
-          <span className="text-sm font-medium">팀 추가</span>
-        </button>
+          </div>
+        ))}
       </div>
 
+      {/* Teams Section */}
+      {!isCollapsed && (
+        <div className="px-3 py-4 border-t border-border/30 bg-white/30">
+          <div className="flex items-center justify-between px-4 mb-3">
+            <span className="text-xs font-semibold text-muted-foreground uppercase">
+              Teams
+            </span>
+            <button className="p-1 hover:bg-secondary rounded transition-colors">
+              <MoreVertical className="w-4 h-4 text-muted-foreground" />
+            </button>
+          </div>
+
+          <div className="space-y-2 mb-3">
+            {teams.map((team) => (
+              <button
+                key={team.id}
+                className={cn(
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
+                  team.hasCheckmark
+                    ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
+                    : "text-foreground hover:bg-white/40"
+                )}
+              >
+                <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white", team.color)}>
+                  {team.hasCheckmark ? "✓" : team.icon}
+                </div>
+                <span className="text-sm font-medium flex-1 text-left">{team.name}</span>
+                <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
+              </button>
+            ))}
+          </div>
+
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-colors">
+            <Plus className="w-5 h-5" />
+            <span className="text-sm font-medium">팀 추가</span>
+          </button>
+        </div>
+      )}
+
       {/* User Profile */}
-      <div className="px-3 py-4 border-t border-border/30 bg-white/30">
-        <UserProfile />
+      <div className={cn("border-t border-border/30 bg-white/30", isCollapsed ? "px-2 py-4" : "px-3 py-4")}>
+        <UserProfile isCollapsed={isCollapsed} />
       </div>
     </div>
   );
