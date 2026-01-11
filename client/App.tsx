@@ -49,7 +49,10 @@ const AppContent = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      <Route path="/signup" element={<SignupFlow />} />
+      <Route path="/signup/company" element={<CompanySignup />} />
+      <Route path="/signup/employee" element={<EmployeeSignup />} />
+      <Route path="/signup/invite-members" element={<InviteMembers />} />
       <Route path="/" element={<HomeRoute />} />
       <Route
         path="/meeting"
