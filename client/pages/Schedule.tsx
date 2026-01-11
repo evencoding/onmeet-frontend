@@ -199,7 +199,24 @@ export default function Schedule() {
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">일정</h1>
-          <p className="text-text-sub">예정된 회의를 확인하세요</p>
+          <p className="text-text-sub mb-4">예정된 회의를 확인하세요</p>
+          <button
+            onClick={() => setIsRightPanelOpen(!isRightPanelOpen)}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-50 text-brand-600 hover:bg-brand-100 transition-colors text-sm font-medium"
+            title={isRightPanelOpen ? "상세보기 닫기" : "상세보기 열기"}
+          >
+            {isRightPanelOpen ? (
+              <>
+                <ChevronLeft className="w-4 h-4" />
+                <span>상세보기 닫기</span>
+              </>
+            ) : (
+              <>
+                <ChevronRight className="w-4 h-4" />
+                <span>상세보기 열기</span>
+              </>
+            )}
+          </button>
         </div>
 
         {/* Content Grid */}
@@ -210,26 +227,6 @@ export default function Schedule() {
         >
           {/* Calendar */}
           <div className="w-full flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-foreground">달력</h2>
-              <button
-                onClick={() => setIsRightPanelOpen(!isRightPanelOpen)}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-50 text-brand-600 hover:bg-brand-100 transition-colors text-sm font-medium"
-                title={isRightPanelOpen ? "상세보기 닫기" : "상세보기 열기"}
-              >
-                {isRightPanelOpen ? (
-                  <>
-                    <ChevronLeft className="w-4 h-4" />
-                    <span>상세보기 닫기</span>
-                  </>
-                ) : (
-                  <>
-                    <ChevronRight className="w-4 h-4" />
-                    <span>상세보기 열기</span>
-                  </>
-                )}
-              </button>
-            </div>
             <CalendarView
               onSelectDate={setSelectedDate}
               meetings={allMeetings}
