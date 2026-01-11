@@ -55,24 +55,27 @@ export default function Sidebar({
       label: "오늘 회의",
       icon: <Calendar className="w-5 h-5" />,
       badge: 2,
-      isActive: true,
+      route: "/",
     },
     {
       id: "records",
       label: "이전 회의",
       icon: <FileText className="w-5 h-5" />,
       badge: 8,
+      route: "/records",
     },
     {
       id: "summary",
       label: "Ai 회의록",
       icon: <ClipboardList className="w-5 h-5" />,
+      route: "/summary",
     },
     {
       id: "schedule",
       label: "회의 일정",
       icon: <Clock className="w-5 h-5" />,
       hasMenu: false,
+      route: "/schedule",
     },
   ];
 
