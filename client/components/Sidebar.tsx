@@ -145,16 +145,6 @@ export default function Sidebar({
             </button>
           )}
         </div>
-        {!isCollapsed && (
-          <div className="flex items-center gap-2 mt-4 w-full">
-            <button className="p-2 hover:bg-secondary rounded-lg transition-colors flex-1">
-              <Search className="w-5 h-5 text-muted-foreground" />
-            </button>
-            <button className="p-2 hover:bg-secondary rounded-lg transition-colors flex-1">
-              <Menu className="w-5 h-5 text-muted-foreground" />
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Main Navigation */}
