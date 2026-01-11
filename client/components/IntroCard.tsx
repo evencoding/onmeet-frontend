@@ -27,9 +27,11 @@ export default function IntroCard({ onCreateMeeting }: IntroCardProps) {
           <div>
             <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 bg-clip-text text-transparent mb-2 leading-tight">
               회의에만 집중하세요
+              <br />
+              기록은 AI 가&nbsp;
+              <br />
             </h3>
             <p className="text-base text-text-sub mb-8 font-medium">
-              기록은 AI가
             </p>
           </div>
 
