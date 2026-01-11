@@ -1,15 +1,17 @@
 import Sidebar from "./Sidebar";
 import MeetingHeader from "./MeetingHeader";
 import AIMeetingSearch from "./AIMeetingSearch";
+import RecentMeetings from "./RecentMeetings";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 
 interface LayoutProps {
   children: React.ReactNode;
   showAIPanel?: boolean;
+  showRecentPanel?: boolean;
 }
 
-export default function Layout({ children, showAIPanel = false }: LayoutProps) {
+export default function Layout({ children, showAIPanel = false, showRecentPanel = false }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
