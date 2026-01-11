@@ -59,18 +59,18 @@ export default function Sidebar({
     },
     {
       id: "records",
-      label: "회의 기록",
+      label: "이전 회의",
       icon: <FileText className="w-5 h-5" />,
       badge: 8,
     },
     {
       id: "summary",
-      label: "요약본",
+      label: "Ai 회의록",
       icon: <ClipboardList className="w-5 h-5" />,
     },
     {
       id: "schedule",
-      label: "일정",
+      label: "회의 일정",
       icon: <Clock className="w-5 h-5" />,
       hasMenu: false,
     },
