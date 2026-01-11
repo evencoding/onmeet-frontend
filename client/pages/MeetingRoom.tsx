@@ -10,6 +10,7 @@ export default function MeetingRoom() {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [currentSpeaker, setCurrentSpeaker] = useState(0);
+  const [showParticipants, setShowParticipants] = useState(true);
 
   const speakers = [
     {
