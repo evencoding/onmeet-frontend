@@ -28,19 +28,22 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+const HomeRoute = () => {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Landing />;
+  }
+
+  return <Index />;
+};
+
 const AppContent = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <Index />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/" element={<HomeRoute />} />
       <Route
         path="/meeting"
         element={
