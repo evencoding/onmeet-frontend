@@ -12,7 +12,7 @@ export default function MeetingHeader() {
           <div className="text-xs text-muted-foreground">staff-and</div>
         </div>
       </div>
-      
+
       <div className="flex items-center gap-2">
         <button className="p-2 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground">
           <MoreVertical className="w-5 h-5" />

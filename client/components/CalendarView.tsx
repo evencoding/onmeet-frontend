@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay } from "date-fns";
+import {
+  format,
+  addMonths,
+  subMonths,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  isSameMonth,
+  isSameDay,
+} from "date-fns";
 import { ko } from "date-fns/locale";
 
 interface Meeting {
@@ -17,7 +26,10 @@ interface CalendarViewProps {
   meetings?: Meeting[];
 }
 
-export default function CalendarView({ onSelectDate, meetings = [] }: CalendarViewProps) {
+export default function CalendarView({
+  onSelectDate,
+  meetings = [],
+}: CalendarViewProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
@@ -26,9 +38,14 @@ export default function CalendarView({ onSelectDate, meetings = [] }: CalendarVi
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
   // Pad with previous month's days
-  const startDate = monthStart.getDay() === 0 ? subMonths(monthStart, 1) : monthStart;
+  const startDate =
+    monthStart.getDay() === 0 ? subMonths(monthStart, 1) : monthStart;
   const paddedDays = eachDayOfInterval({
-    start: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() - (monthStart.getDay() || 6) + 1),
+    start: new Date(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate() - (monthStart.getDay() || 6) + 1,
+    ),
     end: monthEnd,
   });
 
@@ -69,7 +86,10 @@ export default function CalendarView({ onSelectDate, meetings = [] }: CalendarVi
       {/* Weekday Headers */}
       <div className="grid grid-cols-7 gap-3 mb-3">
         {weekDays.map((day) => (
-          <div key={day} className="text-center text-sm font-semibold text-text-sub py-2">
+          <div
+            key={day}
+            className="text-center text-sm font-semibold text-text-sub py-2"
+          >
             {day}
           </div>
         ))}
@@ -90,11 +110,13 @@ export default function CalendarView({ onSelectDate, meetings = [] }: CalendarVi
                 isSelected
                   ? "bg-brand-500 text-white border-brand-500 shadow-lg"
                   : isCurrentMonth
-                  ? "bg-white/60 hover:bg-white/80 border-border/30 hover:border-brand-400"
-                  : "bg-white/20 border-border/20 text-text-sub"
+                    ? "bg-white/60 hover:bg-white/80 border-border/30 hover:border-brand-400"
+                    : "bg-white/20 border-border/20 text-text-sub"
               }`}
             >
-              <span className={`text-xs font-semibold mb-1 ${isSelected ? "text-white" : "text-foreground"}`}>
+              <span
+                className={`text-xs font-semibold mb-1 ${isSelected ? "text-white" : "text-foreground"}`}
+              >
                 {format(date, "d")}
               </span>
               <div className="text-xs space-y-1 w-full flex-1">
@@ -110,17 +132,19 @@ export default function CalendarView({ onSelectDate, meetings = [] }: CalendarVi
                     <div className="truncate text-xs font-semibold">
                       {meeting.title}
                     </div>
-                    <div className={`truncate text-xs font-normal ${
-                      isSelected
-                        ? "text-white/80"
-                        : "text-brand-600/80"
-                    }`}>
+                    <div
+                      className={`truncate text-xs font-normal ${
+                        isSelected ? "text-white/80" : "text-brand-600/80"
+                      }`}
+                    >
                       {meeting.time}
                     </div>
                   </div>
                 ))}
                 {dateMeetings.length > 2 && (
-                  <div className={`text-xs px-1.5 ${isSelected ? "text-white/70" : "text-text-sub"}`}>
+                  <div
+                    className={`text-xs px-1.5 ${isSelected ? "text-white/70" : "text-text-sub"}`}
+                  >
                     +{dateMeetings.length - 2}
                   </div>
                 )}

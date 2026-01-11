@@ -43,56 +43,64 @@ const mockEmployees: Employee[] = [
     id: "1",
     name: "김철수",
     email: "kim@example.com",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
     department: "마케팅",
   },
   {
     id: "2",
     name: "이영희",
     email: "lee@example.com",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
     department: "마케팅",
   },
   {
     id: "3",
     name: "박민준",
     email: "park@example.com",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
     department: "마케팅",
   },
   {
     id: "4",
     name: "정준호",
     email: "jung@example.com",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
     department: "제품",
   },
   {
     id: "5",
     name: "최수진",
     email: "choi@example.com",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
     department: "제품",
   },
   {
     id: "6",
     name: "임상현",
     email: "lim@example.com",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
     department: "디자인",
   },
   {
     id: "7",
     name: "한지은",
     email: "han@example.com",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
     department: "디자인",
   },
   {
     id: "8",
     name: "유혜정",
     email: "yu@example.com",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
     department: "디자인",
   },
 ];
@@ -114,7 +122,7 @@ export default function AddTeamModal({
     (emp) =>
       emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      emp.department?.toLowerCase().includes(searchQuery.toLowerCase())
+      emp.department?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleToggleMember = (employee: Employee) => {
@@ -277,7 +285,7 @@ export default function AddTeamModal({
               ) : (
                 filteredEmployees.map((employee) => {
                   const isSelected = selectedMembers.some(
-                    (m) => m.id === employee.id
+                    (m) => m.id === employee.id,
                   );
                   return (
                     <button
@@ -373,11 +381,7 @@ export default function AddTeamModal({
             >
               취소
             </Button>
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="flex-1"
-            >
+            <Button type="submit" disabled={isLoading} className="flex-1">
               {isLoading ? "생성 중..." : "팀 생성"}
             </Button>
           </div>
