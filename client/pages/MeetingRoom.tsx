@@ -34,7 +34,7 @@ export default function MeetingRoom() {
   // 게스트 정보 로드
   const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const storedGuestInfo = sessionStorage.getItem("guestInfo");
     if (storedGuestInfo) {
       setGuestInfo(JSON.parse(storedGuestInfo));
