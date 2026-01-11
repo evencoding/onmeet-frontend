@@ -265,7 +265,14 @@ export default function Sidebar({
         onClose={() => setIsAddTeamModalOpen(false)}
         onTeamAdded={(team) => {
           // Handle team added - can be extended for actual API calls
-          console.log("New team added:", team);
+          console.log("New team added:", {
+            name: team.name,
+            description: team.description,
+            color: team.color,
+            membersCount: team.members.length,
+            members: team.members,
+          });
+          // You can integrate actual API call here to save the team
         }}
       />
 
