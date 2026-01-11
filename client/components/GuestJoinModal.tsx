@@ -14,7 +14,9 @@ export default function GuestJoinModal({
 }: GuestJoinModalProps) {
   const [guestName, setGuestName] = useState("");
   const [guestDescription, setGuestDescription] = useState("");
-  const [errors, setErrors] = useState<{ name?: string; description?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; description?: string }>(
+    {},
+  );
 
   const handleValidation = () => {
     const newErrors: { name?: string; description?: string } = {};

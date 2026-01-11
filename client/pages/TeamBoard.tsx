@@ -145,7 +145,8 @@ export default function TeamBoard() {
     },
   ];
 
-  const displayTeams = selectedTeam === "all" ? teams : teams.filter(t => t.id === selectedTeam);
+  const displayTeams =
+    selectedTeam === "all" ? teams : teams.filter((t) => t.id === selectedTeam);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -179,8 +180,12 @@ export default function TeamBoard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">팀별 회의 보드</h1>
-            <p className="text-text-sub">각 팀의 회의 일정과 상태를 한눈에 확인하세요</p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              팀별 회의 보드
+            </h1>
+            <p className="text-text-sub">
+              각 팀의 회의 일정과 상태를 한눈에 확인하세요
+            </p>
           </div>
           <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-lg hover:from-brand-600 hover:to-brand-700 transition-all duration-200">
             <Plus className="w-5 h-5" />
@@ -196,7 +201,7 @@ export default function TeamBoard() {
               "px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm",
               selectedTeam === "all"
                 ? "bg-brand-500 text-white shadow-lg"
-                : "bg-white/60 text-foreground hover:bg-white border border-border/20"
+                : "bg-white/60 text-foreground hover:bg-white border border-border/20",
             )}
           >
             모든 팀
@@ -209,7 +214,7 @@ export default function TeamBoard() {
                 "px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm flex items-center gap-2",
                 selectedTeam === team.id
                   ? "bg-brand-500 text-white shadow-lg"
-                  : "bg-white/60 text-foreground hover:bg-white border border-border/20"
+                  : "bg-white/60 text-foreground hover:bg-white border border-border/20",
               )}
             >
               <div className={cn("w-2.5 h-2.5 rounded-full", team.color)} />
@@ -225,7 +230,9 @@ export default function TeamBoard() {
               {/* Team Header */}
               <div className="flex items-center gap-3 mb-6">
                 <div className={cn("w-4 h-4 rounded-full", team.color)} />
-                <h2 className="text-2xl font-bold text-foreground">{team.name}</h2>
+                <h2 className="text-2xl font-bold text-foreground">
+                  {team.name}
+                </h2>
                 <span className="px-2.5 py-1 bg-surface-subtle text-text-sub text-xs font-semibold rounded-full">
                   {team.meetings.length}개 회의
                 </span>
@@ -248,7 +255,7 @@ export default function TeamBoard() {
                           <span
                             className={cn(
                               "px-2.5 py-1 text-xs font-semibold rounded-full whitespace-nowrap",
-                              getStatusBadge(meeting.status)
+                              getStatusBadge(meeting.status),
                             )}
                           >
                             {getStatusLabel(meeting.status)}
@@ -256,7 +263,9 @@ export default function TeamBoard() {
                         </div>
 
                         {/* Description */}
-                        <p className="text-sm text-text-sub mb-4">{meeting.description}</p>
+                        <p className="text-sm text-text-sub mb-4">
+                          {meeting.description}
+                        </p>
 
                         {/* Meeting Info Grid */}
                         <div className="grid grid-cols-3 gap-4 mb-4 pb-4 border-t border-border/20 pt-4">
@@ -264,7 +273,9 @@ export default function TeamBoard() {
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-brand-500 flex-shrink-0" />
                             <div>
-                              <p className="text-xs text-text-sub font-medium">시작</p>
+                              <p className="text-xs text-text-sub font-medium">
+                                시작
+                              </p>
                               <p className="text-sm font-semibold text-foreground">
                                 {meeting.startTime}
                               </p>
@@ -276,7 +287,9 @@ export default function TeamBoard() {
                             <div className="flex items-center gap-2">
                               <Clock className="w-4 h-4 text-brand-500 flex-shrink-0" />
                               <div>
-                                <p className="text-xs text-text-sub font-medium">종료</p>
+                                <p className="text-xs text-text-sub font-medium">
+                                  종료
+                                </p>
                                 <p className="text-sm font-semibold text-foreground">
                                   {meeting.endTime}
                                 </p>
@@ -288,7 +301,9 @@ export default function TeamBoard() {
                           <div className="flex items-center gap-2">
                             <Users className="w-4 h-4 text-brand-500 flex-shrink-0" />
                             <div>
-                              <p className="text-xs text-text-sub font-medium">참석자</p>
+                              <p className="text-xs text-text-sub font-medium">
+                                참석자
+                              </p>
                               <p className="text-sm font-semibold text-foreground">
                                 {meeting.attendeesCount}명
                               </p>
@@ -298,7 +313,10 @@ export default function TeamBoard() {
 
                         {/* Host Info */}
                         <div className="text-xs text-text-sub">
-                          주최자: <span className="font-semibold text-foreground">{meeting.hostName}</span>
+                          주최자:{" "}
+                          <span className="font-semibold text-foreground">
+                            {meeting.hostName}
+                          </span>
                         </div>
                       </div>
 

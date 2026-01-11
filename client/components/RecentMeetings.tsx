@@ -45,11 +45,13 @@ export default function RecentMeetings() {
       participants: [
         {
           name: "김철수",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
         },
         {
           name: "이영희",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
         },
       ],
       department: "Design",
@@ -58,16 +60,19 @@ export default function RecentMeetings() {
       id: "2",
       title: "Chuyên Viên Kiểm Thử (Tester)",
       status: "closed",
-      description: "Lập kế hoạch test và kịch bản test, chuẩn bị độ liễu test; Test các dự án phần mềm, phối hợp với các bộ phận khác của công ty để đảm bảo chất lượng dự án;...",
+      description:
+        "Lập kế hoạch test và kịch bản test, chuẩn bị độ liễu test; Test các dự án phần mềm, phối hợp với các bộ phận khác của công ty để đảm bảo chất lượng dự án;...",
       participantCount: 100,
       participants: [
         {
           name: "박민준",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
         },
         {
           name: "정호준",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
         },
       ],
       department: "QA",
@@ -76,16 +81,19 @@ export default function RecentMeetings() {
       id: "3",
       title: "AI Engineer",
       status: "active",
-      description: "Thâm gia phát triển các sản phẩm công ty, xuyên suốt quá trình phân tích, thiết kế chức năng, coding...; Cự thể là code trang này, và các trang con của chúng: Thu Viên PapLLuat NhanLucNganluai LawNet",
+      description:
+        "Thâm gia phát triển các sản phẩm công ty, xuyên suốt quá trình phân tích, thiết kế chức năng, coding...; Cự thể là code trang này, và các trang con của chúng: Thu Viên PapLLuat NhanLucNganluai LawNet",
       participantCount: 60,
       participants: [
         {
           name: "조예성",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
         },
         {
           name: "민주",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
         },
       ],
       department: "Development",
@@ -94,16 +102,19 @@ export default function RecentMeetings() {
       id: "4",
       title: "Front end",
       status: "active",
-      description: "Phối hợp chặt chẽ với các nhóm thiết kế, quản lý sản phẩm và phát triển để tạo ra các giao diện trang nhà, có thể sử dụng, đẩp ứng và tương tác trên nhiều thiết bị. Biên các thiết kế UI / UX thành các nguyên mẫu, tạo ra các tương tác tuyệt vời từ cả...",
+      description:
+        "Phối hợp chặt chẽ với các nhóm thiết kế, quản lý sản phẩm và phát triển để tạo ra các giao diện trang nhà, có thể sử dụng, đẩp ứng và tương tác trên nhiều thiết bị. Biên các thiết kế UI / UX thành các nguyên mẫu, tạo ra các tương tác tuyệt vời từ cả...",
       participantCount: 10,
       participants: [
         {
           name: "김철수",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
         },
         {
           name: "이영희",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
         },
       ],
       department: "Frontend",
@@ -114,7 +125,8 @@ export default function RecentMeetings() {
     (meeting) =>
       meeting.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       meeting.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (meeting.department?.toLowerCase().includes(searchQuery.toLowerCase()) || false)
+      meeting.department?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      false,
   );
 
   return (
@@ -156,7 +168,9 @@ export default function RecentMeetings() {
         <div className="text-center py-12 bg-white/30 rounded-2xl border border-border/20">
           <Search className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-text-sub mb-1">검색 결과가 없습니다</p>
-          <p className="text-xs text-muted-foreground">다른 키워드로 다시 시도해보세요</p>
+          <p className="text-xs text-muted-foreground">
+            다른 키워드로 다시 시도해보세요
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -175,7 +189,7 @@ export default function RecentMeetings() {
                     <span
                       className={cn(
                         "px-2.5 py-1 text-xs font-semibold rounded-full whitespace-nowrap",
-                        statusConfig[meeting.status].className
+                        statusConfig[meeting.status].className,
                       )}
                     >
                       {statusConfig[meeting.status].label}

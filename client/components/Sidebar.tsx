@@ -1,4 +1,17 @@
-import { Calendar, FileText, ClipboardList, Clock, LayoutGrid, Plus, MoreVertical, Search, Menu, LogOut, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Calendar,
+  FileText,
+  ClipboardList,
+  Clock,
+  LayoutGrid,
+  Plus,
+  MoreVertical,
+  Search,
+  Menu,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +40,11 @@ interface SidebarProps {
   onTeamSelect?: (teamId: string) => void;
 }
 
-export default function Sidebar({ isCollapsed = false, onToggleCollapse, onTeamSelect }: SidebarProps) {
+export default function Sidebar({
+  isCollapsed = false,
+  onToggleCollapse,
+  onTeamSelect,
+}: SidebarProps) {
   const navigate = useNavigate();
   const [selectedTeamId, setSelectedTeamId] = useState<string>("marketing");
 
@@ -85,12 +102,19 @@ export default function Sidebar({ isCollapsed = false, onToggleCollapse, onTeamS
   ];
 
   return (
-    <div className={cn(
-      "bg-gradient-to-b from-bg-DEFAULT via-white/40 to-bg-DEFAULT border-r border-border/30 flex flex-col h-screen transition-all duration-300",
-      isCollapsed ? "w-20" : "w-72"
-    )}>
+    <div
+      className={cn(
+        "bg-gradient-to-b from-bg-DEFAULT via-white/40 to-bg-DEFAULT border-r border-border/30 flex flex-col h-screen transition-all duration-300",
+        isCollapsed ? "w-20" : "w-72",
+      )}
+    >
       {/* Header */}
-      <div className={cn("border-b border-border/30 bg-white/50 flex flex-col items-center justify-between", isCollapsed ? "px-2 py-4" : "px-6 py-5")}>
+      <div
+        className={cn(
+          "border-b border-border/30 bg-white/50 flex flex-col items-center justify-between",
+          isCollapsed ? "px-2 py-4" : "px-6 py-5",
+        )}
+      >
         <div className="flex items-center justify-between w-full">
           {!isCollapsed && (
             <div className="flex items-center gap-2">
@@ -159,22 +183,26 @@ export default function Sidebar({ isCollapsed = false, onToggleCollapse, onTeamS
               }}
               className={cn(
                 "w-full flex items-center rounded-xl transition-all duration-200 group",
-                isCollapsed ? "justify-center p-3" : "justify-between px-4 py-3",
+                isCollapsed
+                  ? "justify-center p-3"
+                  : "justify-between px-4 py-3",
                 item.isActive
                   ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
-                  : "text-foreground hover:bg-white/40"
+                  : "text-foreground hover:bg-white/40",
               )}
             >
               <div className="flex items-center gap-3">
                 <div
                   className={cn(
                     "flex-shrink-0",
-                    item.isActive ? "text-primary" : "text-muted-foreground"
+                    item.isActive ? "text-primary" : "text-muted-foreground",
                   )}
                 >
                   {item.icon}
                 </div>
-                {!isCollapsed && <span className="text-sm font-medium">{item.label}</span>}
+                {!isCollapsed && (
+                  <span className="text-sm font-medium">{item.label}</span>
+                )}
               </div>
               {!isCollapsed && (
                 <div className="flex items-center gap-2">
@@ -218,14 +246,21 @@ export default function Sidebar({ isCollapsed = false, onToggleCollapse, onTeamS
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
                   selectedTeamId === team.id
                     ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
-                    : "text-foreground hover:bg-white/40"
+                    : "text-foreground hover:bg-white/40",
                 )}
                 title={`${team.name} 팀 선택`}
               >
-                <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white", team.color)}>
+                <div
+                  className={cn(
+                    "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white",
+                    team.color,
+                  )}
+                >
                   {selectedTeamId === team.id ? "✓" : team.icon}
                 </div>
-                <span className="text-sm font-medium flex-1 text-left">{team.name}</span>
+                <span className="text-sm font-medium flex-1 text-left">
+                  {team.name}
+                </span>
                 <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
               </button>
             ))}
@@ -239,7 +274,12 @@ export default function Sidebar({ isCollapsed = false, onToggleCollapse, onTeamS
       )}
 
       {/* User Profile */}
-      <div className={cn("border-t border-border/30 bg-white/30", isCollapsed ? "px-2 py-4" : "px-3 py-4")}>
+      <div
+        className={cn(
+          "border-t border-border/30 bg-white/30",
+          isCollapsed ? "px-2 py-4" : "px-3 py-4",
+        )}
+      >
         <UserProfile isCollapsed={isCollapsed} />
       </div>
     </div>
@@ -256,7 +296,9 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
         onClick={() => navigate("/login")}
         className={cn(
           "bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-200",
-          isCollapsed ? "w-10 h-10 p-2 flex items-center justify-center" : "w-full px-4 py-3"
+          isCollapsed
+            ? "w-10 h-10 p-2 flex items-center justify-center"
+            : "w-full px-4 py-3",
         )}
         title={isCollapsed ? "로그인" : ""}
       >

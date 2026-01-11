@@ -20,80 +20,95 @@ export default function OngoingMeetings() {
     {
       id: "1",
       hostName: "Ahsan Khan",
-      hostAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop",
+      hostAvatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop",
       time: "10:30 AM",
       attendeesCount: 5,
       attendees: [
         {
           name: "User 1",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
         },
         {
           name: "User 2",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
         },
         {
           name: "User 3",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
         },
       ],
     },
     {
       id: "2",
       hostName: "Viren Gupta",
-      hostAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop",
+      hostAvatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop",
       time: "11:00 AM",
       attendeesCount: 8,
       attendees: [
         {
           name: "User 1",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
         },
         {
           name: "User 2",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
         },
         {
           name: "User 3",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
         },
       ],
     },
     {
       id: "3",
       hostName: "Ahsan Khan",
-      hostAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop",
+      hostAvatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop",
       time: "11:45 AM",
       attendeesCount: 3,
       attendees: [
         {
           name: "User 1",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
         },
         {
           name: "User 2",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
         },
       ],
     },
     {
       id: "4",
       hostName: "Viren Gupta",
-      hostAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop",
+      hostAvatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop",
       time: "2:00 PM",
       attendeesCount: 6,
       attendees: [
         {
           name: "User 1",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
         },
         {
           name: "User 2",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
         },
         {
           name: "User 3",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
         },
       ],
     },
@@ -133,7 +148,9 @@ export default function OngoingMeetings() {
                   <h3 className="text-base font-bold text-foreground">
                     {meeting.hostName}
                   </h3>
-                  <p className="text-xs text-text-sub font-medium">{meeting.time}</p>
+                  <p className="text-xs text-text-sub font-medium">
+                    {meeting.time}
+                  </p>
                 </div>
               </div>
 
@@ -141,7 +158,9 @@ export default function OngoingMeetings() {
               <div className="space-y-3 mb-6 pb-6 border-t border-border/30 pt-4">
                 <div className="flex justify-between text-xs">
                   <span className="text-text-sub font-medium">참석자</span>
-                  <span className="font-semibold text-foreground">{meeting.attendeesCount}명</span>
+                  <span className="font-semibold text-foreground">
+                    {meeting.attendeesCount}명
+                  </span>
                 </div>
               </div>
 

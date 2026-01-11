@@ -23,49 +23,57 @@ const defaultTeamMembers: TeamMember[] = [
   {
     id: "1",
     name: "Akbar Husain",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
     email: "akbar@example.com",
   },
   {
     id: "2",
     name: "Ameesh Menon",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
     email: "ameesh@example.com",
   },
   {
     id: "3",
     name: "Jonathan Sasi",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
     email: "jonathan@example.com",
   },
   {
     id: "4",
     name: "Riska Thakur",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
     email: "riska@example.com",
   },
   {
     id: "5",
     name: "Natalia",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
     email: "natalia@example.com",
   },
   {
     id: "6",
     name: "Aila Thakur",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
     email: "aila@example.com",
   },
   {
     id: "7",
     name: "김철수",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
     email: "kim@example.com",
   },
   {
     id: "8",
     name: "이영희",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
     email: "lee@example.com",
   },
 ];
@@ -97,20 +105,20 @@ export default function InviteParticipantModal({
     (member) =>
       !alreadyInvited.includes(member.id) &&
       (member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        member.email.toLowerCase().includes(searchTerm.toLowerCase()))
+        member.email.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   const handleSelectMember = (memberId: string) => {
     setSelectedMembers((prev) =>
       prev.includes(memberId)
         ? prev.filter((id) => id !== memberId)
-        : [...prev, memberId]
+        : [...prev, memberId],
     );
   };
 
   const handleInvite = () => {
     const membersToInvite = teamMembers.filter((member) =>
-      selectedMembers.includes(member.id)
+      selectedMembers.includes(member.id),
     );
     onInvite(membersToInvite);
     setSelectedMembers([]);
@@ -160,7 +168,7 @@ export default function InviteParticipantModal({
               "flex-1 py-3 text-sm font-semibold transition-all relative",
               activeTab === "team"
                 ? "text-brand-500"
-                : "text-text-sub hover:text-foreground"
+                : "text-text-sub hover:text-foreground",
             )}
           >
             팀원 초대
@@ -174,7 +182,7 @@ export default function InviteParticipantModal({
               "flex-1 py-3 text-sm font-semibold transition-all relative",
               activeTab === "guest"
                 ? "text-brand-500"
-                : "text-text-sub hover:text-foreground"
+                : "text-text-sub hover:text-foreground",
             )}
           >
             게스트 초대
@@ -212,7 +220,7 @@ export default function InviteParticipantModal({
                       "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
                       selectedMembers.includes(member.id)
                         ? "bg-brand-50 border border-brand-200"
-                        : "hover:bg-gray-50 border border-transparent"
+                        : "hover:bg-gray-50 border border-transparent",
                     )}
                   >
                     {/* Avatar */}
@@ -238,7 +246,7 @@ export default function InviteParticipantModal({
                         "w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all",
                         selectedMembers.includes(member.id)
                           ? "bg-brand-500 border-brand-500"
-                          : "border-border/40 group-hover:border-brand-300"
+                          : "border-border/40 group-hover:border-brand-300",
                       )}
                     >
                       {selectedMembers.includes(member.id) && (
@@ -283,7 +291,8 @@ export default function InviteParticipantModal({
                   게스트 초대 링크
                 </h3>
                 <p className="text-xs text-text-sub leading-relaxed">
-                  아래 링크를 게스트와 공유하면 게스트 계정으로 회의에 참석할 수 있습니다.
+                  아래 링크를 게스트와 공유하면 게스트 계정으로 회의에 참석할 수
+                  있습니다.
                 </p>
               </div>
 
@@ -307,7 +316,7 @@ export default function InviteParticipantModal({
                       "p-2 rounded transition-all duration-200 ml-2 flex-shrink-0",
                       copied
                         ? "bg-brand-50 text-brand-600"
-                        : "hover:bg-gray-100 text-muted-foreground"
+                        : "hover:bg-gray-100 text-muted-foreground",
                     )}
                   >
                     <Copy className="w-4 h-4" />

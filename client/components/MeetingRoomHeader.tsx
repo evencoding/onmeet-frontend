@@ -7,7 +7,12 @@ interface MeetingRoomHeaderProps {
   isGuest?: boolean;
 }
 
-export default function MeetingRoomHeader({ title, onInvite, onToggleParticipants, isGuest = false }: MeetingRoomHeaderProps) {
+export default function MeetingRoomHeader({
+  title,
+  onInvite,
+  onToggleParticipants,
+  isGuest = false,
+}: MeetingRoomHeaderProps) {
   return (
     <div className="flex items-center justify-between px-6 py-4 border-b border-border/30 bg-white/40 backdrop-blur-md">
       <h1 className="text-lg font-bold text-foreground">{title}</h1>

@@ -23,7 +23,9 @@ interface Meeting {
 
 export default function Summary() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedMeetingId, setExpandedMeetingId] = useState<string | null>(null);
+  const [expandedMeetingId, setExpandedMeetingId] = useState<string | null>(
+    null,
+  );
 
   // Sample meetings data with summaries
   const allMeetings: Meeting[] = [
@@ -36,11 +38,24 @@ export default function Summary() {
       location: "회의실 A",
       participants: 5,
       description: "매주 월요일 정기 스탠드업 미팅",
-      summary: "팀의 주간 진행 상황과 계획을 공유하는 회의였습니다. 각 팀원의 현재 진행 중인 업무와 다가오는 작업을 논의했습니다.",
-      key_points: ["프로젝트 진도율 90% 달성", "신규 기능 개발 시작", "버그 수정 완료"],
+      summary:
+        "팀의 주간 진행 상황과 계획을 공유하는 회의였습니다. 각 팀원의 현재 진행 중인 업무와 다가오는 작업을 논의했습니다.",
+      key_points: [
+        "프로젝트 진도율 90% 달성",
+        "신규 기능 개발 시작",
+        "버그 수정 완료",
+      ],
       attendees: [
-        { name: "Akbar", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
-        { name: "Riska", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
+        {
+          name: "Akbar",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+        },
+        {
+          name: "Riska",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+        },
       ],
     },
     {
@@ -52,11 +67,24 @@ export default function Summary() {
       location: "온라인",
       participants: 8,
       description: "Q1 프로젝트 진행 상황 리뷰",
-      summary: "Q1 분기 프로젝트의 진행 상황을 점검하고 향후 계획을 수립한 회의입니다. 목표 달성도와 리스크 요소를 분석했습니다.",
-      key_points: ["목표 달성도 85%", "리스크 3개 식별", "다음 분기 계획 수립 완료"],
+      summary:
+        "Q1 분기 프로젝트의 진행 상황을 점검하고 향후 계획을 수립한 회의입니다. 목표 달성도와 리스크 요소를 분석했습니다.",
+      key_points: [
+        "목표 달성도 85%",
+        "리스크 3개 식별",
+        "다음 분기 계획 수립 완료",
+      ],
       attendees: [
-        { name: "Ameesh", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
-        { name: "Jonathan", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+        {
+          name: "Ameesh",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+        },
+        {
+          name: "Jonathan",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+        },
       ],
     },
     {
@@ -68,10 +96,19 @@ export default function Summary() {
       location: "회의실 B",
       participants: 4,
       description: "신규 UI 디자인 피드백 세션",
-      summary: "신규 UI 디자인안에 대한 팀의 피드백과 개선사항을 논의한 회의입니다. 사용자 경험 개선에 집중했습니다.",
-      key_points: ["UI 개선안 5개 제안", "사용성 테스트 일정 확정", "다음 주 리뷰 예정"],
+      summary:
+        "신규 UI 디자인안에 대한 팀의 피드백과 개선사항을 논의한 회의입니다. 사용자 경험 개선에 집중했습니다.",
+      key_points: [
+        "UI 개선안 5개 제안",
+        "사용성 테스트 일정 확정",
+        "다음 주 리뷰 예정",
+      ],
       attendees: [
-        { name: "Natalia", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+        {
+          name: "Natalia",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+        },
       ],
     },
     {
@@ -83,10 +120,19 @@ export default function Summary() {
       location: "온라인",
       participants: 6,
       description: "월간 클라이언트 진행 상황 보고",
-      summary: "클라이언트와의 월간 진행 상황 보고 회의입니다. 프로젝트 진행 상황을 설명하고 피드백을 받았습니다.",
-      key_points: ["프로젝트 진도 100% 달성", "클라이언트 만족도 95%", "계약 갱신 확정"],
+      summary:
+        "클라이언트와의 월간 진행 상황 보고 회의입니다. 프로젝트 진행 상황을 설명하고 피드백을 받았습니다.",
+      key_points: [
+        "프로젝트 진도 100% 달성",
+        "클라이언트 만족도 95%",
+        "계약 갱신 확정",
+      ],
       attendees: [
-        { name: "Aila", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
+        {
+          name: "Aila",
+          avatar:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+        },
       ],
     },
     {
@@ -98,10 +144,19 @@ export default function Summary() {
       location: "회의실 C",
       participants: 2,
       description: "월간 성과 평가 및 피드백",
-      summary: "팀원과의 월간 1:1 미팅으로 성과를 평가하고 향후 계획을 논의했습니다.",
-      key_points: ["월간 목표 100% 달성", "OKR 다음 월 설정", "경력 개발 계획 수립"],
+      summary:
+        "팀원과의 월간 1:1 미팅으로 성과를 평가하고 향후 계획을 논의했습니다.",
+      key_points: [
+        "월간 목표 100% 달성",
+        "OKR 다음 월 설정",
+        "경력 개발 계획 수립",
+      ],
       attendees: [
-        { name: "Manager", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+        {
+          name: "Manager",
+          avatar:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+        },
       ],
     },
   ];
@@ -110,10 +165,10 @@ export default function Summary() {
     (meeting) =>
       meeting.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       meeting.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      meeting.summary?.toLowerCase().includes(searchQuery.toLowerCase())
+      meeting.summary?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const expandedMeeting = allMeetings.find(m => m.id === expandedMeetingId);
+  const expandedMeeting = allMeetings.find((m) => m.id === expandedMeetingId);
 
   // Render simplified card (for non-expanded meetings)
   const renderSimpleCard = (meeting: Meeting) => (
@@ -156,29 +211,49 @@ export default function Summary() {
       {/* Meeting Details Grid */}
       <div className="grid grid-cols-2 gap-6 pb-6 border-b border-border/20">
         <div>
-          <p className="text-xs text-text-sub font-semibold uppercase mb-2">회의 날짜</p>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">
+            회의 날짜
+          </p>
           <p className="text-lg font-semibold text-foreground">
             {format(meeting.date, "yyyy년 MMM dd, yyyy", { locale: ko })}
           </p>
         </div>
         <div>
-          <p className="text-xs text-text-sub font-semibold uppercase mb-2">시간</p>
-          <p className="text-lg font-semibold text-foreground">{meeting.time}</p>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">
+            시간
+          </p>
+          <p className="text-lg font-semibold text-foreground">
+            {meeting.time}
+          </p>
         </div>
         <div>
-          <p className="text-xs text-text-sub font-semibold uppercase mb-2">소요 시간</p>
-          <p className="text-lg font-semibold text-foreground">{meeting.duration}</p>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">
+            소요 시간
+          </p>
+          <p className="text-lg font-semibold text-foreground">
+            {meeting.duration}
+          </p>
         </div>
         <div>
-          <p className="text-xs text-text-sub font-semibold uppercase mb-2">장소</p>
-          <p className="text-lg font-semibold text-foreground">{meeting.location}</p>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">
+            장소
+          </p>
+          <p className="text-lg font-semibold text-foreground">
+            {meeting.location}
+          </p>
         </div>
         <div>
-          <p className="text-xs text-text-sub font-semibold uppercase mb-2">참석자</p>
-          <p className="text-lg font-semibold text-foreground">{meeting.participants}명</p>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">
+            참석자
+          </p>
+          <p className="text-lg font-semibold text-foreground">
+            {meeting.participants}명
+          </p>
         </div>
         <div>
-          <p className="text-xs text-text-sub font-semibold uppercase mb-2">상태</p>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">
+            상태
+          </p>
           <span className="inline-block px-3 py-1 bg-brand-50 text-brand-600 text-sm font-semibold rounded-full">
             완료
           </span>
@@ -198,14 +273,18 @@ export default function Summary() {
       {/* Key Points */}
       {meeting.key_points && meeting.key_points.length > 0 && (
         <div>
-          <h3 className="text-lg font-bold text-foreground mb-3">주요 포인트</h3>
+          <h3 className="text-lg font-bold text-foreground mb-3">
+            주요 포인트
+          </h3>
           <div className="space-y-2">
             {meeting.key_points.map((point, idx) => (
               <div
                 key={idx}
                 className="flex gap-3 p-3 bg-brand-50/50 border border-brand-100 rounded-lg"
               >
-                <span className="text-brand-500 font-bold flex-shrink-0">•</span>
+                <span className="text-brand-500 font-bold flex-shrink-0">
+                  •
+                </span>
                 <span className="text-foreground">{point}</span>
               </div>
             ))}
@@ -227,7 +306,9 @@ export default function Summary() {
                 alt={attendee.name}
                 className="w-8 h-8 rounded-full"
               />
-              <span className="text-sm font-medium text-foreground">{attendee.name}</span>
+              <span className="text-sm font-medium text-foreground">
+                {attendee.name}
+              </span>
             </div>
           ))}
         </div>
@@ -297,11 +378,18 @@ export default function Summary() {
                     {/* Key Points Preview */}
                     {meeting.key_points && meeting.key_points.length > 0 && (
                       <div className="mb-4">
-                        <p className="text-xs font-semibold text-brand-600 mb-2">주요 포인트</p>
+                        <p className="text-xs font-semibold text-brand-600 mb-2">
+                          주요 포인트
+                        </p>
                         <div className="space-y-1">
                           {meeting.key_points.slice(0, 2).map((point, idx) => (
-                            <p key={idx} className="text-xs text-text-sub flex items-start gap-2">
-                              <span className="text-brand-500 flex-shrink-0">•</span>
+                            <p
+                              key={idx}
+                              className="text-xs text-text-sub flex items-start gap-2"
+                            >
+                              <span className="text-brand-500 flex-shrink-0">
+                                •
+                              </span>
                               <span className="line-clamp-1">{point}</span>
                             </p>
                           ))}

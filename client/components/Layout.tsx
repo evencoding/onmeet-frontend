@@ -11,7 +11,11 @@ interface LayoutProps {
   showRecentPanel?: boolean;
 }
 
-export default function Layout({ children, showAIPanel = false, showRecentPanel = false }: LayoutProps) {
+export default function Layout({
+  children,
+  showAIPanel = false,
+  showRecentPanel = false,
+}: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<string>("marketing");
 
@@ -28,10 +32,7 @@ export default function Layout({ children, showAIPanel = false, showRecentPanel 
           className="fixed inset-0 bg-black/50 md:hidden z-40"
           onClick={() => setSidebarOpen(false)}
         >
-          <div
-            className="w-72 h-screen"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="w-72 h-screen" onClick={(e) => e.stopPropagation()}>
             <Sidebar onTeamSelect={setSelectedTeamId} />
           </div>
         </div>
@@ -45,9 +46,7 @@ export default function Layout({ children, showAIPanel = false, showRecentPanel 
         {/* Content area with right panel */}
         <div className="flex-1 overflow-hidden flex">
           {/* Left content */}
-          <div className="flex-1 overflow-y-auto px-6 py-6">
-            {children}
-          </div>
+          <div className="flex-1 overflow-y-auto px-6 py-6">{children}</div>
 
           {/* Right panel - AI Meeting Search or Recent Meetings */}
           {showAIPanel && (
@@ -59,7 +58,9 @@ export default function Layout({ children, showAIPanel = false, showRecentPanel 
           {showRecentPanel && (
             <div className="hidden lg:flex lg:w-96 border-l border-border/30 bg-white/40 backdrop-blur-md flex-col overflow-hidden">
               <div className="px-6 py-4 border-b border-border/30 bg-white/50">
-                <h2 className="text-lg font-bold text-foreground">최근 회의 기록</h2>
+                <h2 className="text-lg font-bold text-foreground">
+                  최근 회의 기록
+                </h2>
                 <p className="text-xs text-text-sub mt-1">최근에 열린 회의들</p>
               </div>
               <div className="flex-1 overflow-y-auto">
