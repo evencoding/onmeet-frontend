@@ -109,13 +109,13 @@ export default function AIMeetingSearch() {
   return (
     <div className="w-80 border-l border-border/30 bg-white/40 backdrop-blur-md flex flex-col">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-border">
-        <h2 className="text-sm font-semibold text-foreground mb-3">AI로 찾는 회의들</h2>
+      <div className="px-6 py-5 border-b border-border/30">
+        <h2 className="text-sm font-semibold bg-gradient-to-r from-foreground to-text-sub bg-clip-text text-transparent mb-3">AI로 찾는 회의들</h2>
         <div className="relative">
           <input
             type="text"
             placeholder="Search"
-            className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-secondary text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full px-3 py-2.5 text-sm border border-border/50 rounded-lg bg-white/50 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 transition-all"
           />
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         </div>
