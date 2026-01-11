@@ -1,4 +1,8 @@
-export default function IntroCard() {
+interface IntroCardProps {
+  onCreateMeeting?: () => void;
+}
+
+export default function IntroCard({ onCreateMeeting }: IntroCardProps) {
   return (
     <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 backdrop-blur-sm group overflow-hidden relative">
       {/* Subtle gradient overlay */}
@@ -11,7 +15,9 @@ export default function IntroCard() {
         <p className="text-base text-text-sub mb-8 font-medium">기록은 AI가</p>
 
         <div className="flex gap-3">
-          <button className="flex-1 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 uppercase letter-spacing-wider">
+          <button
+            onClick={onCreateMeeting}
+            className="flex-1 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 uppercase letter-spacing-wider">
             회의 생성하기
           </button>
           <button className="flex-1 px-6 py-3 border border-border/60 bg-white/70 text-foreground text-sm font-semibold rounded-xl hover:bg-white hover:border-border hover:shadow-md transition-all duration-300 uppercase letter-spacing-wider">
