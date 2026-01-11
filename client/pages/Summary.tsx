@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
-import MeetingDetailPanel from "@/components/MeetingDetailPanel";
-import { Clock, MapPin, Users, Search } from "lucide-react";
+import { Clock, MapPin, Users, Search, X, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -24,7 +23,7 @@ interface Meeting {
 
 export default function Summary() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
+  const [expandedMeetingId, setExpandedMeetingId] = useState<string | null>(null);
 
   // Sample meetings data with summaries
   const allMeetings: Meeting[] = [
@@ -114,118 +113,226 @@ export default function Summary() {
       meeting.summary?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  return (
-    <Layout>
-      <div className="max-w-4xl space-y-6">
-        {/* Header */}
+  const expandedMeeting = allMeetings.find(m => m.id === expandedMeetingId);
+
+  // Render simplified card (for non-expanded meetings)
+  const renderSimpleCard = (meeting: Meeting) => (
+    <div className="text-left">
+      <h3 className="text-lg font-bold text-foreground mb-2">
+        {meeting.title}
+      </h3>
+      <div className="flex flex-wrap gap-3 text-sm text-text-sub mb-3">
+        <div className="flex items-center gap-1">
+          <Clock className="w-4 h-4 text-brand-500" />
+          {format(meeting.date, "MMM dd, yyyy", { locale: ko })} {meeting.time}
+        </div>
+        <div className="flex items-center gap-1">
+          <MapPin className="w-4 h-4 text-brand-500" />
+          {meeting.location}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Render expanded card (for selected meeting)
+  const renderExpandedCard = (meeting: Meeting) => (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">요약본</h1>
-          <p className="text-text-sub">지난 회의 내용을 확인하세요</p>
+          <h2 className="text-3xl font-bold text-foreground mb-3">
+            {meeting.title}
+          </h2>
+          <p className="text-text-sub">{meeting.description}</p>
         </div>
+        <button
+          onClick={() => setExpandedMeetingId(null)}
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <X className="w-5 h-5 text-muted-foreground" />
+        </button>
+      </div>
 
-        {/* Search */}
-        <div className="relative">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="회의 제목이나 내용으로 검색..."
-            className="w-full px-4 py-3 pl-12 border border-border/50 rounded-xl bg-white/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all duration-200 text-foreground placeholder-text-sub"
-          />
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+      {/* Meeting Details Grid */}
+      <div className="grid grid-cols-2 gap-6 pb-6 border-b border-border/20">
+        <div>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">회의 날짜</p>
+          <p className="text-lg font-semibold text-foreground">
+            {format(meeting.date, "yyyy년 MMM dd, yyyy", { locale: ko })}
+          </p>
         </div>
+        <div>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">시간</p>
+          <p className="text-lg font-semibold text-foreground">{meeting.time}</p>
+        </div>
+        <div>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">소요 시간</p>
+          <p className="text-lg font-semibold text-foreground">{meeting.duration}</p>
+        </div>
+        <div>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">장소</p>
+          <p className="text-lg font-semibold text-foreground">{meeting.location}</p>
+        </div>
+        <div>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">참석자</p>
+          <p className="text-lg font-semibold text-foreground">{meeting.participants}명</p>
+        </div>
+        <div>
+          <p className="text-xs text-text-sub font-semibold uppercase mb-2">상태</p>
+          <span className="inline-block px-3 py-1 bg-brand-50 text-brand-600 text-sm font-semibold rounded-full">
+            완료
+          </span>
+        </div>
+      </div>
 
-        {/* Meetings List */}
-        {filteredMeetings.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-text-sub mb-2">회의 기록이 없습니다</p>
-            <p className="text-xs text-muted-foreground">
-              검색 조건을 변경하거나 다른 키워드를 시도해보세요
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredMeetings.map((meeting) => (
+      {/* Summary Section */}
+      {meeting.summary && (
+        <div>
+          <h3 className="text-lg font-bold text-foreground mb-3">회의 요약</h3>
+          <p className="text-base text-foreground leading-relaxed bg-white/50 border border-border/20 rounded-xl p-4">
+            {meeting.summary}
+          </p>
+        </div>
+      )}
+
+      {/* Key Points */}
+      {meeting.key_points && meeting.key_points.length > 0 && (
+        <div>
+          <h3 className="text-lg font-bold text-foreground mb-3">주요 포인트</h3>
+          <div className="space-y-2">
+            {meeting.key_points.map((point, idx) => (
               <div
-                key={meeting.id}
-                onClick={() => setSelectedMeeting(meeting)}
-                className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                key={idx}
+                className="flex gap-3 p-3 bg-brand-50/50 border border-brand-100 rounded-lg"
               >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-bold text-foreground mb-2">
-                      {meeting.title}
-                    </h3>
-                    <div className="flex flex-wrap gap-3 text-sm text-text-sub">
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4 text-brand-500" />
-                        {format(meeting.date, "MMM dd, yyyy", { locale: ko })} {meeting.time}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4 text-brand-500" />
-                        {meeting.location}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4 text-brand-500" />
-                        {meeting.participants}명
-                      </div>
-                    </div>
-                  </div>
-                  <span className="px-3 py-1 bg-brand-50 text-brand-600 text-xs font-semibold rounded-full">
-                    완료
-                  </span>
-                </div>
-
-                {/* Summary */}
-                {meeting.summary && (
-                  <div className="mb-4 pb-4 border-b border-border/20">
-                    <p className="text-sm text-foreground leading-relaxed">
-                      {meeting.summary}
-                    </p>
-                  </div>
-                )}
-
-                {/* Key Points */}
-                {meeting.key_points && meeting.key_points.length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-foreground mb-2">
-                      주요 포인트
-                    </h4>
-                    <ul className="space-y-1">
-                      {meeting.key_points.map((point, idx) => (
-                        <li key={idx} className="text-sm text-text-sub flex items-start gap-2">
-                          <span className="text-brand-500 mt-1">•</span>
-                          <span>{point}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Attendees */}
-                <div className="flex items-center gap-2">
-                  {meeting.attendees.map((attendee, idx) => (
-                    <img
-                      key={idx}
-                      src={attendee.avatar}
-                      alt={attendee.name}
-                      title={attendee.name}
-                      className="w-8 h-8 rounded-full border-2 border-white shadow-sm"
-                    />
-                  ))}
-                </div>
+                <span className="text-brand-500 font-bold flex-shrink-0">•</span>
+                <span className="text-foreground">{point}</span>
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Attendees */}
+      <div>
+        <h3 className="text-lg font-bold text-foreground mb-3">참석자</h3>
+        <div className="flex flex-wrap gap-3">
+          {meeting.attendees.map((attendee, idx) => (
+            <div
+              key={idx}
+              className="flex items-center gap-2 px-4 py-2 bg-white/60 border border-border/20 rounded-full"
+            >
+              <img
+                src={attendee.avatar}
+                alt={attendee.name}
+                className="w-8 h-8 rounded-full"
+              />
+              <span className="text-sm font-medium text-foreground">{attendee.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <Layout>
+      <div className="max-w-6xl space-y-6">
+        {/* Header */}
+        {!expandedMeeting && (
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">요약본</h1>
+            <p className="text-text-sub">지난 회의 내용을 확인하세요</p>
+          </div>
+        )}
+
+        {/* Search */}
+        {!expandedMeeting && (
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="회의 제목이나 내용으로 검색..."
+              className="w-full px-4 py-3 pl-12 border border-border/50 rounded-xl bg-white/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all duration-200 text-foreground placeholder-text-sub"
+            />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          </div>
+        )}
+
+        {/* Expanded View */}
+        {expandedMeeting && (
+          <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+            {renderExpandedCard(expandedMeeting)}
+          </div>
+        )}
+
+        {/* Grid View */}
+        {!expandedMeeting && (
+          <>
+            {filteredMeetings.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-text-sub mb-2">회의 기록이 없습니다</p>
+                <p className="text-xs text-muted-foreground">
+                  검색 조건을 변경하거나 다른 키워드를 시도해보세요
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-5">
+                {filteredMeetings.map((meeting) => (
+                  <button
+                    key={meeting.id}
+                    onClick={() => setExpandedMeetingId(meeting.id)}
+                    className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-left group"
+                  >
+                    {renderSimpleCard(meeting)}
+
+                    {/* Summary Preview */}
+                    {meeting.summary && (
+                      <p className="text-sm text-text-sub line-clamp-2 mb-4 group-hover:text-foreground transition-colors">
+                        {meeting.summary}
+                      </p>
+                    )}
+
+                    {/* Key Points Preview */}
+                    {meeting.key_points && meeting.key_points.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-xs font-semibold text-brand-600 mb-2">주요 포인트</p>
+                        <div className="space-y-1">
+                          {meeting.key_points.slice(0, 2).map((point, idx) => (
+                            <p key={idx} className="text-xs text-text-sub flex items-start gap-2">
+                              <span className="text-brand-500 flex-shrink-0">•</span>
+                              <span className="line-clamp-1">{point}</span>
+                            </p>
+                          ))}
+                          {meeting.key_points.length > 2 && (
+                            <p className="text-xs text-brand-500 font-medium">
+                              +{meeting.key_points.length - 2}개 더보기
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Attendees */}
+                    <div className="flex items-center gap-2">
+                      {meeting.attendees.map((attendee, idx) => (
+                        <img
+                          key={idx}
+                          src={attendee.avatar}
+                          alt={attendee.name}
+                          title={attendee.name}
+                          className="w-7 h-7 rounded-full border-2 border-white shadow-sm"
+                        />
+                      ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
-
-      {/* Meeting Detail Panel */}
-      <MeetingDetailPanel
-        meeting={selectedMeeting}
-        onClose={() => setSelectedMeeting(null)}
-      />
     </Layout>
   );
 }
