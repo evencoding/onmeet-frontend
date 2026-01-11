@@ -15,6 +15,10 @@ import TeamBoard from "./pages/TeamBoard";
 import Team from "./pages/Team";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import SignupFlow from "./pages/SignupFlow";
+import CompanySignup from "./pages/CompanySignup";
+import EmployeeSignup from "./pages/EmployeeSignup";
+import InviteMembers from "./pages/InviteMembers";
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 
