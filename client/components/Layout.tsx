@@ -6,9 +6,10 @@ import { useState } from "react";
 
 interface LayoutProps {
   children: React.ReactNode;
+  showAIPanel?: boolean;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ children, showAIPanel = false }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
