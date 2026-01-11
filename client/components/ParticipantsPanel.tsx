@@ -1,5 +1,5 @@
-import { MessageCircle, MoreVertical } from "lucide-react";
-import { useState } from "react";
+import { MessageCircle, MoreVertical, Send } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 
 interface Participant {
   id: string;
