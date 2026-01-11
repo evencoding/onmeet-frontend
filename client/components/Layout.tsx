@@ -48,10 +48,24 @@ export default function Layout({ children, showAIPanel = false, showRecentPanel 
             {children}
           </div>
 
-          {/* Right panel - AI Meeting Search */}
+          {/* Right panel - AI Meeting Search or Recent Meetings */}
           {showAIPanel && (
             <div className="hidden lg:block">
               <AIMeetingSearch />
+            </div>
+          )}
+
+          {showRecentPanel && (
+            <div className="hidden lg:flex lg:w-96 border-l border-border/30 bg-white/40 backdrop-blur-md flex-col overflow-hidden">
+              <div className="px-6 py-4 border-b border-border/30 bg-white/50">
+                <h2 className="text-lg font-bold text-foreground">최근 회의 기록</h2>
+                <p className="text-xs text-text-sub mt-1">최근에 열린 회의들</p>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                <div className="p-4">
+                  <RecentMeetings />
+                </div>
+              </div>
             </div>
           )}
         </div>
