@@ -122,11 +122,11 @@ export default function AIMeetingSearch() {
       </div>
 
       {/* Results */}
-      <div className="flex-1 overflow-y-auto divide-y divide-border">
+      <div className="flex-1 overflow-y-auto divide-y divide-border/20">
         {meetings.map((meeting) => (
           <div
             key={meeting.id}
-            className="px-4 py-4 hover:bg-secondary/50 transition-colors group"
+            className="px-4 py-5 hover:bg-white/30 transition-colors group"
           >
             <div className="flex items-start justify-between mb-2">
               <div className="flex-1">
