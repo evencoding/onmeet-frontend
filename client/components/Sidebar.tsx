@@ -28,6 +28,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isCollapsed = false, onToggleCollapse }: SidebarProps) {
   const navigate = useNavigate();
+  const [selectedTeamId, setSelectedTeamId] = useState<string>("marketing");
 
   const navItems: NavItem[] = [
     {
