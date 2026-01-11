@@ -249,64 +249,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
         </div>
       </div>
 
-      {/* Team Channels Section */}
-      <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <MessageSquare className="w-5 h-5 text-brand-500" />
-            <h2 className="text-lg font-bold text-foreground">채널</h2>
-            <span className="px-2 py-1 bg-brand-50 text-brand-600 text-xs font-semibold rounded-full">
-              {teamData.channels.length}개
-            </span>
-          </div>
-          <Button variant="outline" size="sm">
-            채널 추가
-          </Button>
-        </div>
-
-        <div className="space-y-3">
-          {teamData.channels.map((channel) => (
-            <button
-              key={channel.id}
-              className="w-full flex items-start gap-4 p-4 rounded-xl hover:bg-surface-subtle transition-all hover:shadow-sm border border-border/0 hover:border-border/20"
-            >
-              <div className="flex-shrink-0">
-                <div className="w-10 h-10 rounded-lg bg-brand-100 flex items-center justify-center">
-                  <span className="text-lg">#</span>
-                </div>
-              </div>
-              <div className="flex-1 text-left">
-                <h3 className="font-semibold text-foreground">
-                  {channel.name}
-                </h3>
-                <p className="text-sm text-text-sub">{channel.description}</p>
-              </div>
-              <div className="flex-shrink-0 text-right">
-                <p className="text-xs text-muted-foreground">
-                  {channel.memberCount}명
-                </p>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Team Contact Section */}
-      <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <Mail className="w-5 h-5 text-brand-500" />
-          <h2 className="text-lg font-bold text-foreground">팀 연락처</h2>
-        </div>
-        <div className="bg-brand-50 border border-brand-200 rounded-xl p-4">
-          <p className="text-sm text-foreground mb-2">
-            이 팀에 관한 문의사항이나 제안이 있으시면 연락주세요.
-          </p>
-          <Button className="mt-3 gap-2">
-            <Mail className="w-4 h-4" />
-            팀에 메일 보내기
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }
