@@ -96,7 +96,7 @@ export default function MeetingRoom() {
               </div>
 
               {/* Main Video Display */}
-              <div className="rounded-3xl overflow-hidden shadow-lg border border-border/30 group relative w-full h-full max-h-96">
+              <div className="rounded-3xl overflow-hidden shadow-lg border border-border/30 group relative w-full h-full">
                 <img
                   src={speakers[currentSpeaker].image}
                   alt={speakers[currentSpeaker].name}
