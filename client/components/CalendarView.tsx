@@ -86,7 +86,7 @@ export default function CalendarView({ onSelectDate, meetings = [] }: CalendarVi
             <button
               key={idx}
               onClick={() => handleSelectDate(date)}
-              className={`p-3 rounded-lg border transition-all duration-200 min-h-24 flex flex-col items-start justify-start text-left ${
+              className={`p-4 rounded-lg border transition-all duration-200 min-h-28 flex flex-col items-start justify-start text-left ${
                 isSelected
                   ? "bg-brand-500 text-white border-brand-500 shadow-lg"
                   : isCurrentMonth
