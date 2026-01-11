@@ -73,11 +73,6 @@ export default function Sidebar({
       icon: <Clock className="w-5 h-5" />,
       hasMenu: false,
     },
-    {
-      id: "board",
-      label: "팀 보드",
-      icon: <LayoutGrid className="w-5 h-5" />,
-    },
   ];
 
   const teams: Team[] = [
