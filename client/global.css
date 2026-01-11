@@ -104,7 +104,10 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: linear-gradient(135deg, hsl(260, 33%, 97%) 0%, hsl(260, 33%, 96%) 25%, hsl(270, 35%, 97%) 50%, hsl(260, 30%, 96.5%) 75%, hsl(260, 33%, 97%) 100%);
+    background-attachment: fixed;
+    background-size: 400% 400%;
   }
 
   :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
