@@ -6,8 +6,6 @@ import {
   LayoutGrid,
   Plus,
   MoreVertical,
-  Search,
-  Menu,
   LogOut,
   ChevronLeft,
   ChevronRight,
