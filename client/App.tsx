@@ -12,6 +12,7 @@ import Schedule from "./pages/Schedule";
 import Summary from "./pages/Summary";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
