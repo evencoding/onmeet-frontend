@@ -127,6 +127,7 @@ export default function MeetingRoom() {
         {/* Header */}
         <MeetingRoomHeader
           title="meeting title"
+          onInvite={() => setIsInviteModalOpen(true)}
           onToggleParticipants={() => setShowParticipants(!showParticipants)}
         />
 
