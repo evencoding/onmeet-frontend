@@ -10,12 +10,128 @@ interface Participant {
   isVideoOn?: boolean;
 }
 
+interface ChatMessage {
+  id: string;
+  sender: string;
+  avatar: string;
+  message: string;
+  timestamp: string;
+  isOwn?: boolean;
+}
+
 interface ParticipantsPanelProps {
   count?: number;
 }
 
 export default function ParticipantsPanel({ count = 5 }: ParticipantsPanelProps) {
   const [activeTab, setActiveTab] = useState<"participants" | "chat">("participants");
+  const [messageInput, setMessageInput] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: "1",
+      sender: "시용지",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      message: "Can u hear my voice",
+      timestamp: "9:04 AM",
+      isOwn: false,
+    },
+    {
+      id: "2",
+      sender: "나",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+      message: "Ok wait, 5 min",
+      timestamp: "9:05 AM",
+      isOwn: true,
+    },
+    {
+      id: "3",
+      sender: "시용지",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      message: "Can u hear my voice",
+      timestamp: "9:04 AM",
+      isOwn: false,
+    },
+    {
+      id: "4",
+      sender: "나",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+      message: "Ok wait, 5 min",
+      timestamp: "9:05 AM",
+      isOwn: true,
+    },
+    {
+      id: "5",
+      sender: "아무개",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      message: "Thanks ...",
+      timestamp: "9:04 AM",
+      isOwn: false,
+    },
+    {
+      id: "6",
+      sender: "시용지",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      message: "Can u hear my voice",
+      timestamp: "9:04 AM",
+      isOwn: false,
+    },
+    {
+      id: "7",
+      sender: "나",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+      message: "Ok wait, 5 min",
+      timestamp: "9:05 AM",
+      isOwn: true,
+    },
+    {
+      id: "8",
+      sender: "아무개",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      message: "Thanks ...",
+      timestamp: "9:04 AM",
+      isOwn: false,
+    },
+    {
+      id: "9",
+      sender: "시용지가 님이 입장했습니다",
+      avatar: "",
+      message: "",
+      timestamp: "9:04 AM",
+      isOwn: false,
+    },
+    {
+      id: "10",
+      sender: "아무개",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      message: "Hi!...",
+      timestamp: "9:04 AM",
+      isOwn: false,
+    },
+  ]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = () => {
+    if (messageInput.trim()) {
+      const newMessage: ChatMessage = {
+        id: Date.now().toString(),
+        sender: "나",
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+        message: messageInput,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        isOwn: true,
+      };
+      setMessages([...messages, newMessage]);
+      setMessageInput("");
+    }
+  };
 
   const participants: Participant[] = [
     {
