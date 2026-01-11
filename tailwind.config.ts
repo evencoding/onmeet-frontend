@@ -14,6 +14,26 @@ export default {
     },
     extend: {
       colors: {
+        brand: {
+          50: "#EDEBFF",
+          500: "#6C5CE7",
+          600: "#5A4EDC",
+          700: "#4B3FD6",
+        },
+        bg: {
+          DEFAULT: "#F6F5FA",
+          grad: "#F3F1FD",
+        },
+        surface: {
+          DEFAULT: "#FFFFFF",
+          subtle: "#FAFAFF",
+        },
+        text: {
+          title: "#1F1F2E",
+          body: "#3D3F55",
+          sub: "#6B6F85",
+          disabled: "#A1A4B8",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -38,6 +58,10 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          success: "#2ED6A3",
+          info: "#5DA9FF",
+          warning: "#FFB020",
+          danger: "#FF6B6B",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -62,6 +86,14 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        card: "0 8px 24px rgba(31, 31, 46, 0.06)",
+        hover: "0 12px 32px rgba(31, 31, 46, 0.08)",
+      },
+      backgroundImage: {
+        "hero-gradient":
+          "radial-gradient(1200px 600px at 20% 0%, rgba(108, 92, 231, 0.18) 0%, rgba(243, 241, 253, 0.9) 40%, rgba(246, 245, 250, 1) 100%)",
       },
       keyframes: {
         "accordion-down": {
