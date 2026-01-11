@@ -1,4 +1,5 @@
 import { Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Meeting {
   id: string;
@@ -13,6 +14,8 @@ interface Meeting {
 }
 
 export default function OngoingMeetings() {
+  const navigate = useNavigate();
+
   const meetings: Meeting[] = [
     {
       id: "1",
@@ -96,6 +99,10 @@ export default function OngoingMeetings() {
     },
   ];
 
+  const handleJoinMeeting = (meetingId: string) => {
+    navigate("/meeting");
+  };
+
   return (
     <div>
       <div className="flex items-center gap-3 mb-8">
@@ -156,7 +163,10 @@ export default function OngoingMeetings() {
               </div>
 
               {/* Action Button */}
-              <button className="w-full px-5 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 flex items-center justify-center gap-2 group/btn">
+              <button
+                onClick={() => handleJoinMeeting(meeting.id)}
+                className="w-full px-5 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 flex items-center justify-center gap-2 group/btn"
+              >
                 <Eye className="w-4 h-4 group-hover/btn:scale-110 transition-transform duration-200" />
                 상세 보기
               </button>
