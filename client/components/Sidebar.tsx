@@ -111,15 +111,15 @@ export default function Sidebar() {
             className={cn(
               "w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors group",
               item.isActive
-                ? "bg-accent text-accent-foreground"
-                : "text-foreground hover:bg-secondary"
+                ? "bg-secondary text-primary"
+                : "text-foreground hover:bg-secondary/50"
             )}
           >
             <div className="flex items-center gap-3">
               <div
                 className={cn(
                   "flex-shrink-0",
-                  item.isActive ? "text-accent-foreground" : "text-muted-foreground"
+                  item.isActive ? "text-primary" : "text-muted-foreground"
                 )}
               >
                 {item.icon}
