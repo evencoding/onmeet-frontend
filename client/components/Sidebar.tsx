@@ -67,8 +67,7 @@ export default function Sidebar({ isCollapsed = false, onToggleCollapse }: Sideb
       id: "marketing",
       name: "Marketing",
       color: "bg-purple-200",
-      icon: "✓",
-      hasCheckmark: true,
+      icon: "📢",
     },
     {
       id: "product",
