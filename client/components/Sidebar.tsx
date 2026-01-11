@@ -161,9 +161,6 @@ export default function Sidebar({
                   case "schedule":
                     navigate("/schedule");
                     break;
-                  case "board":
-                    navigate("/board");
-                    break;
                 }
               }}
               className={cn(
