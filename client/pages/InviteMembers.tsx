@@ -63,7 +63,10 @@ export default function InviteMembers() {
       //   emails: emails.map(e => e.email),
       // });
 
-      console.log("Invites sent:", emails.map((e) => e.email));
+      console.log(
+        "Invites sent:",
+        emails.map((e) => e.email),
+      );
       navigate("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "초대 실패");
@@ -183,9 +186,9 @@ export default function InviteMembers() {
           {/* Info Box */}
           <div className="mb-6 p-4 bg-brand-50 border border-brand-200 rounded-xl">
             <p className="text-sm text-brand-900 leading-relaxed">
-              💡 <strong>초대 방법:</strong> 각 사원의 이메일을 추가한 후 "링크 복사"를
-              눌러 초대 링크를 복사하고 공유하세요. 사원들은 초대 링크를 통해 회원가입
-              할 수 있습니다.
+              💡 <strong>초대 방법:</strong> 각 사원의 이메일을 추가한 후 "링크
+              복사"를 눌러 초대 링크를 복사하고 공유하세요. 사원들은 초대 링크를
+              통해 회원가입 할 수 있습니다.
             </p>
           </div>
 

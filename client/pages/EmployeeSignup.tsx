@@ -82,7 +82,8 @@ export default function EmployeeSignup() {
     setIsLoading(true);
 
     try {
-      const { name, email, password, confirmPassword, memberNum, role } = formData;
+      const { name, email, password, confirmPassword, memberNum, role } =
+        formData;
 
       if (!name || !password || !confirmPassword) {
         throw new Error("모든 필드를 입력해주세요");
@@ -131,9 +132,7 @@ export default function EmployeeSignup() {
             <h2 className="text-2xl font-bold text-foreground mb-1">
               계정 인증
             </h2>
-            <p className="text-text-sub mb-6">
-              회사 이메일을 입력해주세요
-            </p>
+            <p className="text-text-sub mb-6">회사 이메일을 입력해주세요</p>
 
             {error && (
               <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -210,9 +209,7 @@ export default function EmployeeSignup() {
           <h2 className="text-2xl font-bold text-foreground mb-1">
             {companyName}
           </h2>
-          <p className="text-text-sub mb-6">
-            사원 정보를 입력해주세요
-          </p>
+          <p className="text-text-sub mb-6">사원 정보를 입력해주세요</p>
 
           {error && (
             <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">

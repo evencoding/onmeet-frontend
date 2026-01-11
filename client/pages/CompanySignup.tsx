@@ -41,7 +41,9 @@ export default function CompanySignup() {
 
       // For now, just simulate success
       console.log("Company created:", { companyName, domain, email });
-      navigate("/signup/invite-members", { state: { companyId: "test-company-id" } });
+      navigate("/signup/invite-members", {
+        state: { companyId: "test-company-id" },
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "기업 가입 실패");
     } finally {
@@ -63,7 +65,9 @@ export default function CompanySignup() {
 
         {/* Form Card */}
         <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border-2 border-brand-500 rounded-3xl p-8 shadow-lg">
-          <h2 className="text-2xl font-bold text-foreground mb-1">새로운 팀 만들기</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-1">
+            새로운 팀 만들기
+          </h2>
           <p className="text-text-sub mb-6">기업 정보를 입력해주세요</p>
 
           {error && (

@@ -21,7 +21,9 @@ export default function SignupFlow() {
             <span className="text-xl font-bold">O</span>
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-2">ONMEET</h1>
-          <p className="text-text-sub text-lg">회의에만 집중하세요, 기록은 AI가</p>
+          <p className="text-text-sub text-lg">
+            회의에만 집중하세요, 기록은 AI가
+          </p>
         </div>
 
         {/* Signup Type Selection */}
@@ -52,16 +54,16 @@ export default function SignupFlow() {
               {/* Features */}
               <div className="space-y-2 mb-6 text-left">
                 <div className="flex items-center gap-2 text-sm text-foreground">
-                  <div className="w-2 h-2 rounded-full bg-brand-500" />
-                  팀 생성 및 관리
+                  <div className="w-2 h-2 rounded-full bg-brand-500" />팀 생성
+                  및 관리
                 </div>
                 <div className="flex items-center gap-2 text-sm text-foreground">
                   <div className="w-2 h-2 rounded-full bg-brand-500" />
                   사원 초대
                 </div>
                 <div className="flex items-center gap-2 text-sm text-foreground">
-                  <div className="w-2 h-2 rounded-full bg-brand-500" />
-                  팀 회의 관리
+                  <div className="w-2 h-2 rounded-full bg-brand-500" />팀 회의
+                  관리
                 </div>
               </div>
 
@@ -105,8 +107,8 @@ export default function SignupFlow() {
                   초대 링크로 가입
                 </div>
                 <div className="flex items-center gap-2 text-sm text-foreground">
-                  <div className="w-2 h-2 rounded-full bg-blue-500" />
-                  팀 회의 참여
+                  <div className="w-2 h-2 rounded-full bg-blue-500" />팀 회의
+                  참여
                 </div>
                 <div className="flex items-center gap-2 text-sm text-foreground">
                   <div className="w-2 h-2 rounded-full bg-blue-500" />

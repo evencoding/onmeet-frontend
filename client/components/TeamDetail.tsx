@@ -1,4 +1,11 @@
-import { Users, Settings, Clock, Calendar, Users2, MoreVertical } from "lucide-react";
+import {
+  Users,
+  Settings,
+  Clock,
+  Calendar,
+  Users2,
+  MoreVertical,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
