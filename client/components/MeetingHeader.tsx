@@ -15,22 +15,6 @@ export default function MeetingHeader() {
       
       <div className="flex items-center gap-2">
         <button className="p-2 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground">
-          <Search className="w-5 h-5" />
-        </button>
-        <button className="p-2 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground">
-          <Share2 className="w-5 h-5" />
-        </button>
-        <button className="p-2 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground">
-          <RotateCcw className="w-5 h-5" />
-        </button>
-        <button className="p-2 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground">
-          <img
-            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop"
-            alt="User avatar"
-            className="w-5 h-5 rounded-full"
-          />
-        </button>
-        <button className="p-2 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground">
           <MoreVertical className="w-5 h-5" />
         </button>
       </div>
