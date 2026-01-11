@@ -46,6 +46,7 @@ export default function Sidebar({
   onTeamSelect,
 }: SidebarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedTeamId, setSelectedTeamId] = useState<string>("marketing");
   const [isAddTeamModalOpen, setIsAddTeamModalOpen] = useState(false);
 
