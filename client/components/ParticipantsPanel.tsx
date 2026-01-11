@@ -134,7 +134,7 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     }
   };
 
-  const participants: Participant[] = [
+  const defaultParticipants: Participant[] = [
     {
       id: "1",
       name: "Akbar Husain",
@@ -179,6 +179,8 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
       isMuted: false,
     },
   ];
+
+  const participants = propsParticipants || defaultParticipants;
 
   return (
     <div className="w-80 border-l border-border/30 bg-white/40 backdrop-blur-md flex flex-col">
