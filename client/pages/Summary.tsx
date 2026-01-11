@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import MeetingDetailPanel from "@/components/MeetingDetailPanel";
 import { Clock, MapPin, Users, Search } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
