@@ -208,15 +208,17 @@ export default function Sidebar({ isCollapsed = false, onToggleCollapse }: Sideb
             {teams.map((team) => (
               <button
                 key={team.id}
+                onClick={() => setSelectedTeamId(team.id)}
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
-                  team.hasCheckmark
+                  selectedTeamId === team.id
                     ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
                     : "text-foreground hover:bg-white/40"
                 )}
+                title={`${team.name} 팀 선택`}
               >
                 <div className={cn("w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white", team.color)}>
-                  {team.hasCheckmark ? "✓" : team.icon}
+                  {selectedTeamId === team.id ? "✓" : team.icon}
                 </div>
                 <span className="text-sm font-medium flex-1 text-left">{team.name}</span>
                 <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
