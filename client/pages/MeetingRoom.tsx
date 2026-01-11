@@ -2,8 +2,18 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import MeetingRoomHeader from "@/components/MeetingRoomHeader";
 import ParticipantsPanel from "@/components/ParticipantsPanel";
+import InviteParticipantModal from "@/components/InviteParticipantModal";
 import { ChevronLeft, ChevronRight, Mic, MicOff, Video, VideoOff, Phone, Circle } from "lucide-react";
 import { useState } from "react";
+
+interface Participant {
+  id: string;
+  name: string;
+  avatar: string;
+  isHost?: boolean;
+  isMuted?: boolean;
+  isVideoOn?: boolean;
+}
 
 export default function MeetingRoom() {
   const navigate = useNavigate();
