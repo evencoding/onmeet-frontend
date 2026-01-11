@@ -135,7 +135,7 @@ export default function Sidebar() {
       </div>
 
       {/* Teams Section */}
-      <div className="px-3 py-4 border-t border-border">
+      <div className="px-3 py-4 border-t border-border/30 bg-white/30">
         <div className="flex items-center justify-between px-4 mb-3">
           <span className="text-xs font-semibold text-muted-foreground uppercase">
             Teams
