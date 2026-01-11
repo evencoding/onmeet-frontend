@@ -21,8 +21,8 @@ interface NavItem {
   label: string;
   icon: React.ReactNode;
   badge?: number;
-  isActive?: boolean;
   hasMenu?: boolean;
+  route: string;
 }
 
 interface Team {
