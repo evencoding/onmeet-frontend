@@ -2,7 +2,7 @@ import { Search, Share2, RotateCcw, MoreVertical } from "lucide-react";
 
 export default function MeetingHeader() {
   return (
-    <div className="px-6 py-4 border-b border-border bg-background flex items-center justify-between">
+    <div className="px-6 py-4 border-b border-border/30 bg-white/40 backdrop-blur-md flex items-center justify-between">
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-amber-200 flex items-center justify-center text-sm font-bold">
           C
