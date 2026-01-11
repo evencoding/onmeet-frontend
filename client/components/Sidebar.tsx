@@ -1,7 +1,8 @@
-import { Calendar, FileText, ClipboardList, Clock, LayoutGrid, Plus, MoreVertical, Search, Menu, LogOut } from "lucide-react";
+import { Calendar, FileText, ClipboardList, Clock, LayoutGrid, Plus, MoreVertical, Search, Menu, LogOut, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface NavItem {
   id: string;
@@ -20,7 +21,12 @@ interface Team {
   hasCheckmark?: boolean;
 }
 
-export default function Sidebar() {
+interface SidebarProps {
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
+}
+
+export default function Sidebar({ isCollapsed = false, onToggleCollapse }: SidebarProps) {
   const navigate = useNavigate();
 
   const navItems: NavItem[] = [
