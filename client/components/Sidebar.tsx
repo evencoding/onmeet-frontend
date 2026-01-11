@@ -157,31 +157,18 @@ export default function Sidebar({
 
       {/* Main Navigation */}
       <div className="flex-1 overflow-y-auto px-2 py-4 space-y-2">
-        {navItems.map((item) => (
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.route;
+          return (
           <div key={item.id} title={isCollapsed ? item.label : ""}>
             <button
-              onClick={() => {
-                switch (item.id) {
-                  case "today":
-                    navigate("/");
-                    break;
-                  case "records":
-                    navigate("/records");
-                    break;
-                  case "summary":
-                    navigate("/summary");
-                    break;
-                  case "schedule":
-                    navigate("/schedule");
-                    break;
-                }
-              }}
+              onClick={() => navigate(item.route)}
               className={cn(
                 "w-full flex items-center rounded-xl transition-all duration-200 group",
                 isCollapsed
                   ? "justify-center p-3"
                   : "justify-between px-4 py-3",
-                item.isActive
+                isActive
                   ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
                   : "text-foreground hover:bg-white/40",
               )}
@@ -190,7 +177,7 @@ export default function Sidebar({
                 <div
                   className={cn(
                     "flex-shrink-0",
-                    item.isActive ? "text-primary" : "text-muted-foreground",
+                    isActive ? "text-primary" : "text-muted-foreground",
                   )}
                 >
                   {item.icon}
@@ -213,7 +200,8 @@ export default function Sidebar({
               )}
             </button>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Teams Section */}
