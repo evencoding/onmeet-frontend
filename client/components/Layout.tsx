@@ -19,7 +19,7 @@ export default function Layout({ children, showAIPanel = false, showRecentPanel 
     <div className="flex h-screen bg-background">
       {/* Sidebar - hidden on mobile, visible on md and above */}
       <div className="hidden md:block md:w-72">
-        <Sidebar />
+        <Sidebar onTeamSelect={setSelectedTeamId} />
       </div>
 
       {/* Mobile sidebar */}
@@ -32,7 +32,7 @@ export default function Layout({ children, showAIPanel = false, showRecentPanel 
             className="w-72 h-screen"
             onClick={(e) => e.stopPropagation()}
           >
-            <Sidebar />
+            <Sidebar onTeamSelect={setSelectedTeamId} />
           </div>
         </div>
       )}
