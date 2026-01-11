@@ -60,7 +60,7 @@ export default function MeetingRoom() {
         {/* Meeting Content */}
         <div className="flex-1 overflow-hidden flex">
           {/* Video Area */}
-          <div className="flex-1 flex flex-col bg-gradient-to-br from-bg-DEFAULT via-white/20 to-bg-DEFAULT">
+          <div className={`${showParticipants ? "flex-1" : "w-full"} flex flex-col bg-gradient-to-br from-bg-DEFAULT via-white/20 to-bg-DEFAULT`}>
             {/* Main Video Feed */}
             <div className="flex-1 p-6 flex flex-col">
               {/* Thumbnail Carousel */}
