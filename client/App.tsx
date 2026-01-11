@@ -12,6 +12,7 @@ import Schedule from "./pages/Schedule";
 import Summary from "./pages/Summary";
 import MeetingRecords from "./pages/MeetingRecords";
 import TeamBoard from "./pages/TeamBoard";
+import Team from "./pages/Team";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Landing from "./pages/Landing";
