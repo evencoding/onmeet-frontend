@@ -1,5 +1,6 @@
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface Participant {
   avatar: string;
@@ -32,6 +33,8 @@ const statusConfig = {
 };
 
 export default function RecentMeetings() {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const meetings: MeetingRecord[] = [
     {
       id: "1",
@@ -107,66 +110,117 @@ export default function RecentMeetings() {
     },
   ];
 
+  const filteredMeetings = meetings.filter(
+    (meeting) =>
+      meeting.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      meeting.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (meeting.department?.toLowerCase().includes(searchQuery.toLowerCase()) || false)
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-foreground">최근 회의</h2>
-        <p className="text-xs text-text-sub">총 {meetings.length}개</p>
+        <div>
+          <h2 className="text-xl font-bold text-foreground">최근 회의</h2>
+          <p className="text-xs text-text-sub mt-1">
+            총 {filteredMeetings.length}개
+            {searchQuery && ` (${searchQuery} 검색 결과)`}
+          </p>
+        </div>
       </div>
 
-      <div className="space-y-3">
-        {meetings.map((meeting) => (
-          <div
-            key={meeting.id}
-            className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-5 hover:shadow-lg transition-all duration-300 group"
-          >
-            {/* Header with Title and Status */}
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h3 className="text-base font-bold text-foreground">
-                    {meeting.title}
-                  </h3>
-                  <span
-                    className={cn(
-                      "px-2.5 py-1 text-xs font-semibold rounded-full whitespace-nowrap",
-                      statusConfig[meeting.status].className
-                    )}
-                  >
-                    {statusConfig[meeting.status].label}
-                  </span>
+      {/* Search Input */}
+      <div className="relative mb-6">
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="회의 제목, 설명 또는 팀으로 검색..."
+            className="w-full pl-12 pr-10 py-3 bg-white/60 border border-border/50 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm text-foreground placeholder-text-sub"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <X className="w-4 h-4 text-muted-foreground" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Results */}
+      {filteredMeetings.length === 0 ? (
+        <div className="text-center py-12 bg-white/30 rounded-2xl border border-border/20">
+          <Search className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-text-sub mb-1">검색 결과가 없습니다</p>
+          <p className="text-xs text-muted-foreground">다른 키워드로 다시 시도해보세요</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filteredMeetings.map((meeting) => (
+            <div
+              key={meeting.id}
+              className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-5 hover:shadow-lg transition-all duration-300 group"
+            >
+              {/* Header with Title and Status */}
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-base font-bold text-foreground">
+                      {meeting.title}
+                    </h3>
+                    <span
+                      className={cn(
+                        "px-2.5 py-1 text-xs font-semibold rounded-full whitespace-nowrap",
+                        statusConfig[meeting.status].className
+                      )}
+                    >
+                      {statusConfig[meeting.status].label}
+                    </span>
+                  </div>
                 </div>
+                <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 rounded-lg">
+                  <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                </button>
               </div>
-              <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 rounded-lg">
-                <MoreVertical className="w-4 h-4 text-muted-foreground" />
-              </button>
-            </div>
 
-            {/* Description */}
-            <p className="text-sm text-text-sub mb-4 line-clamp-2 leading-relaxed">
-              {meeting.description}
-            </p>
+              {/* Description */}
+              <p className="text-sm text-text-sub mb-4 line-clamp-2 leading-relaxed">
+                {meeting.description}
+              </p>
 
-            {/* Footer with Participants */}
-            <div className="flex items-center gap-3 pt-3 border-t border-border/20">
-              <div className="flex -space-x-2">
-                {meeting.participants.slice(0, 3).map((participant, idx) => (
-                  <img
-                    key={idx}
-                    src={participant.avatar}
-                    alt={participant.name}
-                    title={participant.name}
-                    className="w-7 h-7 rounded-full border-2 border-white object-cover hover:scale-110 transition-transform duration-200"
-                  />
-                ))}
+              {/* Footer with Participants and Department */}
+              <div className="flex items-center gap-4 pt-3 border-t border-border/20">
+                <div className="flex -space-x-2">
+                  {meeting.participants.slice(0, 3).map((participant, idx) => (
+                    <img
+                      key={idx}
+                      src={participant.avatar}
+                      alt={participant.name}
+                      title={participant.name}
+                      className="w-7 h-7 rounded-full border-2 border-white object-cover hover:scale-110 transition-transform duration-200"
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-text-sub font-medium">
+                  {meeting.participantCount}명 참여
+                </span>
+                {meeting.department && (
+                  <>
+                    <div className="w-px h-4 bg-border/30" />
+                    <span className="text-xs bg-brand-50 text-brand-700 px-2 py-1 rounded-full font-medium">
+                      {meeting.department}
+                    </span>
+                  </>
+                )}
               </div>
-              <span className="text-xs text-text-sub font-medium">
-                {meeting.participantCount}명 참여
-              </span>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
