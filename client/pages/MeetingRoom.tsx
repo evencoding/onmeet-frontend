@@ -15,6 +15,12 @@ interface Participant {
   isVideoOn?: boolean;
 }
 
+interface GuestInfo {
+  name: string;
+  description: string;
+  isGuest: boolean;
+}
+
 export default function MeetingRoom() {
   const navigate = useNavigate();
   const [isMuted, setIsMuted] = useState(false);
@@ -24,6 +30,19 @@ export default function MeetingRoom() {
   const [isRecording, setIsRecording] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+
+  // 게스트 정보 로드
+  const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null);
+
+  React.useEffect(() => {
+    const storedGuestInfo = sessionStorage.getItem("guestInfo");
+    if (storedGuestInfo) {
+      setGuestInfo(JSON.parse(storedGuestInfo));
+      // 사용된 후 제거
+      sessionStorage.removeItem("guestInfo");
+    }
+  }, []);
+
   const [participants, setParticipants] = useState<Participant[]>([
     {
       id: "1",
