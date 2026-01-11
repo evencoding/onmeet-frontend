@@ -27,7 +27,7 @@ interface SidebarProps {
   onTeamSelect?: (teamId: string) => void;
 }
 
-export default function Sidebar({ isCollapsed = false, onToggleCollapse }: SidebarProps) {
+export default function Sidebar({ isCollapsed = false, onToggleCollapse, onTeamSelect }: SidebarProps) {
   const navigate = useNavigate();
   const [selectedTeamId, setSelectedTeamId] = useState<string>("marketing");
 
