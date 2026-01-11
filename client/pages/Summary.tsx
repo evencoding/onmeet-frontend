@@ -148,7 +148,8 @@ export default function Summary() {
             {filteredMeetings.map((meeting) => (
               <div
                 key={meeting.id}
-                className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6 hover:shadow-lg transition-all duration-300"
+                onClick={() => setSelectedMeeting(meeting)}
+                className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
