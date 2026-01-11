@@ -4,7 +4,7 @@ interface IntroCardProps {
 
 export default function IntroCard({ onCreateMeeting }: IntroCardProps) {
   return (
-    <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 backdrop-blur-sm group overflow-hidden relative">
+    <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border-2 border-brand-500 rounded-3xl p-8 transition-all duration-500 backdrop-blur-sm group overflow-hidden relative">
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-brand-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
 
