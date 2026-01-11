@@ -240,9 +240,17 @@ export default function MeetingRoom() {
           </div>
 
           {/* Right Panel - Participants */}
-          {showParticipants && <ParticipantsPanel count={6} />}
+          {showParticipants && <ParticipantsPanel participants={participants} count={participants.length} />}
         </div>
       </main>
+
+      {/* Invite Participant Modal */}
+      <InviteParticipantModal
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
+        onInvite={handleInviteParticipants}
+        alreadyInvited={participants.map((p) => p.id)}
+      />
     </div>
   );
 }
