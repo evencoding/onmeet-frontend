@@ -24,14 +24,20 @@ interface ParticipantsPanelProps {
   participants?: Participant[];
 }
 
-export default function ParticipantsPanel({ count = 5, participants: propsParticipants }: ParticipantsPanelProps) {
-  const [activeTab, setActiveTab] = useState<"participants" | "chat">("participants");
+export default function ParticipantsPanel({
+  count = 5,
+  participants: propsParticipants,
+}: ParticipantsPanelProps) {
+  const [activeTab, setActiveTab] = useState<"participants" | "chat">(
+    "participants",
+  );
   const [messageInput, setMessageInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "1",
       sender: "시용지",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
       message: "Can u hear my voice",
       timestamp: "9:04 AM",
       isOwn: false,
@@ -39,7 +45,8 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     {
       id: "2",
       sender: "나",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
       message: "Ok wait, 5 min",
       timestamp: "9:05 AM",
       isOwn: true,
@@ -47,7 +54,8 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     {
       id: "3",
       sender: "시용지",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
       message: "Can u hear my voice",
       timestamp: "9:04 AM",
       isOwn: false,
@@ -55,7 +63,8 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     {
       id: "4",
       sender: "나",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
       message: "Ok wait, 5 min",
       timestamp: "9:05 AM",
       isOwn: true,
@@ -63,7 +72,8 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     {
       id: "5",
       sender: "아무개",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
       message: "Thanks ...",
       timestamp: "9:04 AM",
       isOwn: false,
@@ -71,7 +81,8 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     {
       id: "6",
       sender: "시용지",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
       message: "Can u hear my voice",
       timestamp: "9:04 AM",
       isOwn: false,
@@ -79,7 +90,8 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     {
       id: "7",
       sender: "나",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
       message: "Ok wait, 5 min",
       timestamp: "9:05 AM",
       isOwn: true,
@@ -87,7 +99,8 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     {
       id: "8",
       sender: "아무개",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
       message: "Thanks ...",
       timestamp: "9:04 AM",
       isOwn: false,
@@ -103,7 +116,8 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     {
       id: "10",
       sender: "아무개",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
       message: "Hi!...",
       timestamp: "9:04 AM",
       isOwn: false,
@@ -125,9 +139,13 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
       const newMessage: ChatMessage = {
         id: Date.now().toString(),
         sender: "나",
-        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+        avatar:
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
         message: messageInput,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         isOwn: true,
       };
       setMessages([...messages, newMessage]);
@@ -139,7 +157,8 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     {
       id: "1",
       name: "Akbar Husain",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
       isHost: true,
       isVideoOn: true,
       isMuted: false,
@@ -147,35 +166,40 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
     {
       id: "2",
       name: "Ameesh Menon",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
       isVideoOn: true,
       isMuted: false,
     },
     {
       id: "3",
       name: "Jonathan Sasi",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
       isVideoOn: false,
       isMuted: true,
     },
     {
       id: "4",
       name: "Riska Thakur",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
       isVideoOn: true,
       isMuted: false,
     },
     {
       id: "5",
       name: "Natalia",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
       isVideoOn: true,
       isMuted: true,
     },
     {
       id: "6",
       name: "Aila Thakur",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
       isVideoOn: true,
       isMuted: false,
     },
@@ -191,12 +215,12 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
 
     // 새로 입장한 참가자 찾기
     const newParticipants = participants.filter(
-      (p) => !previousParticipants.find((prev) => prev.id === p.id)
+      (p) => !previousParticipants.find((prev) => prev.id === p.id),
     );
 
     // 퇴장한 참가자 찾기
     const leftParticipants = previousParticipants.filter(
-      (p) => !participants.find((curr) => curr.id === p.id)
+      (p) => !participants.find((curr) => curr.id === p.id),
     );
 
     // 입장 메시지 추가
@@ -206,7 +230,10 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
         sender: `${participant.name}님이 입장하셨습니다`,
         avatar: "",
         message: "",
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
       setMessages((prev) => [...prev, systemMessage]);
     });
@@ -218,7 +245,10 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
         sender: `${participant.name}님이 퇴장하셨습니다`,
         avatar: "",
         message: "",
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
       setMessages((prev) => [...prev, systemMessage]);
     });
@@ -282,11 +312,13 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
                         {participant.name}
                       </p>
                       {participant.isHost && (
-                        <span className="text-xs text-brand-500 font-medium">Host</span>
+                        <span className="text-xs text-brand-500 font-medium">
+                          Host
+                        </span>
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     {participant.isVideoOn ? (
                       <div className="w-5 h-5 rounded bg-brand-500/20 flex items-center justify-center text-xs text-brand-500">
@@ -318,7 +350,9 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
               {messages.map((msg, idx) => (
                 <div key={msg.id}>
                   {msg.message ? (
-                    <div className={`flex gap-2 ${msg.isOwn ? "flex-row-reverse" : "flex-row"}`}>
+                    <div
+                      className={`flex gap-2 ${msg.isOwn ? "flex-row-reverse" : "flex-row"}`}
+                    >
                       {/* Avatar */}
                       {msg.avatar && (
                         <img
@@ -344,7 +378,11 @@ export default function ParticipantsPanel({ count = 5, participants: propsPartic
                               ? "bg-brand-500 text-white rounded-br-none"
                               : "rounded-bl-none"
                           }`}
-                          style={!msg.isOwn ? { backgroundColor: "#E6E0F2", color: "#1F1F2E" } : {}}
+                          style={
+                            !msg.isOwn
+                              ? { backgroundColor: "#E6E0F2", color: "#1F1F2E" }
+                              : {}
+                          }
                         >
                           {msg.message}
                         </div>

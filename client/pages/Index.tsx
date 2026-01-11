@@ -27,7 +27,10 @@ export default function Index() {
       </div>
 
       {/* Create Meeting Modal */}
-      <CreateMeetingModal isOpen={isCreateModalOpen} onClose={handleCloseModal} />
+      <CreateMeetingModal
+        isOpen={isCreateModalOpen}
+        onClose={handleCloseModal}
+      />
     </Layout>
   );
 }

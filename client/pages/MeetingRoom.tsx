@@ -3,7 +3,16 @@ import Sidebar from "@/components/Sidebar";
 import MeetingRoomHeader from "@/components/MeetingRoomHeader";
 import ParticipantsPanel from "@/components/ParticipantsPanel";
 import InviteParticipantModal from "@/components/InviteParticipantModal";
-import { ChevronLeft, ChevronRight, Mic, MicOff, Video, VideoOff, Phone, Circle } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Mic,
+  MicOff,
+  Video,
+  VideoOff,
+  Phone,
+  Circle,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface Participant {
@@ -47,7 +56,8 @@ export default function MeetingRoom() {
     {
       id: "1",
       name: "Akbar Husain",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
       isHost: true,
       isVideoOn: true,
       isMuted: false,
@@ -55,35 +65,40 @@ export default function MeetingRoom() {
     {
       id: "2",
       name: "Ameesh Menon",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
       isVideoOn: true,
       isMuted: false,
     },
     {
       id: "3",
       name: "Jonathan Sasi",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
       isVideoOn: false,
       isMuted: true,
     },
     {
       id: "4",
       name: "Riska Thakur",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
       isVideoOn: true,
       isMuted: false,
     },
     {
       id: "5",
       name: "Natalia",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
       isVideoOn: true,
       isMuted: true,
     },
     {
       id: "6",
       name: "Aila Thakur",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
       isVideoOn: true,
       isMuted: false,
     },
@@ -104,30 +119,36 @@ export default function MeetingRoom() {
   const speakers = [
     {
       name: "Akbar Husain",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
     },
     {
       name: "Ameesh Menon",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=600&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=600&fit=crop",
     },
     {
       name: "Riska Thakur",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
     },
   ];
 
   const thumbnailSpeakers = [
     {
       name: "Speaker 1",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=150&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=150&fit=crop",
     },
     {
       name: "Speaker 2",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=150&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=150&fit=crop",
     },
     {
       name: "Speaker 3",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=150&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=150&fit=crop",
     },
   ];
 
@@ -156,7 +177,9 @@ export default function MeetingRoom() {
         {/* Meeting Content */}
         <div className="flex-1 overflow-hidden flex">
           {/* Video Area */}
-          <div className={`${showParticipants ? "flex-1" : "w-full"} flex flex-col bg-gradient-to-br from-bg-DEFAULT via-white/20 to-bg-DEFAULT`}>
+          <div
+            className={`${showParticipants ? "flex-1" : "w-full"} flex flex-col bg-gradient-to-br from-bg-DEFAULT via-white/20 to-bg-DEFAULT`}
+          >
             {/* Main Video Feed */}
             <div className="flex-1 overflow-hidden p-6 flex flex-col justify-between">
               {/* Thumbnail Carousel */}
@@ -262,7 +285,12 @@ export default function MeetingRoom() {
           </div>
 
           {/* Right Panel - Participants */}
-          {showParticipants && <ParticipantsPanel participants={participants} count={participants.length} />}
+          {showParticipants && (
+            <ParticipantsPanel
+              participants={participants}
+              count={participants.length}
+            />
+          )}
         </div>
       </main>
 

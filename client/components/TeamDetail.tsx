@@ -23,13 +23,16 @@ interface TeamDetailProps {
 }
 
 // Mock data for teams
-const teamsData: Record<string, {
-  name: string;
-  description: string;
-  color: string;
-  members: TeamMember[];
-  channels: Channel[];
-}> = {
+const teamsData: Record<
+  string,
+  {
+    name: string;
+    description: string;
+    color: string;
+    members: TeamMember[];
+    channels: Channel[];
+  }
+> = {
   marketing: {
     name: "Marketing",
     description: "마케팅 팀의 회의 및 협업 공간",
@@ -39,21 +42,24 @@ const teamsData: Record<string, {
         id: "1",
         name: "김철수",
         email: "kim@example.com",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
         role: "Team Lead",
       },
       {
         id: "2",
         name: "이영희",
         email: "lee@example.com",
-        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+        avatar:
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
         role: "Senior Manager",
       },
       {
         id: "3",
         name: "박민준",
         email: "park@example.com",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
         role: "Specialist",
       },
     ],
@@ -87,14 +93,16 @@ const teamsData: Record<string, {
         id: "4",
         name: "정준호",
         email: "jung@example.com",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
         role: "Product Manager",
       },
       {
         id: "5",
         name: "최수진",
         email: "choi@example.com",
-        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+        avatar:
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
         role: "Designer",
       },
     ],
@@ -128,21 +136,24 @@ const teamsData: Record<string, {
         id: "6",
         name: "임상현",
         email: "lim@example.com",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
         role: "Design Lead",
       },
       {
         id: "7",
         name: "한지은",
         email: "han@example.com",
-        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+        avatar:
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
         role: "UX Designer",
       },
       {
         id: "8",
         name: "유혜정",
         email: "yu@example.com",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
         role: "UI Designer",
       },
     ],
@@ -196,8 +207,7 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
             size="sm"
             className="gap-2 flex items-center"
           >
-            <Settings className="w-4 h-4" />
-            팀 설정
+            <Settings className="w-4 h-4" />팀 설정
           </Button>
         </div>
       </div>
@@ -262,13 +272,13 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
             >
               <div className="flex-shrink-0">
                 <div className="w-10 h-10 rounded-lg bg-brand-100 flex items-center justify-center">
-                  <span className="text-lg">
-                    #
-                  </span>
+                  <span className="text-lg">#</span>
                 </div>
               </div>
               <div className="flex-1 text-left">
-                <h3 className="font-semibold text-foreground">{channel.name}</h3>
+                <h3 className="font-semibold text-foreground">
+                  {channel.name}
+                </h3>
                 <p className="text-sm text-text-sub">{channel.description}</p>
               </div>
               <div className="flex-shrink-0 text-right">

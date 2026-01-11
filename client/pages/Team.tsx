@@ -15,7 +15,9 @@ export default function Team() {
     return (
       <Layout>
         <div className="text-center py-12">
-          <h1 className="text-2xl font-bold text-foreground mb-2">팀을 찾을 수 없습니다</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            팀을 찾을 수 없습니다
+          </h1>
           <p className="text-text-sub">존재하지 않는 팀입니다.</p>
         </div>
       </Layout>

@@ -26,7 +26,10 @@ interface MeetingDetailPanelProps {
   onClose: () => void;
 }
 
-export default function MeetingDetailPanel({ meeting, onClose }: MeetingDetailPanelProps) {
+export default function MeetingDetailPanel({
+  meeting,
+  onClose,
+}: MeetingDetailPanelProps) {
   if (!meeting) return null;
 
   const authorName = meeting.attendees[0]?.name || "Unknown";
@@ -44,7 +47,9 @@ export default function MeetingDetailPanel({ meeting, onClose }: MeetingDetailPa
       <div className="absolute right-0 top-0 h-full w-96 bg-white shadow-2xl overflow-y-auto transition-transform duration-300 ease-out">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-border/20 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground flex-1">회의 상세</h2>
+          <h2 className="text-xl font-bold text-foreground flex-1">
+            회의 상세
+          </h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-surface-subtle rounded-lg transition-colors"
@@ -57,7 +62,9 @@ export default function MeetingDetailPanel({ meeting, onClose }: MeetingDetailPa
         <div className="px-6 py-6 space-y-6">
           {/* Title */}
           <div>
-            <h3 className="text-2xl font-bold text-foreground mb-2">{meeting.title}</h3>
+            <h3 className="text-2xl font-bold text-foreground mb-2">
+              {meeting.title}
+            </h3>
           </div>
 
           {/* Main Info Grid */}
@@ -69,16 +76,22 @@ export default function MeetingDetailPanel({ meeting, onClose }: MeetingDetailPa
                   <AvatarImage src={authorAvatar} alt={authorName} />
                   <AvatarFallback>{authorName.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium text-foreground">작성자</span>
+                <span className="text-sm font-medium text-foreground">
+                  작성자
+                </span>
               </div>
-              <span className="text-sm font-medium text-foreground">{authorName}</span>
+              <span className="text-sm font-medium text-foreground">
+                {authorName}
+              </span>
             </div>
 
             {/* Meeting Date */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-brand-500" />
-                <span className="text-sm font-medium text-foreground">회의 날짜</span>
+                <span className="text-sm font-medium text-foreground">
+                  회의 날짜
+                </span>
               </div>
               <span className="text-sm font-medium text-foreground">
                 {format(meeting.date, "yyyy/MM/dd", { locale: ko })}
@@ -89,9 +102,13 @@ export default function MeetingDetailPanel({ meeting, onClose }: MeetingDetailPa
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-brand-500" />
-                <span className="text-sm font-medium text-foreground">회의 내용</span>
+                <span className="text-sm font-medium text-foreground">
+                  회의 내용
+                </span>
               </div>
-              <span className="text-sm font-medium text-foreground">{meeting.description}</span>
+              <span className="text-sm font-medium text-foreground">
+                {meeting.description}
+              </span>
             </div>
 
             {/* Issues Badge */}
@@ -99,7 +116,9 @@ export default function MeetingDetailPanel({ meeting, onClose }: MeetingDetailPa
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <AlertCircle className="w-5 h-5 text-brand-500" />
-                  <span className="text-sm font-medium text-foreground">추가된 이슈</span>
+                  <span className="text-sm font-medium text-foreground">
+                    추가된 이슈
+                  </span>
                 </div>
                 <span className="px-3 py-1 bg-pink-100 text-pink-600 text-xs font-semibold rounded-full">
                   이슈 {meeting.key_points.length}
@@ -115,8 +134,13 @@ export default function MeetingDetailPanel({ meeting, onClose }: MeetingDetailPa
               {meeting.key_points && meeting.key_points.length > 0 ? (
                 <ul className="space-y-2">
                   {meeting.key_points.map((point, idx) => (
-                    <li key={idx} className="flex gap-2 text-sm text-text-sub leading-relaxed">
-                      <span className="text-brand-500 flex-shrink-0 mt-0.5">-</span>
+                    <li
+                      key={idx}
+                      className="flex gap-2 text-sm text-text-sub leading-relaxed"
+                    >
+                      <span className="text-brand-500 flex-shrink-0 mt-0.5">
+                        -
+                      </span>
                       <span>{point}</span>
                     </li>
                   ))}
