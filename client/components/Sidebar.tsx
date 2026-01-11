@@ -212,6 +212,7 @@ export default function Sidebar({ isCollapsed = false, onToggleCollapse, onTeamS
                 onClick={() => {
                   setSelectedTeamId(team.id);
                   onTeamSelect?.(team.id);
+                  navigate(`/team/${team.id}`);
                 }}
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
