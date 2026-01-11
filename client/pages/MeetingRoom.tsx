@@ -133,13 +133,15 @@ export default function MeetingRoom() {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <div className="hidden md:block transition-all duration-300">
-        <Sidebar
-          isCollapsed={isSidebarCollapsed}
-          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        />
-      </div>
+      {/* Sidebar - 게스트는 숨김 */}
+      {!guestInfo && (
+        <div className="hidden md:block transition-all duration-300">
+          <Sidebar
+            isCollapsed={isSidebarCollapsed}
+            onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          />
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
