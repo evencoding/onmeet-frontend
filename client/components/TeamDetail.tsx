@@ -365,6 +365,92 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
         </div>
       </div>
 
+      {/* Team Meetings Section */}
+      <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <Calendar className="w-5 h-5 text-brand-500" />
+            <h2 className="text-lg font-bold text-foreground">회의 일정</h2>
+            <span className="px-2 py-1 bg-brand-50 text-brand-600 text-xs font-semibold rounded-full">
+              {teamData.meetings.length}개
+            </span>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {teamData.meetings.map((meeting) => (
+            <div
+              key={meeting.id}
+              className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-xl p-5 hover:shadow-md transition-all duration-200 group"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  {/* Title and Status */}
+                  <div className="flex items-start gap-3 mb-2">
+                    <h3 className="text-base font-bold text-foreground flex-1">
+                      {meeting.title}
+                    </h3>
+                    <span
+                      className={cn(
+                        "px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap",
+                        meeting.status === "scheduled"
+                          ? "bg-blue-100 text-blue-700"
+                          : meeting.status === "in_progress"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-100 text-gray-700",
+                      )}
+                    >
+                      {meeting.status === "scheduled"
+                        ? "예정"
+                        : meeting.status === "in_progress"
+                          ? "진행중"
+                          : "완료"}
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-sm text-text-sub mb-3">
+                    {meeting.description}
+                  </p>
+
+                  {/* Meeting Info */}
+                  <div className="flex flex-wrap gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-brand-500" />
+                      <span className="text-text-sub">{meeting.startTime}</span>
+                    </div>
+                    {meeting.endTime && (
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-brand-500" />
+                        <span className="text-text-sub">{meeting.endTime}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Users2 className="w-4 h-4 text-brand-500" />
+                      <span className="text-text-sub">
+                        {meeting.attendeesCount}명
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Host Info */}
+                  <div className="text-xs text-muted-foreground mt-3">
+                    주최자:{" "}
+                    <span className="font-semibold text-foreground">
+                      {meeting.hostName}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Action Button */}
+                <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-surface-subtle rounded-lg ml-2">
+                  <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
