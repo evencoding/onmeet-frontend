@@ -217,11 +217,18 @@ export default function ParticipantsPanel({ count = 5 }: ParticipantsPanelProps)
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 flex-1">
-                    <img
-                      src={participant.avatar}
-                      alt={participant.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
+                    <div className="relative">
+                      <img
+                        src={participant.avatar}
+                        alt={participant.name}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      {participant.isHost && (
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-pink-400 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-white">
+                          H
+                        </div>
+                      )}
+                    </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-foreground truncate">
                         {participant.name}
