@@ -1,18 +1,23 @@
 export default function IntroCard() {
   return (
-    <div className="bg-gradient-to-br from-white via-surface-subtle to-white border border-border/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-xs">
-      <h3 className="text-lg font-semibold text-foreground mb-2 bg-gradient-to-r from-foreground to-text-sub bg-clip-text text-transparent">
-        회의에만 집중하세요
-      </h3>
-      <p className="text-sm text-muted-foreground mb-6">기록은 AI가</p>
+    <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 backdrop-blur-sm group overflow-hidden relative">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
 
-      <div className="flex gap-3">
-        <button className="flex-1 px-4 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-medium rounded-lg hover:from-brand-600 hover:to-brand-700 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
-          회의 생성하기
-        </button>
-        <button className="flex-1 px-4 py-2.5 border border-border/70 bg-white/50 text-foreground text-sm font-medium rounded-lg hover:bg-white/80 hover:border-border transition-all duration-200">
-          회의 참여하기
-        </button>
+      <div className="relative z-10">
+        <h3 className="text-2xl font-bold bg-gradient-to-r from-foreground via-foreground to-text-body bg-clip-text text-transparent mb-2 leading-tight">
+          회의에만 집중하세요
+        </h3>
+        <p className="text-base text-text-sub mb-8 font-medium">기록은 AI가</p>
+
+        <div className="flex gap-3">
+          <button className="flex-1 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 uppercase letter-spacing-wider">
+            회의 생성하기
+          </button>
+          <button className="flex-1 px-6 py-3 border border-border/60 bg-white/70 text-foreground text-sm font-semibold rounded-xl hover:bg-white hover:border-border hover:shadow-md transition-all duration-300 uppercase letter-spacing-wider">
+            회의 참여하기
+          </button>
+        </div>
       </div>
     </div>
   );
