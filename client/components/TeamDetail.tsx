@@ -1,6 +1,7 @@
-import { Users, Settings } from "lucide-react";
+import { Users, Settings, Clock, Calendar, Users2, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 interface TeamMember {
   id: string;
@@ -15,6 +16,18 @@ interface Channel {
   name: string;
   description: string;
   memberCount: number;
+}
+
+interface Meeting {
+  id: string;
+  title: string;
+  status: "scheduled" | "in_progress" | "completed";
+  startTime: string;
+  endTime?: string;
+  attendeesCount: number;
+  hostName: string;
+  description: string;
+  team: string;
 }
 
 interface TeamDetailProps {
