@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { X, Plus, Trash2 } from "lucide-react";
+import { X, Trash2, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -8,11 +9,15 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-interface TeamMember {
+interface Employee {
   id: string;
   name: string;
   email: string;
+  avatar: string;
+  department?: string;
 }
+
+interface TeamMember extends Employee {}
 
 interface AddTeamModalProps {
   isOpen: boolean;
@@ -32,6 +37,66 @@ const teamColors = [
   { name: "Green", value: "bg-green-500", hex: "#22c55e" },
 ];
 
+// Mock employee list
+const mockEmployees: Employee[] = [
+  {
+    id: "1",
+    name: "김철수",
+    email: "kim@example.com",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    department: "마케팅",
+  },
+  {
+    id: "2",
+    name: "이영희",
+    email: "lee@example.com",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+    department: "마케팅",
+  },
+  {
+    id: "3",
+    name: "박민준",
+    email: "park@example.com",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    department: "마케팅",
+  },
+  {
+    id: "4",
+    name: "정준호",
+    email: "jung@example.com",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    department: "제품",
+  },
+  {
+    id: "5",
+    name: "최수진",
+    email: "choi@example.com",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+    department: "제품",
+  },
+  {
+    id: "6",
+    name: "임상현",
+    email: "lim@example.com",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    department: "디자인",
+  },
+  {
+    id: "7",
+    name: "한지은",
+    email: "han@example.com",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+    department: "디자인",
+  },
+  {
+    id: "8",
+    name: "유혜정",
+    email: "yu@example.com",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    department: "디자인",
+  },
+];
+
 export default function AddTeamModal({
   isOpen,
   onClose,
@@ -40,30 +105,29 @@ export default function AddTeamModal({
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedColor, setSelectedColor] = useState(teamColors[0].value);
-  const [memberName, setMemberName] = useState("");
-  const [memberEmail, setMemberEmail] = useState("");
-  const [members, setMembers] = useState<TeamMember[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<TeamMember[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAddMember = () => {
-    if (!memberName.trim() || !memberEmail.trim()) {
-      alert("이름과 이메일을 입력해주세요");
-      return;
+  // Filter employees based on search query
+  const filteredEmployees = mockEmployees.filter(
+    (emp) =>
+      emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.department?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleToggleMember = (employee: Employee) => {
+    const isSelected = selectedMembers.some((m) => m.id === employee.id);
+    if (isSelected) {
+      setSelectedMembers(selectedMembers.filter((m) => m.id !== employee.id));
+    } else {
+      setSelectedMembers([...selectedMembers, employee]);
     }
-
-    const newMember: TeamMember = {
-      id: Date.now().toString(),
-      name: memberName,
-      email: memberEmail,
-    };
-
-    setMembers([...members, newMember]);
-    setMemberName("");
-    setMemberEmail("");
   };
 
   const handleRemoveMember = (id: string) => {
-    setMembers(members.filter((member) => member.id !== id));
+    setSelectedMembers(selectedMembers.filter((member) => member.id !== id));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,16 +149,15 @@ export default function AddTeamModal({
         name: teamName,
         description,
         color: selectedColor,
-        members,
+        members: selectedMembers,
       });
 
       // Reset form and close modal
       setTeamName("");
       setDescription("");
       setSelectedColor(teamColors[0].value);
-      setMembers([]);
-      setMemberName("");
-      setMemberEmail("");
+      setSelectedMembers([]);
+      setSearchQuery("");
       onClose();
     } catch (error) {
       console.error("Failed to create team:", error);
@@ -108,9 +171,8 @@ export default function AddTeamModal({
     setTeamName("");
     setDescription("");
     setSelectedColor(teamColors[0].value);
-    setMembers([]);
-    setMemberName("");
-    setMemberEmail("");
+    setSelectedMembers([]);
+    setSearchQuery("");
     onClose();
   };
 
@@ -190,68 +252,112 @@ export default function AddTeamModal({
           {/* Members Section */}
           <div className="space-y-3">
             <label className="text-sm font-semibold text-foreground">
-              팀원 추가
+              팀원 선택
             </label>
 
-            {/* Member Input Fields */}
-            <div className="space-y-2">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={memberName}
-                  onChange={(e) => setMemberName(e.target.value)}
-                  placeholder="이름"
-                  className="flex-1 px-3 py-2 border border-border/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm"
-                  disabled={isLoading}
-                />
-                <input
-                  type="email"
-                  value={memberEmail}
-                  onChange={(e) => setMemberEmail(e.target.value)}
-                  placeholder="이메일"
-                  className="flex-1 px-3 py-2 border border-border/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm"
-                  disabled={isLoading}
-                />
-                <button
-                  type="button"
-                  onClick={handleAddMember}
-                  disabled={isLoading || !memberName.trim() || !memberEmail.trim()}
-                  className="px-3 py-2 bg-brand-50 text-brand-600 border border-brand-200 rounded-lg hover:bg-brand-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Plus className="w-5 h-5" />
-                </button>
-              </div>
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="이름, 이메일, 부서로 검색"
+                className="w-full pl-10 pr-4 py-2 border border-border/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm"
+                disabled={isLoading}
+              />
             </div>
 
-            {/* Members List */}
-            {members.length > 0 && (
-              <div className="space-y-2 max-h-40 overflow-y-auto">
-                <div className="text-xs font-semibold text-text-sub uppercase">
-                  추가된 팀원 ({members.length})
+            {/* Employee List */}
+            <div className="border border-border/40 rounded-lg overflow-hidden max-h-48 overflow-y-auto">
+              {filteredEmployees.length === 0 ? (
+                <div className="p-4 text-center text-sm text-text-sub">
+                  검색 결과가 없습니다
                 </div>
-                {members.map((member) => (
-                  <div
-                    key={member.id}
-                    className="flex items-center justify-between p-3 bg-surface-subtle rounded-lg"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {member.name}
-                      </p>
-                      <p className="text-xs text-text-sub truncate">
-                        {member.email}
-                      </p>
-                    </div>
+              ) : (
+                filteredEmployees.map((employee) => {
+                  const isSelected = selectedMembers.some(
+                    (m) => m.id === employee.id
+                  );
+                  return (
                     <button
+                      key={employee.id}
                       type="button"
-                      onClick={() => handleRemoveMember(member.id)}
+                      onClick={() => handleToggleMember(employee)}
                       disabled={isLoading}
-                      className="p-1 ml-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                      className={`w-full flex items-center gap-3 p-3 border-b border-border/20 hover:bg-surface-subtle transition-colors ${
+                        isSelected ? "bg-brand-50" : ""
+                      }`}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => {}}
+                        className="cursor-pointer"
+                        disabled={isLoading}
+                      />
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage
+                          src={employee.avatar}
+                          alt={employee.name}
+                        />
+                        <AvatarFallback>
+                          {employee.name.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 text-left">
+                        <p className="text-sm font-medium text-foreground">
+                          {employee.name}
+                        </p>
+                        <p className="text-xs text-text-sub">
+                          {employee.department} · {employee.email}
+                        </p>
+                      </div>
                     </button>
-                  </div>
-                ))}
+                  );
+                })
+              )}
+            </div>
+
+            {/* Selected Members */}
+            {selectedMembers.length > 0 && (
+              <div className="space-y-2 p-3 bg-brand-50 rounded-lg">
+                <div className="text-xs font-semibold text-brand-600 uppercase">
+                  선택된 팀원 ({selectedMembers.length})
+                </div>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {selectedMembers.map((member) => (
+                    <div
+                      key={member.id}
+                      className="flex items-center justify-between p-2 bg-white rounded border border-brand-200"
+                    >
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <Avatar className="w-6 h-6">
+                          <AvatarImage src={member.avatar} alt={member.name} />
+                          <AvatarFallback>
+                            {member.name.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-foreground truncate">
+                            {member.name}
+                          </p>
+                          <p className="text-xs text-text-sub truncate">
+                            {member.email}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveMember(member.id)}
+                        disabled={isLoading}
+                        className="p-1 ml-1 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded transition-colors flex-shrink-0"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
