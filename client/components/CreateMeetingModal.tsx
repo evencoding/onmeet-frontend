@@ -11,7 +11,6 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
     title: "",
     date: "",
     time: "",
-    duration: "60",
     description: "",
     invitees: "",
   });
