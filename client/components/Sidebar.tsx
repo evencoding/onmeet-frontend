@@ -106,6 +106,11 @@ export default function Sidebar() {
         {navItems.map((item) => (
           <button
             key={item.id}
+            onClick={() => {
+              if (item.id === "schedule") {
+                navigate("/schedule");
+              }
+            }}
             className={cn(
               "w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group",
               item.isActive
