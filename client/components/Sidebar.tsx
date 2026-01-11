@@ -103,10 +103,10 @@ export default function Sidebar() {
           <button
             key={item.id}
             className={cn(
-              "w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors group",
+              "w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group",
               item.isActive
-                ? "bg-secondary text-primary"
-                : "text-foreground hover:bg-secondary/50"
+                ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
+                : "text-foreground hover:bg-white/40"
             )}
           >
             <div className="flex items-center gap-3">
