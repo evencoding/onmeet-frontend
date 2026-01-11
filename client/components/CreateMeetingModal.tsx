@@ -91,26 +91,6 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
             </div>
           </div>
 
-          {/* Duration */}
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <Clock className="w-4 h-4 text-brand-500" />
-              소요 시간
-            </label>
-            <select
-              name="duration"
-              value={formData.duration}
-              onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-border/50 rounded-xl bg-white/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all duration-200 text-foreground"
-            >
-              <option value="30">30분</option>
-              <option value="60">1시간</option>
-              <option value="90">1시간 30분</option>
-              <option value="120">2시간</option>
-              <option value="180">3시간</option>
-            </select>
-          </div>
-
           {/* Description */}
           <div className="space-y-2">
             <label className="text-sm font-semibold text-foreground flex items-center gap-2">
