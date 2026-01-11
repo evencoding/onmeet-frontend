@@ -22,6 +22,7 @@ interface Meeting {
 
 export default function Schedule() {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isRightPanelOpen, setIsRightPanelOpen] = useState(true);
 
   // Sample meetings data - updated to current month for visibility
   const allMeetings: Meeting[] = [
