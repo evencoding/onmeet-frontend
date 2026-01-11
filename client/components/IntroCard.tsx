@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router-dom";
+
 interface IntroCardProps {
   onCreateMeeting?: () => void;
 }
 
 export default function IntroCard({ onCreateMeeting }: IntroCardProps) {
+  const navigate = useNavigate();
   return (
     <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border-2 border-brand-500 rounded-3xl p-8 transition-all duration-500 backdrop-blur-sm group overflow-hidden relative">
       {/* Subtle gradient overlay */}
