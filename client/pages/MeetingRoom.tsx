@@ -12,6 +12,7 @@ export default function MeetingRoom() {
   const [currentSpeaker, setCurrentSpeaker] = useState(0);
   const [showParticipants, setShowParticipants] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
 
   const speakers = [
     {
