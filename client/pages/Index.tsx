@@ -17,20 +17,13 @@ export default function Index() {
   };
 
   return (
-    <Layout>
-      <div className="space-y-10">
+    <Layout showRecentPanel={true}>
+      <div className="space-y-10 max-w-4xl">
         {/* Intro Card */}
         <IntroCard onCreateMeeting={handleCreateMeeting} />
 
         {/* Ongoing Meetings */}
-        <div className="max-w-4xl">
-          <OngoingMeetings />
-        </div>
-
-        {/* Recent Meetings */}
-        <div className="max-w-4xl">
-          <RecentMeetings />
-        </div>
+        <OngoingMeetings />
       </div>
 
       {/* Create Meeting Modal */}
