@@ -151,13 +151,36 @@ export default function Schedule() {
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className={`grid gap-6 transition-all duration-300 ${
+          isRightPanelOpen ? "grid-cols-1 xl:grid-cols-2" : "grid-cols-1"
+        }`}>
           {/* Calendar */}
-          <div className="w-full">
+          <div className="w-full flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">달력</h2>
+              <button
+                onClick={() => setIsRightPanelOpen(!isRightPanelOpen)}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-50 text-brand-600 hover:bg-brand-100 transition-colors text-sm font-medium"
+                title={isRightPanelOpen ? "상세보기 닫기" : "상세보기 열기"}
+              >
+                {isRightPanelOpen ? (
+                  <>
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>상세보기 닫기</span>
+                  </>
+                ) : (
+                  <>
+                    <ChevronRight className="w-4 h-4" />
+                    <span>상세보기 열기</span>
+                  </>
+                )}
+              </button>
+            </div>
             <CalendarView onSelectDate={setSelectedDate} meetings={allMeetings} />
           </div>
 
-          {/* Meetings List */}
+          {/* Meetings List - Conditionally Shown */}
+          {isRightPanelOpen && (
           <div className="w-full space-y-4">
             <div className="bg-white/40 backdrop-blur-md border border-border/30 rounded-3xl p-6">
               <h2 className="text-xl font-bold text-foreground mb-4">
@@ -251,6 +274,7 @@ export default function Schedule() {
               </div>
             </div>
           </div>
+          )}
         </div>
       </div>
     </Layout>
