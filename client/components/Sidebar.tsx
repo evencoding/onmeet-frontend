@@ -173,7 +173,7 @@ export default function Sidebar() {
 
       {/* User Profile */}
       <div className="px-3 py-4 border-t border-border/30 bg-white/30">
-        <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-secondary rounded-xl transition-colors group">
+        <button className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/40 rounded-xl transition-all duration-200 group">
           <img
             src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop"
             alt="User"
