@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import MeetingRoomHeader from "@/components/MeetingRoomHeader";
 import ParticipantsPanel from "@/components/ParticipantsPanel";
-import { ChevronLeft, ChevronRight, Mic, MicOff, Video, VideoOff, Phone } from "lucide-react";
+import { ChevronLeft, ChevronRight, Mic, MicOff, Video, VideoOff, Phone, Circle } from "lucide-react";
 import { useState } from "react";
 
 export default function MeetingRoom() {
@@ -11,6 +11,7 @@ export default function MeetingRoom() {
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [currentSpeaker, setCurrentSpeaker] = useState(0);
   const [showParticipants, setShowParticipants] = useState(true);
+  const [isRecording, setIsRecording] = useState(false);
 
   const speakers = [
     {
