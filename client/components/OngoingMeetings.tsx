@@ -98,14 +98,14 @@ export default function OngoingMeetings() {
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-2 h-2 rounded-full bg-red-500"></div>
-        <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide">
-          ON MEETING
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></div>
+        <h2 className="text-xs font-bold text-foreground uppercase tracking-widest letter-spacing-wider">
+          진행 중인 회의
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-5">
         {meetings.map((meeting) => (
           <div
             key={meeting.id}
