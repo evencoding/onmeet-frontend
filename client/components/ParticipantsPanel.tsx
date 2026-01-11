@@ -21,9 +21,10 @@ interface ChatMessage {
 
 interface ParticipantsPanelProps {
   count?: number;
+  participants?: Participant[];
 }
 
-export default function ParticipantsPanel({ count = 5 }: ParticipantsPanelProps) {
+export default function ParticipantsPanel({ count = 5, participants: propsParticipants }: ParticipantsPanelProps) {
   const [activeTab, setActiveTab] = useState<"participants" | "chat">("participants");
   const [messageInput, setMessageInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([
