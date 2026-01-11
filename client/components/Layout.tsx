@@ -13,6 +13,7 @@ interface LayoutProps {
 
 export default function Layout({ children, showAIPanel = false, showRecentPanel = false }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedTeamId, setSelectedTeamId] = useState<string>("marketing");
 
   return (
     <div className="flex h-screen bg-background">
