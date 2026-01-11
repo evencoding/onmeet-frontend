@@ -256,12 +256,25 @@ export default function Sidebar({
             ))}
           </div>
 
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-colors">
+          <button
+            onClick={() => setIsAddTeamModalOpen(true)}
+            className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-colors"
+          >
             <Plus className="w-5 h-5" />
             <span className="text-sm font-medium">팀 추가</span>
           </button>
         </div>
       )}
+
+      {/* Add Team Modal */}
+      <AddTeamModal
+        isOpen={isAddTeamModalOpen}
+        onClose={() => setIsAddTeamModalOpen(false)}
+        onTeamAdded={(team) => {
+          // Handle team added - can be extended for actual API calls
+          console.log("New team added:", team);
+        }}
+      />
 
       {/* User Profile */}
       <div
