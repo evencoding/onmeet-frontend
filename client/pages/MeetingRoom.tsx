@@ -145,6 +145,19 @@ export default function MeetingRoom() {
               </button>
 
               <button
+                onClick={() => setIsRecording(!isRecording)}
+                className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
+                  isRecording
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-white/70 text-foreground hover:bg-white"
+                }`}
+                title={isRecording ? "녹화 중지" : "녹화 시작"}
+              >
+                <Circle className="w-3 h-3 fill-current" />
+                <span className="text-xs font-semibold">REC</span>
+              </button>
+
+              <button
                 onClick={() => navigate("/")}
                 className="p-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-200"
               >
