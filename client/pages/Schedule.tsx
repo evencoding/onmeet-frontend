@@ -100,7 +100,7 @@ export default function Schedule() {
 
   return (
     <Layout>
-      <div className="max-w-6xl space-y-6">
+      <div className="w-full space-y-6">
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">일정</h1>
@@ -108,14 +108,14 @@ export default function Schedule() {
         </div>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Calendar */}
-          <div className="lg:col-span-1">
+          <div className="w-full">
             <CalendarView onSelectDate={setSelectedDate} meetings={allMeetings} />
           </div>
 
           {/* Meetings List */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="w-full space-y-4">
             <div className="bg-white/40 backdrop-blur-md border border-border/30 rounded-3xl p-6">
               <h2 className="text-xl font-bold text-foreground mb-4">
                 {format(selectedDate, "MMMM dd, yyyy (EEEE)", { locale: ko })}의 회의
