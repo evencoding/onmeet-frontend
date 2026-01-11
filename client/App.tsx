@@ -87,6 +87,14 @@ const AppContent = () => (
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/team/:teamId"
+        element={
+          <ProtectedRoute>
+            <Team />
+          </ProtectedRoute>
+        }
+      />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
