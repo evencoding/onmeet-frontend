@@ -168,7 +168,7 @@ export default function RecentMeetings() {
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 mt-2.5">
           {filteredMeetings.map((meeting) => (
             <div
               key={meeting.id}
