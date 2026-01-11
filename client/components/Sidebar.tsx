@@ -74,7 +74,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-full md:w-72 bg-background border-r border-border flex flex-col h-screen">
+    <div className="w-full md:w-72 bg-gradient-to-b from-bg-DEFAULT via-white/40 to-bg-DEFAULT border-r border-border/30 flex flex-col h-screen">
       {/* Header */}
       <div className="px-6 py-5 border-b border-border">
         <div className="flex items-center justify-between">
