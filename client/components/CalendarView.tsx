@@ -67,7 +67,7 @@ export default function CalendarView({ onSelectDate, meetings = [] }: CalendarVi
       </div>
 
       {/* Weekday Headers */}
-      <div className="grid grid-cols-7 gap-2 mb-2">
+      <div className="grid grid-cols-7 gap-3 mb-3">
         {weekDays.map((day) => (
           <div key={day} className="text-center text-sm font-semibold text-text-sub py-2">
             {day}
@@ -76,7 +76,7 @@ export default function CalendarView({ onSelectDate, meetings = [] }: CalendarVi
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-3">
         {paddedDays.map((date, idx) => {
           const isCurrentMonth = isSameMonth(date, currentDate);
           const isSelected = selectedDate && isSameDay(date, selectedDate);
