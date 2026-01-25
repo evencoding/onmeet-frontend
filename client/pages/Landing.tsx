@@ -111,8 +111,8 @@ export default function Landing() {
         <div className="mb-20">
           <div className="rounded-3xl overflow-hidden border border-border/40 shadow-2xl">
             <img
-              src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop"
-              alt="Meeting screenshot"
+              src="https://images.pexels.com/photos/4226261/pexels-photo-4226261.jpeg?w=1200&h=600&fit=crop"
+              alt="Video conference meeting"
               className="w-full h-auto object-cover"
             />
           </div>
