@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Clock, MapPin, Users, Search, X, ArrowLeft } from "lucide-react";
+import { Clock, Search, X } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
