@@ -175,10 +175,6 @@ export default function Summary() {
           <Clock className="w-4 h-4 text-brand-500" />
           {format(meeting.date, "MMM dd, yyyy", { locale: ko })} {meeting.time}
         </div>
-        <div className="flex items-center gap-1">
-          <MapPin className="w-4 h-4 text-brand-500" />
-          {meeting.location}
-        </div>
       </div>
     </div>
   );
