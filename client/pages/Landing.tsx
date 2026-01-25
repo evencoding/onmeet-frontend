@@ -177,8 +177,8 @@ export default function Landing() {
 
           <div className="rounded-3xl overflow-hidden border border-border/40 shadow-xl">
             <img
-              src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=600&fit=crop"
-              alt="Team collaboration"
+              src="https://images.pexels.com/photos/7691691/pexels-photo-7691691.jpeg?w=600&h=600&fit=crop"
+              alt="Team video collaboration"
               className="w-full h-auto object-cover"
             />
           </div>
