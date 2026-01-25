@@ -226,27 +226,11 @@ export default function Summary() {
         </div>
         <div>
           <p className="text-xs text-text-sub font-semibold uppercase mb-2">
-            장소
-          </p>
-          <p className="text-lg font-semibold text-foreground">
-            {meeting.location}
-          </p>
-        </div>
-        <div>
-          <p className="text-xs text-text-sub font-semibold uppercase mb-2">
             참석자
           </p>
           <p className="text-lg font-semibold text-foreground">
             {meeting.participants}명
           </p>
-        </div>
-        <div>
-          <p className="text-xs text-text-sub font-semibold uppercase mb-2">
-            상태
-          </p>
-          <span className="inline-block px-3 py-1 bg-brand-50 text-brand-600 text-sm font-semibold rounded-full">
-            완료
-          </span>
         </div>
       </div>
 
