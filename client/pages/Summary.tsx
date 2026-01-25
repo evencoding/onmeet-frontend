@@ -10,7 +10,6 @@ interface Meeting {
   date: Date;
   time: string;
   duration: string;
-  location: string;
   participants: number;
   description: string;
   summary?: string;
