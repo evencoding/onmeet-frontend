@@ -85,19 +85,16 @@ export default function Sidebar({
       id: "marketing",
       name: "Marketing",
       color: "bg-purple-200",
-      icon: "📢",
     },
     {
       id: "product",
       name: "Product",
       color: "bg-blue-200",
-      icon: "📊",
     },
     {
       id: "design",
       name: "Design",
       color: "bg-pink-200",
-      icon: "🎨",
     },
   ];
 
