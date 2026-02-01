@@ -186,15 +186,15 @@ export default function AddTeamModal({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={handleClose}>
-      <AlertDialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <AlertDialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-br from-purple-900/40 via-black/80 to-pink-900/30 border border-purple-500/30 backdrop-blur-md">
         <AlertDialogHeader>
           <div className="flex items-center justify-between">
-            <AlertDialogTitle>새 팀 추가</AlertDialogTitle>
+            <AlertDialogTitle className="text-white/90">새 팀 추가</AlertDialogTitle>
             <button
               onClick={handleClose}
-              className="p-1 hover:bg-surface-subtle rounded-lg transition-colors"
+              className="p-1 hover:bg-purple-500/20 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 text-white/70" />
             </button>
           </div>
         </AlertDialogHeader>
@@ -202,7 +202,7 @@ export default function AddTeamModal({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Team Name Input */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-foreground">
+            <label className="text-sm font-semibold text-white/90">
               팀 이름 <span className="text-red-500">*</span>
             </label>
             <input
@@ -210,7 +210,7 @@ export default function AddTeamModal({
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
               placeholder="예: 마케팅 팀"
-              className="w-full px-4 py-2 border border-border/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-2 border border-purple-500/30 rounded-lg bg-purple-500/10 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-white placeholder-white/40"
               disabled={isLoading}
               autoFocus
             />
@@ -218,14 +218,14 @@ export default function AddTeamModal({
 
           {/* Description Input */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-foreground">
+            <label className="text-sm font-semibold text-white/90">
               설명
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="팀의 목적과 역할을 설명해주세요"
-              className="w-full px-4 py-2 border border-border/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all resize-none"
+              className="w-full px-4 py-2 border border-purple-500/30 rounded-lg bg-purple-500/10 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none text-white placeholder-white/40"
               rows={3}
               disabled={isLoading}
             />
