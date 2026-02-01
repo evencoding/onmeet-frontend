@@ -135,7 +135,7 @@ export default function CompanySignup() {
               </motion.div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-2.5">
               {/* Company Name */}
               <motion.div
                 className="space-y-2"
