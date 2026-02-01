@@ -301,9 +301,9 @@ export default function EmployeeSignup() {
         transition={{ duration: 0.6 }}
       >
         {/* Logo and Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <motion.div
-            className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white mb-4 relative overflow-hidden"
+            className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white mb-2 relative overflow-hidden"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
@@ -313,11 +313,11 @@ export default function EmployeeSignup() {
               animate={{ opacity: [0, 1, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
-            <span className="relative text-xl font-bold">O</span>
+            <span className="relative text-lg font-bold">O</span>
           </motion.div>
 
           <motion.h1
-            className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+            className="text-2xl font-bold mb-1 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -326,7 +326,7 @@ export default function EmployeeSignup() {
           </motion.h1>
 
           <motion.p
-            className="text-white/70"
+            className="text-xs text-white/70"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
