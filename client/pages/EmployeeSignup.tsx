@@ -232,7 +232,7 @@ export default function EmployeeSignup() {
 
               {/* Divider */}
               <motion.div
-                className="my-6 flex items-center gap-3"
+                className="my-3 flex items-center gap-3"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
@@ -244,7 +244,7 @@ export default function EmployeeSignup() {
 
               {/* Back Link */}
               <motion.p
-                className="text-center text-sm text-white/70"
+                className="text-center text-xs text-white/70"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
