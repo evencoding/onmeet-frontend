@@ -192,9 +192,12 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            회의에만 집중하세요. 영상 기록과 AI 회의록은 ONMEET이 자동으로 처리합니다.
+            회의에만 집중하세요. 영상 기록과 AI 회의록은 ONMEET이 자동으로
+            처리합니다.
             <br />
-            <span className="text-purple-300 font-semibold">기술과 신뢰가 만나는 순간</span>
+            <span className="text-purple-300 font-semibold">
+              기술과 신뢰가 만나는 순간
+            </span>
           </motion.p>
 
           <motion.div
@@ -246,7 +249,9 @@ export default function Landing() {
           transition={{ duration: 1.5, repeat: Infinity }}
         >
           <div className="flex flex-col items-center gap-2">
-            <span className="text-white/60 text-sm font-semibold">스크롤하세요</span>
+            <span className="text-white/60 text-sm font-semibold">
+              스크롤하세요
+            </span>
             <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
               <motion.div
                 className="w-1 h-2 bg-white/60 rounded-full"
@@ -407,25 +412,29 @@ export default function Landing() {
                   영상 회의 자동 기록
                 </h3>
                 <p className="text-white/70 text-lg mb-8 leading-relaxed">
-                  모든 회의를 자동으로 녹화하여 나중에 언제든지 확인할 수 있습니다. 회의 중에 놓친 부분이나 중요한 결정 사항을 다시 확인하세요.
+                  모든 회의를 자동으로 녹화하여 나중에 언제든지 확인할 수
+                  있습니다. 회의 중에 놓친 부분이나 중요한 결정 사항을 다시
+                  확인하세요.
                 </p>
 
                 <ul className="space-y-3">
-                  {["자동 녹화 및 저장", "고품질 비디오 압축", "언제든 재생 가능"].map(
-                    (item, idx) => (
-                      <motion.li
-                        key={idx}
-                        className="flex items-center gap-3 text-white/80"
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.4, delay: idx * 0.1 }}
-                        viewport={{ once: true }}
-                      >
-                        <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0" />
-                        {item}
-                      </motion.li>
-                    )
-                  )}
+                  {[
+                    "자동 녹화 및 저장",
+                    "고품질 비디오 압축",
+                    "언제든 재생 가능",
+                  ].map((item, idx) => (
+                    <motion.li
+                      key={idx}
+                      className="flex items-center gap-3 text-white/80"
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: idx * 0.1 }}
+                      viewport={{ once: true }}
+                    >
+                      <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0" />
+                      {item}
+                    </motion.li>
+                  ))}
                 </ul>
               </div>
             </motion.div>
@@ -453,7 +462,9 @@ export default function Landing() {
                   AI 회의록 자동 생성
                 </h3>
                 <p className="text-white/70 text-lg mb-8 leading-relaxed">
-                  첨단 AI가 회의 내용을 분석하여 핵심 내용, 결정사항, 할일 항목을 자동으로 정리해줍니다. 시간 낭비 없이 결과에 집중하세요.
+                  첨단 AI가 회의 내용을 분석하여 핵심 내용, 결정사항, 할일
+                  항목을 자동으로 정리해줍니다. 시간 낭비 없이 결과에
+                  집중하세요.
                 </p>
 
                 <ul className="space-y-3">
@@ -470,7 +481,7 @@ export default function Landing() {
                         <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0" />
                         {item}
                       </motion.li>
-                    )
+                    ),
                   )}
                 </ul>
               </div>

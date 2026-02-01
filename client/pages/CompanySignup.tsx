@@ -119,10 +119,14 @@ export default function CompanySignup() {
               transition={{ delay: 0.4 }}
             >
               <div className="flex items-center gap-2 mb-0">
-                <h2 className="text-lg font-bold text-white">새로운 팀 만들기</h2>
+                <h2 className="text-lg font-bold text-white">
+                  새로운 팀 만들기
+                </h2>
                 <Sparkles className="w-4 h-4 text-purple-400" />
               </div>
-              <p className="text-white/60 text-xs mb-4">기업 정보를 입력해주세요</p>
+              <p className="text-white/60 text-xs mb-4">
+                기업 정보를 입력해주세요
+              </p>
             </motion.div>
 
             {error && (
