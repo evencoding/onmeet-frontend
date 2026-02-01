@@ -139,7 +139,7 @@ export default function SignupFlow() {
                         <div className="w-1.5 h-1.5 rounded-full bg-purple-400 flex-shrink-0" />
                         {feature}
                       </motion.div>
-                    )
+                    ),
                   )}
                 </div>
 
@@ -210,7 +210,7 @@ export default function SignupFlow() {
                         <div className="w-1.5 h-1.5 rounded-full bg-pink-400 flex-shrink-0" />
                         {feature}
                       </motion.div>
-                    )
+                    ),
                   )}
                 </div>
 

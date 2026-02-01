@@ -2,7 +2,14 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
-import { User, Mail, Lock, ArrowRight, Sparkles, CheckCircle } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  ArrowRight,
+  Sparkles,
+  CheckCircle,
+} from "lucide-react";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -121,8 +128,12 @@ export default function Signup() {
                 >
                   <CheckCircle className="w-8 h-8" />
                 </motion.div>
-                <h3 className="text-xl font-bold text-white mb-2">가입 완료!</h3>
-                <p className="text-white/70">로그인 페이지로 이동 중입니다...</p>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  가입 완료!
+                </h3>
+                <p className="text-white/70">
+                  로그인 페이지로 이동 중입니다...
+                </p>
               </motion.div>
             ) : (
               <>
