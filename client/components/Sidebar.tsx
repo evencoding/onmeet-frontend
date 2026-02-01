@@ -169,8 +169,8 @@ export default function Sidebar({
                     ? "justify-center p-3"
                     : "justify-between px-4 py-3",
                   isActive
-                    ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
-                    : "text-foreground hover:bg-white/40",
+                    ? "bg-gradient-to-r from-purple-600/30 to-purple-600/20 text-purple-300 shadow-lg shadow-purple-500/20"
+                    : "text-white/70 hover:bg-purple-500/10 hover:text-white/90",
                 )}
               >
                 <div className="flex items-center gap-3">
