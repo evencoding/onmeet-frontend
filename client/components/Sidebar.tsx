@@ -243,7 +243,7 @@ export default function Sidebar({
                         : "from-pink-500 to-pink-600",
                   )}
                 >
-                  {selectedTeamId === team.id ? "✓" : team.id.charAt(0).toUpperCase()}
+                  {team.id.charAt(0).toUpperCase()}
                 </div>
                 <span className="text-sm font-medium flex-1 text-left">
                   {team.name}
