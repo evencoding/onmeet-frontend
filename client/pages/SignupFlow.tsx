@@ -84,7 +84,7 @@ export default function SignupFlow() {
 
         {/* Signup Type Selection */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
