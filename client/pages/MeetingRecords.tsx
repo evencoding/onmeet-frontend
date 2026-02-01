@@ -110,29 +110,29 @@ export default function MeetingRecords() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">회의 기록</h1>
-          <p className="text-text-sub">지난 회의 기록을 확인하고 관리하세요</p>
+          <h1 className="text-3xl font-bold text-white/90 mb-2">회의 기록</h1>
+          <p className="text-white/60">지난 회의 기록을 확인하고 관리하세요</p>
         </div>
 
         {/* Search and Filter Bar */}
         <div className="flex flex-col md:flex-row gap-3">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
             <input
               type="text"
               placeholder="회의 제목 검색..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-border/50 rounded-xl bg-white/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm"
+              className="w-full pl-10 pr-4 py-3 border border-purple-500/30 rounded-xl bg-purple-500/10 focus:bg-purple-500/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm text-white placeholder-white/40"
             />
           </div>
           <div className="flex gap-2">
             <div className="relative">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="pl-10 pr-4 py-3 border border-border/50 rounded-xl bg-white/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm appearance-none cursor-pointer"
+                className="pl-10 pr-4 py-3 border border-purple-500/30 rounded-xl bg-purple-500/10 focus:bg-purple-500/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm appearance-none cursor-pointer text-white"
               >
                 <option value="all">모든 기록</option>
                 <option value="transcript">자막 있음</option>
