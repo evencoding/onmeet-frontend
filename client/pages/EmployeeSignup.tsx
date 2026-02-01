@@ -345,16 +345,16 @@ export default function EmployeeSignup() {
           {/* Glow effect */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
 
-          <div className="relative bg-gradient-to-br from-blue-900/40 via-purple-900/20 to-black/60 border border-blue-500/30 rounded-2xl p-8 backdrop-blur-xl hover:border-blue-500/60 transition-all duration-300">
+          <div className="relative bg-gradient-to-br from-blue-900/40 via-purple-900/20 to-black/60 border border-blue-500/30 rounded-2xl p-5 backdrop-blur-xl hover:border-blue-500/60 transition-all duration-300">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              <h2 className="text-2xl font-bold text-white mb-1">
+              <h2 className="text-lg font-bold text-white mb-0">
                 {companyName}
               </h2>
-              <p className="text-white/60 mb-6">사원 정보를 입력해주세요</p>
+              <p className="text-white/60 text-xs mb-4">사원 정보를 입력해주세요</p>
             </motion.div>
 
             {error && (
