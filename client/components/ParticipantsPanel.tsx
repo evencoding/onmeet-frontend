@@ -287,11 +287,11 @@ export default function ParticipantsPanel({
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
         {activeTab === "participants" ? (
-          <div className="divide-y divide-border/20">
+          <div className="divide-y divide-purple-500/20">
             {participants.map((participant) => (
               <div
                 key={participant.id}
-                className="px-4 py-3 hover:bg-white/40 transition-colors group"
+                className="px-4 py-3 hover:bg-purple-500/10 transition-colors group"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 flex-1">
@@ -302,17 +302,17 @@ export default function ParticipantsPanel({
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       {participant.isHost && (
-                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-pink-400 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-white">
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-purple-900">
                           H
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-foreground truncate">
+                      <p className="text-sm font-semibold text-white/90 truncate">
                         {participant.name}
                       </p>
                       {participant.isHost && (
-                        <span className="text-xs text-brand-500 font-medium">
+                        <span className="text-xs text-purple-400 font-medium">
                           Host
                         </span>
                       )}
@@ -321,21 +321,21 @@ export default function ParticipantsPanel({
 
                   <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     {participant.isVideoOn ? (
-                      <div className="w-5 h-5 rounded bg-brand-500/20 flex items-center justify-center text-xs text-brand-500">
-                        📹
+                      <div className="w-5 h-5 rounded bg-purple-500/30 flex items-center justify-center text-xs text-purple-300">
+                        V
                       </div>
                     ) : (
-                      <div className="w-5 h-5 rounded bg-gray-200/30 flex items-center justify-center text-xs">
+                      <div className="w-5 h-5 rounded bg-white/10 flex items-center justify-center text-xs text-white/40">
                         ✕
                       </div>
                     )}
                     {participant.isMuted ? (
-                      <div className="w-5 h-5 rounded bg-gray-200/30 flex items-center justify-center text-xs">
-                        🔇
+                      <div className="w-5 h-5 rounded bg-white/10 flex items-center justify-center text-xs text-white/40">
+                        M
                       </div>
                     ) : (
-                      <div className="w-5 h-5 rounded bg-brand-500/20 flex items-center justify-center text-xs text-brand-500">
-                        🔊
+                      <div className="w-5 h-5 rounded bg-purple-500/30 flex items-center justify-center text-xs text-purple-300">
+                        A
                       </div>
                     )}
                   </div>
