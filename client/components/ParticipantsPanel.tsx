@@ -344,7 +344,7 @@ export default function ParticipantsPanel({
             ))}
           </div>
         ) : (
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full bg-black/40">
             {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.map((msg, idx) => (
@@ -367,7 +367,7 @@ export default function ParticipantsPanel({
                         className={`flex flex-col max-w-xs ${msg.isOwn ? "items-end" : "items-start"}`}
                       >
                         {/* Sender and Timestamp on same line */}
-                        <span className="text-xs text-text-sub mb-1">
+                        <span className="text-xs text-white/50 mb-1">
                           {msg.sender} {msg.timestamp}
                         </span>
 
@@ -375,14 +375,9 @@ export default function ParticipantsPanel({
                         <div
                           className={`px-3 py-2 rounded-2xl text-sm font-medium ${
                             msg.isOwn
-                              ? "bg-brand-500 text-white rounded-br-none"
-                              : "rounded-bl-none"
+                              ? "bg-purple-600 text-white rounded-br-none"
+                              : "rounded-bl-none bg-purple-500/30 text-white"
                           }`}
-                          style={
-                            !msg.isOwn
-                              ? { backgroundColor: "#E6E0F2", color: "#1F1F2E" }
-                              : {}
-                          }
                         >
                           {msg.message}
                         </div>
@@ -391,7 +386,7 @@ export default function ParticipantsPanel({
                   ) : (
                     // System message - centered
                     <div className="flex justify-center py-2">
-                      <span className="text-xs text-text-sub italic bg-white/40 px-3 py-1 rounded-full">
+                      <span className="text-xs text-white/40 italic bg-purple-500/20 px-3 py-1 rounded-full">
                         {msg.sender}
                       </span>
                     </div>
@@ -402,7 +397,7 @@ export default function ParticipantsPanel({
             </div>
 
             {/* Message Input */}
-            <div className="border-t border-border/20 p-4 bg-white/50">
+            <div className="border-t border-purple-500/20 p-4 bg-purple-900/20">
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -414,11 +409,11 @@ export default function ParticipantsPanel({
                     }
                   }}
                   placeholder="Message..."
-                  className="flex-1 px-4 py-2.5 border border-border/50 rounded-full bg-white/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm placeholder-text-sub"
+                  className="flex-1 px-4 py-2.5 border border-purple-500/30 rounded-full bg-purple-500/10 focus:bg-purple-500/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm text-white placeholder-white/40"
                 />
                 <button
                   onClick={handleSendMessage}
-                  className="p-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-full hover:from-brand-600 hover:to-brand-700 transition-all duration-200 flex-shrink-0"
+                  className="p-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:from-purple-700 hover:to-pink-700 transition-all duration-200 flex-shrink-0"
                 >
                   <Send className="w-5 h-5" />
                 </button>
