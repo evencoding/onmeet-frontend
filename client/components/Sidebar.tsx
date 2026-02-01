@@ -283,7 +283,7 @@ export default function Sidebar({
       {/* User Profile */}
       <div
         className={cn(
-          "border-t border-border/30 bg-white/30",
+          "border-t border-purple-500/20 bg-purple-500/5 backdrop-blur-md",
           isCollapsed ? "px-2 py-4" : "px-3 py-4",
         )}
       >
