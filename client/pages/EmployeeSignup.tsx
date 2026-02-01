@@ -508,7 +508,7 @@ export default function EmployeeSignup() {
               <motion.button
                 type="submit"
                 disabled={isLoading}
-                className="w-full px-6 py-3 mt-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full px-4 py-2 mt-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 initial={{ opacity: 0, y: 10 }}
@@ -516,13 +516,13 @@ export default function EmployeeSignup() {
                 transition={{ delay: 0.8 }}
               >
                 {isLoading ? "가입 중..." : "계정 만들기"}
-                {!isLoading && <ArrowRight className="w-4 h-4" />}
+                {!isLoading && <ArrowRight className="w-3 h-3" />}
               </motion.button>
             </form>
 
             {/* Divider */}
             <motion.div
-              className="my-6 flex items-center gap-3"
+              className="my-3 flex items-center gap-3"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.9 }}
@@ -534,7 +534,7 @@ export default function EmployeeSignup() {
 
             {/* Back Link */}
             <motion.p
-              className="text-center text-sm text-white/70"
+              className="text-center text-xs text-white/70"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
@@ -544,7 +544,7 @@ export default function EmployeeSignup() {
                 onClick={() => setStep("verify")}
                 className="text-blue-300 font-semibold hover:text-purple-300 transition-colors flex items-center justify-center gap-1 mx-auto"
               >
-                <ArrowLeft className="w-4 h-4" /> 이전 단계로
+                <ArrowLeft className="w-3 h-3" /> 이전 단계로
               </button>
             </motion.p>
           </div>
