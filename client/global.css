@@ -105,7 +105,7 @@
 
   body {
     @apply text-foreground;
-    background: linear-gradient(135deg, hsl(260, 33%, 97%) 0%, hsl(260, 33%, 96%) 25%, hsl(270, 35%, 97%) 50%, hsl(260, 30%, 96.5%) 75%, hsl(260, 33%, 97%) 100%);
+    background: linear-gradient(135deg, hsl(250, 20%, 8%) 0%, hsl(250, 20%, 10%) 25%, hsl(270, 25%, 12%) 50%, hsl(250, 15%, 8%) 75%, hsl(250, 20%, 8%) 100%);
     background-attachment: fixed;
     background-size: 400% 400%;
   }
