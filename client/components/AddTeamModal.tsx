@@ -233,7 +233,7 @@ export default function AddTeamModal({
 
           {/* Color Selection */}
           <div className="space-y-3">
-            <label className="text-sm font-semibold text-foreground">
+            <label className="text-sm font-semibold text-white/90">
               팀 색상
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -244,8 +244,8 @@ export default function AddTeamModal({
                   onClick={() => setSelectedColor(color.value)}
                   className={`w-full h-12 rounded-lg transition-all border-2 flex items-center justify-center font-semibold text-sm ${
                     selectedColor === color.value
-                      ? "border-foreground shadow-lg scale-105"
-                      : "border-transparent hover:scale-102"
+                      ? "border-white shadow-lg scale-105 shadow-purple-500/30"
+                      : "border-white/30 hover:scale-102"
                   } text-white`}
                   style={{ backgroundColor: color.hex }}
                   title={color.name}
@@ -259,27 +259,27 @@ export default function AddTeamModal({
 
           {/* Members Section */}
           <div className="space-y-3">
-            <label className="text-sm font-semibold text-foreground">
+            <label className="text-sm font-semibold text-white/90">
               팀원 선택
             </label>
 
             {/* Search Bar */}
             <div className="relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-3 w-4 h-4 text-white/40" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="이름, 이메일, 부서로 검색"
-                className="w-full pl-10 pr-4 py-2 border border-border/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm"
+                className="w-full pl-10 pr-4 py-2 border border-purple-500/30 rounded-lg bg-purple-500/10 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-sm text-white placeholder-white/40"
                 disabled={isLoading}
               />
             </div>
 
             {/* Employee List */}
-            <div className="border border-border/40 rounded-lg overflow-hidden max-h-48 overflow-y-auto">
+            <div className="border border-purple-500/30 rounded-lg overflow-hidden max-h-48 overflow-y-auto bg-black/40">
               {filteredEmployees.length === 0 ? (
-                <div className="p-4 text-center text-sm text-text-sub">
+                <div className="p-4 text-center text-sm text-white/60">
                   검색 결과가 없습니다
                 </div>
               ) : (
@@ -293,8 +293,8 @@ export default function AddTeamModal({
                       type="button"
                       onClick={() => handleToggleMember(employee)}
                       disabled={isLoading}
-                      className={`w-full flex items-center gap-3 p-3 border-b border-border/20 hover:bg-surface-subtle transition-colors ${
-                        isSelected ? "bg-brand-50" : ""
+                      className={`w-full flex items-center gap-3 p-3 border-b border-purple-500/20 transition-colors ${
+                        isSelected ? "bg-purple-600/30" : "hover:bg-purple-500/10"
                       }`}
                     >
                       <input
@@ -314,10 +314,10 @@ export default function AddTeamModal({
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 text-left">
-                        <p className="text-sm font-medium text-foreground">
+                        <p className="text-sm font-medium text-white/90">
                           {employee.name}
                         </p>
-                        <p className="text-xs text-text-sub">
+                        <p className="text-xs text-white/50">
                           {employee.department} · {employee.email}
                         </p>
                       </div>
@@ -329,15 +329,15 @@ export default function AddTeamModal({
 
             {/* Selected Members */}
             {selectedMembers.length > 0 && (
-              <div className="space-y-2 p-3 bg-brand-50 rounded-lg">
-                <div className="text-xs font-semibold text-brand-600 uppercase">
+              <div className="space-y-2 p-3 bg-purple-600/20 rounded-lg border border-purple-500/30">
+                <div className="text-xs font-semibold text-purple-300 uppercase">
                   선택된 팀원 ({selectedMembers.length})
                 </div>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
                   {selectedMembers.map((member) => (
                     <div
                       key={member.id}
-                      className="flex items-center justify-between p-2 bg-white rounded border border-brand-200"
+                      className="flex items-center justify-between p-2 bg-purple-500/20 rounded border border-purple-500/30"
                     >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         <Avatar className="w-6 h-6">
@@ -347,10 +347,10 @@ export default function AddTeamModal({
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-foreground truncate">
+                          <p className="text-xs font-medium text-white/90 truncate">
                             {member.name}
                           </p>
-                          <p className="text-xs text-text-sub truncate">
+                          <p className="text-xs text-white/50 truncate">
                             {member.email}
                           </p>
                         </div>
@@ -359,7 +359,7 @@ export default function AddTeamModal({
                         type="button"
                         onClick={() => handleRemoveMember(member.id)}
                         disabled={isLoading}
-                        className="p-1 ml-1 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded transition-colors flex-shrink-0"
+                        className="p-1 ml-1 text-white/50 hover:text-red-400 hover:bg-red-500/20 rounded transition-colors flex-shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -377,11 +377,11 @@ export default function AddTeamModal({
               variant="outline"
               onClick={handleClose}
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 border-purple-500/30 bg-purple-500/10 text-white/90 hover:bg-purple-500/20"
             >
               취소
             </Button>
-            <Button type="submit" disabled={isLoading} className="flex-1">
+            <Button type="submit" disabled={isLoading} className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700">
               {isLoading ? "생성 중..." : "팀 생성"}
             </Button>
           </div>
