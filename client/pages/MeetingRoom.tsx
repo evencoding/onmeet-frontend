@@ -193,8 +193,8 @@ export default function MeetingRoom() {
             <div className="flex-1 overflow-hidden p-6 flex flex-col justify-between">
               {/* Thumbnail Carousel */}
               <div className="flex items-center gap-3 mb-6">
-                <button className="p-2 hover:bg-white/40 rounded-lg transition-colors">
-                  <ChevronLeft className="w-5 h-5 text-foreground" />
+                <button className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors">
+                  <ChevronLeft className="w-5 h-5 text-white/70" />
                 </button>
 
                 <div className="flex gap-2 flex-1 overflow-x-auto">
@@ -204,8 +204,8 @@ export default function MeetingRoom() {
                       onClick={() => setCurrentSpeaker(idx)}
                       className={`flex-shrink-0 w-32 h-24 rounded-2xl overflow-hidden transition-all duration-200 border-2 ${
                         currentSpeaker === idx
-                          ? "border-brand-500 ring-2 ring-brand-500/30"
-                          : "border-border/40 hover:border-border/60"
+                          ? "border-purple-400 ring-2 ring-purple-500/30"
+                          : "border-purple-500/30 hover:border-purple-400"
                       }`}
                     >
                       <img
@@ -217,8 +217,8 @@ export default function MeetingRoom() {
                   ))}
                 </div>
 
-                <button className="p-2 hover:bg-white/40 rounded-lg transition-colors">
-                  <ChevronRight className="w-5 h-5 text-foreground" />
+                <button className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors">
+                  <ChevronRight className="w-5 h-5 text-white/70" />
                 </button>
               </div>
 
