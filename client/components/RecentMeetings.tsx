@@ -178,31 +178,35 @@ export default function RecentMeetings() {
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-base font-bold text-foreground">
+                    <h3 className="text-base font-bold text-white/90">
                       {meeting.title}
                     </h3>
                     <span
                       className={cn(
                         "px-2.5 py-1 text-xs font-semibold rounded-full whitespace-nowrap",
-                        statusConfig[meeting.status].className,
+                        meeting.status === "active"
+                          ? "bg-green-500/30 text-green-300"
+                          : meeting.status === "closed"
+                            ? "bg-red-500/30 text-red-300"
+                            : "bg-yellow-500/30 text-yellow-300",
                       )}
                     >
                       {statusConfig[meeting.status].label}
                     </span>
                   </div>
                 </div>
-                <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 rounded-lg">
-                  <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-purple-500/20 rounded-lg">
+                  <MoreVertical className="w-4 h-4 text-white/40" />
                 </button>
               </div>
 
               {/* Description */}
-              <p className="text-sm text-text-sub mb-4 line-clamp-2 leading-relaxed">
+              <p className="text-sm text-white/60 mb-4 line-clamp-2 leading-relaxed">
                 {meeting.description}
               </p>
 
               {/* Footer with Participants and Department */}
-              <div className="flex items-center gap-4 pt-3 border-t border-border/20">
+              <div className="flex items-center gap-4 pt-3 border-t border-purple-500/20">
                 <div className="flex -space-x-2">
                   {meeting.participants.slice(0, 3).map((participant, idx) => (
                     <img
@@ -210,17 +214,17 @@ export default function RecentMeetings() {
                       src={participant.avatar}
                       alt={participant.name}
                       title={participant.name}
-                      className="w-7 h-7 rounded-full border-2 border-white object-cover hover:scale-110 transition-transform duration-200"
+                      className="w-7 h-7 rounded-full border-2 border-purple-500/30 object-cover hover:scale-110 transition-transform duration-200"
                     />
                   ))}
                 </div>
-                <span className="text-xs text-text-sub font-medium">
+                <span className="text-xs text-white/60 font-medium">
                   {meeting.participantCount}명 참여
                 </span>
                 {meeting.department && (
                   <>
-                    <div className="w-px h-4 bg-border/30" />
-                    <span className="text-xs bg-brand-50 text-brand-700 px-2 py-1 rounded-full font-medium">
+                    <div className="w-px h-4 bg-purple-500/20" />
+                    <span className="text-xs bg-purple-500/30 text-purple-300 px-2 py-1 rounded-full font-medium">
                       {meeting.department}
                     </span>
                   </>
