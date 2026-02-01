@@ -147,33 +147,33 @@ export default function InviteParticipantModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 max-h-[600px] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="bg-gradient-to-br from-purple-900/40 via-black/80 to-pink-900/30 rounded-2xl shadow-xl w-full max-w-md mx-4 max-h-[600px] flex flex-col overflow-hidden border border-purple-500/30 backdrop-blur-md">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border/20">
-          <h2 className="text-lg font-bold text-foreground">팀원 초대</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-purple-500/20 bg-gradient-to-b from-purple-900/40 to-black/60">
+          <h2 className="text-lg font-bold text-white/90">팀원 초대</h2>
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1.5 hover:bg-purple-500/20 rounded-lg transition-colors"
           >
-            <X className="w-5 h-5 text-muted-foreground" />
+            <X className="w-5 h-5 text-white/60" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-border/20 px-6">
+        <div className="flex border-b border-purple-500/20 px-6 bg-black/40">
           <button
             onClick={() => setActiveTab("team")}
             className={cn(
               "flex-1 py-3 text-sm font-semibold transition-all relative",
               activeTab === "team"
-                ? "text-brand-500"
-                : "text-text-sub hover:text-foreground",
+                ? "text-purple-300"
+                : "text-white/50 hover:text-white/70",
             )}
           >
             팀원 초대
             {activeTab === "team" && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-500" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500" />
             )}
           </button>
           <button
@@ -181,13 +181,13 @@ export default function InviteParticipantModal({
             className={cn(
               "flex-1 py-3 text-sm font-semibold transition-all relative",
               activeTab === "guest"
-                ? "text-brand-500"
-                : "text-text-sub hover:text-foreground",
+                ? "text-purple-300"
+                : "text-white/50 hover:text-white/70",
             )}
           >
             게스트 초대
             {activeTab === "guest" && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-500" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500" />
             )}
           </button>
         </div>
