@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Clock, MapPin, Users, Search, X, ArrowLeft } from "lucide-react";
+import { Clock, Search, X } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -10,7 +10,6 @@ interface Meeting {
   date: Date;
   time: string;
   duration: string;
-  location: string;
   participants: number;
   description: string;
   summary?: string;
@@ -35,7 +34,6 @@ export default function Summary() {
       date: new Date(2024, 0, 15),
       time: "10:00 AM",
       duration: "30분",
-      location: "회의실 A",
       participants: 5,
       description: "매주 월요일 정기 스탠드업 미팅",
       summary:
@@ -64,7 +62,6 @@ export default function Summary() {
       date: new Date(2024, 0, 16),
       time: "2:00 PM",
       duration: "1시간",
-      location: "온라인",
       participants: 8,
       description: "Q1 프로젝트 진행 상황 리뷰",
       summary:
@@ -93,7 +90,6 @@ export default function Summary() {
       date: new Date(2024, 0, 18),
       time: "3:30 PM",
       duration: "45분",
-      location: "회의실 B",
       participants: 4,
       description: "신규 UI 디자인 피드백 세션",
       summary:
@@ -117,7 +113,6 @@ export default function Summary() {
       date: new Date(2024, 0, 20),
       time: "11:00 AM",
       duration: "1.5시간",
-      location: "온라인",
       participants: 6,
       description: "월간 클라이언트 진행 상황 보고",
       summary:
@@ -141,7 +136,6 @@ export default function Summary() {
       date: new Date(2024, 0, 22),
       time: "4:00 PM",
       duration: "30분",
-      location: "회의실 C",
       participants: 2,
       description: "월간 성과 평가 및 피드백",
       summary:
@@ -180,10 +174,6 @@ export default function Summary() {
         <div className="flex items-center gap-1">
           <Clock className="w-4 h-4 text-brand-500" />
           {format(meeting.date, "MMM dd, yyyy", { locale: ko })} {meeting.time}
-        </div>
-        <div className="flex items-center gap-1">
-          <MapPin className="w-4 h-4 text-brand-500" />
-          {meeting.location}
         </div>
       </div>
     </div>
@@ -236,27 +226,11 @@ export default function Summary() {
         </div>
         <div>
           <p className="text-xs text-text-sub font-semibold uppercase mb-2">
-            장소
-          </p>
-          <p className="text-lg font-semibold text-foreground">
-            {meeting.location}
-          </p>
-        </div>
-        <div>
-          <p className="text-xs text-text-sub font-semibold uppercase mb-2">
             참석자
           </p>
           <p className="text-lg font-semibold text-foreground">
             {meeting.participants}명
           </p>
-        </div>
-        <div>
-          <p className="text-xs text-text-sub font-semibold uppercase mb-2">
-            상태
-          </p>
-          <span className="inline-block px-3 py-1 bg-brand-50 text-brand-600 text-sm font-semibold rounded-full">
-            완료
-          </span>
         </div>
       </div>
 

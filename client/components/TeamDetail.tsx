@@ -317,18 +317,18 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
   return (
     <div className="max-w-4xl space-y-6">
       {/* Team Header */}
-      <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-8">
+      <div className={cn("bg-gradient-to-br border border-border/40 rounded-2xl p-8 text-white", teamData.color)}>
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">
+            <h1 className="text-4xl font-bold mb-2">
               {teamData.name}
             </h1>
-            <p className="text-text-sub">{teamData.description}</p>
+            <p className="text-white/80">{teamData.description}</p>
           </div>
           <Button
             variant="outline"
             size="sm"
-            className="gap-2 flex items-center"
+            className="gap-2 flex items-center text-white border-white/30 hover:bg-white/20"
           >
             <Settings className="w-4 h-4" />팀 설정
           </Button>
