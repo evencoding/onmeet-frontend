@@ -171,43 +171,43 @@ export default function SignupFlow() {
             {/* Glow effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
 
-            <div className="relative bg-gradient-to-br from-pink-900/40 via-blue-900/20 to-black/60 border border-pink-500/30 rounded-2xl p-8 backdrop-blur-xl hover:border-pink-500/60 transition-all duration-300 h-full overflow-hidden">
+            <div className="relative bg-gradient-to-br from-pink-900/40 via-blue-900/20 to-black/60 border border-pink-500/30 rounded-xl p-5 backdrop-blur-xl hover:border-pink-500/60 transition-all duration-300 h-full overflow-hidden">
               {/* Animated gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/0 to-blue-500/0 group-hover:from-pink-500/10 group-hover:to-blue-500/10 transition-all duration-300" />
 
               <div className="relative z-10">
                 {/* Icon */}
                 <motion.div
-                  className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-500 to-blue-500 mb-6"
+                  className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-blue-500 mb-3"
                   whileHover={{ scale: 1.1, rotate: -5 }}
                   transition={{ type: "spring", stiffness: 400 }}
                 >
-                  <Users className="w-8 h-8 text-white" />
+                  <Users className="w-6 h-6 text-white" />
                 </motion.div>
 
                 {/* Content */}
-                <h2 className="text-2xl font-bold text-white mb-3 text-left">
+                <h2 className="text-lg font-bold text-white mb-2 text-left">
                   사원 회원가입
                 </h2>
-                <p className="text-white/70 text-left mb-6 leading-relaxed">
+                <p className="text-white/70 text-xs text-left mb-3 leading-relaxed">
                   초대받은 사원으로
                   <br />
                   팀에 참여하세요
                 </p>
 
                 {/* Features */}
-                <div className="space-y-3 mb-8 text-left">
+                <div className="space-y-1.5 mb-4 text-left">
                   {["초대 링크로 가입", "팀 회의 참여", "회의록 접근"].map(
                     (feature, idx) => (
                       <motion.div
                         key={idx}
-                        className="flex items-center gap-3 text-white/80"
+                        className="flex items-center gap-2 text-white/80 text-xs"
                         initial={{ opacity: 0, x: -10 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, delay: idx * 0.1 }}
                         viewport={{ once: true }}
                       >
-                        <div className="w-2 h-2 rounded-full bg-pink-400 flex-shrink-0" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-pink-400 flex-shrink-0" />
                         {feature}
                       </motion.div>
                     )
@@ -215,8 +215,8 @@ export default function SignupFlow() {
                 </div>
 
                 {/* Button */}
-                <div className="flex items-center justify-between pt-4 border-t border-pink-500/20">
-                  <span className="text-sm font-semibold text-pink-300">
+                <div className="flex items-center justify-between pt-3 border-t border-pink-500/20">
+                  <span className="text-xs font-semibold text-pink-300">
                     계속하기
                   </span>
                   <motion.div
@@ -224,7 +224,7 @@ export default function SignupFlow() {
                     animate={{ x: [0, 5, 0] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <ArrowRight className="w-5 h-5" />
+                    <ArrowRight className="w-4 h-4" />
                   </motion.div>
                 </div>
               </div>
