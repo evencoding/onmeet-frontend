@@ -134,36 +134,36 @@ export default function RecentMeetings() {
       {/* Search Input */}
       <div className="relative">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="회의 제목, 설명 또는 팀으로 검색..."
-            className="w-full pl-12 pr-10 py-3 bg-white/60 border border-border/50 rounded-xl focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm text-foreground placeholder-text-sub -mt-0.5"
+            className="w-full pl-12 pr-10 py-3 bg-purple-500/10 border border-purple-500/30 rounded-xl focus:bg-purple-500/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm text-white placeholder-white/40 -mt-0.5"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-lg transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-purple-500/20 rounded-lg transition-colors"
             >
-              <X className="w-4 h-4 text-muted-foreground" />
+              <X className="w-4 h-4 text-white/50" />
             </button>
           )}
         </div>
       </div>
 
-      <p className="text-xs text-text-sub mt-2.5">
+      <p className="text-xs text-white/50 mt-2.5">
         총 {filteredMeetings.length}개
         {searchQuery && ` (${searchQuery} 검색 결과)`}
       </p>
 
       {/* Results */}
       {filteredMeetings.length === 0 ? (
-        <div className="text-center py-12 bg-white/30 rounded-2xl border border-border/20">
-          <Search className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-text-sub mb-1">검색 결과가 없습니다</p>
-          <p className="text-xs text-muted-foreground">
+        <div className="text-center py-12 bg-purple-500/10 rounded-2xl border border-purple-500/30">
+          <Search className="w-12 h-12 text-white/20 mx-auto mb-3" />
+          <p className="text-white/70 mb-1">검색 결과가 없습니다</p>
+          <p className="text-xs text-white/50">
             다른 키워드로 다시 시도해보세요
           </p>
         </div>
@@ -172,7 +172,7 @@ export default function RecentMeetings() {
           {filteredMeetings.map((meeting) => (
             <div
               key={meeting.id}
-              className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-5 hover:shadow-lg transition-all duration-300 group"
+              className="bg-gradient-to-br from-purple-900/30 via-black/40 to-pink-900/20 border border-purple-500/30 rounded-2xl p-5 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 group backdrop-blur-md"
             >
               {/* Header with Title and Status */}
               <div className="flex items-start justify-between mb-3">
