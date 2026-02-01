@@ -184,8 +184,8 @@ export default function OngoingMeetings() {
   return (
     <div>
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></div>
-        <h2 className="text-xs font-bold text-foreground uppercase tracking-widest letter-spacing-wider">
+        <div className="w-2.5 h-2.5 rounded-full bg-pink-500 animate-pulse"></div>
+        <h2 className="text-xs font-bold text-white/90 uppercase tracking-widest letter-spacing-wider">
           진행 중인 회의
         </h2>
       </div>
@@ -194,7 +194,7 @@ export default function OngoingMeetings() {
         {meetings.map((meeting) => (
           <div
             key={meeting.id}
-            className="bg-gradient-to-br from-white via-white/90 to-surface-subtle border border-border/40 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group"
+            className="bg-gradient-to-br from-purple-900/30 via-black/50 to-pink-900/20 border border-purple-500/30 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-1 group backdrop-blur-md"
           >
             {/* Status bar */}
             <div
