@@ -255,7 +255,7 @@ export default function Sidebar({
 
           <button
             onClick={() => setIsAddTeamModalOpen(true)}
-            className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 text-white/60 hover:text-white/90 hover:bg-purple-500/10 rounded-xl transition-colors"
           >
             <Plus className="w-5 h-5" />
             <span className="text-sm font-medium">팀 추가</span>
