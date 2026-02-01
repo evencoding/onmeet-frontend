@@ -248,7 +248,7 @@ export default function CompanySignup() {
               <motion.button
                 type="submit"
                 disabled={isLoading}
-                className="w-full px-6 py-3 mt-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full px-4 py-2 mt-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 initial={{ opacity: 0, y: 10 }}
@@ -256,7 +256,7 @@ export default function CompanySignup() {
                 transition={{ delay: 0.8 }}
               >
                 {isLoading ? "생성 중..." : "기업 등록"}
-                {!isLoading && <ArrowRight className="w-4 h-4" />}
+                {!isLoading && <ArrowRight className="w-3 h-3" />}
               </motion.button>
             </form>
 
