@@ -104,14 +104,14 @@ export default function Sidebar({
   return (
     <div
       className={cn(
-        "bg-gradient-to-b from-bg-DEFAULT via-white/40 to-bg-DEFAULT border-r border-border/30 flex flex-col h-screen transition-all duration-300",
+        "bg-gradient-to-b from-purple-950/30 via-black/60 to-purple-950/30 border-r border-purple-500/20 flex flex-col h-screen transition-all duration-300 backdrop-blur-md",
         isCollapsed ? "w-20" : "w-72",
       )}
     >
       {/* Header */}
       <div
         className={cn(
-          "border-b border-border/30 bg-white/50 flex flex-col items-center justify-between",
+          "border-b border-purple-500/20 bg-purple-500/10 backdrop-blur-md flex flex-col items-center justify-between",
           isCollapsed ? "px-2 py-4" : "px-6 py-5",
         )}
       >
