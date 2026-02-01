@@ -206,13 +206,13 @@ export default function Sidebar({
 
       {/* Teams Section */}
       {!isCollapsed && (
-        <div className="px-3 py-4 border-t border-border/30 bg-white/30">
+        <div className="px-3 py-4 border-t border-purple-500/20 bg-purple-500/5 backdrop-blur-md">
           <div className="flex items-center justify-between px-4 mb-3">
-            <span className="text-xs font-semibold text-muted-foreground uppercase">
+            <span className="text-xs font-semibold text-white/60 uppercase">
               Teams
             </span>
-            <button className="p-1 hover:bg-secondary rounded transition-colors">
-              <MoreVertical className="w-4 h-4 text-muted-foreground" />
+            <button className="p-1 hover:bg-purple-500/20 rounded transition-colors">
+              <MoreVertical className="w-4 h-4 text-white/40" />
             </button>
           </div>
 
@@ -228,23 +228,27 @@ export default function Sidebar({
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
                   selectedTeamId === team.id
-                    ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
-                    : "text-foreground hover:bg-white/40",
+                    ? "bg-gradient-to-r from-purple-600/30 to-purple-600/20 text-purple-300 shadow-lg shadow-purple-500/20"
+                    : "text-white/70 hover:bg-purple-500/10 hover:text-white/90",
                 )}
                 title={`${team.name} 팀 선택`}
               >
                 <div
                   className={cn(
-                    "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white",
-                    team.color,
+                    "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white bg-gradient-to-br",
+                    team.id === "marketing"
+                      ? "from-purple-500 to-purple-600"
+                      : team.id === "product"
+                        ? "from-blue-500 to-blue-600"
+                        : "from-pink-500 to-pink-600",
                   )}
                 >
-                  {selectedTeamId === team.id ? "✓" : team.icon}
+                  {selectedTeamId === team.id ? "✓" : team.id.charAt(0).toUpperCase()}
                 </div>
                 <span className="text-sm font-medium flex-1 text-left">
                   {team.name}
                 </span>
-                <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
+                <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-white/40" />
               </button>
             ))}
           </div>
