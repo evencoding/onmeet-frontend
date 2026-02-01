@@ -167,17 +167,17 @@ export default function EmployeeSignup() {
             {/* Glow effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
 
-            <div className="relative bg-gradient-to-br from-blue-900/40 via-purple-900/20 to-black/60 border border-blue-500/30 rounded-2xl p-8 backdrop-blur-xl hover:border-blue-500/60 transition-all duration-300">
+            <div className="relative bg-gradient-to-br from-blue-900/40 via-purple-900/20 to-black/60 border border-blue-500/30 rounded-2xl p-5 backdrop-blur-xl hover:border-blue-500/60 transition-all duration-300">
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="text-2xl font-bold text-white">계정 인증</h2>
-                  <Sparkles className="w-5 h-5 text-blue-400" />
+                <div className="flex items-center gap-2 mb-0">
+                  <h2 className="text-lg font-bold text-white">계정 인증</h2>
+                  <Sparkles className="w-4 h-4 text-blue-400" />
                 </div>
-                <p className="text-white/60 mb-6">회사 이메일을 입력해주세요</p>
+                <p className="text-white/60 text-xs mb-4">회사 이메일을 입력해주세요</p>
               </motion.div>
 
               {error && (
