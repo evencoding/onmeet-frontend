@@ -258,15 +258,15 @@ export default function ParticipantsPanel({
   }, [participants]);
 
   return (
-    <div className="w-80 border-l border-border/30 bg-white/40 backdrop-blur-md flex flex-col">
+    <div className="w-80 border-l border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex flex-col">
       {/* Tabs */}
-      <div className="flex border-b border-border/20 bg-white/50">
+      <div className="flex border-b border-purple-500/20 bg-black/40">
         <button
           onClick={() => setActiveTab("participants")}
           className={`flex-1 px-4 py-3 text-sm font-semibold border-b-2 transition-all duration-200 ${
             activeTab === "participants"
-              ? "text-brand-500 border-brand-500"
-              : "text-text-sub border-transparent hover:text-foreground"
+              ? "text-purple-300 border-purple-500"
+              : "text-white/50 border-transparent hover:text-white/70"
           }`}
         >
           Participant ({count})
@@ -275,8 +275,8 @@ export default function ParticipantsPanel({
           onClick={() => setActiveTab("chat")}
           className={`flex-1 px-4 py-3 text-sm font-semibold border-b-2 transition-all duration-200 flex items-center justify-center gap-2 ${
             activeTab === "chat"
-              ? "text-brand-500 border-brand-500"
-              : "text-text-sub border-transparent hover:text-foreground"
+              ? "text-purple-300 border-purple-500"
+              : "text-white/50 border-transparent hover:text-white/70"
           }`}
         >
           <MessageCircle className="w-4 h-4" />
