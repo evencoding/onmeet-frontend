@@ -234,7 +234,7 @@ export default function SignupFlow() {
 
         {/* Demo Note */}
         <motion.p
-          className="text-center text-sm text-white/60"
+          className="text-center text-xs text-white/60"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
