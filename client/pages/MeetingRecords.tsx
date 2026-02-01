@@ -169,7 +169,7 @@ export default function MeetingRecords() {
                         {record.participants}명
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-brand-500">⏱</span>
+                        <Clock className="w-4 h-4 text-brand-500" />
                         {record.duration}
                       </div>
                     </div>
