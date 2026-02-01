@@ -148,35 +148,35 @@ export default function MeetingRecords() {
               <div
                 key={record.id}
                 onClick={() => setSelectedRecord(selectedRecord === record.id ? null : record.id)}
-                className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                className="bg-gradient-to-br from-purple-900/30 via-black/50 to-pink-900/20 border border-purple-500/30 rounded-2xl p-6 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer backdrop-blur-md"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-foreground mb-3">
+                    <h3 className="text-lg font-bold text-white/90 mb-3">
                       {record.title}
                     </h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-text-sub mb-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-white/60 mb-4">
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-brand-500" />
+                        <Clock className="w-4 h-4 text-purple-400" />
                         {record.date}
                       </div>
                       <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-brand-500" />
+                        <MapPin className="w-4 h-4 text-purple-400" />
                         {record.location}
                       </div>
                       <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-brand-500" />
+                        <Users className="w-4 h-4 text-purple-400" />
                         {record.participants}명
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-brand-500" />
+                        <Clock className="w-4 h-4 text-purple-400" />
                         {record.duration}
                       </div>
                     </div>
 
                     {/* Participant Avatars */}
                     <div className="flex items-center gap-2 mb-4">
-                      <span className="text-xs font-semibold text-text-sub mr-2">참가자:</span>
+                      <span className="text-xs font-semibold text-white/50 mr-2">참가자:</span>
                       <div className="flex -space-x-2">
                         {record.participantList.map((participant, idx) => (
                           <img
@@ -184,18 +184,18 @@ export default function MeetingRecords() {
                             src={participant.avatar}
                             alt={participant.name}
                             title={participant.name}
-                            className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                            className="w-8 h-8 rounded-full border-2 border-purple-500/30 object-cover"
                           />
                         ))}
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-col gap-2 ml-4">
-                    <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full whitespace-nowrap">
+                    <span className="px-3 py-1 bg-blue-500/30 text-blue-300 text-xs font-semibold rounded-full whitespace-nowrap">
                       기록 완료
                     </span>
                     {record.hasTranscript && (
-                      <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full whitespace-nowrap">
+                      <span className="px-3 py-1 bg-green-500/30 text-green-300 text-xs font-semibold rounded-full whitespace-nowrap">
                         자막 있음
                       </span>
                     )}
@@ -203,22 +203,22 @@ export default function MeetingRecords() {
                 </div>
 
                 {record.notes && (
-                  <div className="mb-4 pb-4 border-t border-border/20 pt-4">
-                    <p className="text-sm text-text-sub">{record.notes}</p>
+                  <div className="mb-4 pb-4 border-t border-purple-500/20 pt-4">
+                    <p className="text-sm text-white/60">{record.notes}</p>
                   </div>
                 )}
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap items-center gap-3">
-                  <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-lg hover:from-brand-600 hover:to-brand-700 transition-all duration-200">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200">
                     <Play className="w-4 h-4" />
                     재생
                   </button>
-                  <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-lg hover:from-brand-600 hover:to-brand-700 transition-all duration-200">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200">
                     <Download className="w-4 h-4" />
                     다운로드
                   </button>
-                  <button className="flex items-center gap-2 px-4 py-2 border border-border/60 text-foreground text-sm font-semibold rounded-lg hover:bg-white/60 transition-all duration-200">
+                  <button className="flex items-center gap-2 px-4 py-2 border border-purple-500/30 text-white/90 text-sm font-semibold rounded-lg hover:bg-purple-500/10 transition-all duration-200">
                     <Share2 className="w-4 h-4" />
                     공유
                   </button>
@@ -226,9 +226,9 @@ export default function MeetingRecords() {
 
                 {/* Expandable Transcript Section */}
                 {selectedRecord === record.id && record.hasTranscript && (
-                  <div className="mt-4 pt-4 border-t border-border/20 space-y-3">
-                    <h4 className="font-semibold text-foreground">회의 자막</h4>
-                    <div className="bg-white/60 rounded-lg p-4 text-sm text-text-sub max-h-64 overflow-y-auto">
+                  <div className="mt-4 pt-4 border-t border-purple-500/20 space-y-3">
+                    <h4 className="font-semibold text-white/90">회의 자막</h4>
+                    <div className="bg-purple-500/10 rounded-lg p-4 text-sm text-white/70 max-h-64 overflow-y-auto border border-purple-500/20">
                       <p>
                         안녕하세요, 이번 주 팀 회의를 시작하겠습니다. 먼저 지난주 진행상황을 정리하고, 이번주 목표를 설정해보겠습니다.
                       </p>
@@ -245,7 +245,7 @@ export default function MeetingRecords() {
             ))
           ) : (
             <div className="text-center py-12">
-              <p className="text-text-sub">검색 결과가 없습니다.</p>
+              <p className="text-white/60">검색 결과가 없습니다.</p>
             </div>
           )}
         </div>
