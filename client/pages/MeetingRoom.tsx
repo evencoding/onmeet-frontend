@@ -240,13 +240,13 @@ export default function MeetingRoom() {
             </div>
 
             {/* Controls Bar - Fixed at bottom */}
-            <div className="px-6 py-4 border-t border-border/30 bg-white/40 backdrop-blur-md flex items-center justify-center gap-3">
+            <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-center gap-3">
               <button
                 onClick={() => setIsMuted(!isMuted)}
                 className={`p-4 rounded-full transition-all duration-200 ${
                   isMuted
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-white/70 text-foreground hover:bg-white"
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
                 }`}
               >
                 {isMuted ? (
@@ -260,8 +260,8 @@ export default function MeetingRoom() {
                 onClick={() => setIsVideoOn(!isVideoOn)}
                 className={`p-4 rounded-full transition-all duration-200 ${
                   !isVideoOn
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-white/70 text-foreground hover:bg-white"
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
                 }`}
               >
                 {isVideoOn ? (
@@ -275,8 +275,8 @@ export default function MeetingRoom() {
                 onClick={() => setIsRecording(!isRecording)}
                 className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
                   isRecording
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-white/70 text-foreground hover:bg-white"
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
                 }`}
                 title={isRecording ? "녹화 중지" : "녹화 시작"}
               >
@@ -286,7 +286,7 @@ export default function MeetingRoom() {
 
               <button
                 onClick={() => navigate("/")}
-                className="p-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-200"
+                className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200"
               >
                 <Phone className="w-6 h-6" />
               </button>
