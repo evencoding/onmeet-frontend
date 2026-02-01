@@ -302,14 +302,14 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
       <button
         onClick={() => navigate("/login")}
         className={cn(
-          "bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-200",
+          "bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-200",
           isCollapsed
             ? "w-10 h-10 p-2 flex items-center justify-center"
             : "w-full px-4 py-3",
         )}
         title={isCollapsed ? "로그인" : ""}
       >
-        {isCollapsed ? "🔑" : "로그인"}
+        {isCollapsed ? "→" : "로그인"}
       </button>
     );
   }
@@ -327,10 +327,10 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
         </div>
         <button
           onClick={logout}
-          className="p-2 hover:bg-secondary rounded transition-colors"
+          className="p-2 hover:bg-purple-500/20 rounded transition-colors"
           title="로그아웃"
         >
-          <LogOut className="w-4 h-4 text-muted-foreground" />
+          <LogOut className="w-4 h-4 text-white/60" />
         </button>
       </div>
     );
@@ -339,7 +339,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
   return (
     <div className="space-y-2">
       {/* Company Information */}
-      <div className="w-full px-4 py-4 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl text-center">
+      <div className="w-full px-4 py-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl text-center">
         <div className="text-base font-bold text-white">
           Acme Corporation
         </div>
@@ -348,7 +348,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
       {/* Logout Button */}
       <button
         onClick={logout}
-        className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-border/60 bg-white/40 text-foreground text-sm font-medium rounded-xl hover:bg-white/60 transition-all duration-200"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-purple-500/30 bg-purple-500/10 text-white/90 text-sm font-medium rounded-xl hover:bg-purple-500/20 transition-all duration-200"
       >
         <LogOut className="w-4 h-4" />
         로그아웃
