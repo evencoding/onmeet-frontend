@@ -194,7 +194,7 @@ export default function OngoingMeetings() {
         {meetings.map((meeting) => (
           <div
             key={meeting.id}
-            className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/50 dark:to-pink-900/20 light:bg-gradient-to-br light:from-white light:to-purple-50/40 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/30 light:hover:shadow-xl light:hover:shadow-purple-300/40 light:hover:border-purple-500/60 hover:-translate-y-1 group dark:backdrop-blur-md light:backdrop-blur-md"
+            className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/50 dark:to-pink-900/20 light:bg-gradient-to-br light:from-purple-50/50 light:via-white light:to-pink-100/30 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/60 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/30 light:hover:shadow-xl light:hover:shadow-purple-400/40 light:hover:border-purple-400/80 hover:-translate-y-1 group dark:backdrop-blur-md light:backdrop-blur-md"
           >
             {/* Status bar */}
             <div
@@ -233,7 +233,7 @@ export default function OngoingMeetings() {
               </div>
 
               {/* Host Info */}
-              <div className="flex items-center gap-3 pb-4 border-b dark:border-purple-500/20 light:border-purple-300/30">
+              <div className="flex items-center gap-3 pb-4 border-b-2 dark:border-purple-500/30 light:border-purple-300/80">
                 <img
                   src={meeting.hostAvatar}
                   alt={meeting.hostName}

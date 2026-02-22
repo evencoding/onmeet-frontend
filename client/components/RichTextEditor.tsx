@@ -44,7 +44,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
 
   if (!editor) {
     return (
-      <div className={`flex flex-col dark:bg-purple-500/10 light:bg-white/50 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 rounded-xl overflow-hidden min-h-96 ${className}`}>
+      <div className={`flex flex-col dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:to-purple-50/40 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-xl overflow-hidden min-h-96 ${className}`}>
         <div className="p-4 flex items-center justify-center h-96 dark:text-white/50 light:text-purple-600">
           로딩 중...
         </div>
@@ -53,9 +53,9 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
   }
 
   return (
-    <div className={`flex flex-col dark:bg-purple-500/10 light:bg-white/50 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 rounded-xl overflow-hidden ${className}`}>
+    <div className={`flex flex-col dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:to-purple-50/40 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-xl overflow-hidden ${className}`}>
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-1 p-3 border-b dark:border-purple-500/20 light:border-purple-300 dark:bg-purple-500/5 light:bg-purple-100/30">
+      <div className="flex flex-wrap gap-1 p-3 border-b-2 dark:border-purple-500/20 light:border-purple-300/60 dark:bg-purple-500/5 light:bg-purple-100/40">
         {/* Heading 1 */}
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}

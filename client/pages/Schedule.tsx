@@ -236,7 +236,7 @@ export default function Schedule() {
           {/* Meetings List - Conditionally Shown */}
           {isRightPanelOpen && (
             <div className="w-full space-y-4">
-              <div className="dark:bg-purple-500/10 light:bg-white dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
+              <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
                 <h2 className="text-xl font-bold dark:text-white/90 light:text-purple-950 mb-4">
                   {format(selectedDate, "MMMM dd, yyyy (EEEE)", { locale: ko })}
                   의 회의
@@ -254,7 +254,7 @@ export default function Schedule() {
                     {selectedDateMeetings.map((meeting) => (
                       <div
                         key={meeting.id}
-                        className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:to-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200/60 rounded-2xl p-5 dark:hover:bg-purple-500/20 light:hover:shadow-lg transition-all duration-300"
+                        className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/60 rounded-2xl p-5 dark:hover:bg-purple-500/20 light:hover:shadow-lg light:hover:border-purple-400/70 transition-all duration-300"
                       >
                         <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-3">
                           {meeting.title}
@@ -307,7 +307,7 @@ export default function Schedule() {
               </div>
 
               {/* Upcoming Meetings Summary */}
-              <div className="dark:bg-purple-500/10 light:bg-gradient-to-r light:from-purple-50 light:to-purple-100 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
+              <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-purple-50/50 light:via-white light:to-pink-100/30 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
                 <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-4">
                   앞으로의 회의
                 </h3>
