@@ -194,7 +194,7 @@ export default function OngoingMeetings() {
         {meetings.map((meeting) => (
           <div
             key={meeting.id}
-            className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/50 dark:to-pink-900/20 light:bg-white border dark:border-purple-500/30 light:border-purple-300/40 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/30 light:hover:shadow-md light:hover:shadow-purple-400/20 hover:-translate-y-1 group dark:backdrop-blur-md light:backdrop-blur-sm"
+            className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/50 dark:to-pink-900/20 light:bg-gradient-to-br light:from-white light:to-purple-50/40 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/30 light:hover:shadow-xl light:hover:shadow-purple-300/40 light:hover:border-purple-500/60 hover:-translate-y-1 group dark:backdrop-blur-md light:backdrop-blur-md"
           >
             {/* Status bar */}
             <div
@@ -219,7 +219,7 @@ export default function OngoingMeetings() {
                   {meeting.tags.map((tag, idx) => (
                     <span
                       key={idx}
-                      className="text-xs dark:bg-purple-500/30 dark:text-purple-300 light:bg-purple-200/60 light:text-purple-700 px-2 py-1 rounded-full font-medium"
+                      className="text-xs dark:bg-purple-500/30 dark:text-purple-300 light:bg-purple-300/50 light:text-purple-900 light:border light:border-purple-400/60 px-2 py-1 rounded-full font-semibold"
                     >
                       #{tag}
                     </span>
