@@ -669,7 +669,7 @@ export default function Summary() {
             </p>
 
             {/* Tabs */}
-            <div className="flex gap-3 mb-8 border-b dark:border-purple-500/20 light:border-purple-300 pb-4">
+            <div className="flex gap-3 mb-8 border-b-2 dark:border-purple-500/30 light:border-purple-300/70 pb-4">
               {[
                 { id: "all" as const, label: "모든 회의" },
                 { id: "scheduled" as const, label: "예정된 회의" },
@@ -724,7 +724,7 @@ export default function Summary() {
 
         {/* Expanded View */}
         {expandedMeeting && (
-          <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white/98 light:border-2 light:border-purple-200 light:shadow-xl light:shadow-purple-300/40 dark:border dark:border-purple-500/30 rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/30 light:border-2 light:border-purple-300/70 light:shadow-xl light:shadow-purple-300/40 dark:border dark:border-purple-500/30 rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
             {renderExpandedCard(expandedMeeting)}
           </div>
         )}
@@ -746,7 +746,7 @@ export default function Summary() {
                 {filteredMeetings.map((meeting) => (
                   <div
                     key={meeting.id}
-                    className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white/95 light:border-2 light:border-purple-200 light:shadow-lg light:shadow-purple-300/30 dark:border dark:border-purple-500/30 rounded-2xl p-6 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-xl light:hover:shadow-purple-400/40 light:hover:border-purple-300 hover:-translate-y-1 transition-all duration-300 dark:backdrop-blur-md light:backdrop-blur-sm group flex flex-col"
+                    className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/30 light:to-pink-100/20 light:border-2 light:border-purple-300/70 light:shadow-lg light:shadow-purple-300/30 dark:border dark:border-purple-500/30 rounded-2xl p-6 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-xl light:hover:shadow-purple-400/40 light:hover:border-purple-400/80 hover:-translate-y-1 transition-all duration-300 dark:backdrop-blur-md light:backdrop-blur-md group flex flex-col"
                   >
                     <button
                       onClick={() => setExpandedMeetingId(meeting.id)}

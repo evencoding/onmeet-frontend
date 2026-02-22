@@ -84,7 +84,7 @@ export default function MyPage() {
 
         {/* Profile Tab */}
         {activeTab === "profile" && (
-          <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+          <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/30 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-purple-300/30 p-8">
             <div className="flex gap-8">
               {/* Profile Image Section */}
               <div className="flex flex-col items-center gap-3 flex-shrink-0">
@@ -130,7 +130,7 @@ export default function MyPage() {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
                     />
                   ) : (
                     <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.name}</p>
@@ -158,7 +158,7 @@ export default function MyPage() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
                     />
                   ) : (
                     <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.phone}</p>
@@ -176,7 +176,7 @@ export default function MyPage() {
                       name="position"
                       value={formData.position}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
                     />
                   ) : (
                     <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.position}</p>
@@ -194,7 +194,7 @@ export default function MyPage() {
                       name="team"
                       value={formData.team}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
                     />
                   ) : (
                     <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.team}</p>
@@ -212,7 +212,7 @@ export default function MyPage() {
                       value={formData.bio}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
                     />
                   ) : (
                     <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.bio}</p>
@@ -247,7 +247,7 @@ export default function MyPage() {
         {activeTab === "settings" && (
           <div className="space-y-6">
             {/* Notification Settings */}
-            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-purple-300/30 p-8">
               <div className="flex items-center gap-3 mb-6">
                 <Bell className="w-6 h-6 dark:text-purple-400 light:text-purple-600" />
                 <h3 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
@@ -286,7 +286,7 @@ export default function MyPage() {
             </div>
 
             {/* Password Change */}
-            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-purple-300/30 p-8">
               <div className="flex items-center gap-3 mb-6">
                 <Lock className="w-6 h-6 dark:text-purple-400 light:text-purple-600" />
                 <h3 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
@@ -299,7 +299,7 @@ export default function MyPage() {
             </div>
 
             {/* Account Deletion */}
-            <div className="dark:bg-gradient-to-br dark:from-red-900/20 dark:via-black/80 dark:to-red-900/10 light:bg-red-50 dark:border dark:border-red-500/20 light:border light:border-red-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+            <div className="dark:bg-gradient-to-br dark:from-red-900/20 dark:via-black/80 dark:to-red-900/10 light:bg-gradient-to-br light:from-white light:via-red-50/40 light:to-pink-100/20 dark:border dark:border-red-500/20 light:border-2 light:border-red-300/60 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-red-200/30 p-8">
               <div className="flex items-center gap-3 mb-6">
                 <AlertTriangle className="w-6 h-6 dark:text-red-400 light:text-red-600" />
                 <h3 className="text-lg font-semibold dark:text-white/90 light:text-red-900">
@@ -322,7 +322,7 @@ export default function MyPage() {
         {/* Account Deletion Confirmation Modal */}
         {showDeleteModal && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <div className="dark:bg-black/90 light:bg-white dark:border dark:border-red-500/30 light:border light:border-red-300/50 rounded-2xl shadow-2xl max-w-md w-full p-8 dark:backdrop-blur-md">
+            <div className="dark:bg-black/90 light:bg-gradient-to-br light:from-white light:to-red-50/30 dark:border dark:border-red-500/30 light:border-2 light:border-red-300/60 rounded-2xl shadow-2xl max-w-md w-full p-8 dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-red-200/30">
               <div className="flex items-center justify-center w-12 h-12 rounded-full dark:bg-red-500/20 light:bg-red-100 mx-auto mb-4">
                 <AlertTriangle className="w-6 h-6 dark:text-red-400 light:text-red-600" />
               </div>
