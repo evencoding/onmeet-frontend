@@ -47,6 +47,34 @@ interface TeamDetailProps {
   teamName: string;
 }
 
+// Utility function to calculate if text should be light or dark based on background color
+const getTextColorClass = (hexColor: string): string => {
+  // Remove # if present
+  const hex = hexColor.replace("#", "");
+
+  // Convert to RGB
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  // Calculate luminance using relative luminance formula
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  // Return light text for dark backgrounds, dark text for light backgrounds
+  return luminance > 0.5 ? "text-gray-900" : "text-white";
+};
+
+const teamColors = [
+  { name: "Purple", value: "bg-purple-500", hex: "#a855f7" },
+  { name: "Blue", value: "bg-blue-500", hex: "#3b82f6" },
+  { name: "Pink", value: "bg-pink-500", hex: "#ec4899" },
+  { name: "Green", value: "bg-green-500", hex: "#22c55e" },
+  { name: "Orange", value: "bg-orange-500", hex: "#f97316" },
+  { name: "Red", value: "bg-red-500", hex: "#ef4444" },
+  { name: "Cyan", value: "bg-cyan-500", hex: "#06b6d4" },
+  { name: "Yellow", value: "bg-yellow-500", hex: "#eab308" },
+];
+
 // Mock data for teams
 const teamsData: Record<
   string,
@@ -54,6 +82,7 @@ const teamsData: Record<
     name: string;
     description: string;
     color: string;
+    colorHex: string;
     members: TeamMember[];
     channels: Channel[];
     meetings: Meeting[];
@@ -63,6 +92,7 @@ const teamsData: Record<
     name: "Marketing",
     description: "마케팅 팀의 회의 및 협업 공간",
     color: "bg-purple-500",
+    colorHex: "#a855f7",
     members: [
       {
         id: "1",
@@ -148,6 +178,7 @@ const teamsData: Record<
     name: "Product",
     description: "제품팀의 회의 및 협업 공간",
     color: "bg-blue-500",
+    colorHex: "#3b82f6",
     members: [
       {
         id: "4",
@@ -225,6 +256,7 @@ const teamsData: Record<
     name: "Design",
     description: "디자인팀의 회의 및 협업 공간",
     color: "bg-pink-500",
+    colorHex: "#ec4899",
     members: [
       {
         id: "6",
@@ -308,13 +340,6 @@ const teamsData: Record<
   },
 };
 
-const teamColors = [
-  { name: "Purple", value: "bg-purple-500", hex: "#a855f7" },
-  { name: "Blue", value: "bg-blue-500", hex: "#3b82f6" },
-  { name: "Pink", value: "bg-pink-500", hex: "#ec4899" },
-  { name: "Green", value: "bg-green-500", hex: "#22c55e" },
-];
-
 // Mock employee list for adding members
 const mockEmployees = [
   {
@@ -389,6 +414,7 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
   const [editedName, setEditedName] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
   const [editedColor, setEditedColor] = useState("");
+  const [editedColorHex, setEditedColorHex] = useState("");
   const [isAddingMember, setIsAddingMember] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [teamMembers, setTeamMembers] = useState(teamData?.members || []);
@@ -406,12 +432,18 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
     setEditedName(teamData.name);
     setEditedDescription(teamData.description);
     setEditedColor(teamData.color);
+    setEditedColorHex(teamData.colorHex);
   };
 
   const handleSave = () => {
     setIsEditing(false);
     // Here you would typically call an API to save the changes
-    console.log("Saving team changes:", { editedName, editedDescription, editedColor });
+    console.log("Saving team changes:", { editedName, editedDescription, editedColor, editedColorHex });
+  };
+
+  const changeTeamColor = (colorValue: string, colorHex: string) => {
+    setEditedColor(colorValue);
+    setEditedColorHex(colorHex);
   };
 
   const handleCancel = () => {
@@ -484,13 +516,13 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
               <label className="text-sm font-semibold dark:text-white/80 light:text-purple-700 block mb-2">
                 팀 색상
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {teamColors.map((color) => (
                   <button
                     key={color.value}
-                    onClick={() => setEditedColor(color.value)}
+                    onClick={() => changeTeamColor(color.value, color.hex)}
                     className={cn(
-                      "w-8 h-8 rounded-full ring-2 transition-all",
+                      "w-10 h-10 rounded-full ring-2 transition-all",
                       editedColor === color.value
                         ? "ring-white scale-110"
                         : "ring-white/30 hover:ring-white/60"
