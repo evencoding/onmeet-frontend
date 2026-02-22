@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Users,
   Settings,
@@ -5,6 +6,8 @@ import {
   Calendar,
   Users2,
   MoreVertical,
+  Check,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -303,8 +306,19 @@ const teamsData: Record<
   },
 };
 
+const teamColors = [
+  { name: "Purple", value: "bg-purple-500", hex: "#a855f7" },
+  { name: "Blue", value: "bg-blue-500", hex: "#3b82f6" },
+  { name: "Pink", value: "bg-pink-500", hex: "#ec4899" },
+  { name: "Green", value: "bg-green-500", hex: "#22c55e" },
+];
+
 export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
   const teamData = teamsData[teamId as keyof typeof teamsData];
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedName, setEditedName] = useState("");
+  const [editedDescription, setEditedDescription] = useState("");
+  const [editedColor, setEditedColor] = useState("");
 
   if (!teamData) {
     return (
@@ -314,25 +328,117 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
     );
   }
 
+  const handleEditClick = () => {
+    setIsEditing(true);
+    setEditedName(teamData.name);
+    setEditedDescription(teamData.description);
+    setEditedColor(teamData.color);
+  };
+
+  const handleSave = () => {
+    setIsEditing(false);
+    // Here you would typically call an API to save the changes
+    console.log("Saving team changes:", { editedName, editedDescription, editedColor });
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+  };
+
   return (
     <div className="max-w-4xl space-y-6">
       {/* Team Header */}
-      <div className={cn("bg-gradient-to-br border border-border/40 rounded-2xl p-8 dark:text-white light:text-purple-900", teamData.color)}>
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-4xl font-bold mb-2 dark:text-white light:text-purple-900">
-              {teamData.name}
-            </h1>
-            <p className="dark:text-white/80 light:text-purple-700">{teamData.description}</p>
+      <div className={cn("bg-gradient-to-br border border-border/40 rounded-2xl p-8 dark:text-white light:text-purple-900", isEditing ? editedColor : teamData.color)}>
+        {isEditing ? (
+          <div className="space-y-4">
+            {/* Team Name Input */}
+            <div>
+              <label className="text-sm font-semibold dark:text-white/80 light:text-purple-700 block mb-2">
+                팀 이름
+              </label>
+              <input
+                type="text"
+                value={editedName}
+                onChange={(e) => setEditedName(e.target.value)}
+                className="w-full px-4 py-2 border dark:border-white/30 light:border-purple-300/50 rounded-lg dark:bg-white/10 light:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white dark:text-white light:text-purple-900 font-bold text-2xl"
+              />
+            </div>
+
+            {/* Description Input */}
+            <div>
+              <label className="text-sm font-semibold dark:text-white/80 light:text-purple-700 block mb-2">
+                설명
+              </label>
+              <textarea
+                value={editedDescription}
+                onChange={(e) => setEditedDescription(e.target.value)}
+                className="w-full px-4 py-2 border dark:border-white/30 light:border-purple-300/50 rounded-lg dark:bg-white/10 light:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white dark:text-white light:text-purple-900 resize-none"
+                rows={2}
+              />
+            </div>
+
+            {/* Color Selection */}
+            <div>
+              <label className="text-sm font-semibold dark:text-white/80 light:text-purple-700 block mb-2">
+                팀 색상
+              </label>
+              <div className="flex gap-2">
+                {teamColors.map((color) => (
+                  <button
+                    key={color.value}
+                    onClick={() => setEditedColor(color.value)}
+                    className={cn(
+                      "w-8 h-8 rounded-full ring-2 transition-all",
+                      editedColor === color.value
+                        ? "ring-white scale-110"
+                        : "ring-white/30 hover:ring-white/60"
+                    )}
+                    style={{ backgroundColor: color.hex }}
+                    title={color.name}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4">
+              <Button
+                size="sm"
+                onClick={handleSave}
+                className="gap-2 bg-white text-purple-900 hover:bg-white/90"
+              >
+                <Check className="w-4 h-4" />
+                저장
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleCancel}
+                className="gap-2 dark:border-white/30 dark:text-white dark:hover:bg-white/10 light:border-purple-300/50 light:text-purple-700"
+              >
+                <X className="w-4 h-4" />
+                취소
+              </Button>
+            </div>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2 flex items-center dark:text-white dark:border-white/30 dark:hover:bg-white/20 light:text-purple-700 light:border-purple-300/50 light:hover:bg-purple-100/30"
-          >
-            <Settings className="w-4 h-4" />팀 설정
-          </Button>
-        </div>
+        ) : (
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-4xl font-bold mb-2 dark:text-white light:text-purple-900">
+                {teamData.name}
+              </h1>
+              <p className="dark:text-white/80 light:text-purple-700">{teamData.description}</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleEditClick}
+              className="gap-2 flex items-center dark:text-white dark:border-white/30 dark:hover:bg-white/20 light:text-purple-700 light:border-purple-300/50 light:hover:bg-purple-100/30"
+            >
+              <Settings className="w-4 h-4" />팀 설정
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Team Members Section */}
