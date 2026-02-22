@@ -3,7 +3,8 @@ import { StarterKit } from '@tiptap/starter-kit';
 import { TextAlign } from '@tiptap/extension-text-align';
 import { Color } from '@tiptap/extension-color';
 import { Highlight } from '@tiptap/extension-highlight';
-import { Bold, Italic, List, ListOrdered, Heading1, Heading2, Type, Palette } from 'lucide-react';
+import { Bold, Italic, List, ListOrdered, Heading1, Heading2, Type } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface RichTextEditorProps {
   value: string;
@@ -19,6 +20,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
         heading: {
           levels: [1, 2, 3],
         },
+        codeBlock: false,
       }),
       TextAlign.configure({
         types: ['heading', 'paragraph'],
@@ -28,14 +30,26 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
         multicolor: true,
       }),
     ],
-    content: value,
+    content: value || '<p></p>',
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
   });
 
+  useEffect(() => {
+    if (editor && value !== editor.getHTML()) {
+      editor.commands.setContent(value || '<p></p>');
+    }
+  }, [value, editor]);
+
   if (!editor) {
-    return null;
+    return (
+      <div className={`flex flex-col dark:bg-purple-500/10 light:bg-white/50 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 rounded-xl overflow-hidden min-h-96 ${className}`}>
+        <div className="p-4 flex items-center justify-center h-96 dark:text-white/50 light:text-purple-600">
+          로딩 중...
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -146,8 +160,73 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
       {/* Editor Content */}
       <EditorContent
         editor={editor}
-        className={`flex-1 p-4 dark:text-white/80 light:text-purple-900 focus:outline-none prose dark:prose-invert max-w-none prose-sm prose-p:my-2 prose-h1:my-3 prose-h1:text-2xl prose-h2:my-2 prose-h2:text-xl prose-ul:my-2 prose-ol:my-2 prose-li:my-1 [&_.ProseMirror]:outline-none [&_.ProseMirror>*]:my-2`}
+        className="flex-1 overflow-auto"
       />
+
+      {/* CSS for editor styling */}
+      <style>{`
+        .ProseMirror {
+          padding: 1rem;
+          outline: none;
+          color: inherit;
+        }
+        .dark .ProseMirror {
+          color: rgba(255, 255, 255, 0.8);
+        }
+        .light .ProseMirror {
+          color: rgb(63, 28, 99);
+        }
+        .ProseMirror p {
+          margin: 0.5rem 0;
+        }
+        .ProseMirror h1 {
+          font-size: 1.875rem;
+          font-weight: bold;
+          margin: 0.75rem 0;
+        }
+        .ProseMirror h2 {
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin: 0.5rem 0;
+        }
+        .ProseMirror h3 {
+          font-size: 1.25rem;
+          font-weight: bold;
+          margin: 0.5rem 0;
+        }
+        .ProseMirror ul {
+          margin: 0.5rem 0;
+          padding-left: 1.5rem;
+          list-style-type: disc;
+        }
+        .ProseMirror ol {
+          margin: 0.5rem 0;
+          padding-left: 1.5rem;
+          list-style-type: decimal;
+        }
+        .ProseMirror li {
+          margin: 0.25rem 0;
+        }
+        .ProseMirror strong {
+          font-weight: bold;
+        }
+        .ProseMirror em {
+          font-style: italic;
+        }
+        .ProseMirror pre {
+          background: rgba(0, 0, 0, 0.1);
+          padding: 0.75rem;
+          border-radius: 0.5rem;
+          overflow-x: auto;
+          margin: 0.5rem 0;
+        }
+        .ProseMirror code {
+          font-family: monospace;
+          background: rgba(0, 0, 0, 0.05);
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+        }
+      `}</style>
     </div>
   );
 }
