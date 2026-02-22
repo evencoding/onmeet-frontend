@@ -14,6 +14,7 @@ import Summary from "./pages/Summary";
 import MeetingRecords from "./pages/MeetingRecords";
 import TeamBoard from "./pages/TeamBoard";
 import Team from "./pages/Team";
+import MyPage from "./pages/MyPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import SignupFlow from "./pages/SignupFlow";
@@ -100,6 +101,14 @@ const AppContent = () => (
         element={
           <ProtectedRoute>
             <Team />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/mypage"
+        element={
+          <ProtectedRoute>
+            <MyPage />
           </ProtectedRoute>
         }
       />

@@ -308,11 +308,11 @@ export default function ParticipantsPanel({
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-white/90 truncate">
+                      <p className="text-sm font-semibold dark:text-white/90 light:text-purple-900 truncate">
                         {participant.name}
                       </p>
                       {participant.isHost && (
-                        <span className="text-xs text-purple-400 font-medium">
+                        <span className="text-xs dark:text-purple-400 light:text-purple-600 font-medium">
                           Host
                         </span>
                       )}
@@ -367,7 +367,7 @@ export default function ParticipantsPanel({
                         className={`flex flex-col max-w-xs ${msg.isOwn ? "items-end" : "items-start"}`}
                       >
                         {/* Sender and Timestamp on same line */}
-                        <span className="text-xs text-white/50 mb-1">
+                        <span className="text-xs dark:text-white/50 light:text-purple-600 mb-1">
                           {msg.sender} {msg.timestamp}
                         </span>
 
@@ -376,7 +376,7 @@ export default function ParticipantsPanel({
                           className={`px-3 py-2 rounded-2xl text-sm font-medium ${
                             msg.isOwn
                               ? "bg-purple-600 text-white rounded-br-none"
-                              : "rounded-bl-none bg-purple-500/30 text-white"
+                              : "rounded-bl-none dark:bg-purple-500/30 dark:text-white light:bg-purple-100 light:text-purple-900"
                           }`}
                         >
                           {msg.message}
@@ -386,7 +386,7 @@ export default function ParticipantsPanel({
                   ) : (
                     // System message - centered
                     <div className="flex justify-center py-2">
-                      <span className="text-xs text-white/40 italic bg-purple-500/20 px-3 py-1 rounded-full">
+                      <span className="text-xs dark:text-white/40 light:text-purple-600 italic dark:bg-purple-500/20 light:bg-purple-100/50 px-3 py-1 rounded-full">
                         {msg.sender}
                       </span>
                     </div>
