@@ -239,26 +239,27 @@ export default function AddTeamModal({
             />
           </div>
 
-          {/* Color Selection */}
+          {/* Color Selection - GitHub Style */}
           <div className="space-y-3">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
               팀 색상
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-wrap items-center gap-3 p-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50">
               {teamColors.map((color) => (
                 <button
                   key={color.value}
                   type="button"
                   onClick={() => setSelectedColor(color.value)}
-                  className={`w-full h-12 rounded-lg transition-all border-2 flex items-center justify-center font-semibold text-sm ${
-                    selectedColor === color.value
-                      ? "border-white shadow-lg scale-105 shadow-purple-500/30"
-                      : "border-white/30 hover:scale-102"
-                  } text-white`}
-                  style={{ backgroundColor: color.hex }}
                   title={color.name}
                   disabled={isLoading}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full font-medium text-sm transition-all ${
+                    selectedColor === color.value
+                      ? "ring-2 ring-offset-2 dark:ring-white light:ring-purple-700 scale-110"
+                      : "opacity-70 hover:opacity-100"
+                  } text-white dark:ring-offset-purple-900/40 light:ring-offset-purple-50`}
+                  style={{ backgroundColor: color.hex }}
                 >
+                  <div className="w-2.5 h-2.5 rounded-full dark:bg-white light:bg-white/80"></div>
                   {color.name}
                 </button>
               ))}
