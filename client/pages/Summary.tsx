@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Clock, Search, X, Play, Download, Share2, Filter } from "lucide-react";
+import { Clock, Search, X, Download, Share2 } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -25,8 +25,10 @@ interface Meeting {
 
 export default function Summary() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "scheduled" | "in_progress" | "completed">("all");
+  const [activeTab, setActiveTab] = useState<"all" | "scheduled" | "in_progress" | "completed">("all");
   const [expandedMeetingId, setExpandedMeetingId] = useState<string | null>(null);
+  const [showTranscriptFilter, setShowTranscriptFilter] = useState(false);
+  const [showVoiceRecordingFilter, setShowVoiceRecordingFilter] = useState(false);
 
   // Sample meetings data with status and summaries
   const allMeetings: Meeting[] = [
@@ -175,10 +177,14 @@ export default function Summary() {
       meeting.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       meeting.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       meeting.summary?.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesStatus = statusFilter === "all" || meeting.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
+
+    const matchesTab = activeTab === "all" || meeting.status === activeTab;
+
+    const matchesTranscript = !showTranscriptFilter || meeting.hasTranscript;
+
+    const matchesVoiceRecording = !showVoiceRecordingFilter || (meeting.status === "completed");
+
+    return matchesSearch && matchesTab && matchesTranscript && matchesVoiceRecording;
   });
 
   const expandedMeeting = allMeetings.find((m) => m.id === expandedMeetingId);
@@ -320,8 +326,7 @@ export default function Summary() {
       {meeting.status === "completed" && (
         <div className="flex flex-wrap gap-3 pt-4">
           <button className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-medium dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all">
-            <Play className="w-4 h-4" />
-            재생
+            🎙️ 음성녹음 재생
           </button>
           <button className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-medium dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all">
             <Download className="w-4 h-4" />
@@ -383,19 +388,39 @@ export default function Summary() {
         {/* Header */}
         {!expandedMeeting && (
           <div>
-            <h1 className="text-3xl font-bold dark:text-white/90 light:text-purple-900 mb-2">
+            <h1 className="text-3xl font-bold dark:text-white/90 light:text-purple-900 mb-6">
               회의 내역
             </h1>
-            <p className="dark:text-white/60 light:text-purple-700">
-              지난 회의 내용을 확인하고 관리하세요
-            </p>
+
+            {/* Tabs */}
+            <div className="flex gap-3 mb-6 border-b dark:border-purple-500/20 light:border-purple-300/40 pb-4">
+              {[
+                { id: "all" as const, label: "모든 회의" },
+                { id: "scheduled" as const, label: "예정된 회의" },
+                { id: "in_progress" as const, label: "진행중" },
+                { id: "completed" as const, label: "완료된 회의" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    activeTab === tab.id
+                      ? "dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white"
+                      : "dark:bg-purple-500/10 light:bg-purple-100/30 dark:text-white/70 light:text-purple-700 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
-        {/* Search and Filter */}
+        {/* Search and Filters */}
         {!expandedMeeting && (
-          <div className="flex flex-col md:flex-row gap-3">
-            <div className="flex-1 relative">
+          <div className="space-y-4">
+            {/* Search Bar */}
+            <div className="relative">
               <input
                 type="text"
                 value={searchQuery}
@@ -405,22 +430,29 @@ export default function Summary() {
               />
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 dark:text-white/40 light:text-purple-600" />
             </div>
-            
-            {/* Status Filter */}
-            <div className="flex gap-2">
-              <div className="relative">
-                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 dark:text-white/40 light:text-purple-600" />
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value as any)}
-                  className="pl-10 pr-4 py-3 dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 dark:rounded-xl light:rounded-xl dark:bg-purple-500/10 light:bg-purple-100/30 dark:focus:bg-purple-500/20 light:focus:bg-purple-100/50 dark:focus:border-purple-400 light:focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all appearance-none cursor-pointer dark:text-white light:text-purple-900 text-sm"
-                >
-                  <option value="all">모든 회의</option>
-                  <option value="scheduled">예정된 회의</option>
-                  <option value="in_progress">진행중</option>
-                  <option value="completed">완료된 회의</option>
-                </select>
-              </div>
+
+            {/* Filter Chips */}
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setShowTranscriptFilter(!showTranscriptFilter)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  showTranscriptFilter
+                    ? "dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white"
+                    : "dark:bg-purple-500/20 light:bg-purple-100/50 dark:text-white/70 light:text-purple-700 dark:hover:bg-purple-500/30 light:hover:bg-purple-100/70"
+                }`}
+              >
+                📄 회의록 있음
+              </button>
+              <button
+                onClick={() => setShowVoiceRecordingFilter(!showVoiceRecordingFilter)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  showVoiceRecordingFilter
+                    ? "dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white"
+                    : "dark:bg-purple-500/20 light:bg-purple-100/50 dark:text-white/70 light:text-purple-700 dark:hover:bg-purple-500/30 light:hover:bg-purple-100/70"
+                }`}
+              >
+                🎙️ 음성녹음 있음
+              </button>
             </div>
           </div>
         )}
@@ -489,7 +521,24 @@ export default function Summary() {
                     )}
 
                     {/* Meeting Features */}
-                    <div className="flex items-center justify-between text-xs">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {meeting.hasTranscript && (
+                          <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+                            📄 회의록
+                          </span>
+                        )}
+                        {meeting.status === "completed" && (
+                          <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
+                            🎙️ 음성녹음
+                          </span>
+                        )}
+                        {meeting.summary && (
+                          <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
+                            🤖 AI 회의록
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center gap-2">
                         {meeting.attendees.map((attendee, idx) => (
                           <img
@@ -500,18 +549,6 @@ export default function Summary() {
                             className="w-7 h-7 rounded-full dark:border-2 light:border-2 dark:border-purple-500/30 light:border-purple-300/50 shadow-sm object-cover"
                           />
                         ))}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {meeting.hasTranscript && (
-                          <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-2 py-1 rounded text-xs font-semibold">
-                            자막
-                          </span>
-                        )}
-                        {meeting.status === "completed" && (
-                          <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700 px-2 py-1 rounded text-xs font-semibold">
-                            녹화
-                          </span>
-                        )}
                       </div>
                     </div>
                   </button>
