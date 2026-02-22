@@ -45,11 +45,11 @@ export default function TodayMeetings() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "ongoing":
-        return <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">진행 중</span>;
+        return null; // 진행중인 회의는 칩을 표시하지 않음 (버튼으로 표시)
       case "upcoming":
-        return <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">예정</span>;
+        return null; // 예정된 회의는 칩을 표시하지 않음
       case "completed":
-        return <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-semibold rounded-full">완료</span>;
+        return null; // 완료된 회의도 칩을 표시하지 않음
     }
   };
 
@@ -75,27 +75,24 @@ export default function TodayMeetings() {
               key={meeting.id}
               className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6 hover:shadow-lg transition-all duration-300"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">
-                    {meeting.title}
-                  </h3>
-                  <div className="space-y-2 text-sm text-text-sub">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-brand-500" />
-                      {meeting.time}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-brand-500" />
-                      {meeting.location}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-brand-500" />
-                      {meeting.participants}명 참석
-                    </div>
+              <div className="mb-4">
+                <h3 className="text-lg font-bold text-foreground mb-2">
+                  {meeting.title}
+                </h3>
+                <div className="space-y-2 text-sm text-text-sub">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-brand-500" />
+                    {meeting.time}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-brand-500" />
+                    {meeting.location}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-brand-500" />
+                    {meeting.participants}명 참석
                   </div>
                 </div>
-                {getStatusBadge(meeting.status)}
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-border/20">
@@ -110,10 +107,12 @@ export default function TodayMeetings() {
                   ))}
                 </div>
 
-                <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-lg hover:from-brand-600 hover:to-brand-700 transition-all duration-200">
-                  <Video className="w-4 h-4" />
-                  참여
-                </button>
+                {meeting.status === "ongoing" && (
+                  <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-lg hover:from-brand-600 hover:to-brand-700 transition-all duration-200">
+                    <Video className="w-4 h-4" />
+                    참여
+                  </button>
+                )}
               </div>
             </div>
           ))}
