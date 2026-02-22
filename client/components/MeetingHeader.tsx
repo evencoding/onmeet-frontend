@@ -104,7 +104,7 @@ export default function MeetingHeader() {
 
           {/* Notification Dropdown */}
           {isDropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-96 dark:bg-black/80 light:bg-white border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl shadow-2xl dark:backdrop-blur-md light:backdrop-blur-sm z-50">
+            <div className="absolute right-0 top-full mt-2 w-96 dark:bg-black/80 light:bg-white border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl shadow-2xl dark:backdrop-blur-md light:backdrop-blur-sm z-[9999]">
               {/* Header */}
               <div className="px-4 py-3 border-b dark:border-purple-500/20 light:border-purple-300/30 flex items-center justify-between">
                 <h3 className="font-semibold dark:text-white light:text-purple-900">알림</h3>
@@ -119,12 +119,9 @@ export default function MeetingHeader() {
               <div className="max-h-96 overflow-y-auto">
                 {notifications.length > 0 ? (
                   notifications.map((notification) => (
-                    <button
+                    <div
                       key={notification.id}
-                      onClick={() => {
-                        handleNotificationClick(notification.id);
-                      }}
-                      className={`w-full px-4 py-3 border-l-4 transition-colors text-left ${getNotificationColor(
+                      className={`px-4 py-3 border-l-4 transition-colors text-left flex items-start justify-between group ${getNotificationColor(
                         notification.type
                       )} ${
                         notification.isRead
@@ -132,23 +129,37 @@ export default function MeetingHeader() {
                           : "dark:bg-purple-500/10 light:bg-purple-100/30"
                       } hover:dark:bg-purple-500/20 hover:light:bg-purple-100/40`}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <p className="font-medium text-sm dark:text-white light:text-purple-900 mb-1">
-                            {notification.title}
-                          </p>
-                          <p className="text-xs dark:text-white/60 light:text-purple-700 mb-1">
-                            {notification.message}
-                          </p>
-                          <p className="text-xs dark:text-white/40 light:text-purple-600">
-                            {notification.timestamp}
-                          </p>
-                        </div>
+                      <button
+                        onClick={() => {
+                          handleNotificationClick(notification.id);
+                        }}
+                        className="flex-1 text-left"
+                      >
+                        <p className="font-medium text-sm dark:text-white light:text-purple-900 mb-1">
+                          {notification.title}
+                        </p>
+                        <p className="text-xs dark:text-white/60 light:text-purple-700 mb-1">
+                          {notification.message}
+                        </p>
+                        <p className="text-xs dark:text-white/40 light:text-purple-600">
+                          {notification.timestamp}
+                        </p>
+                      </button>
+                      <div className="flex items-start gap-2 ml-2">
                         {!notification.isRead && (
-                          <div className="w-2 h-2 bg-blue-500 rounded-full ml-2 mt-1 flex-shrink-0"></div>
+                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
                         )}
+                        <button
+                          onClick={() => {
+                            setNotifications(notifications.filter((n) => n.id !== notification.id));
+                          }}
+                          className="p-1 dark:text-white/40 dark:hover:text-red-400 light:text-purple-600 light:hover:text-red-600 transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100"
+                          title="알림 삭제"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
                       </div>
-                    </button>
+                    </div>
                   ))
                 ) : (
                   <div className="px-4 py-6 text-center text-sm dark:text-white/50 light:text-purple-600">
@@ -156,15 +167,6 @@ export default function MeetingHeader() {
                   </div>
                 )}
               </div>
-
-              {/* Footer */}
-              {notifications.length > 0 && (
-                <div className="px-4 py-3 border-t dark:border-purple-500/20 light:border-purple-300/30">
-                  <button className="w-full text-center text-sm font-medium dark:text-purple-400 light:text-purple-600 hover:dark:text-purple-300 hover:light:text-purple-700 transition-colors">
-                    모든 알림 보기
-                  </button>
-                </div>
-              )}
             </div>
           )}
         </div>
