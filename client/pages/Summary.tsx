@@ -217,13 +217,13 @@ export default function Summary() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "scheduled":
-        return "dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700";
+        return "dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100/90 light:text-blue-900 light:border light:border-blue-300/60 light:shadow-sm light:shadow-blue-200/40";
       case "in_progress":
-        return "dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700";
+        return "dark:bg-green-500/20 dark:text-green-300 light:bg-green-100/90 light:text-green-900 light:border light:border-green-300/60 light:shadow-sm light:shadow-green-200/40";
       case "completed":
-        return "dark:bg-gray-500/20 dark:text-gray-300 light:bg-gray-100 light:text-gray-700";
+        return "dark:bg-gray-500/20 dark:text-gray-300 light:bg-gray-100/90 light:text-gray-900 light:border light:border-gray-300/60 light:shadow-sm light:shadow-gray-200/40";
       default:
-        return "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700";
+        return "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/90 light:text-purple-900 light:border light:border-purple-300/60 light:shadow-sm light:shadow-purple-200/40";
     }
   };
 
@@ -376,7 +376,7 @@ export default function Summary() {
           {meeting.title}
         </h3>
         {meeting.team && (
-          <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
+          <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900 light:border light:border-purple-300/60 px-3 py-1 rounded-full text-xs font-bold light:shadow-sm light:shadow-purple-200/40">
             {meeting.team}
           </span>
         )}
@@ -388,7 +388,7 @@ export default function Summary() {
               src={attendee.avatar}
               alt={attendee.name}
               title={attendee.name}
-              className="w-6 h-6 rounded-full dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 object-cover"
+              className="w-6 h-6 rounded-full dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 object-cover light:shadow-md light:shadow-purple-200/40"
             />
           ))}
         </div>
@@ -400,8 +400,8 @@ export default function Summary() {
       </span>
 
       {/* Date and Time */}
-      <div className="flex items-center gap-2 text-sm dark:text-white/60 light:text-purple-700">
-        <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
+      <div className="flex items-center gap-2 text-sm dark:text-white/60 light:text-purple-900/80 font-medium">
+        <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-700" />
         {format(meeting.date, "MMM dd", { locale: ko })} {meeting.time}
       </div>
     </div>
@@ -508,7 +508,7 @@ export default function Summary() {
 
                       {/* Summary Preview */}
                       {meeting.summary && (
-                        <p className="text-sm dark:text-white/60 light:text-purple-700 line-clamp-2 mb-4 group-hover:dark:text-white/80 group-hover:light:text-purple-900 transition-colors">
+                        <p className="text-sm dark:text-white/60 light:text-purple-800 line-clamp-2 mb-4 group-hover:dark:text-white/80 group-hover:light:text-purple-950 transition-colors font-medium">
                           {meeting.summary}
                         </p>
                       )}
@@ -518,20 +518,20 @@ export default function Summary() {
                     {meeting.status === "completed" && (
                       <div className="flex items-center gap-2 flex-wrap mb-4">
                         {meeting.hasTranscript && (
-                          <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5">
+                          <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100/90 light:text-green-900 light:border light:border-green-300/60 light:shadow-sm light:shadow-green-200/40 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
                             <FileText className="w-3.5 h-3.5" />
                             회의록
                           </span>
                         )}
-                        <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5">
+                        <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100/90 light:text-blue-900 light:border light:border-blue-300/60 light:shadow-sm light:shadow-blue-200/40 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
                           <Mic className="w-3.5 h-3.5" />
                           음성녹음
                         </span>
                         {meeting.summary && (
-                          <span className="dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30 flex items-center gap-1.5">
+                          <span className="dark:bg-purple-600 dark:text-white light:bg-gradient-to-r light:from-purple-600 light:to-purple-700 light:text-white light:shadow-lg light:shadow-purple-400/40 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 flex items-center gap-1.5">
                             <Zap className="w-3.5 h-3.5" />
                             AI 회의록
-                            <span className="dark:bg-purple-700 light:bg-purple-700 px-2 py-0.5 rounded-full text-xs ml-1">
+                            <span className="dark:bg-purple-700 light:bg-white/20 px-2 py-0.5 rounded-full text-xs ml-1 font-semibold">
                               작업 완료
                             </span>
                           </span>
