@@ -28,8 +28,7 @@ export default function Summary() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "scheduled" | "in_progress" | "completed">("all");
   const [expandedMeetingId, setExpandedMeetingId] = useState<string | null>(null);
-  const [showTranscriptFilter, setShowTranscriptFilter] = useState(false);
-  const [showVoiceRecordingFilter, setShowVoiceRecordingFilter] = useState(false);
+  const [featureFilter, setFeatureFilter] = useState<"all" | "transcript" | "voiceRecording" | "aiRecords">("all");
 
   // Sample meetings data with status and summaries
   const allMeetings: Meeting[] = [
@@ -186,11 +185,16 @@ export default function Summary() {
 
     const matchesTab = activeTab === "all" || meeting.status === activeTab;
 
-    const matchesTranscript = !showTranscriptFilter || meeting.hasTranscript;
+    let matchesFeature = true;
+    if (featureFilter === "transcript") {
+      matchesFeature = meeting.hasTranscript;
+    } else if (featureFilter === "voiceRecording") {
+      matchesFeature = meeting.status === "completed";
+    } else if (featureFilter === "aiRecords") {
+      matchesFeature = !!meeting.summary;
+    }
 
-    const matchesVoiceRecording = !showVoiceRecordingFilter || (meeting.status === "completed");
-
-    return matchesSearch && matchesTab && matchesTranscript && matchesVoiceRecording;
+    return matchesSearch && matchesTab && matchesFeature;
   });
 
   const expandedMeeting = allMeetings.find((m) => m.id === expandedMeetingId);
@@ -302,9 +306,14 @@ export default function Summary() {
       {/* Summary Section */}
       {meeting.summary && (
         <div>
-          <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900 mb-3">
-            회의 요약
-          </h3>
+          <div className="flex items-center gap-2 mb-3">
+            <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900">
+              회의 요약
+            </h3>
+            <span className="dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30">
+              AI 회의록
+            </span>
+          </div>
           <p className="dark:text-white/70 light:text-purple-800 dark:bg-purple-500/10 light:bg-purple-100/30 dark:border dark:border-purple-500/20 light:border light:border-purple-300/40 rounded-xl p-4">
             {meeting.summary}
           </p>
@@ -354,20 +363,40 @@ export default function Summary() {
   );
 
   const renderSimpleCard = (meeting: Meeting) => (
-    <div className="text-left">
-      <div className="flex items-start justify-between mb-2">
+    <div className="text-left space-y-2">
+      {/* Title with Team and Avatars */}
+      <div className="flex items-center gap-2 flex-wrap">
         <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900">
           {meeting.title}
         </h3>
-        <span className={`inline-block px-2 py-1 rounded text-xs font-semibold whitespace-nowrap ml-2 ${getStatusColor(meeting.status)}`}>
-          {getStatusLabel(meeting.status)}
-        </span>
-      </div>
-      <div className="flex flex-wrap gap-3 text-sm dark:text-white/60 light:text-purple-700 mb-3">
-        <div className="flex items-center gap-1">
-          <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
-          {format(meeting.date, "MMM dd", { locale: ko })} {meeting.time}
+        {meeting.team && (
+          <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
+            {meeting.team}
+          </span>
+        )}
+        {/* Avatars */}
+        <div className="flex items-center gap-1 ml-auto">
+          {meeting.attendees.map((attendee, idx) => (
+            <img
+              key={idx}
+              src={attendee.avatar}
+              alt={attendee.name}
+              title={attendee.name}
+              className="w-6 h-6 rounded-full dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 object-cover"
+            />
+          ))}
         </div>
+      </div>
+
+      {/* Status Badge */}
+      <span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${getStatusColor(meeting.status)}`}>
+        {getStatusLabel(meeting.status)}
+      </span>
+
+      {/* Date and Time */}
+      <div className="flex items-center gap-2 text-sm dark:text-white/60 light:text-purple-700">
+        <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
+        {format(meeting.date, "MMM dd", { locale: ko })} {meeting.time}
       </div>
     </div>
   );
@@ -409,40 +438,29 @@ export default function Summary() {
         {/* Search and Filters */}
         {!expandedMeeting && (
           <div className="space-y-4">
-            {/* Search Bar */}
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="회의 제목이나 내용으로 검색..."
-                className="w-full px-4 py-3 pl-12 dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 dark:rounded-xl light:rounded-xl dark:bg-purple-500/10 light:bg-purple-100/30 dark:focus:bg-purple-500/20 light:focus:bg-purple-100/50 dark:focus:border-purple-400 light:focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60"
-              />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 dark:text-white/40 light:text-purple-600" />
-            </div>
+            {/* Search Bar with Filter Select */}
+            <div className="flex gap-3">
+              <select
+                value={featureFilter}
+                onChange={(e) => setFeatureFilter(e.target.value as any)}
+                className="px-4 py-3 dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 dark:rounded-xl light:rounded-xl dark:bg-purple-500/10 light:bg-purple-100/30 dark:focus:bg-purple-500/20 light:focus:bg-purple-100/50 dark:focus:border-purple-400 light:focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all dark:text-white light:text-purple-900 text-sm appearance-none cursor-pointer"
+              >
+                <option value="all">모든 회의</option>
+                <option value="transcript">회의록 있음</option>
+                <option value="voiceRecording">음성녹음 있음</option>
+                <option value="aiRecords">AI 회의록 있음</option>
+              </select>
 
-            {/* Filter Chips */}
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setShowTranscriptFilter(!showTranscriptFilter)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  showTranscriptFilter
-                    ? "dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white"
-                    : "dark:bg-purple-500/20 light:bg-purple-100/50 dark:text-white/70 light:text-purple-700 dark:hover:bg-purple-500/30 light:hover:bg-purple-100/70"
-                }`}
-              >
-                회의록 있음
-              </button>
-              <button
-                onClick={() => setShowVoiceRecordingFilter(!showVoiceRecordingFilter)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  showVoiceRecordingFilter
-                    ? "dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white"
-                    : "dark:bg-purple-500/20 light:bg-purple-100/50 dark:text-white/70 light:text-purple-700 dark:hover:bg-purple-500/30 light:hover:bg-purple-100/70"
-                }`}
-              >
-                음성녹음 있음
-              </button>
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="회의 제목이나 내용으로 검색..."
+                  className="w-full px-4 py-3 pl-12 dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 dark:rounded-xl light:rounded-xl dark:bg-purple-500/10 light:bg-purple-100/30 dark:focus:bg-purple-500/20 light:focus:bg-purple-100/50 dark:focus:border-purple-400 light:focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60"
+                />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 dark:text-white/40 light:text-purple-600" />
+              </div>
             </div>
           </div>
         )}
@@ -483,46 +501,23 @@ export default function Summary() {
                       </p>
                     )}
 
-                    {/* Meeting Features and Attendees */}
-                    <div className="space-y-3">
-                      {/* Feature Chips */}
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {meeting.hasTranscript && (
-                          <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            회의록
-                          </span>
-                        )}
-                        {meeting.status === "completed" && (
-                          <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            음성녹음
-                          </span>
-                        )}
-                        {meeting.summary && (
-                          <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            AI 회의록
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Avatars and Team Info */}
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1">
-                          {meeting.attendees.map((attendee, idx) => (
-                            <img
-                              key={idx}
-                              src={attendee.avatar}
-                              alt={attendee.name}
-                              title={attendee.name}
-                              className="w-7 h-7 rounded-full dark:border-2 light:border-2 dark:border-purple-500/30 light:border-purple-300/50 shadow-sm object-cover"
-                            />
-                          ))}
-                        </div>
-                        {meeting.team && (
-                          <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            {meeting.team}
-                          </span>
-                        )}
-                      </div>
+                    {/* Meeting Features Chips */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {meeting.hasTranscript && (
+                        <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+                          회의록
+                        </span>
+                      )}
+                      {meeting.status === "completed" && (
+                        <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
+                          음성녹음
+                        </span>
+                      )}
+                      {meeting.summary && (
+                        <span className="dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30">
+                          AI 회의록
+                        </span>
+                      )}
                     </div>
                   </button>
                 ))}
