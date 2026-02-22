@@ -12,10 +12,14 @@ import {
   Send,
   X,
   Loader,
+  Camera,
+  Share2,
+  FileText,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import AIRecordingModal from "@/components/AIRecordingModal";
 import InviteParticipantModal from "@/components/InviteParticipantModal";
+import MeetingPreparationModal from "@/components/MeetingPreparationModal";
 
 interface Participant {
   id: string;
@@ -39,6 +43,9 @@ export default function MeetingRoom() {
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const screenShareRef = useRef<MediaStream | null>(null);
+
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -48,6 +55,10 @@ export default function MeetingRoom() {
   const [isAIRecording, setIsAIRecording] = useState(false);
   const [isAIRecordingModalOpen, setIsAIRecordingModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [showPreparationModal, setShowPreparationModal] = useState(true);
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [showNoteInput, setShowNoteInput] = useState(false);
+  const [noteText, setNoteText] = useState("");
   const [chatMessage, setChatMessage] = useState("");
   const [currentSpeaker, setCurrentSpeaker] = useState(0);
 
@@ -179,8 +190,92 @@ export default function MeetingRoom() {
     setIsAIRecording(false);
   };
 
+  // Screenshot functionality
+  const handleScreenshot = async () => {
+    try {
+      if (localVideoRef.current && localVideoRef.current.srcObject) {
+        const stream = localVideoRef.current.srcObject as MediaStream;
+        const video = localVideoRef.current;
+
+        if (canvasRef.current) {
+          const ctx = canvasRef.current.getContext("2d");
+          if (ctx) {
+            canvasRef.current.width = video.videoWidth;
+            canvasRef.current.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+
+            canvasRef.current.toBlob((blob) => {
+              if (blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `screenshot-${Date.now()}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }
+            });
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Screenshot error:", err);
+    }
+  };
+
+  // Screen sharing functionality
+  const handleScreenShare = async () => {
+    try {
+      if (isScreenSharing) {
+        // Stop screen sharing
+        if (screenShareRef.current) {
+          screenShareRef.current.getTracks().forEach((track) => track.stop());
+          screenShareRef.current = null;
+        }
+        setIsScreenSharing(false);
+      } else {
+        // Start screen sharing
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: { cursor: "always" },
+          audio: false,
+        });
+        screenShareRef.current = stream;
+        setIsScreenSharing(true);
+
+        // Stop sharing when user stops from system dialog
+        stream.getVideoTracks()[0].addEventListener("ended", () => {
+          setIsScreenSharing(false);
+          screenShareRef.current = null;
+        });
+      }
+    } catch (err) {
+      console.error("Screen share error:", err);
+    }
+  };
+
+  // Add note to chat
+  const handleAddNote = () => {
+    if (noteText.trim()) {
+      const newMessage: ChatMessage = {
+        id: Date.now().toString(),
+        sender: "You",
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
+        message: `📝 ${noteText}`,
+        timestamp: new Date().toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+      setChatMessages([...chatMessages, newMessage]);
+      setNoteText("");
+      setShowNoteInput(false);
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white overflow-hidden">
+      {/* Hidden canvas for screenshots */}
+      <canvas ref={canvasRef} className="hidden" />
       {/* Main Video Area */}
       <div
         className={`flex-1 flex flex-col transition-all duration-300 ${
@@ -397,6 +492,28 @@ export default function MeetingRoom() {
             <Users className="w-6 h-6" />
           </button>
 
+          {/* Screenshot Button */}
+          <button
+            onClick={handleScreenshot}
+            className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
+            title="Take screenshot"
+          >
+            <Camera className="w-6 h-6" />
+          </button>
+
+          {/* Screen Share Button */}
+          <button
+            onClick={handleScreenShare}
+            className={`p-4 rounded-full transition-all duration-200 ${
+              isScreenSharing
+                ? "bg-green-600 text-white hover:bg-green-700"
+                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+            }`}
+            title={isScreenSharing ? "Stop screen share" : "Share screen"}
+          >
+            <Share2 className="w-6 h-6" />
+          </button>
+
           {/* Chat Button */}
           <button
             onClick={() => setShowChat(!showChat)}
@@ -470,6 +587,36 @@ export default function MeetingRoom() {
             ))}
           </div>
 
+          {/* Note Input */}
+          {showNoteInput && (
+            <div className="px-4 py-3 border-t border-purple-500/20 bg-purple-500/10 space-y-2">
+              <p className="text-xs text-white/60 font-semibold">Add a note</p>
+              <textarea
+                value={noteText}
+                onChange={(e) => setNoteText(e.target.value)}
+                placeholder="Write a note..."
+                className="w-full px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-sm text-white placeholder-white/50 focus:outline-none focus:border-purple-400 resize-none h-20"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={handleAddNote}
+                  className="flex-1 px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold transition-colors"
+                >
+                  Save Note
+                </button>
+                <button
+                  onClick={() => {
+                    setShowNoteInput(false);
+                    setNoteText("");
+                  }}
+                  className="px-3 py-1 bg-purple-500/30 hover:bg-purple-500/50 rounded-lg text-sm transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Message Input */}
           <div className="px-4 py-4 border-t border-purple-500/20 flex gap-2">
             <input
@@ -483,8 +630,16 @@ export default function MeetingRoom() {
             <button
               onClick={handleSendMessage}
               className="p-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
+              title="Send message"
             >
               <Send className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setShowNoteInput(!showNoteInput)}
+              className="p-2 bg-purple-500/30 hover:bg-purple-500/50 rounded-lg transition-colors"
+              title="Add note"
+            >
+              <FileText className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -553,6 +708,16 @@ export default function MeetingRoom() {
 
 
       {/* Modals */}
+      <MeetingPreparationModal
+        isOpen={showPreparationModal}
+        onStart={() => setShowPreparationModal(false)}
+        onInitialState={{
+          isMuted,
+          isVideoOn,
+        }}
+        onStateChange={{ isMuted, setIsMuted, isVideoOn, setIsVideoOn }}
+      />
+
       <AIRecordingModal
         isOpen={isAIRecordingModalOpen}
         onClose={() => setIsAIRecordingModalOpen(false)}
