@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Clock, Search, X, Download, Share2 } from "lucide-react";
+import { Clock, Search, X } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -13,6 +13,7 @@ interface Meeting {
   participants: number;
   description: string;
   status: "scheduled" | "in_progress" | "completed";
+  team?: string;
   summary?: string;
   key_points?: string[];
   attendees: {
@@ -41,6 +42,7 @@ export default function Summary() {
       participants: 5,
       description: "매주 월요일 정기 스탠드업 미팅",
       status: "completed",
+      team: "Marketing",
       summary:
         "팀의 주간 진행 상황과 계획을 공유하는 회의였습니다. 각 팀원의 현재 진행 중인 업무와 다가오는 작업을 논의했습니다.",
       key_points: [
@@ -72,6 +74,7 @@ export default function Summary() {
       participants: 8,
       description: "Q1 프로젝트 진행 상황 리뷰",
       status: "completed",
+      team: "Product",
       summary:
         "Q1 분기 프로젝트의 진행 상황을 점검하고 향후 계획을 수립한 회의입니다. 목표 달성도와 리스크 요소를 분석했습니다.",
       key_points: [
@@ -103,6 +106,7 @@ export default function Summary() {
       participants: 4,
       description: "신규 UI 디자인 피드백 세션",
       status: "completed",
+      team: "Design",
       summary:
         "신규 UI 디자인안에 대한 팀의 피드백과 개선사항을 논의한 회의입니다. 사용자 경험 개선에 집중했습니다.",
       key_points: [
@@ -129,6 +133,7 @@ export default function Summary() {
       participants: 6,
       description: "월간 클라이언트 진행 상황 보고",
       status: "in_progress",
+      team: "Marketing",
       summary:
         "클라이언트와의 월간 진행 상황 보고 회의입니다. 프로젝트 진행 상황을 설명하고 피드백을 받았습니다.",
       key_points: [
@@ -155,6 +160,7 @@ export default function Summary() {
       participants: 2,
       description: "월간 성과 평가 및 피드백",
       status: "scheduled",
+      team: "HR",
       summary:
         "팀원과의 월간 1:1 미팅으로 성과를 평가하고 향후 계획을 논의했습니다.",
       key_points: [
@@ -233,11 +239,16 @@ export default function Summary() {
         </button>
       </div>
 
-      {/* Status Badge */}
-      <div>
+      {/* Status Badge and Team Info */}
+      <div className="flex items-center gap-2">
         <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(meeting.status)}`}>
           {getStatusLabel(meeting.status)}
         </span>
+        {meeting.team && (
+          <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
+            📌 {meeting.team}
+          </span>
+        )}
       </div>
 
       {/* Meeting Details Grid */}
@@ -300,27 +311,6 @@ export default function Summary() {
         </div>
       )}
 
-      {/* Key Points */}
-      {meeting.key_points && meeting.key_points.length > 0 && (
-        <div>
-          <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900 mb-3">
-            주요 포인트
-          </h3>
-          <div className="space-y-2">
-            {meeting.key_points.map((point, idx) => (
-              <div
-                key={idx}
-                className="flex gap-3 p-3 dark:bg-purple-500/10 light:bg-purple-100/30 dark:border dark:border-purple-500/20 light:border light:border-purple-300/40 rounded-lg"
-              >
-                <span className="dark:text-purple-400 light:text-purple-600 font-bold flex-shrink-0">
-                  •
-                </span>
-                <span className="dark:text-white/70 light:text-purple-900">{point}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Action Buttons */}
       {meeting.status === "completed" && (
@@ -329,12 +319,10 @@ export default function Summary() {
             🎙️ 음성녹음 재생
           </button>
           <button className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-medium dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all">
-            <Download className="w-4 h-4" />
-            다운로드
+            ⬇️ 다운로드
           </button>
           <button className="flex items-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 dark:text-white/90 light:text-purple-700 rounded-lg font-medium dark:hover:bg-purple-500/10 light:hover:bg-purple-100/30 transition-all">
-            <Share2 className="w-4 h-4" />
-            공유
+            🔗 공유
           </button>
         </div>
       )}
@@ -493,35 +481,9 @@ export default function Summary() {
                       </p>
                     )}
 
-                    {/* Key Points Preview */}
-                    {meeting.key_points && meeting.key_points.length > 0 && (
-                      <div className="mb-4">
-                        <p className="text-xs font-semibold dark:text-purple-400 light:text-purple-600 mb-2">
-                          주요 포인트
-                        </p>
-                        <div className="space-y-1">
-                          {meeting.key_points.slice(0, 2).map((point, idx) => (
-                            <p
-                              key={idx}
-                              className="text-xs dark:text-white/60 light:text-purple-700 flex items-start gap-2"
-                            >
-                              <span className="dark:text-purple-400 light:text-purple-600 flex-shrink-0">
-                                •
-                              </span>
-                              <span className="line-clamp-1">{point}</span>
-                            </p>
-                          ))}
-                          {meeting.key_points.length > 2 && (
-                            <p className="text-xs dark:text-purple-400 light:text-purple-600 font-medium">
-                              +{meeting.key_points.length - 2}개 더보기
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Meeting Features */}
+                    {/* Meeting Features and Attendees */}
                     <div className="space-y-3">
+                      {/* Feature Chips */}
                       <div className="flex items-center gap-2 flex-wrap">
                         {meeting.hasTranscript && (
                           <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
@@ -539,16 +501,25 @@ export default function Summary() {
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2">
-                        {meeting.attendees.map((attendee, idx) => (
-                          <img
-                            key={idx}
-                            src={attendee.avatar}
-                            alt={attendee.name}
-                            title={attendee.name}
-                            className="w-7 h-7 rounded-full dark:border-2 light:border-2 dark:border-purple-500/30 light:border-purple-300/50 shadow-sm object-cover"
-                          />
-                        ))}
+
+                      {/* Avatars and Team Info */}
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1">
+                          {meeting.attendees.map((attendee, idx) => (
+                            <img
+                              key={idx}
+                              src={attendee.avatar}
+                              alt={attendee.name}
+                              title={attendee.name}
+                              className="w-7 h-7 rounded-full dark:border-2 light:border-2 dark:border-purple-500/30 light:border-purple-300/50 shadow-sm object-cover"
+                            />
+                          ))}
+                        </div>
+                        {meeting.team && (
+                          <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
+                            📌 {meeting.team}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </button>
