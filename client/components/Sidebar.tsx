@@ -81,7 +81,7 @@ export default function Sidebar({
     },
     {
       id: "mypage",
-      label: "마이페이지",
+      label: "설정",
       icon: <User className="w-5 h-5" />,
       route: "/mypage",
     },

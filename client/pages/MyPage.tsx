@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { User, Mail, Phone, MapPin, LogOut, Settings, Lock, Bell } from "lucide-react";
+import { User, Mail, Phone, MapPin, LogOut, Settings, Lock, Bell, Building2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -61,28 +61,37 @@ export default function MyPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b dark:border-purple-500/20 light:border-purple-300/40">
-          {[
-            { id: "profile" as const, label: "프로필", icon: User },
-            { id: "settings" as const, label: "설정", icon: Settings },
-            { id: "security" as const, label: "보안", icon: Lock },
-          ].map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-all ${
-                  activeTab === tab.id
-                    ? "dark:border-purple-500 dark:text-purple-400 light:border-purple-600 light:text-purple-600"
-                    : "dark:border-transparent dark:text-white/50 light:border-transparent light:text-purple-600/50"
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {tab.label}
-              </button>
-            );
-          })}
+        <div className="flex items-center justify-between border-b dark:border-purple-500/20 light:border-purple-300/40">
+          <div className="flex gap-2">
+            {[
+              { id: "profile" as const, label: "프로필", icon: User },
+              { id: "settings" as const, label: "설정", icon: Settings },
+              { id: "security" as const, label: "보안", icon: Lock },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-all ${
+                    activeTab === tab.id
+                      ? "dark:border-purple-500 dark:text-purple-400 light:border-purple-600 light:text-purple-600"
+                      : "dark:border-transparent dark:text-white/50 light:border-transparent light:text-purple-600/50"
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+          <button
+            onClick={() => navigate("/company")}
+            className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-lg font-medium hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all whitespace-nowrap"
+          >
+            <Building2 className="w-4 h-4" />
+            회사 관리
+          </button>
         </div>
 
         {/* Profile Tab */}
