@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import { Building2, Users, Shield, ArrowLeft, Edit2, Save, X, ChevronDown, Check } from "lucide-react";
+import { Building2, Users, Shield, ArrowLeft, Edit2, Save, X, ChevronDown, Check, ChevronUp, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface CompanyInfo {
   name: string;
@@ -19,6 +20,14 @@ interface Employee {
   position: string;
   team: string;
   isManager: boolean;
+  avatar: string;
+}
+
+interface TeamMember {
+  id: string;
+  name: string;
+  email: string;
+  position: string;
 }
 
 interface Team {
@@ -26,13 +35,22 @@ interface Team {
   name: string;
   memberCount: number;
   leader: string;
-  isLeaderDesignated: boolean;
+  members: TeamMember[];
+}
+
+interface TeamCreationRequest {
+  id: string;
+  teamName: string;
+  requestedBy: string;
+  requestedDate: string;
 }
 
 export default function CompanyManagement() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"info" | "employees" | "teams">("info");
   const [editMode, setEditMode] = useState(false);
+  const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
+  
   const [companyData, setCompanyData] = useState<CompanyInfo>({
     name: "Tech Company Inc.",
     email: "contact@techcompany.com",
@@ -52,6 +70,7 @@ export default function CompanyManagement() {
       position: "CEO",
       team: "경영진",
       isManager: true,
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
     },
     {
       id: "2",
@@ -60,6 +79,7 @@ export default function CompanyManagement() {
       position: "CTO",
       team: "개발",
       isManager: true,
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
     },
     {
       id: "3",
@@ -68,6 +88,7 @@ export default function CompanyManagement() {
       position: "마케팅 매니저",
       team: "마케팅",
       isManager: true,
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
     },
     {
       id: "4",
@@ -76,6 +97,7 @@ export default function CompanyManagement() {
       position: "개발자",
       team: "개발",
       isManager: false,
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop",
     },
     {
       id: "5",
@@ -84,6 +106,7 @@ export default function CompanyManagement() {
       position: "HR 담당",
       team: "인사",
       isManager: false,
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop",
     },
   ]);
 
@@ -93,21 +116,47 @@ export default function CompanyManagement() {
       name: "마케팅",
       memberCount: 12,
       leader: "박민준",
-      isLeaderDesignated: true,
+      members: [
+        { id: "m1", name: "박민준", email: "park@example.com", position: "마케팅 매니저" },
+        { id: "m2", name: "한지은", email: "han@example.com", position: "마케팅 스페셜리스트" },
+        { id: "m3", name: "유혜정", email: "yu@example.com", position: "소셜미디어 담당" },
+      ],
     },
     {
       id: "2",
       name: "개발",
       memberCount: 18,
       leader: "이영희",
-      isLeaderDesignated: true,
+      members: [
+        { id: "d1", name: "이영희", email: "lee@example.com", position: "CTO" },
+        { id: "d2", name: "정준호", email: "jung@example.com", position: "개발자" },
+        { id: "d3", name: "임상현", email: "lim@example.com", position: "개발자" },
+      ],
     },
     {
       id: "3",
       name: "디자인",
       memberCount: 8,
-      leader: "한지은",
-      isLeaderDesignated: false,
+      leader: "미지정",
+      members: [
+        { id: "de1", name: "한지은", email: "han@example.com", position: "UI 디자이너" },
+        { id: "de2", name: "유혜정", email: "yu@example.com", position: "UX 디자이너" },
+      ],
+    },
+  ]);
+
+  const [teamCreationRequests, setTeamCreationRequests] = useState<TeamCreationRequest[]>([
+    {
+      id: "r1",
+      teamName: "데이터 분석팀",
+      requestedBy: "이영희",
+      requestedDate: "2024-01-15",
+    },
+    {
+      id: "r2",
+      teamName: "고객 성공팀",
+      requestedBy: "박민준",
+      requestedDate: "2024-01-14",
     },
   ]);
 
@@ -138,6 +187,15 @@ export default function CompanyManagement() {
   };
 
   const toggleEmployeeManager = (id: string) => {
+    const managerCount = employeeList.filter((e) => e.isManager).length;
+    
+    // Check if trying to remove the last manager
+    const employee = employeeList.find((e) => e.id === id);
+    if (employee?.isManager && managerCount === 1) {
+      alert("최소 1명 이상의 매니저가 필요합니다.");
+      return;
+    }
+
     setEmployeeList(
       employeeList.map((emp) =>
         emp.id === id ? { ...emp, isManager: !emp.isManager } : emp
@@ -145,13 +203,38 @@ export default function CompanyManagement() {
     );
   };
 
-  const toggleTeamLeader = (id: string) => {
+  const toggleTeamLeader = (teamId: string, leaderName: string) => {
     setTeamList(
       teamList.map((team) =>
-        team.id === id ? { ...team, isLeaderDesignated: !team.isLeaderDesignated } : team
+        team.id === teamId ? { ...team, leader: team.leader === leaderName ? "미지정" : leaderName } : team
       )
     );
   };
+
+  const approveTeamCreation = (requestId: string) => {
+    const request = teamCreationRequests.find((r) => r.id === requestId);
+    if (request) {
+      // Add new team
+      setTeamList([
+        ...teamList,
+        {
+          id: Date.now().toString(),
+          name: request.teamName,
+          memberCount: 0,
+          leader: "미지정",
+          members: [],
+        },
+      ]);
+      // Remove request
+      setTeamCreationRequests(teamCreationRequests.filter((r) => r.id !== requestId));
+    }
+  };
+
+  const rejectTeamCreation = (requestId: string) => {
+    setTeamCreationRequests(teamCreationRequests.filter((r) => r.id !== requestId));
+  };
+
+  const managerCount = employeeList.filter((e) => e.isManager).length;
 
   return (
     <Layout showRecentPanel={false}>
@@ -362,24 +445,35 @@ export default function CompanyManagement() {
         {activeTab === "employees" && (
           <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
             <div className="space-y-4">
-              <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900 mb-6">
-                사원 권한 관리
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
+                  사원 권한 관리
+                </h2>
+                <span className="px-3 py-1 text-sm dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 rounded-full font-medium">
+                  매니저 {managerCount}명
+                </span>
+              </div>
               {employeeList.map((employee) => (
                 <div
                   key={employee.id}
                   className="flex items-center justify-between p-4 dark:bg-purple-500/10 light:bg-purple-50 rounded-xl border dark:border-purple-500/30 light:border-purple-300/50"
                 >
-                  <div className="flex-1">
-                    <p className="font-semibold dark:text-white light:text-purple-900">
-                      {employee.name}
-                    </p>
-                    <p className="text-sm dark:text-white/60 light:text-purple-600">
-                      {employee.position} • {employee.team}
-                    </p>
-                    <p className="text-xs dark:text-white/40 light:text-purple-600/70">
-                      {employee.email}
-                    </p>
+                  <div className="flex items-center gap-4 flex-1">
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src={employee.avatar} alt={employee.name} />
+                      <AvatarFallback>{employee.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="font-semibold dark:text-white light:text-purple-900">
+                        {employee.name}
+                      </p>
+                      <p className="text-sm dark:text-white/60 light:text-purple-600">
+                        {employee.position} • {employee.team}
+                      </p>
+                      <p className="text-xs dark:text-white/40 light:text-purple-600/70">
+                        {employee.email}
+                      </p>
+                    </div>
                   </div>
                   <button
                     onClick={() => toggleEmployeeManager(employee.id)}
@@ -400,46 +494,123 @@ export default function CompanyManagement() {
 
         {/* Team Management Tab */}
         {activeTab === "teams" && (
-          <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900 mb-6">
-                팀 리더 관리
-              </h2>
-              {teamList.map((team) => (
-                <div
-                  key={team.id}
-                  className="flex items-center justify-between p-4 dark:bg-purple-500/10 light:bg-purple-50 rounded-xl border dark:border-purple-500/30 light:border-purple-300/50"
-                >
-                  <div className="flex-1">
-                    <p className="font-semibold dark:text-white light:text-purple-900">
-                      {team.name}
-                    </p>
-                    <p className="text-sm dark:text-white/60 light:text-purple-600">
-                      팀 리더: {team.leader} • {team.memberCount}명
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => toggleTeamLeader(team.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                      team.isLeaderDesignated
-                        ? "dark:bg-purple-600 light:bg-purple-600 text-white"
-                        : "dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700"
-                    }`}
-                  >
-                    {team.isLeaderDesignated ? (
-                      <>
-                        <Check className="w-4 h-4" />
-                        리더 지정됨
-                      </>
-                    ) : (
-                      <>
-                        <ChevronDown className="w-4 h-4" />
-                        리더 지정
-                      </>
-                    )}
-                  </button>
+          <div className="space-y-6">
+            {/* Team Creation Requests Section */}
+            {teamCreationRequests.length > 0 && (
+              <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+                <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900 mb-6 flex items-center gap-2">
+                  <Plus className="w-5 h-5" />
+                  팀 생성 승인
+                </h2>
+                <div className="space-y-3">
+                  {teamCreationRequests.map((request) => (
+                    <div
+                      key={request.id}
+                      className="flex items-center justify-between p-4 dark:bg-purple-500/10 light:bg-purple-50 rounded-xl border dark:border-purple-500/30 light:border-purple-300/50"
+                    >
+                      <div className="flex-1">
+                        <p className="font-semibold dark:text-white light:text-purple-900">
+                          {request.teamName}
+                        </p>
+                        <p className="text-sm dark:text-white/60 light:text-purple-600">
+                          요청자: {request.requestedBy} • {request.requestedDate}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => approveTeamCreation(request.id)}
+                          className="flex items-center gap-2 px-4 py-2 dark:bg-green-600/20 light:bg-green-100 dark:text-green-300 light:text-green-700 rounded-lg font-medium hover:dark:bg-green-600/30 hover:light:bg-green-200 transition-all"
+                        >
+                          <Check className="w-4 h-4" />
+                          승인
+                        </button>
+                        <button
+                          onClick={() => rejectTeamCreation(request.id)}
+                          className="flex items-center gap-2 px-4 py-2 dark:bg-red-600/20 light:bg-red-100 dark:text-red-300 light:text-red-700 rounded-lg font-medium hover:dark:bg-red-600/30 hover:light:bg-red-200 transition-all"
+                        >
+                          <X className="w-4 h-4" />
+                          거절
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+            )}
+
+            {/* Teams List */}
+            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+              <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900 mb-6">
+                팀 목록
+              </h2>
+              <div className="space-y-3">
+                {teamList.map((team) => (
+                  <div
+                    key={team.id}
+                    className="dark:bg-purple-500/10 light:bg-purple-50 rounded-xl border dark:border-purple-500/30 light:border-purple-300/50 overflow-hidden"
+                  >
+                    {/* Team Header */}
+                    <button
+                      onClick={() => setExpandedTeam(expandedTeam === team.id ? null : team.id)}
+                      className="w-full flex items-center justify-between p-4 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50 transition-colors"
+                    >
+                      <div className="flex-1 text-left">
+                        <p className="font-semibold dark:text-white light:text-purple-900">
+                          {team.name}
+                        </p>
+                        <p className="text-sm dark:text-white/60 light:text-purple-600">
+                          팀 리더: {team.leader} • {team.memberCount}명
+                        </p>
+                      </div>
+                      {expandedTeam === team.id ? (
+                        <ChevronUp className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
+                      )}
+                    </button>
+
+                    {/* Team Members Accordion */}
+                    {expandedTeam === team.id && (
+                      <div className="border-t dark:border-purple-500/30 light:border-purple-300/50 p-4 space-y-4">
+                        <div className="space-y-3">
+                          {team.members.map((member) => (
+                            <div
+                              key={member.id}
+                              className="flex items-center justify-between p-3 dark:bg-purple-500/20 light:bg-purple-100/30 rounded-lg"
+                            >
+                              <div className="flex-1">
+                                <p className="font-medium dark:text-white light:text-purple-900">
+                                  {member.name}
+                                </p>
+                                <p className="text-xs dark:text-white/60 light:text-purple-600">
+                                  {member.position} • {member.email}
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => toggleTeamLeader(team.id, member.name)}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg font-medium transition-all ${
+                                  team.leader === member.name
+                                    ? "dark:bg-purple-600 light:bg-purple-600 text-white"
+                                    : "dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700"
+                                }`}
+                              >
+                                {team.leader === member.name ? (
+                                  <>
+                                    <Check className="w-3.5 h-3.5" />
+                                    리더
+                                  </>
+                                ) : (
+                                  "리더 지정"
+                                )}
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
