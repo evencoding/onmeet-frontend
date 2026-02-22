@@ -258,7 +258,7 @@ export default function MyPage() {
               <div className="space-y-4">
                 {[
                   { label: "회의 알림", description: "새로운 회의 초대 및 변경사항" },
-                  { label: "메시지 알림", description: "팀 메시지 및 채널 알림" },
+                  { label: "회의록 완성 알림", description: "회의 녹음 및 회의록 완성 알림" },
                   { label: "팀 알림", description: "팀 멤버 추가, 팀 설정 변경" },
                 ].map((notification, idx) => (
                   <div
