@@ -60,16 +60,10 @@ export default function Sidebar({
       route: "/",
     },
     {
-      id: "records",
-      label: "이전 회의",
+      id: "summary",
+      label: "회의 내역",
       icon: <FileText className="w-5 h-5" />,
       badge: 8,
-      route: "/records",
-    },
-    {
-      id: "summary",
-      label: "Ai 회의록",
-      icon: <ClipboardList className="w-5 h-5" />,
       route: "/summary",
     },
     {
