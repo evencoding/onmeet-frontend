@@ -36,6 +36,8 @@ interface Team {
   memberCount: number;
   leader: string;
   members: TeamMember[];
+  color: string;
+  colorHex: string;
 }
 
 interface TeamCreationRequest {
@@ -45,11 +47,23 @@ interface TeamCreationRequest {
   requestedDate: string;
 }
 
+const teamColors = [
+  { name: "Purple", value: "bg-purple-500", hex: "#a855f7" },
+  { name: "Blue", value: "bg-blue-500", hex: "#3b82f6" },
+  { name: "Pink", value: "bg-pink-500", hex: "#ec4899" },
+  { name: "Green", value: "bg-green-500", hex: "#22c55e" },
+  { name: "Orange", value: "bg-orange-500", hex: "#f97316" },
+  { name: "Red", value: "bg-red-500", hex: "#ef4444" },
+  { name: "Cyan", value: "bg-cyan-500", hex: "#06b6d4" },
+  { name: "Yellow", value: "bg-yellow-500", hex: "#eab308" },
+];
+
 export default function CompanyManagement() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"info" | "employees" | "teams">("info");
   const [editMode, setEditMode] = useState(false);
   const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
+  const [colorEditingTeamId, setColorEditingTeamId] = useState<string | null>(null);
   
   const [companyData, setCompanyData] = useState<CompanyInfo>({
     name: "Tech Company Inc.",
@@ -121,6 +135,8 @@ export default function CompanyManagement() {
         { id: "m2", name: "한지은", email: "han@example.com", position: "마케팅 스페셜리스트" },
         { id: "m3", name: "유혜정", email: "yu@example.com", position: "소셜미디어 담당" },
       ],
+      color: "bg-pink-500",
+      colorHex: "#ec4899",
     },
     {
       id: "2",
@@ -132,6 +148,8 @@ export default function CompanyManagement() {
         { id: "d2", name: "정준호", email: "jung@example.com", position: "개발자" },
         { id: "d3", name: "임상현", email: "lim@example.com", position: "개발자" },
       ],
+      color: "bg-blue-500",
+      colorHex: "#3b82f6",
     },
     {
       id: "3",
@@ -142,6 +160,8 @@ export default function CompanyManagement() {
         { id: "de1", name: "한지은", email: "han@example.com", position: "UI 디자이너" },
         { id: "de2", name: "유혜정", email: "yu@example.com", position: "UX 디자이너" },
       ],
+      color: "bg-purple-500",
+      colorHex: "#a855f7",
     },
   ]);
 
@@ -211,6 +231,15 @@ export default function CompanyManagement() {
     );
   };
 
+  const changeTeamColor = (teamId: string, colorValue: string, colorHex: string) => {
+    setTeamList(
+      teamList.map((team) =>
+        team.id === teamId ? { ...team, color: colorValue, colorHex } : team
+      )
+    );
+    setColorEditingTeamId(null);
+  };
+
   const approveTeamCreation = (requestId: string) => {
     const request = teamCreationRequests.find((r) => r.id === requestId);
     if (request) {
@@ -223,6 +252,8 @@ export default function CompanyManagement() {
           memberCount: 0,
           leader: "미지정",
           members: [],
+          color: "bg-purple-500",
+          colorHex: "#a855f7",
         },
       ]);
       // Remove request
@@ -550,24 +581,65 @@ export default function CompanyManagement() {
                     className="dark:bg-purple-500/10 light:bg-purple-50 rounded-xl border dark:border-purple-500/30 light:border-purple-300/50 overflow-hidden"
                   >
                     {/* Team Header */}
-                    <button
-                      onClick={() => setExpandedTeam(expandedTeam === team.id ? null : team.id)}
-                      className="w-full flex items-center justify-between p-4 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50 transition-colors"
-                    >
-                      <div className="flex-1 text-left">
-                        <p className="font-semibold dark:text-white light:text-purple-900">
-                          {team.name}
-                        </p>
-                        <p className="text-sm dark:text-white/60 light:text-purple-600">
-                          팀 리더: {team.leader} • {team.memberCount}명
-                        </p>
+                    <div className="w-full flex items-center justify-between p-4 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50 transition-colors">
+                      <button
+                        onClick={() => setExpandedTeam(expandedTeam === team.id ? null : team.id)}
+                        className="flex-1 flex items-center justify-between text-left"
+                      >
+                        <div className="flex items-center gap-3 flex-1">
+                          <div
+                            className={`w-4 h-4 rounded-full ${team.color} flex-shrink-0`}
+                            title={team.colorHex}
+                          />
+                          <div>
+                            <p className="font-semibold dark:text-white light:text-purple-900">
+                              {team.name}
+                            </p>
+                            <p className="text-sm dark:text-white/60 light:text-purple-600">
+                              팀 리더: {team.leader} • {team.memberCount}명
+                            </p>
+                          </div>
+                        </div>
+                        {expandedTeam === team.id ? (
+                          <ChevronUp className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => setColorEditingTeamId(colorEditingTeamId === team.id ? null : team.id)}
+                        className="ml-4 px-3 py-1.5 text-sm dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-lg font-medium hover:dark:bg-purple-500/30 hover:light:bg-purple-200 transition-all"
+                      >
+                        색상 변경
+                      </button>
+                    </div>
+
+                    {/* Color Palette Selector */}
+                    {colorEditingTeamId === team.id && (
+                      <div className="border-t dark:border-purple-500/30 light:border-purple-300/50 p-4 bg-gradient-to-br dark:from-purple-500/10 light:from-purple-100/30">
+                        <p className="text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-3">팀 색상 선택</p>
+                        <div className="flex flex-wrap gap-3">
+                          {teamColors.map((color) => (
+                            <button
+                              key={color.value}
+                              onClick={() => changeTeamColor(team.id, color.value, color.hex)}
+                              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                                team.color === color.value
+                                  ? "ring-2 dark:ring-white light:ring-purple-700 scale-110"
+                                  : "opacity-70 hover:opacity-100"
+                              }`}
+                              style={{ backgroundColor: color.hex }}
+                              title={color.name}
+                            >
+                              {team.color === color.value && (
+                                <Check className="w-4 h-4 text-white" />
+                              )}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                      {expandedTeam === team.id ? (
-                        <ChevronUp className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
-                      )}
-                    </button>
+                    )}
 
                     {/* Team Members Accordion */}
                     {expandedTeam === team.id && (
