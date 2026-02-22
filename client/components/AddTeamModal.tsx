@@ -271,46 +271,46 @@ export default function AddTeamModal({
               팀원 선택
             </label>
 
-            {/* Selected Members as Tags/Chips */}
-            {selectedMembers.length > 0 && (
-              <div className="flex flex-wrap gap-2 p-3 dark:bg-purple-500/10 light:bg-purple-50 rounded-lg border dark:border-purple-500/30 light:border-purple-300/50">
+            {/* Search Bar with Inline Tags */}
+            <div className="relative">
+              <div className="flex flex-wrap items-center gap-2 pl-10 pr-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus-within:ring-2 focus-within:ring-purple-500 transition-all">
+                <Search className="absolute left-3 w-4 h-4 dark:text-white/40 light:text-purple-600" />
+
+                {/* Selected Member Tags Inside Input */}
                 {selectedMembers.map((member) => (
                   <div
                     key={member.id}
-                    className="flex items-center gap-2 px-3 py-1.5 dark:bg-purple-600/40 light:bg-purple-200/60 rounded-full border dark:border-purple-500/50 light:border-purple-300/50 text-sm"
+                    className="flex items-center gap-1 px-2 py-1 dark:bg-purple-600/40 light:bg-purple-200/60 rounded-full border dark:border-purple-500/50 light:border-purple-300/50 text-xs bg-compact"
                   >
-                    <Avatar className="w-5 h-5">
+                    <Avatar className="w-4 h-4">
                       <AvatarImage src={member.avatar} alt={member.name} />
                       <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <span className="dark:text-white/90 light:text-purple-900 font-medium">
+                    <span className="dark:text-white/90 light:text-purple-900 font-medium whitespace-nowrap">
                       {member.name}
                     </span>
                     <button
                       type="button"
                       onClick={() => handleRemoveMember(member.id)}
                       disabled={isLoading}
-                      className="ml-1 p-0.5 dark:text-white/60 dark:hover:text-red-400 light:text-purple-600 light:hover:text-red-600 hover:dark:bg-red-500/20 hover:light:bg-red-100/50 rounded-full transition-colors"
+                      className="p-0 dark:text-white/60 dark:hover:text-red-400 light:text-purple-600 light:hover:text-red-600 hover:dark:bg-red-500/20 hover:light:bg-red-100/50 rounded-full transition-colors flex-shrink-0"
                       title="제거"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-3 h-3" />
                     </button>
                   </div>
                 ))}
-              </div>
-            )}
 
-            {/* Search Bar */}
-            <div className="relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 dark:text-white/40 light:text-purple-600" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="이름, 이메일, 부서로 검색"
-                className="w-full pl-10 pr-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-sm dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
-                disabled={isLoading}
-              />
+                {/* Search Input */}
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={selectedMembers.length === 0 ? "이름, 이메일, 부서로 검색" : "검색..."}
+                  className="flex-1 min-w-0 py-0 border-0 dark:bg-transparent light:bg-transparent focus:outline-none focus:ring-0 text-sm dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
+                  disabled={isLoading}
+                />
+              </div>
             </div>
 
             {/* Employee List */}
