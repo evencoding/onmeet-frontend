@@ -140,7 +140,7 @@ export default function RecentMeetings() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="회의 제목, 설명 또는 팀으로 검색..."
-            className="w-full pl-12 pr-10 py-3 bg-purple-500/10 border border-purple-500/30 rounded-xl focus:bg-purple-500/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm text-white placeholder-white/40 -mt-0.5"
+            className="w-full pl-12 pr-10 py-3 dark:bg-purple-500/10 dark:border dark:border-purple-500/30 light:bg-purple-50 light:border light:border-purple-300/60 rounded-xl dark:focus:bg-purple-500/20 dark:focus:border-purple-400 light:focus:bg-white light:focus:border-purple-400 dark:focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-2 light:focus:ring-purple-300/40 transition-all text-sm dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60 -mt-0.5"
           />
           {searchQuery && (
             <button
@@ -153,17 +153,17 @@ export default function RecentMeetings() {
         </div>
       </div>
 
-      <p className="text-xs text-white/50 mt-2.5">
+      <p className="text-xs dark:text-white/50 light:text-purple-600 mt-2.5">
         총 {filteredMeetings.length}개
         {searchQuery && ` (${searchQuery} 검색 결과)`}
       </p>
 
       {/* Results */}
       {filteredMeetings.length === 0 ? (
-        <div className="text-center py-12 bg-purple-500/10 rounded-2xl border border-purple-500/30">
-          <Search className="w-12 h-12 text-white/20 mx-auto mb-3" />
-          <p className="text-white/70 mb-1">검색 결과가 없습니다</p>
-          <p className="text-xs text-white/50">
+        <div className="text-center py-12 dark:bg-purple-500/10 dark:border dark:border-purple-500/30 light:bg-purple-50 light:border light:border-purple-300/50 rounded-2xl">
+          <Search className="w-12 h-12 dark:text-white/20 light:text-purple-400/30 mx-auto mb-3" />
+          <p className="dark:text-white/70 light:text-purple-700 mb-1">검색 결과가 없습니다</p>
+          <p className="text-xs dark:text-white/50 light:text-purple-600">
             다른 키워드로 다시 시도해보세요
           </p>
         </div>
@@ -172,23 +172,23 @@ export default function RecentMeetings() {
           {filteredMeetings.map((meeting) => (
             <div
               key={meeting.id}
-              className="bg-gradient-to-br from-purple-900/30 via-black/40 to-pink-900/20 border border-purple-500/30 rounded-2xl p-5 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 group backdrop-blur-md"
+              className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/40 dark:to-pink-900/20 light:bg-white light:border light:border-purple-300/50 dark:border dark:border-purple-500/30 rounded-2xl p-5 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-md light:hover:shadow-purple-400/20 transition-all duration-300 group dark:backdrop-blur-md light:backdrop-blur-sm"
             >
               {/* Header with Title and Status */}
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-base font-bold text-white/90">
+                    <h3 className="text-base font-bold dark:text-white/90 light:text-purple-900">
                       {meeting.title}
                     </h3>
                     <span
                       className={cn(
                         "px-2.5 py-1 text-xs font-semibold rounded-full whitespace-nowrap",
                         meeting.status === "active"
-                          ? "bg-green-500/30 text-green-300"
+                          ? "dark:bg-green-500/30 dark:text-green-300 light:bg-green-100/70 light:text-green-800"
                           : meeting.status === "closed"
-                            ? "bg-red-500/30 text-red-300"
-                            : "bg-yellow-500/30 text-yellow-300",
+                            ? "dark:bg-red-500/30 dark:text-red-300 light:bg-red-100/70 light:text-red-800"
+                            : "dark:bg-yellow-500/30 dark:text-yellow-300 light:bg-yellow-100/70 light:text-yellow-800",
                       )}
                     >
                       {statusConfig[meeting.status].label}
@@ -201,12 +201,12 @@ export default function RecentMeetings() {
               </div>
 
               {/* Description */}
-              <p className="text-sm text-white/60 mb-4 line-clamp-2 leading-relaxed">
+              <p className="text-sm dark:text-white/60 light:text-purple-700 mb-4 line-clamp-2 leading-relaxed">
                 {meeting.description}
               </p>
 
               {/* Footer with Participants and Department */}
-              <div className="flex items-center gap-4 pt-3 border-t border-purple-500/20">
+              <div className="flex items-center gap-4 pt-3 border-t dark:border-purple-500/20 light:border-purple-200">
                 <div className="flex -space-x-2">
                   {meeting.participants.slice(0, 3).map((participant, idx) => (
                     <img
@@ -214,17 +214,17 @@ export default function RecentMeetings() {
                       src={participant.avatar}
                       alt={participant.name}
                       title={participant.name}
-                      className="w-7 h-7 rounded-full border-2 border-purple-500/30 object-cover hover:scale-110 transition-transform duration-200"
+                      className="w-7 h-7 rounded-full border-2 dark:border-purple-500/30 light:border-purple-300/50 object-cover hover:scale-110 transition-transform duration-200"
                     />
                   ))}
                 </div>
-                <span className="text-xs text-white/60 font-medium">
+                <span className="text-xs dark:text-white/60 light:text-purple-600 font-medium">
                   {meeting.participantCount}명 참여
                 </span>
                 {meeting.department && (
                   <>
-                    <div className="w-px h-4 bg-purple-500/20" />
-                    <span className="text-xs bg-purple-500/30 text-purple-300 px-2 py-1 rounded-full font-medium">
+                    <div className="w-px h-4 dark:bg-purple-500/20 light:bg-purple-300/30" />
+                    <span className="text-xs dark:bg-purple-500/30 dark:text-purple-300 light:bg-purple-100/70 light:text-purple-800 px-2 py-1 rounded-full font-medium">
                       {meeting.department}
                     </span>
                   </>
