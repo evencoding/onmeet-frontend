@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Clock, Search, X } from "lucide-react";
+import { Clock, Search, X, Download, Share2 } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -246,7 +246,7 @@ export default function Summary() {
         </span>
         {meeting.team && (
           <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
-            📌 {meeting.team}
+            {meeting.team}
           </span>
         )}
       </div>
@@ -316,13 +316,15 @@ export default function Summary() {
       {meeting.status === "completed" && (
         <div className="flex flex-wrap gap-3 pt-4">
           <button className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-medium dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all">
-            🎙️ 음성녹음 재생
+            음성녹음 재생
           </button>
           <button className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-medium dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all">
-            ⬇️ 다운로드
+            <Download className="w-4 h-4" />
+            다운로드
           </button>
           <button className="flex items-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 dark:text-white/90 light:text-purple-700 rounded-lg font-medium dark:hover:bg-purple-500/10 light:hover:bg-purple-100/30 transition-all">
-            🔗 공유
+            <Share2 className="w-4 h-4" />
+            공유
           </button>
         </div>
       )}
@@ -429,7 +431,7 @@ export default function Summary() {
                     : "dark:bg-purple-500/20 light:bg-purple-100/50 dark:text-white/70 light:text-purple-700 dark:hover:bg-purple-500/30 light:hover:bg-purple-100/70"
                 }`}
               >
-                📄 회의록 있음
+                회의록 있음
               </button>
               <button
                 onClick={() => setShowVoiceRecordingFilter(!showVoiceRecordingFilter)}
@@ -439,7 +441,7 @@ export default function Summary() {
                     : "dark:bg-purple-500/20 light:bg-purple-100/50 dark:text-white/70 light:text-purple-700 dark:hover:bg-purple-500/30 light:hover:bg-purple-100/70"
                 }`}
               >
-                🎙️ 음성녹음 있음
+                음성녹음 있음
               </button>
             </div>
           </div>
@@ -487,17 +489,17 @@ export default function Summary() {
                       <div className="flex items-center gap-2 flex-wrap">
                         {meeting.hasTranscript && (
                           <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            📄 회의록
+                            회의록
                           </span>
                         )}
                         {meeting.status === "completed" && (
                           <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            🎙️ 음성녹음
+                            음성녹음
                           </span>
                         )}
                         {meeting.summary && (
                           <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            🤖 AI 회의록
+                            AI 회의록
                           </span>
                         )}
                       </div>
@@ -517,7 +519,7 @@ export default function Summary() {
                         </div>
                         {meeting.team && (
                           <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            📌 {meeting.team}
+                            {meeting.team}
                           </span>
                         )}
                       </div>
