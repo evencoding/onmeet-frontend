@@ -119,127 +119,126 @@ export default function MyPage() {
 
               {/* Information Section */}
               <div className="flex-1 space-y-6">
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  이름
-                </label>
-                {editMode ? (
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                  />
-                ) : (
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.name}</p>
-                )}
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="flex items-center gap-2 text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  <Mail className="w-4 h-4" />
-                  이메일
-                </label>
-                <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.email}</p>
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="flex items-center gap-2 text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  <Phone className="w-4 h-4" />
-                  전화
-                </label>
-                {editMode ? (
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                  />
-                ) : (
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.phone}</p>
-                )}
-              </div>
-
-              {/* Position */}
-              <div>
-                <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  직급
-                </label>
-                {editMode ? (
-                  <input
-                    type="text"
-                    name="position"
-                    value={formData.position}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                  />
-                ) : (
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.position}</p>
-                )}
-              </div>
-
-              {/* Team */}
-              <div>
-                <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  소속 팀
-                </label>
-                {editMode ? (
-                  <input
-                    type="text"
-                    name="team"
-                    value={formData.team}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                  />
-                ) : (
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.team}</p>
-                )}
-              </div>
-
-              {/* Bio */}
-              <div>
-                <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  소개
-                </label>
-                {editMode ? (
-                  <textarea
-                    name="bio"
-                    value={formData.bio}
-                    onChange={handleInputChange}
-                    rows={3}
-                    className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                  />
-                ) : (
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.bio}</p>
-                )}
-              </div>
-
-              </div>
-
-              {/* Save/Cancel Buttons - Only show in edit mode */}
-              {editMode && (
-                <div className="flex gap-3 pt-4 mt-8">
-                  <button
-                    onClick={handleSave}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/30"
-                  >
-                    <Save className="w-4 h-4" />
-                    저장
-                  </button>
-                  <button
-                    onClick={() => setEditMode(false)}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-xl font-medium dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-all"
-                  >
-                    <X className="w-4 h-4" />
-                    취소
-                  </button>
+                {/* Name */}
+                <div>
+                  <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    이름
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                    />
+                  ) : (
+                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.name}</p>
+                  )}
                 </div>
-              )}
+
+                {/* Email */}
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    <Mail className="w-4 h-4" />
+                    이메일
+                  </label>
+                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.email}</p>
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    <Phone className="w-4 h-4" />
+                    전화
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                    />
+                  ) : (
+                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.phone}</p>
+                  )}
+                </div>
+
+                {/* Position */}
+                <div>
+                  <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    직급
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="text"
+                      name="position"
+                      value={formData.position}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                    />
+                  ) : (
+                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.position}</p>
+                  )}
+                </div>
+
+                {/* Team */}
+                <div>
+                  <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    소속 팀
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="text"
+                      name="team"
+                      value={formData.team}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                    />
+                  ) : (
+                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.team}</p>
+                  )}
+                </div>
+
+                {/* Bio */}
+                <div>
+                  <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    소개
+                  </label>
+                  {editMode ? (
+                    <textarea
+                      name="bio"
+                      value={formData.bio}
+                      onChange={handleInputChange}
+                      rows={3}
+                      className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                    />
+                  ) : (
+                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.bio}</p>
+                  )}
+                </div>
+
+                {/* Save/Cancel Buttons - Only show in edit mode */}
+                {editMode && (
+                  <div className="flex gap-3 pt-6">
+                    <button
+                      onClick={handleSave}
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/30"
+                    >
+                      <Save className="w-4 h-4" />
+                      저장
+                    </button>
+                    <button
+                      onClick={() => setEditMode(false)}
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-xl font-medium dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-all"
+                    >
+                      <X className="w-4 h-4" />
+                      취소
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
