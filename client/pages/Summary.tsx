@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play, Copy, Edit, Check, ChevronDown } from "lucide-react";
+import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play, Copy, Edit, Check, ChevronDown, Music, FileCode, BookOpen, Tag } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
@@ -23,6 +23,7 @@ interface Meeting {
   }[];
   notes?: string;
   hasTranscript?: boolean;
+  tags?: string[];
 }
 
 export default function Summary() {
@@ -72,6 +73,7 @@ export default function Summary() {
       ],
       notes: "주간 목표 검토 및 진도 확인",
       hasTranscript: true,
+      tags: ["스탠드업", "마케팅", "주간"],
     },
     {
       id: "2",
@@ -104,6 +106,7 @@ export default function Summary() {
       ],
       notes: "Q1 프로젝트 진행 상황 논의",
       hasTranscript: true,
+      tags: ["프로젝트", "리뷰", "Q1"],
     },
     {
       id: "3",
@@ -131,6 +134,7 @@ export default function Summary() {
       ],
       notes: "신규 UI 디자인 검토",
       hasTranscript: false,
+      tags: ["디자인", "UI", "피드백"],
     },
     {
       id: "4",
@@ -158,6 +162,7 @@ export default function Summary() {
       ],
       notes: "월간 진행 상황 보고",
       hasTranscript: true,
+      tags: ["클라이언트", "보고", "월간"],
     },
     {
       id: "5",
@@ -183,6 +188,7 @@ export default function Summary() {
             "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
         },
       ],
+      tags: ["1:1", "성과평가", "피드백"],
     },
   ];
 
@@ -266,118 +272,126 @@ export default function Summary() {
 
       {/* Meeting Details Grid */}
       <div className="space-y-6 pb-6 border-b dark:border-purple-500/20 light:border-purple-300">
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
-              회의 날짜
+        {/* Time Information */}
+        <div>
+          <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-3">
+            일정
+          </p>
+          <div className="space-y-2">
+            <p className="text-sm dark:text-white/90 light:text-purple-950 font-medium">
+              {format(meeting.date, "yyyy년 MMM dd일 (eee)", { locale: ko })}
             </p>
-            <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
-              {format(meeting.date, "yyyy년 MMM dd, yyyy", { locale: ko })}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
-              시간
-            </p>
-            <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
-              {meeting.time}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
-              소요 시간
-            </p>
-            <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
-              {meeting.duration}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
-              참석자
-            </p>
-            <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
-              {meeting.participants}명
+            <p className="text-sm dark:text-white/80 light:text-purple-900">
+              시작: <span className="font-semibold">{meeting.time}</span> • 소요시간: <span className="font-semibold">{meeting.duration}</span>
             </p>
           </div>
         </div>
 
-        {/* Attendees List */}
+        {/* Team Information */}
+        {meeting.team && (
+          <div>
+            <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-3">
+              팀
+            </p>
+            <span className="inline-block dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900 light:border light:border-purple-300/60 px-3 py-1 rounded-full text-xs font-bold light:shadow-sm light:shadow-purple-200/40">
+              {meeting.team}
+            </span>
+          </div>
+        )}
+
+        {/* Tags Section */}
         <div>
           <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-3">
-            참석 인원
+            태그
           </p>
-          <div className="flex flex-wrap gap-2">
-            {meeting.attendees.map((attendee, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-2 px-3 py-2 dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border light:border-purple-300/40 rounded-full light:shadow-sm light:shadow-purple-200/20"
-              >
-                <img
-                  src={attendee.avatar}
-                  alt={attendee.name}
-                  className="w-7 h-7 rounded-full border-2 light:border-purple-300/40 dark:border-purple-500/20"
-                />
-                <span className="text-sm font-medium dark:text-white/90 light:text-purple-900">
-                  {attendee.name}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {meeting.tags && meeting.tags.length > 0 ? (
+              meeting.tags.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100/80 light:text-blue-900 light:border light:border-blue-300/60 text-xs font-semibold rounded-full light:shadow-sm light:shadow-blue-200/30"
+                >
+                  <Tag className="w-3 h-3" />
+                  {tag}
                 </span>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-xs dark:text-white/50 light:text-purple-600">태그가 없습니다.</p>
+            )}
           </div>
+          <button className="text-xs px-3 py-1.5 dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/60 light:text-purple-900 dark:hover:bg-purple-500/30 light:hover:bg-purple-100 rounded-lg transition-all font-medium">
+            + 태그 추가
+          </button>
         </div>
       </div>
 
       {/* AI Transcript/Summary Section */}
       {meeting.summary && (
-        <div>
-          <div className="flex items-center justify-between mb-3">
+        <div className="space-y-4">
+          {/* AI Summary Section - Only shown when AI processed */}
+          <div className="space-y-2">
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950">
-                회의록
+                AI 회의 요약
               </h3>
               <span className="dark:bg-purple-600 dark:text-white light:bg-gradient-to-r light:from-purple-600 light:to-purple-700 light:text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/40 flex items-center gap-1.5">
                 <Zap className="w-3.5 h-3.5" />
                 AI 생성
               </span>
             </div>
-            <button
-              onClick={() => {
-                if (editingMeetingId === meeting.id) {
-                  setEditingMeetingId(null);
-                } else {
-                  setEditingMeetingId(meeting.id);
-                  setEditedContent({ ...editedContent, [meeting.id]: meeting.summary || "" });
-                }
-              }}
-              className="flex items-center gap-2 px-3 py-1.5 dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900 dark:hover:bg-purple-500/30 light:hover:bg-purple-100 rounded-lg transition-all"
-            >
-              {editingMeetingId === meeting.id ? (
-                <>
-                  <Check className="w-4 h-4" />
-                  저장
-                </>
-              ) : (
-                <>
-                  <Edit className="w-4 h-4" />
-                  수정
-                </>
-              )}
-            </button>
+            <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30">
+              <p className="dark:text-white/80 light:text-purple-900 leading-relaxed whitespace-pre-wrap">
+                {meeting.summary}
+              </p>
+            </div>
           </div>
 
-          {editingMeetingId === meeting.id ? (
-            <textarea
-              value={editedContent[meeting.id] || ""}
-              onChange={(e) => setEditedContent({ ...editedContent, [meeting.id]: e.target.value })}
-              className="w-full h-96 px-4 py-3 dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/70 rounded-xl font-mono text-sm resize-none focus:outline-none focus:ring-2 dark:focus:ring-purple-500/40 light:focus:ring-purple-300/40"
-              placeholder="마크다운 형식으로 회의록을 수정하세요..."
-            />
-          ) : (
-            <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto">
-              <div className="prose dark:prose-invert prose-sm max-w-none dark:text-white/80 light:text-purple-900 whitespace-pre-wrap font-mono text-sm leading-relaxed">
-                {editedContent[meeting.id] || meeting.summary}
-              </div>
+          {/* Full Transcript Section */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950">
+                전체 회의록
+              </h3>
+              <button
+                onClick={() => {
+                  if (editingMeetingId === meeting.id) {
+                    setEditingMeetingId(null);
+                  } else {
+                    setEditingMeetingId(meeting.id);
+                    setEditedContent({ ...editedContent, [meeting.id]: meeting.summary || "" });
+                  }
+                }}
+                className="flex items-center gap-2 px-3 py-1.5 dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900 dark:hover:bg-purple-500/30 light:hover:bg-purple-100 rounded-lg transition-all"
+              >
+                {editingMeetingId === meeting.id ? (
+                  <>
+                    <Check className="w-4 h-4" />
+                    저장
+                  </>
+                ) : (
+                  <>
+                    <Edit className="w-4 h-4" />
+                    수정
+                  </>
+                )}
+              </button>
             </div>
-          )}
+
+            {editingMeetingId === meeting.id ? (
+              <textarea
+                value={editedContent[meeting.id] || ""}
+                onChange={(e) => setEditedContent({ ...editedContent, [meeting.id]: e.target.value })}
+                className="w-full h-96 px-4 py-3 dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/70 rounded-xl font-mono text-sm resize-none focus:outline-none focus:ring-2 dark:focus:ring-purple-500/40 light:focus:ring-purple-300/40"
+                placeholder="마크다운 형식으로 회의록을 수정하세요... (#제목, **굵게**, - 목록 등)"
+              />
+            ) : (
+              <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto">
+                <div className="prose dark:prose-invert prose-sm max-w-none dark:text-white/80 light:text-purple-900 whitespace-pre-wrap text-sm leading-relaxed">
+                  {editedContent[meeting.id] || meeting.summary}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -446,14 +460,17 @@ export default function Summary() {
 
               {showDownloadMenu === meeting.id && (
                 <div className="absolute top-full left-0 mt-2 dark:bg-purple-900 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300 rounded-lg shadow-lg dark:shadow-purple-900/50 light:shadow-purple-300/30 py-1 z-10">
-                  <button className="w-full text-left px-4 py-2 dark:text-white/90 light:text-purple-900 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 transition-colors text-sm">
-                    🎵 음성 파일
+                  <button className="w-full text-left px-4 py-2 dark:text-white/90 light:text-purple-900 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 transition-colors text-sm flex items-center gap-2">
+                    <Music className="w-4 h-4" />
+                    음성 파일
                   </button>
-                  <button className="w-full text-left px-4 py-2 dark:text-white/90 light:text-purple-900 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 transition-colors text-sm">
-                    📄 로우 텍스트
+                  <button className="w-full text-left px-4 py-2 dark:text-white/90 light:text-purple-900 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 transition-colors text-sm flex items-center gap-2">
+                    <FileCode className="w-4 h-4" />
+                    로우 텍스트
                   </button>
-                  <button className="w-full text-left px-4 py-2 dark:text-white/90 light:text-purple-900 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 transition-colors text-sm">
-                    📋 전체 회의록
+                  <button className="w-full text-left px-4 py-2 dark:text-white/90 light:text-purple-900 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 transition-colors text-sm flex items-center gap-2">
+                    <BookOpen className="w-4 h-4" />
+                    전체 회의록
                   </button>
                 </div>
               )}
