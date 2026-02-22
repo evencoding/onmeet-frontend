@@ -11,7 +11,6 @@ import Index from "./pages/Index";
 import MeetingRoom from "./pages/MeetingRoom";
 import Schedule from "./pages/Schedule";
 import Summary from "./pages/Summary";
-import MeetingRecords from "./pages/MeetingRecords";
 import TeamBoard from "./pages/TeamBoard";
 import Team from "./pages/Team";
 import MyPage from "./pages/MyPage";
@@ -85,7 +84,7 @@ const AppContent = () => (
         path="/records"
         element={
           <ProtectedRoute>
-            <MeetingRecords />
+            <Summary />
           </ProtectedRoute>
         }
       />
