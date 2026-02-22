@@ -173,8 +173,8 @@ export default function Sidebar({
                     ? "justify-center p-3"
                     : "justify-between px-4 py-3",
                   isActive
-                    ? "bg-gradient-to-r from-purple-600/30 to-purple-600/20 text-purple-300 shadow-lg shadow-purple-500/20"
-                    : "text-white/70 hover:bg-purple-500/10 hover:text-white/90",
+                    ? "dark:bg-gradient-to-r dark:from-purple-600/30 dark:to-purple-600/20 dark:text-purple-300 dark:shadow-lg dark:shadow-purple-500/20 light:bg-purple-100 light:text-purple-700"
+                    : "dark:text-white/70 dark:hover:bg-purple-500/10 dark:hover:text-white/90 light:text-purple-600 light:hover:bg-purple-100/50 light:hover:text-purple-800",
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -215,7 +215,7 @@ export default function Sidebar({
             <span className="text-xs font-semibold dark:text-white/60 light:text-purple-700 uppercase">
               Teams
             </span>
-            <button className="p-1 dark:hover:bg-purple-500/20 light:hover:bg-purple-200/40 rounded transition-colors">
+            <button className="p-1 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50 rounded transition-colors">
               <MoreVertical className="w-4 h-4 dark:text-white/40 light:text-purple-600" />
             </button>
           </div>
@@ -252,14 +252,14 @@ export default function Sidebar({
                 <span className="text-sm font-medium flex-1 text-left">
                   {team.name}
                 </span>
-                <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-white/40" />
+                <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity dark:text-white/40 light:text-purple-600" />
               </button>
             ))}
           </div>
 
           <button
             onClick={() => setIsAddTeamModalOpen(true)}
-            className="w-full flex items-center gap-3 px-4 py-3 dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-purple-500/10 light:text-purple-600 light:hover:text-purple-800 light:hover:bg-purple-100/50 rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-purple-500/10 light:text-purple-700 light:hover:text-purple-900 light:hover:bg-purple-100/50 rounded-xl transition-colors"
           >
             <Plus className="w-5 h-5" />
             <span className="text-sm font-medium">팀 추가</span>
@@ -331,10 +331,10 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
         </div>
         <button
           onClick={logout}
-          className="p-2 hover:bg-purple-500/20 rounded transition-colors"
+          className="p-2 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50 rounded transition-colors"
           title="로그아웃"
         >
-          <LogOut className="w-4 h-4 text-white/60" />
+          <LogOut className="w-4 h-4 dark:text-white/60 light:text-purple-600" />
         </button>
       </div>
     );
@@ -352,7 +352,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
       {/* Logout Button */}
       <button
         onClick={logout}
-        className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-purple-500/30 bg-purple-500/10 text-white/90 text-sm font-medium rounded-xl hover:bg-purple-500/20 transition-all duration-200"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-white/90 dark:hover:bg-purple-500/20 light:border light:border-purple-300/50 light:bg-purple-100/30 light:text-purple-700 light:hover:bg-purple-100/50 text-sm font-medium rounded-xl transition-all duration-200"
       >
         <LogOut className="w-4 h-4" />
         로그아웃
