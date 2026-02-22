@@ -9,6 +9,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -59,16 +60,10 @@ export default function Sidebar({
       route: "/",
     },
     {
-      id: "records",
-      label: "이전 회의",
+      id: "summary",
+      label: "회의 내역",
       icon: <FileText className="w-5 h-5" />,
       badge: 8,
-      route: "/records",
-    },
-    {
-      id: "summary",
-      label: "Ai 회의록",
-      icon: <ClipboardList className="w-5 h-5" />,
       route: "/summary",
     },
     {
@@ -78,6 +73,12 @@ export default function Sidebar({
       hasMenu: false,
       route: "/schedule",
     },
+    {
+      id: "mypage",
+      label: "설정",
+      icon: <User className="w-5 h-5" />,
+      route: "/mypage",
+    },
   ];
 
   const teams: Team[] = [
@@ -85,33 +86,30 @@ export default function Sidebar({
       id: "marketing",
       name: "Marketing",
       color: "bg-purple-200",
-      icon: "📢",
     },
     {
       id: "product",
       name: "Product",
       color: "bg-blue-200",
-      icon: "📊",
     },
     {
       id: "design",
       name: "Design",
       color: "bg-pink-200",
-      icon: "🎨",
     },
   ];
 
   return (
     <div
       className={cn(
-        "bg-gradient-to-b from-bg-DEFAULT via-white/40 to-bg-DEFAULT border-r border-border/30 flex flex-col h-screen transition-all duration-300",
+        "flex flex-col h-screen transition-all duration-300 dark:bg-gradient-to-b dark:from-purple-950/30 dark:via-black/60 dark:to-purple-950/30 dark:border-r dark:border-purple-500/20 dark:backdrop-blur-md light:bg-white light:border-r light:border-purple-200",
         isCollapsed ? "w-20" : "w-72",
       )}
     >
       {/* Header */}
       <div
         className={cn(
-          "border-b border-border/30 bg-white/50 flex flex-col items-center justify-between",
+          "flex flex-col items-center justify-between dark:border-b dark:border-purple-500/20 dark:bg-purple-500/10 dark:backdrop-blur-md light:border-b light:border-purple-200 light:bg-white",
           isCollapsed ? "px-2 py-4" : "px-6 py-5",
         )}
       >
@@ -125,7 +123,7 @@ export default function Sidebar({
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
                 O
               </div>
-              <span className="font-bold text-lg text-foreground tracking-tight">
+              <span className="font-bold text-lg tracking-tight dark:text-foreground light:text-purple-900">
                 ONMEET
               </span>
             </button>
@@ -169,8 +167,8 @@ export default function Sidebar({
                     ? "justify-center p-3"
                     : "justify-between px-4 py-3",
                   isActive
-                    ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
-                    : "text-foreground hover:bg-white/40",
+                    ? "dark:bg-gradient-to-r dark:from-purple-600/30 dark:to-purple-600/20 dark:text-purple-300 dark:shadow-lg dark:shadow-purple-500/20 light:bg-purple-100 light:text-purple-700"
+                    : "dark:text-white/70 dark:hover:bg-purple-500/10 dark:hover:text-white/90 light:text-purple-600 light:hover:bg-purple-100/50 light:hover:text-purple-800",
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -206,13 +204,13 @@ export default function Sidebar({
 
       {/* Teams Section */}
       {!isCollapsed && (
-        <div className="px-3 py-4 border-t border-border/30 bg-white/30">
+        <div className="px-3 py-4 dark:border-t dark:border-purple-500/20 dark:bg-purple-500/5 dark:backdrop-blur-md light:border-t light:border-purple-300/50 light:bg-purple-50/30">
           <div className="flex items-center justify-between px-4 mb-3">
-            <span className="text-xs font-semibold text-muted-foreground uppercase">
+            <span className="text-xs font-semibold dark:text-white/60 light:text-purple-700 uppercase">
               Teams
             </span>
-            <button className="p-1 hover:bg-secondary rounded transition-colors">
-              <MoreVertical className="w-4 h-4 text-muted-foreground" />
+            <button className="p-1 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50 rounded transition-colors">
+              <MoreVertical className="w-4 h-4 dark:text-white/40 light:text-purple-600" />
             </button>
           </div>
 
@@ -228,30 +226,34 @@ export default function Sidebar({
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
                   selectedTeamId === team.id
-                    ? "bg-gradient-to-r from-brand-50 to-brand-50 text-brand-500 shadow-sm"
-                    : "text-foreground hover:bg-white/40",
+                    ? "dark:bg-gradient-to-r dark:from-purple-600/30 dark:to-purple-600/20 dark:text-purple-300 dark:shadow-lg dark:shadow-purple-500/20 light:bg-purple-100 light:text-purple-700"
+                    : "dark:text-white/70 dark:hover:bg-purple-500/10 dark:hover:text-white/90 light:text-purple-600 light:hover:bg-purple-100/50 light:hover:text-purple-800",
                 )}
                 title={`${team.name} 팀 선택`}
               >
                 <div
                   className={cn(
-                    "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white",
-                    team.color,
+                    "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold dark:text-white light:text-white bg-gradient-to-br",
+                    team.id === "marketing"
+                      ? "from-purple-500 to-purple-600"
+                      : team.id === "product"
+                        ? "from-blue-500 to-blue-600"
+                        : "from-pink-500 to-pink-600",
                   )}
                 >
-                  {selectedTeamId === team.id ? "✓" : team.icon}
+                  {team.id.charAt(0).toUpperCase()}
                 </div>
                 <span className="text-sm font-medium flex-1 text-left">
                   {team.name}
                 </span>
-                <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground" />
+                <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity dark:text-white/40 light:text-purple-600" />
               </button>
             ))}
           </div>
 
           <button
             onClick={() => setIsAddTeamModalOpen(true)}
-            className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-purple-500/10 light:text-purple-700 light:hover:text-purple-900 light:hover:bg-purple-100/50 rounded-xl transition-colors"
           >
             <Plus className="w-5 h-5" />
             <span className="text-sm font-medium">팀 추가</span>
@@ -279,7 +281,7 @@ export default function Sidebar({
       {/* User Profile */}
       <div
         className={cn(
-          "border-t border-border/30 bg-white/30",
+          "border-t border-purple-500/20 bg-purple-500/5 backdrop-blur-md",
           isCollapsed ? "px-2 py-4" : "px-3 py-4",
         )}
       >
@@ -298,14 +300,14 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
       <button
         onClick={() => navigate("/login")}
         className={cn(
-          "bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-200",
+          "bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-200",
           isCollapsed
             ? "w-10 h-10 p-2 flex items-center justify-center"
             : "w-full px-4 py-3",
         )}
         title={isCollapsed ? "로그인" : ""}
       >
-        {isCollapsed ? "🔑" : "로그인"}
+        {isCollapsed ? "→" : "로그인"}
       </button>
     );
   }
@@ -323,10 +325,10 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
         </div>
         <button
           onClick={logout}
-          className="p-2 hover:bg-secondary rounded transition-colors"
+          className="p-2 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50 rounded transition-colors"
           title="로그아웃"
         >
-          <LogOut className="w-4 h-4 text-muted-foreground" />
+          <LogOut className="w-4 h-4 dark:text-white/60 light:text-purple-600" />
         </button>
       </div>
     );
@@ -335,7 +337,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
   return (
     <div className="space-y-2">
       {/* Company Information */}
-      <div className="w-full px-4 py-4 bg-gradient-to-br from-brand-500 to-brand-600 rounded-xl text-center">
+      <div className="w-full px-4 py-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl text-center">
         <div className="text-base font-bold text-white">
           Acme Corporation
         </div>
@@ -344,7 +346,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
       {/* Logout Button */}
       <button
         onClick={logout}
-        className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-border/60 bg-white/40 text-foreground text-sm font-medium rounded-xl hover:bg-white/60 transition-all duration-200"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-white/90 dark:hover:bg-purple-500/20 light:border light:border-purple-300/50 light:bg-purple-100/30 light:text-purple-700 light:hover:bg-purple-100/50 text-sm font-medium rounded-xl transition-all duration-200"
       >
         <LogOut className="w-4 h-4" />
         로그아웃

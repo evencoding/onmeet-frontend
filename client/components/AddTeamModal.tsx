@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Trash2, Search } from "lucide-react";
+import { X, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -122,7 +122,7 @@ export default function AddTeamModal({
     (emp) =>
       emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      emp.department?.toLowerCase().includes(searchQuery.toLowerCase()),
+      emp.department?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleToggleMember = (employee: Employee) => {
@@ -132,6 +132,13 @@ export default function AddTeamModal({
     } else {
       setSelectedMembers([...selectedMembers, employee]);
     }
+    // Keep search input focused and don't clear it
+    setTimeout(() => {
+      const searchInput = document.querySelector(
+        'input[placeholder="이름, 이메일, 부서로 검색"]'
+      ) as HTMLInputElement;
+      if (searchInput) searchInput.focus();
+    }, 0);
   };
 
   const handleRemoveMember = (id: string) => {
@@ -147,7 +154,6 @@ export default function AddTeamModal({
     }
 
     setIsLoading(true);
-
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -169,7 +175,7 @@ export default function AddTeamModal({
       onClose();
     } catch (error) {
       console.error("Failed to create team:", error);
-      alert("팀 생성에 실패했습니다");
+      alert("팀 생성 요청에 실패했습니다");
     } finally {
       setIsLoading(false);
     }
@@ -186,15 +192,17 @@ export default function AddTeamModal({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={handleClose}>
-      <AlertDialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <AlertDialogContent className="max-w-lg max-h-[90vh] overflow-y-auto dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 dark:backdrop-blur-md light:backdrop-blur-sm">
         <AlertDialogHeader>
           <div className="flex items-center justify-between">
-            <AlertDialogTitle>새 팀 추가</AlertDialogTitle>
+            <AlertDialogTitle className="dark:text-white/90 light:text-purple-900">
+              팀 생성 요청
+            </AlertDialogTitle>
             <button
               onClick={handleClose}
-              className="p-1 hover:bg-surface-subtle rounded-lg transition-colors"
+              className="p-1 dark:hover:bg-purple-500/20 light:hover:bg-purple-200/40 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
             </button>
           </div>
         </AlertDialogHeader>
@@ -202,7 +210,7 @@ export default function AddTeamModal({
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Team Name Input */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-foreground">
+            <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
               팀 이름 <span className="text-red-500">*</span>
             </label>
             <input
@@ -210,7 +218,7 @@ export default function AddTeamModal({
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
               placeholder="예: 마케팅 팀"
-              className="w-full px-4 py-2 border border-border/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
               disabled={isLoading}
               autoFocus
             />
@@ -218,39 +226,40 @@ export default function AddTeamModal({
 
           {/* Description Input */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-foreground">
+            <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
               설명
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="팀의 목적과 역할을 설명해주세요"
-              className="w-full px-4 py-2 border border-border/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all resize-none"
+              className="w-full px-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
               rows={3}
               disabled={isLoading}
             />
           </div>
 
-          {/* Color Selection */}
+          {/* Color Selection - GitHub Style */}
           <div className="space-y-3">
-            <label className="text-sm font-semibold text-foreground">
+            <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
               팀 색상
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-wrap items-center gap-3 p-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50">
               {teamColors.map((color) => (
                 <button
                   key={color.value}
                   type="button"
                   onClick={() => setSelectedColor(color.value)}
-                  className={`w-full h-12 rounded-lg transition-all border-2 flex items-center justify-center font-semibold text-sm ${
-                    selectedColor === color.value
-                      ? "border-foreground shadow-lg scale-105"
-                      : "border-transparent hover:scale-102"
-                  } text-white`}
-                  style={{ backgroundColor: color.hex }}
                   title={color.name}
                   disabled={isLoading}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full font-medium text-sm transition-all ${
+                    selectedColor === color.value
+                      ? "ring-2 ring-offset-2 dark:ring-white light:ring-purple-700 scale-110"
+                      : "opacity-70 hover:opacity-100"
+                  } text-white dark:ring-offset-purple-900/40 light:ring-offset-purple-50`}
+                  style={{ backgroundColor: color.hex }}
                 >
+                  <div className="w-2.5 h-2.5 rounded-full dark:bg-white light:bg-white/80"></div>
                   {color.name}
                 </button>
               ))}
@@ -259,33 +268,62 @@ export default function AddTeamModal({
 
           {/* Members Section */}
           <div className="space-y-3">
-            <label className="text-sm font-semibold text-foreground">
+            <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
               팀원 선택
             </label>
 
-            {/* Search Bar */}
+            {/* Search Bar with Inline Tags */}
             <div className="relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="이름, 이메일, 부서로 검색"
-                className="w-full pl-10 pr-4 py-2 border border-border/40 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all text-sm"
-                disabled={isLoading}
-              />
+              <div className="flex flex-wrap items-center gap-2 pl-10 pr-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus-within:ring-2 focus-within:ring-purple-500 transition-all">
+                <Search className="absolute left-3 w-4 h-4 dark:text-white/40 light:text-purple-600" />
+
+                {/* Selected Member Tags Inside Input */}
+                {selectedMembers.map((member) => (
+                  <div
+                    key={member.id}
+                    className="flex items-center gap-1 px-2 py-1 dark:bg-purple-600/40 light:bg-purple-200/60 rounded-full border dark:border-purple-500/50 light:border-purple-300/50 text-xs bg-compact"
+                  >
+                    <Avatar className="w-4 h-4">
+                      <AvatarImage src={member.avatar} alt={member.name} />
+                      <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span className="dark:text-white/90 light:text-purple-900 font-medium whitespace-nowrap">
+                      {member.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMember(member.id)}
+                      disabled={isLoading}
+                      className="p-0 dark:text-white/60 dark:hover:text-red-400 light:text-purple-600 light:hover:text-red-600 hover:dark:bg-red-500/20 hover:light:bg-red-100/50 rounded-full transition-colors flex-shrink-0"
+                      title="제거"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+
+                {/* Search Input */}
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={selectedMembers.length === 0 ? "이름, 이메일, 부서로 검색" : "검색..."}
+                  className="flex-1 min-w-0 py-0 border-0 dark:bg-transparent light:bg-transparent focus:outline-none focus:ring-0 text-sm dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
+                  disabled={isLoading}
+                />
+              </div>
             </div>
 
             {/* Employee List */}
-            <div className="border border-border/40 rounded-lg overflow-hidden max-h-48 overflow-y-auto">
+            <div className="border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg overflow-hidden max-h-48 overflow-y-auto dark:bg-black/40 light:bg-purple-50/30">
               {filteredEmployees.length === 0 ? (
-                <div className="p-4 text-center text-sm text-text-sub">
+                <div className="p-4 text-center text-sm dark:text-white/60 light:text-purple-600">
                   검색 결과가 없습니다
                 </div>
               ) : (
                 filteredEmployees.map((employee) => {
                   const isSelected = selectedMembers.some(
-                    (m) => m.id === employee.id,
+                    (m) => m.id === employee.id
                   );
                   return (
                     <button
@@ -293,8 +331,10 @@ export default function AddTeamModal({
                       type="button"
                       onClick={() => handleToggleMember(employee)}
                       disabled={isLoading}
-                      className={`w-full flex items-center gap-3 p-3 border-b border-border/20 hover:bg-surface-subtle transition-colors ${
-                        isSelected ? "bg-brand-50" : ""
+                      className={`w-full flex items-center gap-3 p-3 dark:border-b dark:border-purple-500/20 light:border-b light:border-purple-300/30 transition-colors ${
+                        isSelected
+                          ? "dark:bg-purple-600/30 light:bg-purple-100/50"
+                          : "dark:hover:bg-purple-500/10 light:hover:bg-purple-100/30"
                       }`}
                     >
                       <input
@@ -314,10 +354,10 @@ export default function AddTeamModal({
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 text-left">
-                        <p className="text-sm font-medium text-foreground">
+                        <p className="text-sm font-medium dark:text-white/90 light:text-purple-900">
                           {employee.name}
                         </p>
-                        <p className="text-xs text-text-sub">
+                        <p className="text-xs dark:text-white/50 light:text-purple-600">
                           {employee.department} · {employee.email}
                         </p>
                       </div>
@@ -327,46 +367,11 @@ export default function AddTeamModal({
               )}
             </div>
 
-            {/* Selected Members */}
+            {/* Member Count Info */}
             {selectedMembers.length > 0 && (
-              <div className="space-y-2 p-3 bg-brand-50 rounded-lg">
-                <div className="text-xs font-semibold text-brand-600 uppercase">
-                  선택된 팀원 ({selectedMembers.length})
-                </div>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {selectedMembers.map((member) => (
-                    <div
-                      key={member.id}
-                      className="flex items-center justify-between p-2 bg-white rounded border border-brand-200"
-                    >
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <Avatar className="w-6 h-6">
-                          <AvatarImage src={member.avatar} alt={member.name} />
-                          <AvatarFallback>
-                            {member.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-foreground truncate">
-                            {member.name}
-                          </p>
-                          <p className="text-xs text-text-sub truncate">
-                            {member.email}
-                          </p>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveMember(member.id)}
-                        disabled={isLoading}
-                        className="p-1 ml-1 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded transition-colors flex-shrink-0"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <p className="text-xs dark:text-white/50 light:text-purple-600">
+                {selectedMembers.length}명 선택됨
+              </p>
             )}
           </div>
 
@@ -377,12 +382,16 @@ export default function AddTeamModal({
               variant="outline"
               onClick={handleClose}
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-white/90 dark:hover:bg-purple-500/20 light:border-purple-300/50 light:bg-purple-100/50 light:text-purple-700 light:hover:bg-purple-100"
             >
               취소
             </Button>
-            <Button type="submit" disabled={isLoading} className="flex-1">
-              {isLoading ? "생성 중..." : "팀 생성"}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+            >
+              {isLoading ? "요청 중..." : "팀 생성 요청"}
             </Button>
           </div>
         </form>

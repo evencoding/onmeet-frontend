@@ -56,24 +56,24 @@ export default function GuestJoinModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="bg-gradient-to-br from-purple-900/40 via-black/80 to-pink-900/30 rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden border border-purple-500/30 backdrop-blur-md">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border/20 bg-gradient-to-r from-brand-50 to-brand-50/30">
-          <h2 className="text-xl font-bold text-foreground">회의 참여하기</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-purple-500/20 bg-gradient-to-r from-purple-900/40 to-black/60">
+          <h2 className="text-xl font-bold text-white/90">회의 참여하기</h2>
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-white rounded-lg transition-colors"
+            className="p-1.5 hover:bg-purple-500/20 rounded-lg transition-colors"
           >
-            <X className="w-5 h-5 text-muted-foreground" />
+            <X className="w-5 h-5 text-white/60" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="px-6 py-6 space-y-5">
+        <div className="px-6 py-6 space-y-5 bg-black/40">
           {/* Guest Name */}
           <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">
+            <label className="block text-sm font-semibold text-white/90 mb-2">
               이름
             </label>
             <input
@@ -87,14 +87,14 @@ export default function GuestJoinModal({
               }}
               onKeyPress={handleKeyPress}
               placeholder="게스트 이름을 입력하세요"
-              className={`w-full px-4 py-3 border rounded-lg bg-white focus:outline-none transition-all text-sm ${
+              className={`w-full px-4 py-3 border rounded-lg bg-purple-500/10 focus:outline-none transition-all text-sm text-white placeholder-white/40 ${
                 errors.name
                   ? "border-red-500 focus:ring-2 focus:ring-red-500/20"
-                  : "border-border/50 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                  : "border-purple-500/30 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
               }`}
             />
             {errors.name && (
-              <p className="mt-1 text-xs text-red-500 font-medium">
+              <p className="mt-1 text-xs text-red-400 font-medium">
                 {errors.name}
               </p>
             )}
@@ -102,7 +102,7 @@ export default function GuestJoinModal({
 
           {/* Guest Description */}
           <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">
+            <label className="block text-sm font-semibold text-white/90 mb-2">
               설명 (소속/역할)
             </label>
             <textarea
@@ -116,39 +116,39 @@ export default function GuestJoinModal({
               onKeyPress={handleKeyPress}
               placeholder="예) 영업팀 / 프로젝트 담당자"
               rows={3}
-              className={`w-full px-4 py-3 border rounded-lg bg-white focus:outline-none transition-all text-sm resize-none ${
+              className={`w-full px-4 py-3 border rounded-lg bg-purple-500/10 focus:outline-none transition-all text-sm resize-none text-white placeholder-white/40 ${
                 errors.description
                   ? "border-red-500 focus:ring-2 focus:ring-red-500/20"
-                  : "border-border/50 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                  : "border-purple-500/30 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20"
               }`}
             />
             {errors.description && (
-              <p className="mt-1 text-xs text-red-500 font-medium">
+              <p className="mt-1 text-xs text-red-400 font-medium">
                 {errors.description}
               </p>
             )}
           </div>
 
           {/* Info Text */}
-          <div className="p-3 bg-blue-50/50 border border-blue-200/50 rounded-lg">
-            <p className="text-xs text-blue-700 font-medium">
-              💡 이 정보는 회의 참석자에게 표시되며, 언제든 변경할 수 있습니다.
+          <div className="p-3 bg-purple-600/20 border border-purple-500/30 rounded-lg">
+            <p className="text-xs text-purple-300 font-medium">
+              이 정보는 회의 참석자에게 표시되며, 언제든 변경할 수 있습니다.
             </p>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="border-t border-border/20 px-6 py-4 bg-white/50 flex gap-3">
+        <div className="border-t border-purple-500/20 px-6 py-4 bg-purple-900/20 flex gap-3 backdrop-blur-md">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 border border-border/60 text-foreground text-sm font-semibold rounded-lg hover:bg-gray-50 transition-all duration-200"
+            className="flex-1 px-4 py-2.5 border border-purple-500/30 text-white/90 text-sm font-semibold rounded-lg hover:bg-purple-500/10 transition-all duration-200"
           >
             취소
           </button>
           <button
             onClick={handleJoin}
             disabled={!guestName.trim() || !guestDescription.trim()}
-            className="flex-1 px-4 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-lg hover:from-brand-600 hover:to-brand-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             회의 입장
           </button>

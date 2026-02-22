@@ -6,13 +6,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import Index from "./pages/Index";
 import MeetingRoom from "./pages/MeetingRoom";
 import Schedule from "./pages/Schedule";
 import Summary from "./pages/Summary";
-import MeetingRecords from "./pages/MeetingRecords";
 import TeamBoard from "./pages/TeamBoard";
 import Team from "./pages/Team";
+import MyPage from "./pages/MyPage";
+import CompanyManagement from "./pages/CompanyManagement";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import SignupFlow from "./pages/SignupFlow";
@@ -82,7 +84,7 @@ const AppContent = () => (
         path="/records"
         element={
           <ProtectedRoute>
-            <MeetingRecords />
+            <Summary />
           </ProtectedRoute>
         }
       />
@@ -102,6 +104,22 @@ const AppContent = () => (
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/mypage"
+        element={
+          <ProtectedRoute>
+            <MyPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/company"
+        element={
+          <ProtectedRoute>
+            <CompanyManagement />
+          </ProtectedRoute>
+        }
+      />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
@@ -110,13 +128,15 @@ const AppContent = () => (
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <AppContent />
-      </AuthProvider>
-    </TooltipProvider>
+    <ThemeProvider>
+      <TooltipProvider>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <AppContent />
+        </AuthProvider>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
