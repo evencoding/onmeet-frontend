@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
-import { Clock, Search, X, Download, Share2, FileText, Mic, Zap } from "lucide-react";
+import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 
@@ -25,6 +26,7 @@ interface Meeting {
 }
 
 export default function Summary() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "scheduled" | "in_progress" | "completed">("all");
   const [expandedMeetingId, setExpandedMeetingId] = useState<string | null>(null);
@@ -491,23 +493,27 @@ export default function Summary() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {filteredMeetings.map((meeting) => (
-                  <button
+                  <div
                     key={meeting.id}
-                    onClick={() => setExpandedMeetingId(meeting.id)}
-                    className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-white/80 light:to-purple-50 dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-2xl p-6 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-lg light:hover:shadow-purple-300/20 hover:-translate-y-1 transition-all duration-300 text-left group dark:backdrop-blur-md light:backdrop-blur-sm"
+                    className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-white/80 light:to-purple-50 dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-2xl p-6 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-lg light:hover:shadow-purple-300/20 hover:-translate-y-1 transition-all duration-300 dark:backdrop-blur-md light:backdrop-blur-sm group flex flex-col"
                   >
-                    {renderSimpleCard(meeting)}
+                    <button
+                      onClick={() => setExpandedMeetingId(meeting.id)}
+                      className="text-left flex-1"
+                    >
+                      {renderSimpleCard(meeting)}
 
-                    {/* Summary Preview */}
-                    {meeting.summary && (
-                      <p className="text-sm dark:text-white/60 light:text-purple-700 line-clamp-2 mb-4 group-hover:dark:text-white/80 group-hover:light:text-purple-900 transition-colors">
-                        {meeting.summary}
-                      </p>
-                    )}
+                      {/* Summary Preview */}
+                      {meeting.summary && (
+                        <p className="text-sm dark:text-white/60 light:text-purple-700 line-clamp-2 mb-4 group-hover:dark:text-white/80 group-hover:light:text-purple-900 transition-colors">
+                          {meeting.summary}
+                        </p>
+                      )}
+                    </button>
 
                     {/* Meeting Features Chips - Only show for completed meetings */}
                     {meeting.status === "completed" && (
-                      <div className="flex items-center gap-2 flex-wrap">
+                      <div className="flex items-center gap-2 flex-wrap mb-4">
                         {meeting.hasTranscript && (
                           <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5">
                             <FileText className="w-3.5 h-3.5" />
@@ -529,7 +535,21 @@ export default function Summary() {
                         )}
                       </div>
                     )}
-                  </button>
+
+                    {/* Join Meeting Button - Only for in_progress meetings */}
+                    {meeting.status === "in_progress" && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate("/meeting");
+                        }}
+                        className="w-full mt-4 px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 dark:from-green-500 dark:to-green-600 text-white text-sm font-semibold rounded-lg hover:from-green-700 hover:to-green-800 dark:hover:from-green-600 dark:hover:to-green-700 transition-all duration-200 flex items-center justify-center gap-2"
+                      >
+                        <Play className="w-4 h-4" />
+                        회의 참여하기
+                      </button>
+                    )}
+                  </div>
                 ))}
               </div>
             )}
