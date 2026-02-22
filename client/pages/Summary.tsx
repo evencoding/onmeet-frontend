@@ -1,12 +1,9 @@
 import Layout from "@/components/Layout";
-import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play, Copy, Edit, Check, ChevronDown, Music, FileCode, BookOpen, Tag, Volume2, Maximize2 } from "lucide-react";
+import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play, Copy, Edit, Check, ChevronDown, Music, FileCode, BookOpen, Tag, Volume2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import MDEditor from "@uiw/react-md-editor";
-import "@uiw/react-md-editor/markdown-editor.css";
-import "@uiw/react-markdown-preview/markdown.css";
 
 interface Meeting {
   id: string;
@@ -383,39 +380,39 @@ export default function Summary() {
             </div>
 
             {editingMeetingId === meeting.id ? (
-              <div data-color-mode={localStorage.getItem("theme") === "dark" ? "dark" : "light"} className="rounded-xl overflow-hidden border-2 dark:border-purple-500/30 light:border-purple-300">
-                <MDEditor
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-xs dark:text-white/50 light:text-purple-600 font-medium">
+                  <span>마크다운 형식 지원: #제목, ##부제, - 목록, **굵게**, *기울임*</span>
+                </div>
+                <textarea
                   value={editedContent[meeting.id] || ""}
-                  onChange={(val) => setEditedContent({ ...editedContent, [meeting.id]: val || "" })}
-                  height={400}
-                  preview="edit"
-                  hideToolbar={false}
-                  visibleDragbar={true}
-                  textareaProps={{
-                    disabled: false,
-                  }}
-                  className="w-full !dark:bg-purple-500/10 !light:bg-purple-50 !dark:border-0 !light:border-0"
-                  style={{
-                    backgroundColor: localStorage.getItem("theme") === "dark" ? "#1e1b4b" : "#faf5ff",
-                    color: localStorage.getItem("theme") === "dark" ? "#f3f4f6" : "#1f2937",
-                  }}
+                  onChange={(e) => setEditedContent({ ...editedContent, [meeting.id]: e.target.value })}
+                  className="w-full h-96 px-4 py-3 dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/70 rounded-xl font-mono text-sm resize-none focus:outline-none focus:ring-2 dark:focus:ring-purple-500/40 light:focus:ring-purple-300/40"
+                  placeholder="마크다운 형식으로 회의록을 수정하세요...&#10;&#10;예시:&#10;# 회의 제목&#10;## 섹션&#10;- 항목 1&#10;- 항목 2&#10;**중요한 내용**"
                 />
               </div>
             ) : (
               <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto">
-                <div className="prose dark:prose-invert prose-sm max-w-none dark:text-white/80 light:text-purple-900 text-sm leading-relaxed space-y-3">
-                  <div dangerouslySetInnerHTML={{
-                    __html: (editedContent[meeting.id] || meeting.summary)
-                      .split('\n').map(line => {
-                        if (line.startsWith('# ')) return `<h1 class="text-2xl font-bold mb-4 dark:text-white light:text-purple-950">${line.replace('# ', '')}</h1>`;
-                        if (line.startsWith('## ')) return `<h2 class="text-xl font-bold mb-3 dark:text-white light:text-purple-950">${line.replace('## ', '')}</h2>`;
-                        if (line.startsWith('### ')) return `<h3 class="text-lg font-bold mb-2 dark:text-white light:text-purple-950">${line.replace('### ', '')}</h3>`;
-                        if (line.startsWith('- ')) return `<li class="ml-4 dark:text-white/80 light:text-purple-900">${line.replace('- ', '')}</li>`;
-                        if (line.startsWith('**') && line.endsWith('**')) return `<strong class="font-bold">${line.replace(/\*\*/g, '')}</strong>`;
-                        if (line.trim()) return `<p class="dark:text-white/80 light:text-purple-900">${line}</p>`;
-                        return '';
-                      }).join('')
-                  }} />
+                <div className="dark:text-white/80 light:text-purple-900 text-sm leading-relaxed space-y-3">
+                  {(editedContent[meeting.id] || meeting.summary)
+                    .split('\n').map((line, idx) => {
+                      if (line.startsWith('# ')) {
+                        return <h1 key={idx} className="text-2xl font-bold mb-4 dark:text-white light:text-purple-950">{line.replace('# ', '')}</h1>;
+                      }
+                      if (line.startsWith('## ')) {
+                        return <h2 key={idx} className="text-xl font-bold mb-3 dark:text-white light:text-purple-950">{line.replace('## ', '')}</h2>;
+                      }
+                      if (line.startsWith('### ')) {
+                        return <h3 key={idx} className="text-lg font-bold mb-2 dark:text-white light:text-purple-950">{line.replace('### ', '')}</h3>;
+                      }
+                      if (line.startsWith('- ')) {
+                        return <li key={idx} className="ml-4 dark:text-white/80 light:text-purple-900">{line.replace('- ', '')}</li>;
+                      }
+                      if (line.trim()) {
+                        return <p key={idx} className="dark:text-white/80 light:text-purple-900">{line}</p>;
+                      }
+                      return <br key={idx} />;
+                    })}
                 </div>
               </div>
             )}
