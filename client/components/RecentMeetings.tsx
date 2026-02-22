@@ -140,7 +140,7 @@ export default function RecentMeetings() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="회의 제목, 설명 또는 팀으로 검색..."
-            className="w-full pl-12 pr-10 py-3 dark:bg-purple-500/10 dark:border dark:border-purple-500/30 light:bg-purple-50 light:border light:border-purple-300/60 rounded-xl dark:focus:bg-purple-500/20 dark:focus:border-purple-400 light:focus:bg-white light:focus:border-purple-400 dark:focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-2 light:focus:ring-purple-300/40 transition-all text-sm dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60 -mt-0.5"
+            className="w-full pl-12 pr-10 py-3 dark:bg-purple-500/10 dark:border dark:border-purple-500/30 light:bg-white light:border-2 light:border-purple-300/70 rounded-xl dark:focus:bg-purple-500/20 dark:focus:border-purple-400 light:focus:bg-white light:focus:border-purple-400 light:focus:shadow-lg light:focus:shadow-purple-200/30 dark:focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-2 light:focus:ring-purple-300/40 transition-all text-sm dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60 -mt-0.5"
           />
           {searchQuery && (
             <button
@@ -160,9 +160,9 @@ export default function RecentMeetings() {
 
       {/* Results */}
       {filteredMeetings.length === 0 ? (
-        <div className="text-center py-12 dark:bg-purple-500/10 dark:border dark:border-purple-500/30 light:bg-purple-50 light:border light:border-purple-300/50 rounded-2xl">
-          <Search className="w-12 h-12 dark:text-white/20 light:text-purple-400/30 mx-auto mb-3" />
-          <p className="dark:text-white/70 light:text-purple-700 mb-1">검색 결과가 없습니다</p>
+        <div className="text-center py-12 dark:bg-purple-500/10 dark:border dark:border-purple-500/30 light:bg-purple-50/80 light:border-2 light:border-purple-300/50 rounded-2xl">
+          <Search className="w-12 h-12 dark:text-white/20 light:text-purple-400/40 mx-auto mb-3" />
+          <p className="dark:text-white/70 light:text-purple-800 mb-1 font-medium">검색 결과가 없습니다</p>
           <p className="text-xs dark:text-white/50 light:text-purple-600">
             다른 키워드로 다시 시도해보세요
           </p>
@@ -172,7 +172,7 @@ export default function RecentMeetings() {
           {filteredMeetings.map((meeting) => (
             <div
               key={meeting.id}
-              className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/40 dark:to-pink-900/20 light:bg-white light:border light:border-purple-300/50 dark:border dark:border-purple-500/30 rounded-2xl p-5 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-md light:hover:shadow-purple-400/20 transition-all duration-300 group dark:backdrop-blur-md light:backdrop-blur-sm"
+              className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/40 dark:to-pink-900/20 light:bg-white light:border-2 light:border-purple-300/60 dark:border dark:border-purple-500/30 rounded-2xl p-5 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-md light:hover:shadow-purple-300/30 light:hover:border-purple-400/60 transition-all duration-300 group dark:backdrop-blur-md light:backdrop-blur-sm"
             >
               {/* Header with Title and Status */}
               <div className="flex items-start justify-between mb-3">

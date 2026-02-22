@@ -198,11 +198,11 @@ export default function Schedule() {
       <div className="w-full space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">일정</h1>
-          <p className="text-text-sub mb-4">예정된 회의를 확인하세요</p>
+          <h1 className="text-3xl font-bold dark:text-white/90 light:text-purple-950 mb-2">일정</h1>
+          <p className="dark:text-white/60 light:text-purple-700 mb-4">예정된 회의를 확인하세요</p>
           <button
             onClick={() => setIsRightPanelOpen(!isRightPanelOpen)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-50 text-brand-600 hover:bg-brand-100 transition-colors text-sm font-medium"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-colors text-sm font-medium"
             title={isRightPanelOpen ? "상세보기 닫기" : "상세보기 열기"}
           >
             {isRightPanelOpen ? (
@@ -236,16 +236,16 @@ export default function Schedule() {
           {/* Meetings List - Conditionally Shown */}
           {isRightPanelOpen && (
             <div className="w-full space-y-4">
-              <div className="bg-white/40 backdrop-blur-md border border-border/30 rounded-3xl p-6">
-                <h2 className="text-xl font-bold text-foreground mb-4">
+              <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
+                <h2 className="text-xl font-bold dark:text-white/90 light:text-purple-950 mb-4">
                   {format(selectedDate, "MMMM dd, yyyy (EEEE)", { locale: ko })}
                   의 회의
                 </h2>
 
                 {selectedDateMeetings.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-text-sub mb-2">예정된 회의가 없습니다</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="dark:text-white/60 light:text-purple-700 mb-2">예정된 회의가 없습니다</p>
+                    <p className="text-xs dark:text-white/40 light:text-purple-600">
                       다른 날짜를 선택하거나 새로운 회의를 생성하세요
                     </p>
                   </div>
@@ -254,32 +254,32 @@ export default function Schedule() {
                     {selectedDateMeetings.map((meeting) => (
                       <div
                         key={meeting.id}
-                        className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-5 hover:shadow-lg transition-all duration-300"
+                        className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/60 rounded-2xl p-5 dark:hover:bg-purple-500/20 light:hover:shadow-lg light:hover:border-purple-400/70 transition-all duration-300"
                       >
-                        <h3 className="text-lg font-bold text-foreground mb-3">
+                        <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-3">
                           {meeting.title}
                         </h3>
 
                         <div className="space-y-2 mb-4">
-                          <div className="flex items-center gap-2 text-sm text-foreground">
-                            <Clock className="w-4 h-4 text-brand-500" />
+                          <div className="flex items-center gap-2 text-sm dark:text-white/70 light:text-purple-900">
+                            <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
                             <span>
                               {meeting.time} - {meeting.duration}
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-2 text-sm text-foreground">
-                            <MapPin className="w-4 h-4 text-brand-500" />
+                          <div className="flex items-center gap-2 text-sm dark:text-white/70 light:text-purple-900">
+                            <MapPin className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
                             <span>{meeting.location}</span>
                           </div>
 
-                          <div className="flex items-center gap-2 text-sm text-foreground">
-                            <Users className="w-4 h-4 text-brand-500" />
+                          <div className="flex items-center gap-2 text-sm dark:text-white/70 light:text-purple-900">
+                            <Users className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
                             <span>{meeting.participants}명 참석</span>
                           </div>
                         </div>
 
-                        <p className="text-sm text-text-sub mb-4">
+                        <p className="text-sm dark:text-white/60 light:text-purple-700 mb-4">
                           {meeting.description}
                         </p>
 
@@ -291,13 +291,13 @@ export default function Schedule() {
                               src={attendee.avatar}
                               alt={attendee.name}
                               title={attendee.name}
-                              className="w-8 h-8 rounded-full border-2 border-white shadow-sm"
+                              className="w-8 h-8 rounded-full dark:border-2 dark:border-purple-500/30 light:border-2 light:border-purple-300 shadow-sm"
                             />
                           ))}
                         </div>
 
                         {/* Action Button */}
-                        <button className="w-full px-4 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-primary-foreground text-sm font-semibold rounded-xl hover:from-brand-600 hover:to-brand-700 transition-all duration-200">
+                        <button className="w-full px-4 py-2.5 dark:bg-purple-600 light:bg-gradient-to-r light:from-purple-600 light:to-purple-700 text-white text-sm font-semibold rounded-xl dark:hover:bg-purple-700 light:hover:from-purple-700 light:hover:to-purple-800 transition-all duration-200">
                           회의 참여
                         </button>
                       </div>
@@ -307,23 +307,23 @@ export default function Schedule() {
               </div>
 
               {/* Upcoming Meetings Summary */}
-              <div className="bg-gradient-to-r from-brand-50 to-brand-50 border border-brand-200 rounded-3xl p-6">
-                <h3 className="text-lg font-bold text-foreground mb-4">
+              <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-purple-50/50 light:via-white light:to-pink-100/30 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
+                <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-4">
                   앞으로의 회의
                 </h3>
                 <div className="grid grid-cols-4 gap-4">
                   {allMeetings.slice(0, 4).map((meeting) => (
                     <div
                       key={meeting.id}
-                      className="bg-white/60 rounded-xl p-3 border border-border/30 hover:shadow-md transition-all"
+                      className="dark:bg-purple-500/10 light:bg-white/70 rounded-xl p-3 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200/60 dark:hover:bg-purple-500/20 light:hover:shadow-md transition-all"
                     >
-                      <p className="text-sm font-semibold text-foreground truncate">
+                      <p className="text-sm font-semibold dark:text-white/90 light:text-purple-950 truncate">
                         {meeting.title}
                       </p>
-                      <p className="text-xs text-text-sub">
+                      <p className="text-xs dark:text-white/60 light:text-purple-700">
                         {format(meeting.date, "M월 d일", { locale: ko })}
                       </p>
-                      <p className="text-xs text-brand-600 font-medium">
+                      <p className="text-xs dark:text-purple-400 light:text-purple-600 font-medium">
                         {meeting.time}
                       </p>
                     </div>

@@ -8,7 +8,7 @@ interface IntroCardProps {
 
 export default function IntroCard({ onCreateMeeting }: IntroCardProps) {
   return (
-    <div className="relative overflow-hidden rounded-3xl dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/60 dark:to-pink-900/30 light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-pink-100/30 dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 dark:backdrop-blur-md light:backdrop-blur-sm">
+    <div className="relative overflow-hidden rounded-3xl dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/60 dark:to-pink-900/30 light:bg-gradient-to-br light:from-purple-100/60 light:via-white light:to-pink-200/40 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/60 dark:backdrop-blur-md light:backdrop-blur-md light:shadow-2xl light:shadow-purple-300/40">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Top right gradient orb */}

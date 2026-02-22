@@ -84,7 +84,7 @@ export default function MyPage() {
 
         {/* Profile Tab */}
         {activeTab === "profile" && (
-          <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+          <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/30 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-purple-300/30 p-8">
             <div className="flex gap-8">
               {/* Profile Image Section */}
               <div className="flex flex-col items-center gap-3 flex-shrink-0">
@@ -119,127 +119,126 @@ export default function MyPage() {
 
               {/* Information Section */}
               <div className="flex-1 space-y-6">
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  이름
-                </label>
-                {editMode ? (
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                  />
-                ) : (
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.name}</p>
-                )}
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="flex items-center gap-2 text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  <Mail className="w-4 h-4" />
-                  이메일
-                </label>
-                <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.email}</p>
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="flex items-center gap-2 text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  <Phone className="w-4 h-4" />
-                  전화
-                </label>
-                {editMode ? (
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                  />
-                ) : (
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.phone}</p>
-                )}
-              </div>
-
-              {/* Position */}
-              <div>
-                <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  직급
-                </label>
-                {editMode ? (
-                  <input
-                    type="text"
-                    name="position"
-                    value={formData.position}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                  />
-                ) : (
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.position}</p>
-                )}
-              </div>
-
-              {/* Team */}
-              <div>
-                <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  소속 팀
-                </label>
-                {editMode ? (
-                  <input
-                    type="text"
-                    name="team"
-                    value={formData.team}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                  />
-                ) : (
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.team}</p>
-                )}
-              </div>
-
-              {/* Bio */}
-              <div>
-                <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                  소개
-                </label>
-                {editMode ? (
-                  <textarea
-                    name="bio"
-                    value={formData.bio}
-                    onChange={handleInputChange}
-                    rows={3}
-                    className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                  />
-                ) : (
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.bio}</p>
-                )}
-              </div>
-
-              </div>
-
-              {/* Save/Cancel Buttons - Only show in edit mode */}
-              {editMode && (
-                <div className="flex gap-3 pt-4 mt-8">
-                  <button
-                    onClick={handleSave}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/30"
-                  >
-                    <Save className="w-4 h-4" />
-                    저장
-                  </button>
-                  <button
-                    onClick={() => setEditMode(false)}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-xl font-medium dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-all"
-                  >
-                    <X className="w-4 h-4" />
-                    취소
-                  </button>
+                {/* Name */}
+                <div>
+                  <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    이름
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
+                    />
+                  ) : (
+                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.name}</p>
+                  )}
                 </div>
-              )}
+
+                {/* Email */}
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    <Mail className="w-4 h-4" />
+                    이메일
+                  </label>
+                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.email}</p>
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    <Phone className="w-4 h-4" />
+                    전화
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
+                    />
+                  ) : (
+                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.phone}</p>
+                  )}
+                </div>
+
+                {/* Position */}
+                <div>
+                  <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    직급
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="text"
+                      name="position"
+                      value={formData.position}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
+                    />
+                  ) : (
+                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.position}</p>
+                  )}
+                </div>
+
+                {/* Team */}
+                <div>
+                  <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    소속 팀
+                  </label>
+                  {editMode ? (
+                    <input
+                      type="text"
+                      name="team"
+                      value={formData.team}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
+                    />
+                  ) : (
+                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.team}</p>
+                  )}
+                </div>
+
+                {/* Bio */}
+                <div>
+                  <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    소개
+                  </label>
+                  {editMode ? (
+                    <textarea
+                      name="bio"
+                      value={formData.bio}
+                      onChange={handleInputChange}
+                      rows={3}
+                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
+                    />
+                  ) : (
+                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.bio}</p>
+                  )}
+                </div>
+
+                {/* Save/Cancel Buttons - Only show in edit mode */}
+                {editMode && (
+                  <div className="flex gap-3 pt-6">
+                    <button
+                      onClick={handleSave}
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/30"
+                    >
+                      <Save className="w-4 h-4" />
+                      저장
+                    </button>
+                    <button
+                      onClick={() => setEditMode(false)}
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-xl font-medium dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-all"
+                    >
+                      <X className="w-4 h-4" />
+                      취소
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -248,7 +247,7 @@ export default function MyPage() {
         {activeTab === "settings" && (
           <div className="space-y-6">
             {/* Notification Settings */}
-            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-purple-300/30 p-8">
               <div className="flex items-center gap-3 mb-6">
                 <Bell className="w-6 h-6 dark:text-purple-400 light:text-purple-600" />
                 <h3 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
@@ -287,7 +286,7 @@ export default function MyPage() {
             </div>
 
             {/* Password Change */}
-            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-purple-300/30 p-8">
               <div className="flex items-center gap-3 mb-6">
                 <Lock className="w-6 h-6 dark:text-purple-400 light:text-purple-600" />
                 <h3 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
@@ -300,7 +299,7 @@ export default function MyPage() {
             </div>
 
             {/* Account Deletion */}
-            <div className="dark:bg-gradient-to-br dark:from-red-900/20 dark:via-black/80 dark:to-red-900/10 light:bg-red-50 dark:border dark:border-red-500/20 light:border light:border-red-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+            <div className="dark:bg-gradient-to-br dark:from-red-900/20 dark:via-black/80 dark:to-red-900/10 light:bg-gradient-to-br light:from-white light:via-red-50/40 light:to-pink-100/20 dark:border dark:border-red-500/20 light:border-2 light:border-red-300/60 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-red-200/30 p-8">
               <div className="flex items-center gap-3 mb-6">
                 <AlertTriangle className="w-6 h-6 dark:text-red-400 light:text-red-600" />
                 <h3 className="text-lg font-semibold dark:text-white/90 light:text-red-900">
@@ -323,7 +322,7 @@ export default function MyPage() {
         {/* Account Deletion Confirmation Modal */}
         {showDeleteModal && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <div className="dark:bg-black/90 light:bg-white dark:border dark:border-red-500/30 light:border light:border-red-300/50 rounded-2xl shadow-2xl max-w-md w-full p-8 dark:backdrop-blur-md">
+            <div className="dark:bg-black/90 light:bg-gradient-to-br light:from-white light:to-red-50/30 dark:border dark:border-red-500/30 light:border-2 light:border-red-300/60 rounded-2xl shadow-2xl max-w-md w-full p-8 dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-red-200/30">
               <div className="flex items-center justify-center w-12 h-12 rounded-full dark:bg-red-500/20 light:bg-red-100 mx-auto mb-4">
                 <AlertTriangle className="w-6 h-6 dark:text-red-400 light:text-red-600" />
               </div>
