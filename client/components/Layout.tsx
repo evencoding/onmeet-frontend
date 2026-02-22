@@ -23,7 +23,7 @@ export default function Layout({
   const { theme } = useTheme();
 
   return (
-    <div className="flex h-screen bg-background relative overflow-hidden dark:bg-background light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-purple-50">
+    <div className="flex h-screen bg-background relative overflow-hidden dark:bg-background light:bg-gradient-to-br light:from-purple-50 light:via-blue-50 light:to-purple-100">
       {/* Animated gradient background */}
       {theme === "dark" && (
         <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900">
@@ -32,6 +32,15 @@ export default function Layout({
             <div className="absolute top-0 -right-4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
             <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
           </div>
+        </div>
+      )}
+
+      {/* Light mode background accent */}
+      {theme === "light" && (
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 -right-40 w-96 h-96 bg-purple-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+          <div className="absolute top-40 -left-40 w-96 h-96 bg-blue-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-20 right-20 w-96 h-96 bg-pink-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
         </div>
       )}
 
@@ -70,9 +79,9 @@ export default function Layout({
           )}
 
           {showRecentPanel && (
-            <div className="hidden lg:flex lg:w-96 border-l flex-col overflow-hidden dark:border-border/30 dark:bg-white/40 dark:backdrop-blur-md light:border-purple-300/50 light:bg-white">
-              <div className="px-6 py-4 border-b dark:border-border/30 dark:bg-white/50 light:border-purple-300/50 light:bg-purple-50/50">
-                <h2 className="text-lg font-bold text-foreground">
+            <div className="hidden lg:flex lg:w-96 border-l flex-col overflow-hidden dark:border-border/30 dark:bg-white/40 dark:backdrop-blur-md light:border-l-2 light:border-purple-300 light:bg-white/80 light:backdrop-blur-sm">
+              <div className="px-6 py-4 border-b dark:border-border/30 dark:bg-white/50 light:border-b-2 light:border-purple-200 light:bg-purple-50/60 light:shadow-sm">
+                <h2 className="text-lg font-bold dark:text-foreground light:text-purple-950">
                   최근 회의 기록
                 </h2>
                 <p className="text-xs mt-1 dark:text-text-sub light:text-purple-600">최근에 열린 회의들</p>

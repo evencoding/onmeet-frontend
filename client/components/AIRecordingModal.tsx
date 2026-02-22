@@ -27,8 +27,8 @@ export default function AIRecordingModal({
   }, [isOpen]);
 
   const handleStartRecording = () => {
-    setRecordingStep("recording");
     onStart();
+    onClose();
   };
 
   const handleEndRecording = () => {

@@ -30,9 +30,9 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:from-white light:to-purple-50 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 dark:backdrop-blur-md light:backdrop-blur-sm">
+      <div className="bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:from-white light:to-purple-50 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 dark:backdrop-blur-md light:backdrop-blur-md light:shadow-2xl light:shadow-purple-300/40">
         {/* Header */}
-        <div className="sticky top-0 z-20 dark:bg-gradient-to-b dark:from-purple-900/40 dark:via-black/60 dark:to-black/40 light:bg-white light:border-b light:border-purple-300/50 px-8 py-6 dark:border-b dark:border-purple-500/20 flex items-center justify-between dark:backdrop-blur-md light:backdrop-blur-sm">
+        <div className="sticky top-0 z-20 dark:bg-gradient-to-b dark:from-purple-900/40 dark:via-black/60 dark:to-black/40 light:bg-white light:border-b-2 light:border-purple-300/60 light:shadow-sm light:shadow-purple-200/30 px-8 py-6 dark:border-b dark:border-purple-500/20 flex items-center justify-between dark:backdrop-blur-md light:backdrop-blur-md">
           <div>
             <h2 className="text-2xl font-bold dark:text-white/90 light:text-purple-900">새 회의 생성</h2>
             <p className="text-sm dark:text-white/50 light:text-purple-600 mt-1">회의 세부정보를 입력하세요</p>
@@ -56,7 +56,7 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
               value={formData.title}
               onChange={handleInputChange}
               placeholder="회의 제목을 입력하세요"
-              className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-purple-50 light:focus:bg-white focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all duration-200 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
+              className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-white light:focus:bg-purple-50 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 light:shadow-md light:shadow-purple-200/20 transition-all duration-200 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60"
             />
           </div>
 
@@ -72,7 +72,7 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
                 name="date"
                 value={formData.date}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-purple-50 light:focus:bg-white focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all duration-200 dark:text-white light:text-purple-900"
+                className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-white light:focus:bg-purple-50 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 light:shadow-md light:shadow-purple-200/20 transition-all duration-200 dark:text-white light:text-purple-900"
               />
             </div>
 
@@ -86,7 +86,7 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
                 name="time"
                 value={formData.time}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-purple-50 light:focus:bg-white focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all duration-200 dark:text-white light:text-purple-900"
+                className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-white light:focus:bg-purple-50 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 light:shadow-md light:shadow-purple-200/20 transition-all duration-200 dark:text-white light:text-purple-900"
               />
             </div>
           </div>
@@ -103,7 +103,7 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
               onChange={handleInputChange}
               placeholder="회의 설명을 입력하세요"
               rows={3}
-              className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-purple-50 light:focus:bg-white focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all duration-200 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50 resize-none"
+              className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-white light:focus:bg-purple-50 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 light:shadow-md light:shadow-purple-200/20 transition-all duration-200 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60 resize-none"
             />
           </div>
 
@@ -119,25 +119,25 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
               value={formData.invitees}
               onChange={handleInputChange}
               placeholder="이메일을 쉼표로 구분하여 입력하세요"
-              className="w-full px-4 py-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-purple-50 light:focus:bg-white focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all duration-200 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
+              className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-white light:focus:bg-purple-50 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 light:shadow-md light:shadow-purple-200/20 transition-all duration-200 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60"
             />
           </div>
 
           {/* Divider */}
-          <div className="border-t dark:border-purple-500/20 light:border-purple-300/30 pt-6" />
+          <div className="dark:border-t dark:border-purple-500/20 light:border-t-2 light:border-purple-300/50 pt-6" />
 
           {/* Buttons */}
           <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 border dark:border-purple-500/30 light:border-purple-300/50 dark:bg-purple-500/10 light:bg-purple-100/50 dark:text-white/90 light:text-purple-700 text-sm font-semibold rounded-xl dark:hover:bg-purple-500/20 light:hover:bg-purple-100 hover:border-purple-400 transition-all duration-300"
+              className="flex-1 px-6 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white/90 light:text-purple-700 text-sm font-semibold rounded-xl dark:hover:bg-purple-500/20 light:hover:bg-purple-100/70 transition-all duration-300"
             >
               취소
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg shadow-purple-500/30 hover:shadow-2xl hover:scale-105 active:scale-95"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg shadow-purple-500/30 hover:shadow-xl light:shadow-purple-400/40 hover:scale-105 active:scale-95"
             >
               회의 생성
             </button>

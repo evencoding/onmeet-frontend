@@ -74,7 +74,7 @@ export default function MeetingHeader() {
   };
 
   return (
-    <div className="px-6 py-4 border-b dark:border-purple-500/20 dark:bg-purple-500/10 dark:backdrop-blur-md light:border-purple-200 light:bg-white/50 light:backdrop-blur-sm flex items-center justify-between">
+    <div className="px-6 py-4 border-b dark:border-purple-500/20 dark:bg-purple-500/10 dark:backdrop-blur-md light:border-b-2 light:border-purple-200 light:bg-white light:shadow-sm light:shadow-purple-100/50 flex items-center justify-between">
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold text-white">
           C
@@ -104,9 +104,9 @@ export default function MeetingHeader() {
 
           {/* Notification Dropdown */}
           {isDropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-96 dark:bg-black/80 light:bg-white border dark:border-purple-500/30 light:border-purple-300/50 rounded-xl shadow-2xl dark:backdrop-blur-md light:backdrop-blur-sm z-[9999]">
+            <div className="absolute right-0 top-full mt-2 w-96 dark:bg-black/80 light:bg-white dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 rounded-2xl shadow-2xl dark:shadow-purple-900/50 light:shadow-lg light:shadow-purple-300/30 dark:backdrop-blur-md light:backdrop-blur-sm z-[9999]">
               {/* Header */}
-              <div className="px-4 py-3 border-b dark:border-purple-500/20 light:border-purple-300/30 flex items-center justify-between">
+              <div className="px-4 py-3 dark:border-b dark:border-purple-500/20 light:border-b-2 light:border-purple-200 light:bg-purple-50/50 flex items-center justify-between">
                 <h3 className="font-semibold dark:text-white light:text-purple-900">알림</h3>
                 {unreadCount > 0 && (
                   <span className="text-xs px-2 py-1 dark:bg-red-500/20 dark:text-red-300 light:bg-red-100/70 light:text-red-800 rounded-full">
@@ -125,9 +125,9 @@ export default function MeetingHeader() {
                         notification.type
                       )} ${
                         notification.isRead
-                          ? "dark:bg-black/30 light:bg-purple-50/50"
-                          : "dark:bg-purple-500/10 light:bg-purple-100/30"
-                      } hover:dark:bg-purple-500/20 hover:light:bg-purple-100/40`}
+                          ? "dark:bg-black/30 light:bg-purple-50/60"
+                          : "dark:bg-purple-500/10 light:bg-purple-100/50 light:border-b light:border-purple-200/40"
+                      } hover:dark:bg-purple-500/20 hover:light:bg-purple-100/60`}
                     >
                       <button
                         onClick={() => {

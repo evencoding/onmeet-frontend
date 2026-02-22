@@ -194,7 +194,7 @@ export default function OngoingMeetings() {
         {meetings.map((meeting) => (
           <div
             key={meeting.id}
-            className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/50 dark:to-pink-900/20 light:bg-white border dark:border-purple-500/30 light:border-purple-300/40 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/30 light:hover:shadow-md light:hover:shadow-purple-400/20 hover:-translate-y-1 group dark:backdrop-blur-md light:backdrop-blur-sm"
+            className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/50 dark:to-pink-900/20 light:bg-gradient-to-br light:from-purple-50/50 light:via-white light:to-pink-100/30 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/60 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/30 light:hover:shadow-xl light:hover:shadow-purple-400/40 light:hover:border-purple-400/80 hover:-translate-y-1 group dark:backdrop-blur-md light:backdrop-blur-md"
           >
             {/* Status bar */}
             <div
@@ -212,15 +212,6 @@ export default function OngoingMeetings() {
                   <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900 flex-1 leading-tight">
                     {meeting.title}
                   </h3>
-                  <span
-                    className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${
-                      meeting.status === "ongoing"
-                        ? "dark:bg-pink-500/30 dark:text-pink-300 light:bg-pink-200/60 light:text-pink-700"
-                        : "dark:bg-purple-500/30 dark:text-purple-300 light:bg-purple-200/60 light:text-purple-700"
-                    }`}
-                  >
-                    {getStatusText(meeting.status)}
-                  </span>
                 </div>
 
                 {/* Tags */}
@@ -228,7 +219,7 @@ export default function OngoingMeetings() {
                   {meeting.tags.map((tag, idx) => (
                     <span
                       key={idx}
-                      className="text-xs dark:bg-purple-500/30 dark:text-purple-300 light:bg-purple-200/60 light:text-purple-700 px-2 py-1 rounded-full font-medium"
+                      className="text-xs dark:bg-purple-500/30 dark:text-purple-300 light:bg-purple-300/50 light:text-purple-900 light:border light:border-purple-400/60 px-2 py-1 rounded-full font-semibold"
                     >
                       #{tag}
                     </span>
@@ -242,7 +233,7 @@ export default function OngoingMeetings() {
               </div>
 
               {/* Host Info */}
-              <div className="flex items-center gap-3 pb-4 border-b dark:border-purple-500/20 light:border-purple-300/30">
+              <div className="flex items-center gap-3 pb-4 border-b-2 dark:border-purple-500/30 light:border-purple-300/80">
                 <img
                   src={meeting.hostAvatar}
                   alt={meeting.hostName}
