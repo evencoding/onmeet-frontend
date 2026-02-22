@@ -3,6 +3,8 @@ import Sidebar from "@/components/Sidebar";
 import MeetingRoomHeader from "@/components/MeetingRoomHeader";
 import ParticipantsPanel from "@/components/ParticipantsPanel";
 import InviteParticipantModal from "@/components/InviteParticipantModal";
+import AIRecordingModal from "@/components/AIRecordingModal";
+import AddChatModal from "@/components/AddChatModal";
 import {
   ChevronLeft,
   ChevronRight,
@@ -12,6 +14,8 @@ import {
   VideoOff,
   Phone,
   Circle,
+  MessageCircle,
+  Zap,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -39,6 +43,10 @@ export default function MeetingRoom() {
   const [isRecording, setIsRecording] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isAIRecordingModalOpen, setIsAIRecordingModalOpen] = useState(false);
+  const [isAddChatModalOpen, setIsAddChatModalOpen] = useState(false);
+  const [isAIRecording, setIsAIRecording] = useState(false);
+  const [isChatAdded, setIsChatAdded] = useState(false);
 
   // 게스트 정보 로드
   const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null);
@@ -114,6 +122,18 @@ export default function MeetingRoom() {
       isMuted: false,
     }));
     setParticipants((prev) => [...prev, ...newParticipants]);
+  };
+
+  const handleStartAIRecording = () => {
+    setIsAIRecording(true);
+  };
+
+  const handleEndAIRecording = () => {
+    setIsAIRecording(false);
+  };
+
+  const handleAddChat = () => {
+    setIsChatAdded(true);
   };
 
   const speakers = [
@@ -229,9 +249,15 @@ export default function MeetingRoom() {
                   alt={speakers[currentSpeaker].name}
                   className="w-full h-full object-cover"
                 />
-                {/* Recording Indicator */}
+                {/* Recording Indicators */}
+                {isAIRecording && (
+                  <div className="absolute top-6 left-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1.5 rounded-full text-white text-sm font-semibold">
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                    AI REC
+                  </div>
+                )}
                 {isRecording && (
-                  <div className="absolute top-6 left-6 flex items-center gap-2 bg-red-500/80 px-3 py-1.5 rounded-full text-white text-sm font-semibold">
+                  <div className={`absolute top-6 ${isAIRecording ? "left-40" : "left-6"} flex items-center gap-2 bg-red-500/80 px-3 py-1.5 rounded-full text-white text-sm font-semibold`}>
                     <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
                     REC
                   </div>
@@ -272,6 +298,30 @@ export default function MeetingRoom() {
               </button>
 
               <button
+                onClick={() => setIsAIRecordingModalOpen(true)}
+                className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
+                  isAIRecording
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+                title="AI 회의록 만들기"
+              >
+                <Zap className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={() => setIsAddChatModalOpen(true)}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  isChatAdded
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+                title="채팅 추가"
+              >
+                <MessageCircle className="w-5 h-5" />
+              </button>
+
+              <button
                 onClick={() => setIsRecording(!isRecording)}
                 className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
                   isRecording
@@ -309,6 +359,22 @@ export default function MeetingRoom() {
         onClose={() => setIsInviteModalOpen(false)}
         onInvite={handleInviteParticipants}
         alreadyInvited={participants.map((p) => p.id)}
+      />
+
+      {/* AI Recording Modal */}
+      <AIRecordingModal
+        isOpen={isAIRecordingModalOpen}
+        onClose={() => setIsAIRecordingModalOpen(false)}
+        onStart={handleStartAIRecording}
+        onEnd={handleEndAIRecording}
+        isRecording={isAIRecording}
+      />
+
+      {/* Add Chat Modal */}
+      <AddChatModal
+        isOpen={isAddChatModalOpen}
+        onClose={() => setIsAddChatModalOpen(false)}
+        onConfirm={handleAddChat}
       />
     </div>
   );
