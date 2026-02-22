@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import CodeMirror from "@uiw/react-codemirror";
+import { markdown } from "@codemirror/lang-markdown";
+import MarkdownIt from "markdown-it";
 
 interface Meeting {
   id: string;
@@ -16,6 +19,7 @@ interface Meeting {
   status: "scheduled" | "in_progress" | "completed";
   team?: string;
   summary?: string;
+  rawTranscript?: string;
   key_points?: string[];
   attendees: {
     name: string;
@@ -41,6 +45,7 @@ export default function Summary() {
   const [audioDuration, setAudioDuration] = useState<Record<string, number>>({ default: 240 }); // 4:00
   const [audioVolume, setAudioVolume] = useState<Record<string, number>>({ default: 1 }); // 0-1
   const [audioPlaybackSpeed, setAudioPlaybackSpeed] = useState<Record<string, number>>({ default: 1 }); // 0.5, 1, 1.5, 2
+  const [transcriptTab, setTranscriptTab] = useState<Record<string, "full" | "raw">>({});
 
   // Sample meetings data with status and summaries
   const allMeetings: Meeting[] = [
@@ -76,6 +81,7 @@ export default function Summary() {
       notes: "주간 목표 검토 및 진도 확인",
       hasTranscript: true,
       tags: ["스탠드업", "마케팅", "주간"],
+      rawTranscript: "[10:00] 김철수: 좋은 아침입니다. 오늘 월요일 스탠드업을 시작하겠습니다.\n[10:01] 이영희: 안녕하세요. 저는 지난주 프로젝트 진도 90%까지 마쳤습니다.\n[10:03] 박민준: 그리고 신규 기능 개발도 시작했습니다. 이번주 완료를 목표로 하고 있습니다.\n[10:05] 최수진: 버그 수정도 모두 완료했습니다. QA 팀으로 넘어갔습니다.\n[10:07] 김철수: 좋은 진행입니다. 이번주도 잘 부탁합니다.",
     },
     {
       id: "2",
@@ -348,8 +354,8 @@ export default function Summary() {
             </div>
           </div>
 
-          {/* Full Transcript Section */}
-          <div className="space-y-2">
+          {/* Full Transcript Section with Tabs */}
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950">
                 전체 회의록
@@ -379,40 +385,64 @@ export default function Summary() {
               </button>
             </div>
 
-            {editingMeetingId === meeting.id ? (
+            {/* Tabs */}
+            <div className="flex gap-2 border-b dark:border-purple-500/20 light:border-purple-300">
+              <button
+                onClick={() => setTranscriptTab({ ...transcriptTab, [meeting.id]: "full" })}
+                className={`px-4 py-2 font-medium text-sm transition-all ${
+                  (transcriptTab[meeting.id] ?? "full") === "full"
+                    ? "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-900 border-b-2 dark:border-purple-400 light:border-purple-600"
+                    : "dark:text-white/60 light:text-purple-700 dark:hover:text-white light:hover:text-purple-900"
+                }`}
+              >
+                전체 회의록
+              </button>
+              {meeting.rawTranscript && (
+                <button
+                  onClick={() => setTranscriptTab({ ...transcriptTab, [meeting.id]: "raw" })}
+                  className={`px-4 py-2 font-medium text-sm transition-all ${
+                    (transcriptTab[meeting.id] ?? "full") === "raw"
+                      ? "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-900 border-b-2 dark:border-purple-400 light:border-purple-600"
+                      : "dark:text-white/60 light:text-purple-700 dark:hover:text-white light:hover:text-purple-900"
+                  }`}
+                >
+                  로우 회의록
+                </button>
+              )}
+            </div>
+
+            {/* Full Transcript Editor/Viewer */}
+            {(transcriptTab[meeting.id] ?? "full") === "full" && (
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs dark:text-white/50 light:text-purple-600 font-medium">
-                  <span>마크다운 형식 지원: #제목, ##부제, - 목록, **굵게**, *기울임*</span>
-                </div>
-                <textarea
-                  value={editedContent[meeting.id] || ""}
-                  onChange={(e) => setEditedContent({ ...editedContent, [meeting.id]: e.target.value })}
-                  className="w-full h-96 px-4 py-3 dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/70 rounded-xl font-mono text-sm resize-none focus:outline-none focus:ring-2 dark:focus:ring-purple-500/40 light:focus:ring-purple-300/40"
-                  placeholder="마크다운 형식으로 회의록을 수정하세요...&#10;&#10;예시:&#10;# 회의 제목&#10;## 섹션&#10;- 항목 1&#10;- 항목 2&#10;**중요한 내용**"
-                />
+                {editingMeetingId === meeting.id ? (
+                  <div className="border-2 dark:border-purple-500/30 light:border-purple-300 rounded-xl overflow-hidden">
+                    <CodeMirror
+                      value={editedContent[meeting.id] || ""}
+                      onChange={(val) => setEditedContent({ ...editedContent, [meeting.id]: val })}
+                      extensions={[markdown()]}
+                      height="400px"
+                      theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"}
+                      className="w-full"
+                    />
+                  </div>
+                ) : (
+                  <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto">
+                    <div
+                      className="dark:text-white/80 light:text-purple-900 text-sm leading-relaxed space-y-3 prose dark:prose-invert prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{
+                        __html: new MarkdownIt().render(editedContent[meeting.id] || meeting.summary || ""),
+                      }}
+                    />
+                  </div>
+                )}
               </div>
-            ) : (
+            )}
+
+            {/* Raw Transcript */}
+            {(transcriptTab[meeting.id] ?? "full") === "raw" && meeting.rawTranscript && (
               <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto">
-                <div className="dark:text-white/80 light:text-purple-900 text-sm leading-relaxed space-y-3">
-                  {(editedContent[meeting.id] || meeting.summary)
-                    .split('\n').map((line, idx) => {
-                      if (line.startsWith('# ')) {
-                        return <h1 key={idx} className="text-2xl font-bold mb-4 dark:text-white light:text-purple-950">{line.replace('# ', '')}</h1>;
-                      }
-                      if (line.startsWith('## ')) {
-                        return <h2 key={idx} className="text-xl font-bold mb-3 dark:text-white light:text-purple-950">{line.replace('## ', '')}</h2>;
-                      }
-                      if (line.startsWith('### ')) {
-                        return <h3 key={idx} className="text-lg font-bold mb-2 dark:text-white light:text-purple-950">{line.replace('### ', '')}</h3>;
-                      }
-                      if (line.startsWith('- ')) {
-                        return <li key={idx} className="ml-4 dark:text-white/80 light:text-purple-900">{line.replace('- ', '')}</li>;
-                      }
-                      if (line.trim()) {
-                        return <p key={idx} className="dark:text-white/80 light:text-purple-900">{line}</p>;
-                      }
-                      return <br key={idx} />;
-                    })}
+                <div className="dark:text-white/80 light:text-purple-900 text-sm leading-relaxed whitespace-pre-wrap font-mono">
+                  {meeting.rawTranscript}
                 </div>
               </div>
             )}
@@ -424,71 +454,91 @@ export default function Summary() {
       {/* Action Section */}
       {meeting.status === "completed" && (
         <div className="space-y-4">
-          {/* Advanced Audio Player */}
+          {/* iOS-Style Audio Player */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-bold dark:text-white/70 light:text-purple-700">음성 녹음</p>
-              <span className="text-xs dark:text-white/40 light:text-purple-600">
-                {audioPlaybackSpeed[meeting.id]?.toFixed(1) || "1.0"}x
-              </span>
-            </div>
+            <p className="text-sm font-bold dark:text-white/70 light:text-purple-700">음성 녹음</p>
 
-            <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 space-y-4">
-              {/* Waveform Visualizer */}
-              <div className="h-12 dark:bg-purple-500/10 light:bg-purple-100/50 rounded-lg p-2 flex items-center gap-0.5 cursor-pointer hover:dark:bg-purple-500/20 hover:light:bg-purple-100 transition-colors group"
-                onClick={(e) => {
-                  const bar = e.currentTarget;
-                  const rect = bar.getBoundingClientRect();
-                  const percent = (e.clientX - rect.left) / rect.width;
-                  setAudioProgress({ ...audioProgress, [meeting.id]: Math.max(0, Math.min(1, percent)) });
-                }}
-              >
-                {[...Array(40)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 dark:bg-gradient-to-t dark:from-purple-400 dark:to-purple-500 light:bg-gradient-to-t light:from-purple-500 light:to-purple-600 rounded-sm transition-all duration-100"
-                    style={{
-                      height: `${15 + Math.sin(i * 0.4 + (audioProgress[meeting.id] || 0.35) * 10) * 20}px`,
-                      opacity: i / 40 <= (audioProgress[meeting.id] || 0.35) ? 1 : 0.3,
-                    }}
-                  ></div>
-                ))}
-              </div>
+            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/60 dark:to-purple-900/30 light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-3xl p-8 light:shadow-lg light:shadow-purple-300/30 space-y-6">
+              {/* Central Circular Player */}
+              <div className="flex flex-col items-center gap-6">
+                {/* Circular Progress Indicator */}
+                <div className="relative w-32 h-32 flex items-center justify-center">
+                  {/* Background Circle */}
+                  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 120 120">
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="55"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="dark:text-purple-500/20 light:text-purple-300/30"
+                    />
+                    {/* Progress Circle */}
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="55"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeDasharray={`${55 * 2 * Math.PI}`}
+                      strokeDashoffset={`${55 * 2 * Math.PI * (1 - (audioProgress[meeting.id] || 0.35))}`}
+                      strokeLinecap="round"
+                      className="dark:text-purple-500 light:text-purple-600 transition-all duration-200"
+                      style={{
+                        transform: "rotate(-90deg)",
+                        transformOrigin: "50% 50%",
+                      }}
+                    />
+                  </svg>
 
-              {/* Controls Row 1: Play Button + Time */}
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => setAudioPlayingId(audioPlayingId === meeting.id ? null : meeting.id)}
-                  className="flex-shrink-0 flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-semibold dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all hover:scale-105 active:scale-95"
-                >
-                  {audioPlayingId === meeting.id ? (
-                    <>
-                      <div className="w-1 h-4 dark:bg-white light:bg-white rounded-sm animate-pulse"></div>
-                      일시정지
-                    </>
-                  ) : (
-                    <>
-                      <Play className="w-5 h-5 fill-current" />
-                      재생
-                    </>
-                  )}
-                </button>
+                  {/* Play Button */}
+                  <button
+                    onClick={() => setAudioPlayingId(audioPlayingId === meeting.id ? null : meeting.id)}
+                    className="relative z-10 flex items-center justify-center w-20 h-20 dark:bg-gradient-to-br dark:from-purple-600 dark:to-purple-700 light:bg-gradient-to-br light:from-purple-600 light:to-purple-700 text-white rounded-full shadow-lg dark:shadow-purple-500/50 light:shadow-purple-400/50 hover:scale-110 active:scale-95 transition-all"
+                  >
+                    {audioPlayingId === meeting.id ? (
+                      <div className="flex items-center gap-1">
+                        <div className="w-1.5 h-5 dark:bg-white light:bg-white rounded-sm animate-pulse"></div>
+                        <div className="w-1.5 h-5 dark:bg-white light:bg-white rounded-sm animate-pulse" style={{ animationDelay: "0.2s" }}></div>
+                      </div>
+                    ) : (
+                      <Play className="w-8 h-8 fill-current ml-1" />
+                    )}
+                  </button>
+                </div>
 
                 {/* Time Display */}
-                <div className="text-sm dark:text-white/70 light:text-purple-700 font-medium whitespace-nowrap">
-                  <span>{Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) / 60)}:{String(Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) % 60)).padStart(2, '0')}</span>
-                  <span className="dark:text-white/40 light:text-purple-600 mx-2">/</span>
-                  <span>{Math.floor((audioDuration[meeting.id] || 240) / 60)}:{String((audioDuration[meeting.id] || 240) % 60).padStart(2, '0')}</span>
+                <div className="text-center">
+                  <p className="text-xs dark:text-white/50 light:text-purple-600 font-medium mb-1">재생 시간</p>
+                  <p className="text-lg font-bold dark:text-white light:text-purple-950 font-mono">
+                    {Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) / 60)}:{String(Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) % 60)).padStart(2, '0')}
+                    <span className="dark:text-white/40 light:text-purple-600 mx-2">/</span>
+                    {Math.floor((audioDuration[meeting.id] || 240) / 60)}:{String((audioDuration[meeting.id] || 240) % 60).padStart(2, '0')}
+                  </p>
                 </div>
               </div>
 
-              {/* Controls Row 2: Volume + Playback Speed */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* Time Slider */}
+              <div className="space-y-2">
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={(audioProgress[meeting.id] || 0.35) * 100}
+                  onChange={(e) => setAudioProgress({ ...audioProgress, [meeting.id]: parseInt(e.target.value) / 100 })}
+                  className="w-full h-2 dark:bg-purple-500/20 light:bg-purple-300 rounded-full appearance-none cursor-pointer accent-purple-600"
+                />
+              </div>
+
+              {/* Controls Row: Volume + Playback Speed */}
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t dark:border-purple-500/20 light:border-purple-300">
                 {/* Volume Control */}
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Volume2 className="w-4 h-4 dark:text-white/50 light:text-purple-600" />
-                    <span className="text-xs dark:text-white/50 light:text-purple-600 font-medium">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs dark:text-white/50 light:text-purple-600 font-medium">볼륨</span>
+                    <span className="text-xs dark:text-white/40 light:text-purple-600 font-semibold">
                       {Math.round((audioVolume[meeting.id] ?? 1) * 100)}%
                     </span>
                   </div>
@@ -498,7 +548,7 @@ export default function Summary() {
                     max="100"
                     value={Math.round((audioVolume[meeting.id] ?? 1) * 100)}
                     onChange={(e) => setAudioVolume({ ...audioVolume, [meeting.id]: parseInt(e.target.value) / 100 })}
-                    className="w-full h-2 dark:bg-purple-500/20 light:bg-purple-200 rounded-full appearance-none cursor-pointer accent-purple-600"
+                    className="w-full h-1.5 dark:bg-purple-500/20 light:bg-purple-300 rounded-full appearance-none cursor-pointer accent-purple-600"
                   />
                 </div>
 
@@ -508,14 +558,14 @@ export default function Summary() {
                   <select
                     value={audioPlaybackSpeed[meeting.id] || 1}
                     onChange={(e) => setAudioPlaybackSpeed({ ...audioPlaybackSpeed, [meeting.id]: parseFloat(e.target.value) })}
-                    className="w-full px-3 py-1 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-900 dark:border dark:border-purple-500/30 light:border light:border-purple-300 rounded-lg text-sm font-medium focus:outline-none dark:focus:border-purple-400 light:focus:border-purple-500 transition-all"
+                    className="w-full px-3 py-1.5 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-900 dark:border dark:border-purple-500/30 light:border light:border-purple-300 rounded-lg text-xs font-semibold focus:outline-none dark:focus:border-purple-400 light:focus:border-purple-500 transition-all"
                   >
-                    <option value="0.5">0.5x</option>
-                    <option value="0.75">0.75x</option>
-                    <option value="1">1x (정상)</option>
-                    <option value="1.25">1.25x</option>
-                    <option value="1.5">1.5x</option>
-                    <option value="2">2x</option>
+                    <option value="0.5">0.5배속</option>
+                    <option value="0.75">0.75배속</option>
+                    <option value="1">정상</option>
+                    <option value="1.25">1.25배속</option>
+                    <option value="1.5">1.5배속</option>
+                    <option value="2">2배속</option>
                   </select>
                 </div>
               </div>
