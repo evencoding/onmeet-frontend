@@ -440,32 +440,32 @@ export default function Summary() {
           <div className="space-y-3">
             <p className="text-sm font-bold dark:text-white/70 light:text-purple-700">음성 녹음</p>
 
-            <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/60 dark:to-purple-900/30 light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-3xl p-8 light:shadow-lg light:shadow-purple-300/30 space-y-6">
+            <div className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-purple-900/20 dark:to-black/40 light:bg-gradient-to-br light:from-white/70 light:via-purple-50/50 light:to-white/70 dark:border dark:border-purple-500/15 light:border light:border-purple-200/60 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/20 dark:shadow-lg dark:shadow-purple-900/20 space-y-5">
               {/* Central Circular Player */}
-              <div className="flex flex-col items-center gap-6">
+              <div className="flex flex-col items-center gap-5">
                 {/* Circular Progress Indicator */}
-                <div className="relative w-32 h-32 flex items-center justify-center">
+                <div className="relative w-24 h-24 flex items-center justify-center">
                   {/* Background Circle */}
-                  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 120 120">
+                  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
                     <circle
-                      cx="60"
-                      cy="60"
-                      r="55"
+                      cx="50"
+                      cy="50"
+                      r="45"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="2"
-                      className="dark:text-purple-500/20 light:text-purple-300/30"
+                      strokeWidth="1.5"
+                      className="dark:text-purple-500/15 light:text-purple-300/25"
                     />
                     {/* Progress Circle */}
                     <circle
-                      cx="60"
-                      cy="60"
-                      r="55"
+                      cx="50"
+                      cy="50"
+                      r="45"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="3"
-                      strokeDasharray={`${55 * 2 * Math.PI}`}
-                      strokeDashoffset={`${55 * 2 * Math.PI * (1 - (audioProgress[meeting.id] || 0.35))}`}
+                      strokeWidth="2.5"
+                      strokeDasharray={`${45 * 2 * Math.PI}`}
+                      strokeDashoffset={`${45 * 2 * Math.PI * (1 - (audioProgress[meeting.id] || 0.35))}`}
                       strokeLinecap="round"
                       className="dark:text-purple-500 light:text-purple-600 transition-all duration-200"
                       style={{
@@ -478,46 +478,46 @@ export default function Summary() {
                   {/* Play Button */}
                   <button
                     onClick={() => setAudioPlayingId(audioPlayingId === meeting.id ? null : meeting.id)}
-                    className="relative z-10 flex items-center justify-center w-20 h-20 dark:bg-gradient-to-br dark:from-purple-600 dark:to-purple-700 light:bg-gradient-to-br light:from-purple-600 light:to-purple-700 text-white rounded-full shadow-lg dark:shadow-purple-500/50 light:shadow-purple-400/50 hover:scale-110 active:scale-95 transition-all"
+                    className="relative z-10 flex items-center justify-center w-14 h-14 dark:bg-gradient-to-br dark:from-purple-600 dark:to-purple-700 light:bg-gradient-to-br light:from-purple-600 light:to-purple-700 text-white rounded-full shadow-lg dark:shadow-purple-500/40 light:shadow-purple-400/40 hover:scale-105 active:scale-95 transition-all duration-200"
                   >
                     {audioPlayingId === meeting.id ? (
                       <div className="flex items-center gap-1">
-                        <div className="w-1.5 h-5 dark:bg-white light:bg-white rounded-sm animate-pulse"></div>
-                        <div className="w-1.5 h-5 dark:bg-white light:bg-white rounded-sm animate-pulse" style={{ animationDelay: "0.2s" }}></div>
+                        <div className="w-1 h-4 dark:bg-white light:bg-white rounded-sm animate-pulse"></div>
+                        <div className="w-1 h-4 dark:bg-white light:bg-white rounded-sm animate-pulse" style={{ animationDelay: "0.2s" }}></div>
                       </div>
                     ) : (
-                      <Play className="w-8 h-8 fill-current ml-1" />
+                      <Play className="w-6 h-6 fill-current ml-0.5" />
                     )}
                   </button>
                 </div>
 
                 {/* Time Display */}
                 <div className="text-center">
-                  <p className="text-xs dark:text-white/50 light:text-purple-600 font-medium mb-1">재생 시간</p>
-                  <p className="text-lg font-bold dark:text-white light:text-purple-950 font-mono">
+                  <p className="text-xs dark:text-white/50 light:text-purple-600 font-medium mb-1.5">재생 시간</p>
+                  <p className="text-sm font-bold dark:text-white light:text-purple-950 font-mono tracking-wide">
                     {Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) / 60)}:{String(Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) % 60)).padStart(2, '0')}
-                    <span className="dark:text-white/40 light:text-purple-600 mx-2">/</span>
+                    <span className="dark:text-white/30 light:text-purple-600 mx-1.5 text-xs">/</span>
                     {Math.floor((audioDuration[meeting.id] || 240) / 60)}:{String((audioDuration[meeting.id] || 240) % 60).padStart(2, '0')}
                   </p>
                 </div>
               </div>
 
               {/* Time Slider */}
-              <div className="space-y-2">
+              <div>
                 <input
                   type="range"
                   min="0"
                   max="100"
                   value={(audioProgress[meeting.id] || 0.35) * 100}
                   onChange={(e) => setAudioProgress({ ...audioProgress, [meeting.id]: parseInt(e.target.value) / 100 })}
-                  className="w-full h-2 dark:bg-purple-500/20 light:bg-purple-300 rounded-full appearance-none cursor-pointer accent-purple-600"
+                  className="w-full h-1.5 dark:bg-purple-500/20 light:bg-purple-300/40 rounded-full appearance-none cursor-pointer accent-purple-600"
                 />
               </div>
 
               {/* Controls Row: Volume + Playback Speed */}
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t dark:border-purple-500/20 light:border-purple-300">
+              <div className="grid grid-cols-2 gap-3 pt-3 border-t dark:border-purple-500/10 light:border-purple-200/40">
                 {/* Volume Control */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="text-xs dark:text-white/50 light:text-purple-600 font-medium">볼륨</span>
                     <span className="text-xs dark:text-white/40 light:text-purple-600 font-semibold">
@@ -530,24 +530,24 @@ export default function Summary() {
                     max="100"
                     value={Math.round((audioVolume[meeting.id] ?? 1) * 100)}
                     onChange={(e) => setAudioVolume({ ...audioVolume, [meeting.id]: parseInt(e.target.value) / 100 })}
-                    className="w-full h-1.5 dark:bg-purple-500/20 light:bg-purple-300 rounded-full appearance-none cursor-pointer accent-purple-600"
+                    className="w-full h-1 dark:bg-purple-500/20 light:bg-purple-300/40 rounded-full appearance-none cursor-pointer accent-purple-600"
                   />
                 </div>
 
                 {/* Playback Speed Control */}
-                <div className="space-y-2">
-                  <label className="text-xs dark:text-white/50 light:text-purple-600 font-medium block">재생 속도</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs dark:text-white/50 light:text-purple-600 font-medium block">속도</label>
                   <select
                     value={audioPlaybackSpeed[meeting.id] || 1}
                     onChange={(e) => setAudioPlaybackSpeed({ ...audioPlaybackSpeed, [meeting.id]: parseFloat(e.target.value) })}
-                    className="w-full px-3 py-1.5 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-900 dark:border dark:border-purple-500/30 light:border light:border-purple-300 rounded-lg text-xs font-semibold focus:outline-none dark:focus:border-purple-400 light:focus:border-purple-500 transition-all"
+                    className="w-full px-2.5 py-1 dark:bg-purple-500/15 light:bg-purple-100/50 dark:text-white light:text-purple-900 dark:border dark:border-purple-500/20 light:border light:border-purple-300/50 rounded-md text-xs font-medium focus:outline-none dark:focus:border-purple-400 light:focus:border-purple-500 transition-all"
                   >
-                    <option value="0.5">0.5배속</option>
-                    <option value="0.75">0.75배속</option>
-                    <option value="1">정상</option>
-                    <option value="1.25">1.25배속</option>
-                    <option value="1.5">1.5배속</option>
-                    <option value="2">2배속</option>
+                    <option value="0.5">0.5x</option>
+                    <option value="0.75">0.75x</option>
+                    <option value="1">1x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
                   </select>
                 </div>
               </div>
