@@ -4,9 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import CodeMirror from "@uiw/react-codemirror";
-import { markdown } from "@codemirror/lang-markdown";
-import MarkdownIt from "markdown-it";
+import RichTextEditor from "@/components/RichTextEditor";
 
 interface Meeting {
   id: string;
@@ -403,22 +401,18 @@ export default function Summary() {
             {(transcriptTab[meeting.id] ?? "full") === "full" && (
               <div className="space-y-2">
                 {editingMeetingId === meeting.id ? (
-                  <div className="border-2 dark:border-purple-500/30 light:border-purple-300 rounded-xl overflow-hidden">
-                    <CodeMirror
-                      value={editedContent[meeting.id] || ""}
-                      onChange={(val) => setEditedContent({ ...editedContent, [meeting.id]: val })}
-                      extensions={[markdown()]}
-                      height="400px"
-                      theme={localStorage.getItem("theme") === "dark" ? "dark" : "light"}
-                      className="w-full"
-                    />
-                  </div>
+                  <RichTextEditor
+                    value={editedContent[meeting.id] || meeting.summary || ""}
+                    onChange={(val) => setEditedContent({ ...editedContent, [meeting.id]: val })}
+                    placeholder="회의 내용을 입력하세요..."
+                    className="min-h-96"
+                  />
                 ) : (
                   <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto">
                     <div
                       className="dark:text-white/80 light:text-purple-900 text-sm leading-relaxed space-y-3 prose dark:prose-invert prose-sm max-w-none"
                       dangerouslySetInnerHTML={{
-                        __html: new MarkdownIt().render(editedContent[meeting.id] || meeting.summary || ""),
+                        __html: editedContent[meeting.id] || meeting.summary || "",
                       }}
                     />
                   </div>
