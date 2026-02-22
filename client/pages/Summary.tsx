@@ -36,6 +36,8 @@ export default function Summary() {
   const [audioPlayingId, setAudioPlayingId] = useState<string | null>(null);
   const [showDownloadMenu, setShowDownloadMenu] = useState<string | null>(null);
   const [copiedMeetingId, setCopiedMeetingId] = useState<string | null>(null);
+  const [audioProgress, setAudioProgress] = useState<Record<string, number>>({});
+  const [audioDuration, setAudioDuration] = useState<Record<string, number>>({ default: 240 }); // 4:00
 
   // Sample meetings data with status and summaries
   const allMeetings: Meeting[] = [
@@ -263,38 +265,64 @@ export default function Summary() {
       </div>
 
       {/* Meeting Details Grid */}
-      <div className="grid grid-cols-2 gap-6 pb-6 border-b dark:border-purple-500/20 light:border-purple-300">
-        <div>
-          <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
-            회의 날짜
-          </p>
-          <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
-            {format(meeting.date, "yyyy년 MMM dd, yyyy", { locale: ko })}
-          </p>
+      <div className="space-y-6 pb-6 border-b dark:border-purple-500/20 light:border-purple-300">
+        <div className="grid grid-cols-2 gap-6">
+          <div>
+            <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
+              회의 날짜
+            </p>
+            <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
+              {format(meeting.date, "yyyy년 MMM dd, yyyy", { locale: ko })}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
+              시간
+            </p>
+            <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
+              {meeting.time}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
+              소요 시간
+            </p>
+            <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
+              {meeting.duration}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
+              참석자
+            </p>
+            <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
+              {meeting.participants}명
+            </p>
+          </div>
         </div>
+
+        {/* Attendees List */}
         <div>
-          <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
-            시간
+          <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-3">
+            참석 인원
           </p>
-          <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
-            {meeting.time}
-          </p>
-        </div>
-        <div>
-          <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
-            소요 시간
-          </p>
-          <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
-            {meeting.duration}
-          </p>
-        </div>
-        <div>
-          <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
-            참석자
-          </p>
-          <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
-            {meeting.participants}명
-          </p>
+          <div className="flex flex-wrap gap-2">
+            {meeting.attendees.map((attendee, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-2 px-3 py-2 dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border light:border-purple-300/40 rounded-full light:shadow-sm light:shadow-purple-200/20"
+              >
+                <img
+                  src={attendee.avatar}
+                  alt={attendee.name}
+                  className="w-7 h-7 rounded-full border-2 light:border-purple-300/40 dark:border-purple-500/20"
+                />
+                <span className="text-sm font-medium dark:text-white/90 light:text-purple-900">
+                  {attendee.name}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -370,14 +398,33 @@ export default function Summary() {
                   {audioPlayingId === meeting.id ? "일시정지" : "재생"}
                 </button>
 
-                {/* Progress Bar */}
-                <div className="flex-1 space-y-1">
-                  <div className="h-2 dark:bg-purple-500/20 light:bg-purple-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full" style={{ width: "35%" }}></div>
+                {/* Interactive Progress Bar with Visualizer */}
+                <div className="flex-1 space-y-2">
+                  {/* Audio Waveform Visualizer */}
+                  <div className="h-10 dark:bg-purple-500/10 light:bg-purple-100/50 rounded-lg p-1 flex items-center gap-0.5 cursor-pointer hover:dark:bg-purple-500/20 hover:light:bg-purple-100 transition-colors"
+                    onClick={(e) => {
+                      const bar = e.currentTarget;
+                      const rect = bar.getBoundingClientRect();
+                      const percent = (e.clientX - rect.left) / rect.width;
+                      setAudioProgress({ ...audioProgress, [meeting.id]: Math.max(0, Math.min(1, percent)) });
+                    }}
+                  >
+                    {[...Array(30)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="flex-1 dark:bg-purple-400 light:bg-purple-500 rounded-sm transition-all"
+                        style={{
+                          height: `${20 + Math.sin(i * 0.5) * 15 + (audioProgress[meeting.id] || 0.35) * 10}px`,
+                          opacity: i / 30 <= (audioProgress[meeting.id] || 0.35) ? 1 : 0.4,
+                        }}
+                      ></div>
+                    ))}
                   </div>
-                  <div className="flex justify-between text-xs dark:text-white/50 light:text-purple-600">
-                    <span>1:25</span>
-                    <span>4:00</span>
+
+                  {/* Time Display */}
+                  <div className="flex justify-between text-xs dark:text-white/50 light:text-purple-600 font-medium">
+                    <span>{Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) / 60)}:{String(Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) % 60)).padStart(2, '0')}</span>
+                    <span>{Math.floor((audioDuration[meeting.id] || 240) / 60)}:{String((audioDuration[meeting.id] || 240) % 60).padStart(2, '0')}</span>
                   </div>
                 </div>
               </div>
@@ -440,28 +487,6 @@ export default function Summary() {
           </div>
         </div>
       )}
-
-      {/* Attendees */}
-      <div>
-        <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-3">참석자</h3>
-        <div className="flex flex-wrap gap-3">
-          {meeting.attendees.map((attendee, idx) => (
-            <div
-              key={idx}
-              className="flex items-center gap-2 px-4 py-2 dark:bg-purple-500/10 light:bg-white/60 light:border light:border-purple-300/40 dark:border dark:border-purple-500/20 rounded-full light:shadow-md light:shadow-purple-200/30"
-            >
-              <img
-                src={attendee.avatar}
-                alt={attendee.name}
-                className="w-8 h-8 rounded-full border-2 light:border-purple-300/40 dark:border-purple-500/20"
-              />
-              <span className="text-sm font-medium dark:text-white/90 light:text-purple-900">
-                {attendee.name}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 
