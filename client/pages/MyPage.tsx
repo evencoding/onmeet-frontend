@@ -85,18 +85,18 @@ export default function MyPage() {
         {/* Profile Tab */}
         {activeTab === "profile" && (
           <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
-            <div className="space-y-8">
+            <div className="flex gap-8">
               {/* Profile Image Section */}
-              <div className="flex flex-col items-center gap-6">
+              <div className="flex flex-col items-center gap-3 flex-shrink-0">
                 <div className="relative">
                   <img
                     src={formData.avatar}
                     alt={formData.name}
-                    className="w-32 h-32 rounded-full object-cover border-4 dark:border-purple-500/30 light:border-purple-300/50"
+                    className="w-24 h-24 rounded-full object-cover border-4 dark:border-purple-500/30 light:border-purple-300/50"
                   />
                   {editMode && (
-                    <label className="absolute bottom-0 right-0 p-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-full cursor-pointer hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all">
-                      <Edit2 className="w-4 h-4" />
+                    <label className="absolute bottom-0 right-0 p-1.5 dark:bg-purple-600 light:bg-purple-600 text-white rounded-full cursor-pointer hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all">
+                      <Edit2 className="w-3 h-3" />
                       <input
                         type="file"
                         accept="image/*"
@@ -106,8 +106,19 @@ export default function MyPage() {
                     </label>
                   )}
                 </div>
+                {!editMode && (
+                  <button
+                    onClick={() => setEditMode(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-pink-700 transition-all"
+                  >
+                    <Edit2 className="w-3.5 h-3.5" />
+                    수정
+                  </button>
+                )}
               </div>
 
+              {/* Information Section */}
+              <div className="flex-1 space-y-6">
               {/* Name */}
               <div>
                 <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
@@ -208,35 +219,27 @@ export default function MyPage() {
                 )}
               </div>
 
-              {/* Edit and Save Buttons */}
-              <div className="flex gap-3 pt-4">
-                {!editMode ? (
+              </div>
+
+              {/* Save/Cancel Buttons - Only show in edit mode */}
+              {editMode && (
+                <div className="flex gap-3 pt-4 mt-8">
                   <button
-                    onClick={() => setEditMode(true)}
+                    onClick={handleSave}
                     className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/30"
                   >
-                    <Edit2 className="w-4 h-4" />
-                    정보 수정
+                    <Save className="w-4 h-4" />
+                    저장
                   </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={handleSave}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/30"
-                    >
-                      <Save className="w-4 h-4" />
-                      저장
-                    </button>
-                    <button
-                      onClick={() => setEditMode(false)}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-xl font-medium dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-all"
-                    >
-                      <X className="w-4 h-4" />
-                      취소
-                    </button>
-                  </>
-                )}
-              </div>
+                  <button
+                    onClick={() => setEditMode(false)}
+                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-xl font-medium dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-all"
+                  >
+                    <X className="w-4 h-4" />
+                    취소
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
