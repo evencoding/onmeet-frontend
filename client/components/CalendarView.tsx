@@ -61,24 +61,24 @@ export default function CalendarView({
   const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
   return (
-    <div className="bg-white/40 backdrop-blur-md border border-border/30 rounded-3xl p-6">
+    <div className="dark:bg-purple-500/10 light:bg-white dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-foreground">
+        <h2 className="text-xl font-bold dark:text-white/90 light:text-purple-950">
           {format(currentDate, "MMMM yyyy", { locale: ko })}
         </h2>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setCurrentDate(subMonths(currentDate, 1))}
-            className="p-2 hover:bg-white/40 rounded-lg transition-colors"
+            className="p-2 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 rounded-lg transition-colors"
           >
-            <ChevronLeft className="w-5 h-5 text-foreground" />
+            <ChevronLeft className="w-5 h-5 dark:text-white/70 light:text-purple-700" />
           </button>
           <button
             onClick={() => setCurrentDate(addMonths(currentDate, 1))}
-            className="p-2 hover:bg-white/40 rounded-lg transition-colors"
+            className="p-2 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 rounded-lg transition-colors"
           >
-            <ChevronRight className="w-5 h-5 text-foreground" />
+            <ChevronRight className="w-5 h-5 dark:text-white/70 light:text-purple-700" />
           </button>
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function CalendarView({
         {weekDays.map((day) => (
           <div
             key={day}
-            className="text-center text-sm font-semibold text-text-sub py-2"
+            className="text-center text-sm font-semibold dark:text-white/60 light:text-purple-700 py-2"
           >
             {day}
           </div>
@@ -108,14 +108,18 @@ export default function CalendarView({
               onClick={() => handleSelectDate(date)}
               className={`p-4 rounded-lg border transition-all duration-200 min-h-28 flex flex-col items-start justify-start text-left ${
                 isSelected
-                  ? "bg-brand-500 text-white border-brand-500 shadow-lg"
+                  ? "dark:bg-purple-600 light:bg-purple-600 text-white dark:border-purple-600 light:border-purple-600 shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30"
                   : isCurrentMonth
-                    ? "bg-white/60 hover:bg-white/80 border-border/30 hover:border-brand-400"
-                    : "bg-white/20 border-border/20 text-text-sub"
+                    ? "dark:bg-purple-500/20 dark:hover:bg-purple-500/30 dark:border-purple-500/20 light:bg-white light:hover:bg-purple-50 light:border-2 light:border-purple-300 light:hover:border-purple-400"
+                    : "dark:bg-purple-500/10 dark:border-purple-500/10 light:bg-purple-50/50 light:border-2 light:border-purple-200/50 dark:text-white/50 light:text-purple-600/50"
               }`}
             >
               <span
-                className={`text-xs font-semibold mb-1 ${isSelected ? "text-white" : "text-foreground"}`}
+                className={`text-xs font-semibold mb-1 ${
+                  isSelected
+                    ? "text-white"
+                    : "dark:text-white/90 light:text-purple-950"
+                }`}
               >
                 {format(date, "d")}
               </span>
@@ -125,8 +129,8 @@ export default function CalendarView({
                     key={meeting.id}
                     className={`text-xs font-medium px-1.5 py-1 rounded ${
                       isSelected
-                        ? "bg-white/20"
-                        : "bg-brand-500/20 text-brand-600"
+                        ? "dark:bg-white/20 light:bg-white/30"
+                        : "dark:bg-purple-600/30 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-700"
                     }`}
                   >
                     <div className="truncate text-xs font-semibold">
@@ -134,7 +138,9 @@ export default function CalendarView({
                     </div>
                     <div
                       className={`truncate text-xs font-normal ${
-                        isSelected ? "text-white/80" : "text-brand-600/80"
+                        isSelected
+                          ? "dark:text-white/80 light:text-white/90"
+                          : "dark:text-purple-300/80 light:text-purple-700/80"
                       }`}
                     >
                       {meeting.time}
@@ -143,7 +149,11 @@ export default function CalendarView({
                 ))}
                 {dateMeetings.length > 2 && (
                   <div
-                    className={`text-xs px-1.5 ${isSelected ? "text-white/70" : "text-text-sub"}`}
+                    className={`text-xs px-1.5 ${
+                      isSelected
+                        ? "dark:text-white/70 light:text-white/70"
+                        : "dark:text-white/50 light:text-purple-600/70"
+                    }`}
                   >
                     +{dateMeetings.length - 2}
                   </div>
