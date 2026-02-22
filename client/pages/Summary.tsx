@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Clock, Search, X, Download, Share2 } from "lucide-react";
+import { Clock, Search, X, Download, Share2, FileText, Mic, Zap } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -310,8 +310,12 @@ export default function Summary() {
             <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900">
               회의 요약
             </h3>
-            <span className="dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30">
+            <span className="dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30 flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5" />
               AI 회의록
+              <span className="dark:bg-purple-700 light:bg-purple-700 px-2 py-0.5 rounded-full text-xs ml-1">
+                작업 완료
+              </span>
             </span>
           </div>
           <p className="dark:text-white/70 light:text-purple-800 dark:bg-purple-500/10 light:bg-purple-100/30 dark:border dark:border-purple-500/20 light:border light:border-purple-300/40 rounded-xl p-4">
@@ -504,18 +508,24 @@ export default function Summary() {
                     {/* Meeting Features Chips */}
                     <div className="flex items-center gap-2 flex-wrap">
                       {meeting.hasTranscript && (
-                        <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+                        <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5">
+                          <FileText className="w-3.5 h-3.5" />
                           회의록
                         </span>
                       )}
                       {meeting.status === "completed" && (
-                        <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
+                        <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5">
+                          <Mic className="w-3.5 h-3.5" />
                           음성녹음
                         </span>
                       )}
                       {meeting.summary && (
-                        <span className="dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30">
+                        <span className="dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30 flex items-center gap-1.5">
+                          <Zap className="w-3.5 h-3.5" />
                           AI 회의록
+                          <span className="dark:bg-purple-700 light:bg-purple-700 px-2 py-0.5 rounded-full text-xs ml-1">
+                            작업 완료
+                          </span>
                         </span>
                       )}
                     </div>
