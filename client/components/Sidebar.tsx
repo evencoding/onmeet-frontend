@@ -102,14 +102,14 @@ export default function Sidebar({
   return (
     <div
       className={cn(
-        "flex flex-col h-screen transition-all duration-300 dark:bg-gradient-to-b dark:from-purple-950/30 dark:via-black/60 dark:to-purple-950/30 dark:border-r dark:border-purple-500/20 dark:backdrop-blur-md light:bg-white light:border-r light:border-purple-200",
+        "flex flex-col h-screen transition-all duration-300 dark:bg-gradient-to-b dark:from-purple-950/30 dark:via-black/60 dark:to-purple-950/30 dark:border-r dark:border-purple-500/20 dark:backdrop-blur-md light:bg-white light:border-r-2 light:border-purple-300 light:shadow-xl light:shadow-purple-200/20",
         isCollapsed ? "w-20" : "w-72",
       )}
     >
       {/* Header */}
       <div
         className={cn(
-          "flex flex-col items-center justify-between dark:border-b dark:border-purple-500/20 dark:bg-purple-500/10 dark:backdrop-blur-md light:border-b light:border-purple-200 light:bg-white",
+          "flex flex-col items-center justify-between dark:border-b dark:border-purple-500/20 dark:bg-purple-500/10 dark:backdrop-blur-md light:border-b-2 light:border-purple-200 light:bg-white light:shadow-sm",
           isCollapsed ? "px-2 py-4" : "px-6 py-5",
         )}
       >
@@ -204,7 +204,7 @@ export default function Sidebar({
 
       {/* Teams Section */}
       {!isCollapsed && (
-        <div className="px-3 py-4 dark:border-t dark:border-purple-500/20 dark:bg-purple-500/5 dark:backdrop-blur-md light:border-t light:border-purple-300/50 light:bg-purple-50/30">
+        <div className="px-3 py-4 dark:border-t dark:border-purple-500/20 dark:bg-purple-500/5 dark:backdrop-blur-md light:border-t-2 light:border-purple-200 light:bg-purple-50/60 light:shadow-inner light:shadow-purple-200/10">
           <div className="flex items-center justify-between px-4 mb-3">
             <span className="text-xs font-semibold dark:text-white/60 light:text-purple-700 uppercase">
               Teams
@@ -281,7 +281,7 @@ export default function Sidebar({
       {/* User Profile */}
       <div
         className={cn(
-          "border-t border-purple-500/20 bg-purple-500/5 backdrop-blur-md",
+          "dark:border-t dark:border-purple-500/20 dark:bg-purple-500/5 dark:backdrop-blur-md light:border-t-2 light:border-purple-200 light:bg-purple-50/60",
           isCollapsed ? "px-2 py-4" : "px-3 py-4",
         )}
       >
@@ -346,7 +346,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
       {/* Logout Button */}
       <button
         onClick={logout}
-        className="w-full flex items-center justify-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-white/90 dark:hover:bg-purple-500/20 light:border light:border-purple-300/50 light:bg-purple-100/30 light:text-purple-700 light:hover:bg-purple-100/50 text-sm font-medium rounded-xl transition-all duration-200"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-white/90 dark:hover:bg-purple-500/20 light:border-2 light:border-purple-300 light:bg-purple-50 light:text-purple-700 light:hover:bg-purple-100 text-sm font-medium rounded-xl transition-all duration-200 light:shadow-sm light:shadow-purple-200/30"
       >
         <LogOut className="w-4 h-4" />
         로그아웃
