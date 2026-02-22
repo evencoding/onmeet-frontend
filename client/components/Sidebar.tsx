@@ -9,6 +9,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -77,6 +78,12 @@ export default function Sidebar({
       icon: <Clock className="w-5 h-5" />,
       hasMenu: false,
       route: "/schedule",
+    },
+    {
+      id: "mypage",
+      label: "마이페이지",
+      icon: <User className="w-5 h-5" />,
+      route: "/mypage",
     },
   ];
 
@@ -203,13 +210,13 @@ export default function Sidebar({
 
       {/* Teams Section */}
       {!isCollapsed && (
-        <div className="px-3 py-4 border-t border-purple-500/20 bg-purple-500/5 backdrop-blur-md">
+        <div className="px-3 py-4 dark:border-t dark:border-purple-500/20 dark:bg-purple-500/5 dark:backdrop-blur-md light:border-t light:border-purple-300/50 light:bg-purple-50/30">
           <div className="flex items-center justify-between px-4 mb-3">
-            <span className="text-xs font-semibold text-white/60 uppercase">
+            <span className="text-xs font-semibold dark:text-white/60 light:text-purple-700 uppercase">
               Teams
             </span>
-            <button className="p-1 hover:bg-purple-500/20 rounded transition-colors">
-              <MoreVertical className="w-4 h-4 text-white/40" />
+            <button className="p-1 dark:hover:bg-purple-500/20 light:hover:bg-purple-200/40 rounded transition-colors">
+              <MoreVertical className="w-4 h-4 dark:text-white/40 light:text-purple-600" />
             </button>
           </div>
 
@@ -225,14 +232,14 @@ export default function Sidebar({
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
                   selectedTeamId === team.id
-                    ? "bg-gradient-to-r from-purple-600/30 to-purple-600/20 text-purple-300 shadow-lg shadow-purple-500/20"
-                    : "text-white/70 hover:bg-purple-500/10 hover:text-white/90",
+                    ? "dark:bg-gradient-to-r dark:from-purple-600/30 dark:to-purple-600/20 dark:text-purple-300 dark:shadow-lg dark:shadow-purple-500/20 light:bg-purple-100 light:text-purple-700"
+                    : "dark:text-white/70 dark:hover:bg-purple-500/10 dark:hover:text-white/90 light:text-purple-600 light:hover:bg-purple-100/50 light:hover:text-purple-800",
                 )}
                 title={`${team.name} 팀 선택`}
               >
                 <div
                   className={cn(
-                    "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white bg-gradient-to-br",
+                    "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold dark:text-white light:text-white bg-gradient-to-br",
                     team.id === "marketing"
                       ? "from-purple-500 to-purple-600"
                       : team.id === "product"
@@ -252,7 +259,7 @@ export default function Sidebar({
 
           <button
             onClick={() => setIsAddTeamModalOpen(true)}
-            className="w-full flex items-center gap-3 px-4 py-3 text-white/60 hover:text-white/90 hover:bg-purple-500/10 rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-purple-500/10 light:text-purple-600 light:hover:text-purple-800 light:hover:bg-purple-100/50 rounded-xl transition-colors"
           >
             <Plus className="w-5 h-5" />
             <span className="text-sm font-medium">팀 추가</span>
