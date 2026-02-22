@@ -1,23 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
-import MeetingRoomHeader from "@/components/MeetingRoomHeader";
-import ParticipantsPanel from "@/components/ParticipantsPanel";
-import InviteParticipantModal from "@/components/InviteParticipantModal";
-import AIRecordingModal from "@/components/AIRecordingModal";
-import AddChatModal from "@/components/AddChatModal";
 import {
-  ChevronLeft,
-  ChevronRight,
   Mic,
   MicOff,
   Video,
   VideoOff,
   Phone,
-  Circle,
   MessageCircle,
   Zap,
+  Maximize,
+  Users,
+  Send,
+  X,
+  Loader,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import AIRecordingModal from "@/components/AIRecordingModal";
+import InviteParticipantModal from "@/components/InviteParticipantModal";
 
 interface Participant {
   id: string;
@@ -26,102 +24,136 @@ interface Participant {
   isHost?: boolean;
   isMuted?: boolean;
   isVideoOn?: boolean;
+  isSpeaking?: boolean;
 }
 
-interface GuestInfo {
-  name: string;
-  description: string;
-  isGuest: boolean;
+interface ChatMessage {
+  id: string;
+  sender: string;
+  avatar: string;
+  message: string;
+  timestamp: string;
 }
 
 export default function MeetingRoom() {
   const navigate = useNavigate();
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
-  const [currentSpeaker, setCurrentSpeaker] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [viewMode, setViewMode] = useState<"gallery" | "speaker">("gallery");
+  const [showChat, setShowChat] = useState(false);
   const [showParticipants, setShowParticipants] = useState(true);
-  const [isRecording, setIsRecording] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
-  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
-  const [isAIRecordingModalOpen, setIsAIRecordingModalOpen] = useState(false);
-  const [isAddChatModalOpen, setIsAddChatModalOpen] = useState(false);
   const [isAIRecording, setIsAIRecording] = useState(false);
-  const [isChatAdded, setIsChatAdded] = useState(false);
-
-  // 게스트 정보 로드
-  const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null);
-
-  useEffect(() => {
-    const storedGuestInfo = sessionStorage.getItem("guestInfo");
-    if (storedGuestInfo) {
-      setGuestInfo(JSON.parse(storedGuestInfo));
-      // 사용된 후 제거
-      sessionStorage.removeItem("guestInfo");
-    }
-  }, []);
+  const [isAIRecordingModalOpen, setIsAIRecordingModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [chatMessage, setChatMessage] = useState("");
+  const [currentSpeaker, setCurrentSpeaker] = useState(0);
 
   const [participants, setParticipants] = useState<Participant[]>([
     {
       id: "1",
       name: "Akbar Husain",
       avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
       isHost: true,
       isVideoOn: true,
       isMuted: false,
+      isSpeaking: true,
     },
     {
       id: "2",
       name: "Ameesh Menon",
       avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
       isVideoOn: true,
       isMuted: false,
+      isSpeaking: false,
     },
     {
       id: "3",
       name: "Jonathan Sasi",
       avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
-      isVideoOn: false,
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+      isVideoOn: true,
       isMuted: true,
+      isSpeaking: false,
     },
     {
       id: "4",
       name: "Riska Thakur",
       avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
       isVideoOn: true,
       isMuted: false,
-    },
-    {
-      id: "5",
-      name: "Natalia",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
-      isVideoOn: true,
-      isMuted: true,
-    },
-    {
-      id: "6",
-      name: "Aila Thakur",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
-      isVideoOn: true,
-      isMuted: false,
+      isSpeaking: false,
     },
   ]);
 
-  const handleInviteParticipants = (newMembers: any[]) => {
-    const newParticipants = newMembers.map((member) => ({
-      id: member.id,
-      name: member.name,
-      avatar: member.avatar,
-      isHost: false,
-      isVideoOn: true,
-      isMuted: false,
-    }));
-    setParticipants((prev) => [...prev, ...newParticipants]);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+    {
+      id: "1",
+      sender: "Akbar Husain",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
+      message: "Good morning everyone!",
+      timestamp: "10:30",
+    },
+    {
+      id: "2",
+      sender: "Ameesh Menon",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
+      message: "Hi! Ready to start the meeting",
+      timestamp: "10:31",
+    },
+  ]);
+
+  // Initialize camera
+  useEffect(() => {
+    if (isVideoOn && videoRef.current) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: !isMuted })
+        .then((stream) => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        })
+        .catch((err) => console.error("Error accessing media:", err));
+    }
+  }, [isVideoOn, isMuted]);
+
+  // Toggle fullscreen
+  const toggleFullscreen = async () => {
+    try {
+      if (!isFullscreen) {
+        await document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (err) {
+      console.error("Fullscreen error:", err);
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (chatMessage.trim()) {
+      const newMessage: ChatMessage = {
+        id: Date.now().toString(),
+        sender: "You",
+        avatar:
+          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
+        message: chatMessage,
+        timestamp: new Date().toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+      setChatMessages([...chatMessages, newMessage]);
+      setChatMessage("");
+    }
   };
 
   const handleStartAIRecording = () => {
@@ -132,236 +164,359 @@ export default function MeetingRoom() {
     setIsAIRecording(false);
   };
 
-  const handleAddChat = () => {
-    setIsChatAdded(true);
-  };
-
-  const speakers = [
-    {
-      name: "Akbar Husain",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-    },
-    {
-      name: "Ameesh Menon",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&h=600&fit=crop",
-    },
-    {
-      name: "Riska Thakur",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop",
-    },
-  ];
-
-  const thumbnailSpeakers = [
-    {
-      name: "Speaker 1",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=150&fit=crop",
-    },
-    {
-      name: "Speaker 2",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=150&fit=crop",
-    },
-    {
-      name: "Speaker 3",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=150&fit=crop",
-    },
-  ];
-
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar - 게스트는 숨김 */}
-      {!guestInfo && (
-        <div className="hidden md:block transition-all duration-300">
-          <Sidebar
-            isCollapsed={isSidebarCollapsed}
-            onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          />
+    <div className="flex h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white overflow-hidden">
+      {/* Main Video Area */}
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ${
+          showChat && showParticipants ? "w-1/2" : showChat || showParticipants ? "w-2/3" : "w-full"
+        }`}
+      >
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Meeting Title</h1>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-white/60">{participants.length} participants</span>
+            <button
+              onClick={toggleFullscreen}
+              className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
+              title="Fullscreen"
+            >
+              <Maximize className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Video Content */}
+        <div className="flex-1 overflow-hidden p-4">
+          {viewMode === "gallery" ? (
+            // Gallery View - Grid of participants
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full overflow-auto">
+              {participants.map((participant) => (
+                <div
+                  key={participant.id}
+                  className={`relative rounded-2xl overflow-hidden bg-black border-2 transition-all ${
+                    participant.isSpeaking
+                      ? "border-purple-500 ring-2 ring-purple-500/50"
+                      : "border-purple-500/20"
+                  }`}
+                >
+                  {/* Participant Video / Avatar */}
+                  <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black flex items-center justify-center relative">
+                    <img
+                      src={participant.avatar}
+                      alt={participant.name}
+                      className="w-full h-full object-cover"
+                    />
+
+                    {/* Speaking indicator */}
+                    {participant.isSpeaking && (
+                      <div className="absolute top-2 left-2">
+                        <div className="flex items-center gap-1 bg-green-600 px-2 py-1 rounded-full text-xs font-semibold">
+                          <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+                          Speaking
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Name and Status */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                      <p className="text-sm font-semibold">{participant.name}</p>
+                      <div className="flex items-center gap-2 mt-1 text-xs text-white/70">
+                        {participant.isMuted && <MicOff className="w-3 h-3" />}
+                        {!participant.isVideoOn && <VideoOff className="w-3 h-3" />}
+                      </div>
+                    </div>
+
+                    {/* Host Badge */}
+                    {participant.isHost && (
+                      <div className="absolute top-2 right-2 bg-blue-600 px-2 py-1 rounded-full text-xs font-semibold">
+                        Host
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            // Speaker View
+            <div className="flex h-full gap-4">
+              {/* Main Speaker */}
+              <div className="flex-1 rounded-2xl overflow-hidden border-2 border-purple-500 ring-2 ring-purple-500/30 relative">
+                <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black flex items-center justify-center">
+                  <img
+                    src={participants[currentSpeaker].avatar}
+                    alt={participants[currentSpeaker].name}
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Speaker Info */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6">
+                    <p className="text-2xl font-bold">{participants[currentSpeaker].name}</p>
+                    <p className="text-white/70 mt-1">Now speaking</p>
+                  </div>
+
+                  {/* AI Recording Indicator */}
+                  {isAIRecording && (
+                    <div className="absolute top-6 left-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 rounded-full text-white font-semibold">
+                      <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                      AI 회의록
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Side Thumbnails */}
+              <div className="w-32 flex flex-col gap-2 overflow-y-auto">
+                {participants.map((participant, idx) => (
+                  <button
+                    key={participant.id}
+                    onClick={() => setCurrentSpeaker(idx)}
+                    className={`relative w-full h-24 rounded-lg overflow-hidden border-2 transition-all ${
+                      currentSpeaker === idx
+                        ? "border-purple-400"
+                        : "border-purple-500/30 hover:border-purple-400"
+                    }`}
+                  >
+                    <img
+                      src={participant.avatar}
+                      alt={participant.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/40 flex items-end p-1">
+                      <p className="text-xs font-semibold line-clamp-1">
+                        {participant.name}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Control Bar */}
+        <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-center gap-4">
+          {/* Mic Button */}
+          <button
+            onClick={() => setIsMuted(!isMuted)}
+            className={`p-4 rounded-full transition-all duration-200 ${
+              isMuted
+                ? "bg-red-600 text-white hover:bg-red-700"
+                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+            }`}
+            title={isMuted ? "Unmute" : "Mute"}
+          >
+            {isMuted ? (
+              <MicOff className="w-6 h-6" />
+            ) : (
+              <Mic className="w-6 h-6" />
+            )}
+          </button>
+
+          {/* Video Button */}
+          <button
+            onClick={() => setIsVideoOn(!isVideoOn)}
+            className={`p-4 rounded-full transition-all duration-200 ${
+              !isVideoOn
+                ? "bg-red-600 text-white hover:bg-red-700"
+                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+            }`}
+            title={isVideoOn ? "Turn off video" : "Turn on video"}
+          >
+            {isVideoOn ? (
+              <Video className="w-6 h-6" />
+            ) : (
+              <VideoOff className="w-6 h-6" />
+            )}
+          </button>
+
+          {/* AI Recording Button */}
+          <button
+            onClick={() => setIsAIRecordingModalOpen(true)}
+            className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
+              isAIRecording
+                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+            }`}
+            title="AI 회의록 시작"
+          >
+            <Zap className="w-5 h-5" />
+          </button>
+
+          {/* View Mode Toggle */}
+          <button
+            onClick={() => setViewMode(viewMode === "gallery" ? "speaker" : "gallery")}
+            className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
+            title="Toggle view mode"
+          >
+            <Users className="w-6 h-6" />
+          </button>
+
+          {/* Chat Button */}
+          <button
+            onClick={() => setShowChat(!showChat)}
+            className={`p-4 rounded-full transition-all duration-200 ${
+              showChat
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+            }`}
+            title="Toggle chat"
+          >
+            <MessageCircle className="w-6 h-6" />
+          </button>
+
+          {/* Participants Button */}
+          <button
+            onClick={() => setShowParticipants(!showParticipants)}
+            className={`p-4 rounded-full transition-all duration-200 ${
+              showParticipants
+                ? "bg-blue-600 text-white hover:bg-blue-700"
+                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+            }`}
+            title="Toggle participants"
+          >
+            <Users className="w-6 h-6" />
+          </button>
+
+          {/* Leave Button */}
+          <button
+            onClick={() => navigate("/")}
+            className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200 ml-auto"
+            title="Leave meeting"
+          >
+            <Phone className="w-6 h-6" />
+          </button>
+        </div>
+      </div>
+
+      {/* Chat Panel */}
+      {showChat && (
+        <div className="w-80 border-l border-purple-500/20 bg-purple-900/30 backdrop-blur-md flex flex-col">
+          {/* Chat Header */}
+          <div className="px-4 py-4 border-b border-purple-500/20 flex items-center justify-between">
+            <h3 className="font-semibold">Chat</h3>
+            <button
+              onClick={() => setShowChat(false)}
+              className="p-1 hover:bg-purple-500/20 rounded transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+            {chatMessages.map((msg) => (
+              <div key={msg.id} className="flex gap-3">
+                <img
+                  src={msg.avatar}
+                  alt={msg.sender}
+                  className="w-8 h-8 rounded-full"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold">{msg.sender}</p>
+                    <p className="text-xs text-white/50">{msg.timestamp}</p>
+                  </div>
+                  <p className="text-sm text-white/90 bg-purple-500/20 rounded-lg p-2 mt-1">
+                    {msg.message}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Message Input */}
+          <div className="px-4 py-4 border-t border-purple-500/20 flex gap-2">
+            <input
+              type="text"
+              value={chatMessage}
+              onChange={(e) => setChatMessage(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+              placeholder="Type a message..."
+              className="flex-1 px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-sm text-white placeholder-white/50 focus:outline-none focus:border-purple-400"
+            />
+            <button
+              onClick={handleSendMessage}
+              className="p-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <MeetingRoomHeader
-          title={guestInfo ? `${guestInfo.name} (게스트)` : "meeting title"}
-          onInvite={() => setIsInviteModalOpen(true)}
-          onToggleParticipants={() => setShowParticipants(!showParticipants)}
-          isGuest={!!guestInfo}
-        />
-
-        {/* Meeting Content */}
-        <div className="flex-1 overflow-hidden flex relative">
-          {/* Animated background */}
-          <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900">
-            <div className="absolute inset-0 opacity-40">
-              <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-              <div className="absolute top-0 -right-4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-              <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-            </div>
+      {/* Participants Panel */}
+      {showParticipants && (
+        <div className="w-80 border-l border-purple-500/20 bg-purple-900/30 backdrop-blur-md flex flex-col">
+          {/* Header */}
+          <div className="px-4 py-4 border-b border-purple-500/20 flex items-center justify-between">
+            <h3 className="font-semibold">Participants ({participants.length})</h3>
+            <button
+              onClick={() => setShowParticipants(false)}
+              className="p-1 hover:bg-purple-500/20 rounded transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* Video Area */}
-          <div
-            className={`${showParticipants ? "flex-1" : "w-full"} flex flex-col bg-gradient-to-br from-purple-950/30 via-black/60 to-purple-950/30 relative z-10`}
-          >
-            {/* Main Video Feed */}
-            <div className="flex-1 overflow-hidden p-6 flex flex-col justify-between">
-              {/* Thumbnail Carousel */}
-              <div className="flex items-center gap-3 mb-6">
-                <button className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors">
-                  <ChevronLeft className="w-5 h-5 text-white/70" />
-                </button>
-
-                <div className="flex gap-2 flex-1 overflow-x-auto">
-                  {thumbnailSpeakers.map((speaker, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentSpeaker(idx)}
-                      className={`flex-shrink-0 w-32 h-24 rounded-2xl overflow-hidden transition-all duration-200 border-2 ${
-                        currentSpeaker === idx
-                          ? "border-purple-400 ring-2 ring-purple-500/30"
-                          : "border-purple-500/30 hover:border-purple-400"
-                      }`}
-                    >
-                      <img
-                        src={speaker.image}
-                        alt={speaker.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
+          {/* Participants List */}
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+            {participants.map((participant) => (
+              <div
+                key={participant.id}
+                className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
+                  participant.isSpeaking
+                    ? "bg-purple-500/30 border border-purple-400"
+                    : "bg-purple-500/10 hover:bg-purple-500/20"
+                }`}
+              >
+                <div className="relative">
+                  <img
+                    src={participant.avatar}
+                    alt={participant.name}
+                    className="w-10 h-10 rounded-full"
+                  />
+                  {participant.isSpeaking && (
+                    <div className="absolute inset-0 rounded-full border-2 border-green-400 animate-pulse"></div>
+                  )}
                 </div>
-
-                <button className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors">
-                  <ChevronRight className="w-5 h-5 text-white/70" />
-                </button>
-              </div>
-
-              {/* Main Video Display */}
-              <div className="rounded-3xl overflow-hidden shadow-lg border border-purple-500/30 group relative w-full h-full">
-                <img
-                  src={speakers[currentSpeaker].image}
-                  alt={speakers[currentSpeaker].name}
-                  className="w-full h-full object-cover"
-                />
-                {/* Recording Indicators */}
-                {isAIRecording && (
-                  <div className="absolute top-6 left-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1.5 rounded-full text-white text-sm font-semibold">
-                    <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                    AI REC
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold truncate">
+                    {participant.name}
+                    {participant.isHost && " (Host)"}
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-white/60">
+                    {participant.isMuted && <MicOff className="w-3 h-3" />}
+                    {!participant.isVideoOn && <VideoOff className="w-3 h-3" />}
                   </div>
-                )}
-                {isRecording && (
-                  <div className={`absolute top-6 ${isAIRecording ? "left-40" : "left-6"} flex items-center gap-2 bg-red-500/80 px-3 py-1.5 rounded-full text-white text-sm font-semibold`}>
-                    <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                    REC
-                  </div>
-                )}
+                </div>
               </div>
-            </div>
-
-            {/* Controls Bar - Fixed at bottom */}
-            <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-center gap-3">
-              <button
-                onClick={() => setIsMuted(!isMuted)}
-                className={`p-4 rounded-full transition-all duration-200 ${
-                  isMuted
-                    ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-              >
-                {isMuted ? (
-                  <MicOff className="w-6 h-6" />
-                ) : (
-                  <Mic className="w-6 h-6" />
-                )}
-              </button>
-
-              <button
-                onClick={() => setIsVideoOn(!isVideoOn)}
-                className={`p-4 rounded-full transition-all duration-200 ${
-                  !isVideoOn
-                    ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-              >
-                {isVideoOn ? (
-                  <Video className="w-6 h-6" />
-                ) : (
-                  <VideoOff className="w-6 h-6" />
-                )}
-              </button>
-
-              <button
-                onClick={() => setIsAIRecordingModalOpen(true)}
-                className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
-                  isAIRecording
-                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-                title="AI 회의록 만들기"
-              >
-                <Zap className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={() => setIsAddChatModalOpen(true)}
-                className={`p-4 rounded-full transition-all duration-200 ${
-                  isChatAdded
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-                title="채팅 추가"
-              >
-                <MessageCircle className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={() => setIsRecording(!isRecording)}
-                className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
-                  isRecording
-                    ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-                title={isRecording ? "녹화 중지" : "녹화 시작"}
-              >
-                <Circle className="w-3 h-3 fill-current" />
-                <span className="text-xs font-semibold">REC</span>
-              </button>
-
-              <button
-                onClick={() => navigate("/")}
-                className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200"
-              >
-                <Phone className="w-6 h-6" />
-              </button>
-            </div>
+            ))}
           </div>
 
-          {/* Right Panel - Participants */}
-          {showParticipants && (
-            <ParticipantsPanel
-              participants={participants}
-              count={participants.length}
-            />
-          )}
+          {/* Invite Button */}
+          <div className="px-4 py-4 border-t border-purple-500/20">
+            <button
+              onClick={() => setIsInviteModalOpen(true)}
+              className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold transition-all"
+            >
+              Invite Participant
+            </button>
+          </div>
         </div>
-      </main>
+      )}
 
-      {/* Invite Participant Modal */}
-      <InviteParticipantModal
-        isOpen={isInviteModalOpen}
-        onClose={() => setIsInviteModalOpen(false)}
-        onInvite={handleInviteParticipants}
-        alreadyInvited={participants.map((p) => p.id)}
+      {/* Hidden video element for camera */}
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        playsInline
+        className="hidden"
       />
 
-      {/* AI Recording Modal */}
+      {/* Modals */}
       <AIRecordingModal
         isOpen={isAIRecordingModalOpen}
         onClose={() => setIsAIRecordingModalOpen(false)}
@@ -370,11 +525,22 @@ export default function MeetingRoom() {
         isRecording={isAIRecording}
       />
 
-      {/* Add Chat Modal */}
-      <AddChatModal
-        isOpen={isAddChatModalOpen}
-        onClose={() => setIsAddChatModalOpen(false)}
-        onConfirm={handleAddChat}
+      <InviteParticipantModal
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
+        onInvite={(newMembers) => {
+          const newParticipants = newMembers.map((member) => ({
+            id: member.id,
+            name: member.name,
+            avatar: member.avatar,
+            isHost: false,
+            isVideoOn: true,
+            isMuted: false,
+            isSpeaking: false,
+          }));
+          setParticipants((prev) => [...prev, ...newParticipants]);
+        }}
+        alreadyInvited={participants.map((p) => p.id)}
       />
     </div>
   );
