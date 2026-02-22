@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play } from "lucide-react";
+import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play, Copy, Edit, Check, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
@@ -31,6 +31,11 @@ export default function Summary() {
   const [activeTab, setActiveTab] = useState<"all" | "scheduled" | "in_progress" | "completed">("all");
   const [expandedMeetingId, setExpandedMeetingId] = useState<string | null>(null);
   const [featureFilter, setFeatureFilter] = useState<"all" | "transcript" | "voiceRecording" | "aiRecords">("all");
+  const [editingMeetingId, setEditingMeetingId] = useState<string | null>(null);
+  const [editedContent, setEditedContent] = useState<Record<string, string>>({});
+  const [audioPlayingId, setAudioPlayingId] = useState<string | null>(null);
+  const [showDownloadMenu, setShowDownloadMenu] = useState<string | null>(null);
+  const [copiedMeetingId, setCopiedMeetingId] = useState<string | null>(null);
 
   // Sample meetings data with status and summaries
   const allMeetings: Meeting[] = [
@@ -293,54 +298,146 @@ export default function Summary() {
         </div>
       </div>
 
-      {/* Notes */}
-      {meeting.notes && (
-        <div>
-          <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-3">
-            회의 메모
-          </h3>
-          <p className="dark:text-white/70 light:text-purple-900 dark:bg-purple-500/10 light:bg-purple-50 light:border-2 light:border-purple-200 dark:border dark:border-purple-500/20 rounded-xl p-4 light:shadow-md light:shadow-purple-200/30">
-            {meeting.notes}
-          </p>
-        </div>
-      )}
-
-      {/* Summary Section */}
+      {/* AI Transcript/Summary Section */}
       {meeting.summary && (
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900">
-              회의 요약
-            </h3>
-            <span className="dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30 flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5" />
-              AI 회의록
-              <span className="dark:bg-purple-700 light:bg-purple-700 px-2 py-0.5 rounded-full text-xs ml-1">
-                작업 완료
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950">
+                회의록
+              </h3>
+              <span className="dark:bg-purple-600 dark:text-white light:bg-gradient-to-r light:from-purple-600 light:to-purple-700 light:text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/40 flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5" />
+                AI 생성
               </span>
-            </span>
+            </div>
+            <button
+              onClick={() => {
+                if (editingMeetingId === meeting.id) {
+                  setEditingMeetingId(null);
+                } else {
+                  setEditingMeetingId(meeting.id);
+                  setEditedContent({ ...editedContent, [meeting.id]: meeting.summary || "" });
+                }
+              }}
+              className="flex items-center gap-2 px-3 py-1.5 dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900 dark:hover:bg-purple-500/30 light:hover:bg-purple-100 rounded-lg transition-all"
+            >
+              {editingMeetingId === meeting.id ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  저장
+                </>
+              ) : (
+                <>
+                  <Edit className="w-4 h-4" />
+                  수정
+                </>
+              )}
+            </button>
           </div>
-          <p className="dark:text-white/70 light:text-purple-900 dark:bg-purple-500/10 light:bg-purple-50 light:border-2 light:border-purple-200 dark:border dark:border-purple-500/20 rounded-xl p-4 light:shadow-md light:shadow-purple-200/30">
-            {meeting.summary}
-          </p>
+
+          {editingMeetingId === meeting.id ? (
+            <textarea
+              value={editedContent[meeting.id] || ""}
+              onChange={(e) => setEditedContent({ ...editedContent, [meeting.id]: e.target.value })}
+              className="w-full h-96 px-4 py-3 dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/70 rounded-xl font-mono text-sm resize-none focus:outline-none focus:ring-2 dark:focus:ring-purple-500/40 light:focus:ring-purple-300/40"
+              placeholder="마크다운 형식으로 회의록을 수정하세요..."
+            />
+          ) : (
+            <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto">
+              <div className="prose dark:prose-invert prose-sm max-w-none dark:text-white/80 light:text-purple-900 whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                {editedContent[meeting.id] || meeting.summary}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
 
-      {/* Action Buttons */}
+      {/* Action Section */}
       {meeting.status === "completed" && (
-        <div className="flex flex-wrap gap-3 pt-4">
-          <button className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-medium dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all">
-            음성녹음 재생
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-medium dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all">
-            <Download className="w-4 h-4" />
-            다운로드
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 dark:text-white/90 light:text-purple-700 rounded-lg font-medium dark:hover:bg-purple-500/10 light:hover:bg-purple-100/30 transition-all">
-            <Share2 className="w-4 h-4" />
-            공유
-          </button>
+        <div className="space-y-4">
+          {/* Audio Player */}
+          <div className="space-y-2">
+            <p className="text-sm font-bold dark:text-white/70 light:text-purple-700">음성 녹음</p>
+            <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-4 light:shadow-md light:shadow-purple-200/30">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setAudioPlayingId(audioPlayingId === meeting.id ? null : meeting.id)}
+                  className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-medium dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all"
+                >
+                  <Play className="w-4 h-4" />
+                  {audioPlayingId === meeting.id ? "일시정지" : "재생"}
+                </button>
+
+                {/* Progress Bar */}
+                <div className="flex-1 space-y-1">
+                  <div className="h-2 dark:bg-purple-500/20 light:bg-purple-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full" style={{ width: "35%" }}></div>
+                  </div>
+                  <div className="flex justify-between text-xs dark:text-white/50 light:text-purple-600">
+                    <span>1:25</span>
+                    <span>4:00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Download and Share Buttons */}
+          <div className="flex flex-wrap gap-3">
+            {/* Download Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setShowDownloadMenu(showDownloadMenu === meeting.id ? null : meeting.id)}
+                className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-medium dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all"
+              >
+                <Download className="w-4 h-4" />
+                다운로드
+                <ChevronDown className="w-4 h-4" />
+              </button>
+
+              {showDownloadMenu === meeting.id && (
+                <div className="absolute top-full left-0 mt-2 dark:bg-purple-900 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300 rounded-lg shadow-lg dark:shadow-purple-900/50 light:shadow-purple-300/30 py-1 z-10">
+                  <button className="w-full text-left px-4 py-2 dark:text-white/90 light:text-purple-900 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 transition-colors text-sm">
+                    🎵 음성 파일
+                  </button>
+                  <button className="w-full text-left px-4 py-2 dark:text-white/90 light:text-purple-900 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 transition-colors text-sm">
+                    📄 로우 텍스트
+                  </button>
+                  <button className="w-full text-left px-4 py-2 dark:text-white/90 light:text-purple-900 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 transition-colors text-sm">
+                    📋 전체 회의록
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Share Button - Copy to Clipboard */}
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(`https://meeting.app/transcripts/${meeting.id}`);
+                setCopiedMeetingId(meeting.id);
+                setTimeout(() => setCopiedMeetingId(null), 2000);
+              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                copiedMeetingId === meeting.id
+                  ? "dark:bg-green-500/20 light:bg-green-100 dark:text-green-300 light:text-green-700"
+                  : "dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 dark:text-white/90 light:text-purple-700 dark:hover:bg-purple-500/10 light:hover:bg-purple-100/30"
+              }`}
+            >
+              {copiedMeetingId === meeting.id ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  복사됨
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  링크 공유
+                </>
+              )}
+            </button>
+          </div>
         </div>
       )}
 
