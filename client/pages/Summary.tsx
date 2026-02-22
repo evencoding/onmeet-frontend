@@ -1,9 +1,12 @@
 import Layout from "@/components/Layout";
-import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play, Copy, Edit, Check, ChevronDown, Music, FileCode, BookOpen, Tag } from "lucide-react";
+import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play, Copy, Edit, Check, ChevronDown, Music, FileCode, BookOpen, Tag, Volume2, Maximize2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import MDEditor from "@uiw/react-md-editor";
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
 
 interface Meeting {
   id: string;
@@ -39,6 +42,8 @@ export default function Summary() {
   const [copiedMeetingId, setCopiedMeetingId] = useState<string | null>(null);
   const [audioProgress, setAudioProgress] = useState<Record<string, number>>({});
   const [audioDuration, setAudioDuration] = useState<Record<string, number>>({ default: 240 }); // 4:00
+  const [audioVolume, setAudioVolume] = useState<Record<string, number>>({ default: 1 }); // 0-1
+  const [audioPlaybackSpeed, setAudioPlaybackSpeed] = useState<Record<string, number>>({ default: 1 }); // 0.5, 1, 1.5, 2
 
   // Sample meetings data with status and summaries
   const allMeetings: Meeting[] = [
@@ -378,16 +383,39 @@ export default function Summary() {
             </div>
 
             {editingMeetingId === meeting.id ? (
-              <textarea
-                value={editedContent[meeting.id] || ""}
-                onChange={(e) => setEditedContent({ ...editedContent, [meeting.id]: e.target.value })}
-                className="w-full h-96 px-4 py-3 dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/70 rounded-xl font-mono text-sm resize-none focus:outline-none focus:ring-2 dark:focus:ring-purple-500/40 light:focus:ring-purple-300/40"
-                placeholder="마크다운 형식으로 회의록을 수정하세요... (#제목, **굵게**, - 목록 등)"
-              />
+              <div data-color-mode={localStorage.getItem("theme") === "dark" ? "dark" : "light"} className="rounded-xl overflow-hidden border-2 dark:border-purple-500/30 light:border-purple-300">
+                <MDEditor
+                  value={editedContent[meeting.id] || ""}
+                  onChange={(val) => setEditedContent({ ...editedContent, [meeting.id]: val || "" })}
+                  height={400}
+                  preview="edit"
+                  hideToolbar={false}
+                  visibleDragbar={true}
+                  textareaProps={{
+                    disabled: false,
+                  }}
+                  className="w-full !dark:bg-purple-500/10 !light:bg-purple-50 !dark:border-0 !light:border-0"
+                  style={{
+                    backgroundColor: localStorage.getItem("theme") === "dark" ? "#1e1b4b" : "#faf5ff",
+                    color: localStorage.getItem("theme") === "dark" ? "#f3f4f6" : "#1f2937",
+                  }}
+                />
+              </div>
             ) : (
               <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto">
-                <div className="prose dark:prose-invert prose-sm max-w-none dark:text-white/80 light:text-purple-900 whitespace-pre-wrap text-sm leading-relaxed">
-                  {editedContent[meeting.id] || meeting.summary}
+                <div className="prose dark:prose-invert prose-sm max-w-none dark:text-white/80 light:text-purple-900 text-sm leading-relaxed space-y-3">
+                  <div dangerouslySetInnerHTML={{
+                    __html: (editedContent[meeting.id] || meeting.summary)
+                      .split('\n').map(line => {
+                        if (line.startsWith('# ')) return `<h1 class="text-2xl font-bold mb-4 dark:text-white light:text-purple-950">${line.replace('# ', '')}</h1>`;
+                        if (line.startsWith('## ')) return `<h2 class="text-xl font-bold mb-3 dark:text-white light:text-purple-950">${line.replace('## ', '')}</h2>`;
+                        if (line.startsWith('### ')) return `<h3 class="text-lg font-bold mb-2 dark:text-white light:text-purple-950">${line.replace('### ', '')}</h3>`;
+                        if (line.startsWith('- ')) return `<li class="ml-4 dark:text-white/80 light:text-purple-900">${line.replace('- ', '')}</li>`;
+                        if (line.startsWith('**') && line.endsWith('**')) return `<strong class="font-bold">${line.replace(/\*\*/g, '')}</strong>`;
+                        if (line.trim()) return `<p class="dark:text-white/80 light:text-purple-900">${line}</p>`;
+                        return '';
+                      }).join('')
+                  }} />
                 </div>
               </div>
             )}
@@ -399,47 +427,99 @@ export default function Summary() {
       {/* Action Section */}
       {meeting.status === "completed" && (
         <div className="space-y-4">
-          {/* Audio Player */}
-          <div className="space-y-2">
-            <p className="text-sm font-bold dark:text-white/70 light:text-purple-700">음성 녹음</p>
-            <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-4 light:shadow-md light:shadow-purple-200/30">
+          {/* Advanced Audio Player */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-bold dark:text-white/70 light:text-purple-700">음성 녹음</p>
+              <span className="text-xs dark:text-white/40 light:text-purple-600">
+                {audioPlaybackSpeed[meeting.id]?.toFixed(1) || "1.0"}x
+              </span>
+            </div>
+
+            <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 space-y-4">
+              {/* Waveform Visualizer */}
+              <div className="h-12 dark:bg-purple-500/10 light:bg-purple-100/50 rounded-lg p-2 flex items-center gap-0.5 cursor-pointer hover:dark:bg-purple-500/20 hover:light:bg-purple-100 transition-colors group"
+                onClick={(e) => {
+                  const bar = e.currentTarget;
+                  const rect = bar.getBoundingClientRect();
+                  const percent = (e.clientX - rect.left) / rect.width;
+                  setAudioProgress({ ...audioProgress, [meeting.id]: Math.max(0, Math.min(1, percent)) });
+                }}
+              >
+                {[...Array(40)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 dark:bg-gradient-to-t dark:from-purple-400 dark:to-purple-500 light:bg-gradient-to-t light:from-purple-500 light:to-purple-600 rounded-sm transition-all duration-100"
+                    style={{
+                      height: `${15 + Math.sin(i * 0.4 + (audioProgress[meeting.id] || 0.35) * 10) * 20}px`,
+                      opacity: i / 40 <= (audioProgress[meeting.id] || 0.35) ? 1 : 0.3,
+                    }}
+                  ></div>
+                ))}
+              </div>
+
+              {/* Controls Row 1: Play Button + Time */}
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setAudioPlayingId(audioPlayingId === meeting.id ? null : meeting.id)}
-                  className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-medium dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all"
+                  className="flex-shrink-0 flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white rounded-lg font-semibold dark:hover:bg-purple-700 light:hover:bg-purple-700 transition-all hover:scale-105 active:scale-95"
                 >
-                  <Play className="w-4 h-4" />
-                  {audioPlayingId === meeting.id ? "일시정지" : "재생"}
+                  {audioPlayingId === meeting.id ? (
+                    <>
+                      <div className="w-1 h-4 dark:bg-white light:bg-white rounded-sm animate-pulse"></div>
+                      일시정지
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-5 h-5 fill-current" />
+                      재생
+                    </>
+                  )}
                 </button>
 
-                {/* Interactive Progress Bar with Visualizer */}
-                <div className="flex-1 space-y-2">
-                  {/* Audio Waveform Visualizer */}
-                  <div className="h-10 dark:bg-purple-500/10 light:bg-purple-100/50 rounded-lg p-1 flex items-center gap-0.5 cursor-pointer hover:dark:bg-purple-500/20 hover:light:bg-purple-100 transition-colors"
-                    onClick={(e) => {
-                      const bar = e.currentTarget;
-                      const rect = bar.getBoundingClientRect();
-                      const percent = (e.clientX - rect.left) / rect.width;
-                      setAudioProgress({ ...audioProgress, [meeting.id]: Math.max(0, Math.min(1, percent)) });
-                    }}
-                  >
-                    {[...Array(30)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 dark:bg-purple-400 light:bg-purple-500 rounded-sm transition-all"
-                        style={{
-                          height: `${20 + Math.sin(i * 0.5) * 15 + (audioProgress[meeting.id] || 0.35) * 10}px`,
-                          opacity: i / 30 <= (audioProgress[meeting.id] || 0.35) ? 1 : 0.4,
-                        }}
-                      ></div>
-                    ))}
-                  </div>
+                {/* Time Display */}
+                <div className="text-sm dark:text-white/70 light:text-purple-700 font-medium whitespace-nowrap">
+                  <span>{Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) / 60)}:{String(Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) % 60)).padStart(2, '0')}</span>
+                  <span className="dark:text-white/40 light:text-purple-600 mx-2">/</span>
+                  <span>{Math.floor((audioDuration[meeting.id] || 240) / 60)}:{String((audioDuration[meeting.id] || 240) % 60).padStart(2, '0')}</span>
+                </div>
+              </div>
 
-                  {/* Time Display */}
-                  <div className="flex justify-between text-xs dark:text-white/50 light:text-purple-600 font-medium">
-                    <span>{Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) / 60)}:{String(Math.floor(((audioProgress[meeting.id] || 0.35) * (audioDuration[meeting.id] || 240)) % 60)).padStart(2, '0')}</span>
-                    <span>{Math.floor((audioDuration[meeting.id] || 240) / 60)}:{String((audioDuration[meeting.id] || 240) % 60).padStart(2, '0')}</span>
+              {/* Controls Row 2: Volume + Playback Speed */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Volume Control */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Volume2 className="w-4 h-4 dark:text-white/50 light:text-purple-600" />
+                    <span className="text-xs dark:text-white/50 light:text-purple-600 font-medium">
+                      {Math.round((audioVolume[meeting.id] ?? 1) * 100)}%
+                    </span>
                   </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={Math.round((audioVolume[meeting.id] ?? 1) * 100)}
+                    onChange={(e) => setAudioVolume({ ...audioVolume, [meeting.id]: parseInt(e.target.value) / 100 })}
+                    className="w-full h-2 dark:bg-purple-500/20 light:bg-purple-200 rounded-full appearance-none cursor-pointer accent-purple-600"
+                  />
+                </div>
+
+                {/* Playback Speed Control */}
+                <div className="space-y-2">
+                  <label className="text-xs dark:text-white/50 light:text-purple-600 font-medium block">재생 속도</label>
+                  <select
+                    value={audioPlaybackSpeed[meeting.id] || 1}
+                    onChange={(e) => setAudioPlaybackSpeed({ ...audioPlaybackSpeed, [meeting.id]: parseFloat(e.target.value) })}
+                    className="w-full px-3 py-1 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-900 dark:border dark:border-purple-500/30 light:border light:border-purple-300 rounded-lg text-sm font-medium focus:outline-none dark:focus:border-purple-400 light:focus:border-purple-500 transition-all"
+                  >
+                    <option value="0.5">0.5x</option>
+                    <option value="0.75">0.75x</option>
+                    <option value="1">1x (정상)</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
+                  </select>
                 </div>
               </div>
             </div>
