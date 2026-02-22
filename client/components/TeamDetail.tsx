@@ -8,6 +8,8 @@ import {
   MoreVertical,
   Check,
   X,
+  Search,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -313,12 +315,83 @@ const teamColors = [
   { name: "Green", value: "bg-green-500", hex: "#22c55e" },
 ];
 
+// Mock employee list for adding members
+const mockEmployees = [
+  {
+    id: "1",
+    name: "김철수",
+    email: "kim@example.com",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    department: "마케팅",
+  },
+  {
+    id: "2",
+    name: "이영희",
+    email: "lee@example.com",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+    department: "마케팅",
+  },
+  {
+    id: "3",
+    name: "박민준",
+    email: "park@example.com",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    department: "마케팅",
+  },
+  {
+    id: "4",
+    name: "정준호",
+    email: "jung@example.com",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    department: "제품",
+  },
+  {
+    id: "5",
+    name: "최수진",
+    email: "choi@example.com",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+    department: "제품",
+  },
+  {
+    id: "6",
+    name: "임상현",
+    email: "lim@example.com",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    department: "디자인",
+  },
+  {
+    id: "7",
+    name: "한지은",
+    email: "han@example.com",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
+    department: "디자인",
+  },
+  {
+    id: "8",
+    name: "유혜정",
+    email: "yu@example.com",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
+    department: "디자인",
+  },
+];
+
 export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
   const teamData = teamsData[teamId as keyof typeof teamsData];
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
   const [editedColor, setEditedColor] = useState("");
+  const [isAddingMember, setIsAddingMember] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [teamMembers, setTeamMembers] = useState(teamData?.members || []);
 
   if (!teamData) {
     return (
@@ -344,6 +417,35 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
   const handleCancel = () => {
     setIsEditing(false);
   };
+
+  const handleAddMember = (employee: typeof mockEmployees[0]) => {
+    const isAlreadyMember = teamMembers.some((m) => m.id === employee.id);
+    if (!isAlreadyMember) {
+      setTeamMembers([
+        ...teamMembers,
+        {
+          id: employee.id,
+          name: employee.name,
+          email: employee.email,
+          avatar: employee.avatar,
+          role: "Member",
+        },
+      ]);
+      setSearchQuery("");
+    }
+  };
+
+  const handleRemoveMember = (id: string) => {
+    setTeamMembers(teamMembers.filter((m) => m.id !== id));
+  };
+
+  const filteredEmployees = mockEmployees.filter(
+    (emp) =>
+      !teamMembers.some((m) => m.id === emp.id) &&
+      (emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        emp.department?.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   return (
     <div className="max-w-4xl space-y-6">
@@ -442,49 +544,142 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
       </div>
 
       {/* Team Members Section */}
-      <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6">
+      <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/60 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-white/80 light:to-purple-50 border dark:border-purple-500/30 light:border-purple-300/40 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <Users className="w-5 h-5 text-brand-500" />
-            <h2 className="text-lg font-bold text-foreground">팀원</h2>
-            <span className="px-2 py-1 bg-brand-50 text-brand-600 text-xs font-semibold rounded-full">
-              {teamData.members.length}명
+            <Users className="w-5 h-5 dark:text-purple-400 light:text-purple-600" />
+            <h2 className="text-lg font-bold dark:text-white light:text-purple-900">팀원</h2>
+            <span className="px-2 py-1 dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/70 light:text-purple-800 text-xs font-semibold rounded-full">
+              {teamMembers.length}명
             </span>
           </div>
-          <Button variant="outline" size="sm">
-            멤버 추가
-          </Button>
+          {!isAddingMember && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAddingMember(true)}
+              className="gap-2 dark:border-purple-500/30 dark:text-white dark:hover:bg-purple-500/20 light:border-purple-300/50 light:text-purple-700 light:hover:bg-purple-100/30"
+            >
+              <Plus className="w-4 h-4" />
+              멤버 추가
+            </Button>
+          )}
         </div>
 
+        {/* Add Member Section */}
+        {isAddingMember && (
+          <div className="mb-6 p-4 dark:bg-purple-500/10 light:bg-purple-50 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg space-y-3">
+            {/* Search Input */}
+            <div className="relative">
+              <Search className="absolute left-3 top-3 w-4 h-4 dark:text-white/40 light:text-purple-600" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="이름, 이메일, 부서로 검색"
+                autoFocus
+                className="w-full pl-10 pr-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
+              />
+            </div>
+
+            {/* Employee List */}
+            {filteredEmployees.length > 0 ? (
+              <div className="border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg overflow-y-auto max-h-48 dark:bg-black/40 light:bg-white">
+                {filteredEmployees.map((employee) => (
+                  <button
+                    key={employee.id}
+                    type="button"
+                    onClick={() => handleAddMember(employee)}
+                    className="w-full flex items-center gap-3 p-3 dark:border-b dark:border-purple-500/20 light:border-b light:border-purple-300/30 transition-colors dark:hover:bg-purple-500/20 light:hover:bg-purple-100/30 text-left"
+                  >
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={employee.avatar} alt={employee.name} />
+                      <AvatarFallback>{employee.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium dark:text-white light:text-purple-900">
+                        {employee.name}
+                      </p>
+                      <p className="text-xs dark:text-white/50 light:text-purple-600">
+                        {employee.department} · {employee.email}
+                      </p>
+                    </div>
+                    <Plus className="w-4 h-4 dark:text-white/40 light:text-purple-600" />
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="p-4 text-center text-sm dark:text-white/60 light:text-purple-600">
+                {searchQuery ? "검색 결과가 없습니다" : "추가할 팀원이 없습니다"}
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex gap-2 pt-2">
+              <Button
+                size="sm"
+                onClick={() => {
+                  setIsAddingMember(false);
+                  setSearchQuery("");
+                }}
+                className="flex-1 gap-2 bg-purple-600 dark:hover:bg-purple-700 light:hover:bg-purple-700 text-white"
+              >
+                <Check className="w-4 h-4" />
+                완료
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  setIsAddingMember(false);
+                  setSearchQuery("");
+                }}
+                className="flex-1 gap-2 dark:border-purple-500/30 dark:text-white dark:hover:bg-purple-500/20 light:border-purple-300/50 light:text-purple-700 light:hover:bg-purple-100/30"
+              >
+                <X className="w-4 h-4" />
+                취소
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Members Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {teamData.members.map((member) => (
+          {teamMembers.map((member) => (
             <div
               key={member.id}
-              className="flex items-center gap-3 p-4 rounded-xl hover:bg-surface-subtle transition-colors"
+              className="flex items-center gap-3 p-4 dark:hover:bg-purple-500/10 light:hover:bg-purple-100/30 rounded-xl transition-colors border dark:border-purple-500/20 light:border-purple-300/30"
             >
               <Avatar>
                 <AvatarImage src={member.avatar} alt={member.name} />
                 <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-foreground">{member.name}</p>
-                <p className="text-xs text-text-sub">{member.role}</p>
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="font-medium dark:text-white light:text-purple-900">{member.name}</p>
+                <p className="text-xs dark:text-white/60 light:text-purple-600">{member.role}</p>
+                <p className="text-xs dark:text-white/40 light:text-purple-600/70 truncate">
                   {member.email}
                 </p>
               </div>
+              <button
+                onClick={() => handleRemoveMember(member.id)}
+                className="p-1 dark:text-white/40 dark:hover:text-red-400 light:text-purple-600 light:hover:text-red-600 transition-colors"
+                title="제거"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
           ))}
         </div>
       </div>
 
       {/* Team Meetings Section */}
-      <div className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-2xl p-6">
+      <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/60 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-white/80 light:to-purple-50 border dark:border-purple-500/30 light:border-purple-300/40 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <Calendar className="w-5 h-5 text-brand-500" />
-            <h2 className="text-lg font-bold text-foreground">회의 일정</h2>
-            <span className="px-2 py-1 bg-brand-50 text-brand-600 text-xs font-semibold rounded-full">
+            <Calendar className="w-5 h-5 dark:text-purple-400 light:text-purple-600" />
+            <h2 className="text-lg font-bold dark:text-white light:text-purple-900">회의 일정</h2>
+            <span className="px-2 py-1 dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/70 light:text-purple-800 text-xs font-semibold rounded-full">
               {teamData.meetings.length}개
             </span>
           </div>
@@ -494,23 +689,23 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
           {teamData.meetings.map((meeting) => (
             <div
               key={meeting.id}
-              className="bg-gradient-to-br from-white via-white/80 to-surface-subtle border border-border/40 rounded-xl p-5 hover:shadow-md transition-all duration-200 group"
+              className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/40 dark:to-pink-900/20 light:bg-white border dark:border-purple-500/30 light:border-purple-300/40 rounded-xl p-5 dark:hover:shadow-lg light:hover:shadow-md transition-all duration-200 group"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   {/* Title and Status */}
                   <div className="flex items-start gap-3 mb-2">
-                    <h3 className="text-base font-bold text-foreground flex-1">
+                    <h3 className="text-base font-bold dark:text-white light:text-purple-900 flex-1">
                       {meeting.title}
                     </h3>
                     <span
                       className={cn(
                         "px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap",
                         meeting.status === "scheduled"
-                          ? "bg-blue-100 text-blue-700"
+                          ? "dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100/70 light:text-blue-800"
                           : meeting.status === "in_progress"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-700",
+                            ? "dark:bg-green-500/20 dark:text-green-300 light:bg-green-100/70 light:text-green-800"
+                            : "dark:bg-gray-500/20 dark:text-gray-300 light:bg-gray-100/70 light:text-gray-800",
                       )}
                     >
                       {meeting.status === "scheduled"
@@ -522,42 +717,42 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-text-sub mb-3">
+                  <p className="text-sm dark:text-white/80 light:text-purple-700 mb-3">
                     {meeting.description}
                   </p>
 
                   {/* Meeting Info */}
                   <div className="flex flex-wrap gap-4 text-sm">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-brand-500" />
-                      <span className="text-text-sub">{meeting.startTime}</span>
+                      <Calendar className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
+                      <span className="dark:text-white/70 light:text-purple-700">{meeting.startTime}</span>
                     </div>
                     {meeting.endTime && (
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-brand-500" />
-                        <span className="text-text-sub">{meeting.endTime}</span>
+                        <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
+                        <span className="dark:text-white/70 light:text-purple-700">{meeting.endTime}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-2">
-                      <Users2 className="w-4 h-4 text-brand-500" />
-                      <span className="text-text-sub">
+                      <Users2 className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
+                      <span className="dark:text-white/70 light:text-purple-700">
                         {meeting.attendeesCount}명
                       </span>
                     </div>
                   </div>
 
                   {/* Host Info */}
-                  <div className="text-xs text-muted-foreground mt-3">
+                  <div className="text-xs dark:text-white/60 light:text-purple-600 mt-3">
                     주최자:{" "}
-                    <span className="font-semibold text-foreground">
+                    <span className="font-semibold dark:text-white light:text-purple-900">
                       {meeting.hostName}
                     </span>
                   </div>
                 </div>
 
                 {/* Action Button */}
-                <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-surface-subtle rounded-lg ml-2">
-                  <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity dark:hover:bg-purple-500/20 light:hover:bg-purple-100/30 rounded-lg ml-2">
+                  <MoreVertical className="w-4 h-4 dark:text-white/40 light:text-purple-600" />
                 </button>
               </div>
             </div>
