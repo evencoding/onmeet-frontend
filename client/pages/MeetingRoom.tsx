@@ -38,6 +38,7 @@ interface ChatMessage {
 export default function MeetingRoom() {
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -111,17 +112,31 @@ export default function MeetingRoom() {
 
   // Initialize camera
   useEffect(() => {
-    if (isVideoOn && videoRef.current) {
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: !isMuted })
-        .then((stream) => {
-          if (videoRef.current) {
-            videoRef.current.srcObject = stream;
-          }
-        })
-        .catch((err) => console.error("Error accessing media:", err));
+    const startCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" },
+          audio: !isMuted,
+        });
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+      } catch (err) {
+        console.error("Error accessing media:", err);
+      }
+    };
+
+    if (isVideoOn) {
+      startCamera();
     }
-  }, [isVideoOn, isMuted]);
+
+    return () => {
+      if (localVideoRef.current && localVideoRef.current.srcObject) {
+        const tracks = (localVideoRef.current.srcObject as MediaStream).getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+    };
+  }, [isVideoOn]);
 
   // Toggle fullscreen
   const toggleFullscreen = async () => {
@@ -174,7 +189,16 @@ export default function MeetingRoom() {
       >
         {/* Header */}
         <div className="px-6 py-4 border-b border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Meeting Title</h1>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate("/")}
+              className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
+              title="Back to home"
+            >
+              <Phone className="w-5 h-5 rotate-180" />
+            </button>
+            <h1 className="text-2xl font-bold">Meeting Title</h1>
+          </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-white/60">{participants.length} participants</span>
             <button
@@ -190,12 +214,12 @@ export default function MeetingRoom() {
         {/* Video Content */}
         <div className="flex-1 overflow-hidden p-4">
           {viewMode === "gallery" ? (
-            // Gallery View - Grid of participants
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 h-full overflow-auto">
-              {participants.map((participant) => (
+            // Gallery View - Grid of participants (2x2)
+            <div className="grid grid-cols-2 gap-4 h-full overflow-auto max-w-4xl mx-auto">
+              {participants.slice(0, 4).map((participant, idx) => (
                 <div
                   key={participant.id}
-                  className={`relative rounded-2xl overflow-hidden bg-black border-2 transition-all ${
+                  className={`relative rounded-2xl overflow-hidden bg-black border-2 transition-all aspect-video ${
                     participant.isSpeaking
                       ? "border-purple-500 ring-2 ring-purple-500/50"
                       : "border-purple-500/20"
@@ -203,11 +227,21 @@ export default function MeetingRoom() {
                 >
                   {/* Participant Video / Avatar */}
                   <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black flex items-center justify-center relative">
-                    <img
-                      src={participant.avatar}
-                      alt={participant.name}
-                      className="w-full h-full object-cover"
-                    />
+                    {idx === 0 && isVideoOn ? (
+                      <video
+                        ref={localVideoRef}
+                        autoPlay
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src={participant.avatar}
+                        alt={participant.name}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
 
                     {/* Speaking indicator */}
                     {participant.isSpeaking && (
@@ -244,11 +278,21 @@ export default function MeetingRoom() {
               {/* Main Speaker */}
               <div className="flex-1 rounded-2xl overflow-hidden border-2 border-purple-500 ring-2 ring-purple-500/30 relative">
                 <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black flex items-center justify-center">
-                  <img
-                    src={participants[currentSpeaker].avatar}
-                    alt={participants[currentSpeaker].name}
-                    className="w-full h-full object-cover"
-                  />
+                  {currentSpeaker === 0 && isVideoOn ? (
+                    <video
+                      ref={localVideoRef}
+                      autoPlay
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={participants[currentSpeaker].avatar}
+                      alt={participants[currentSpeaker].name}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
 
                   {/* Speaker Info */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6">
@@ -507,14 +551,6 @@ export default function MeetingRoom() {
         </div>
       )}
 
-      {/* Hidden video element for camera */}
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        playsInline
-        className="hidden"
-      />
 
       {/* Modals */}
       <AIRecordingModal
