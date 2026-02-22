@@ -505,30 +505,30 @@ export default function Summary() {
                       </p>
                     )}
 
-                    {/* Meeting Features Chips */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {meeting.hasTranscript && (
-                        <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5">
-                          <FileText className="w-3.5 h-3.5" />
-                          회의록
-                        </span>
-                      )}
-                      {meeting.status === "completed" && (
+                    {/* Meeting Features Chips - Only show for completed meetings */}
+                    {meeting.status === "completed" && (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {meeting.hasTranscript && (
+                          <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5">
+                            <FileText className="w-3.5 h-3.5" />
+                            회의록
+                          </span>
+                        )}
                         <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5">
                           <Mic className="w-3.5 h-3.5" />
                           음성녹음
                         </span>
-                      )}
-                      {meeting.summary && (
-                        <span className="dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30 flex items-center gap-1.5">
-                          <Zap className="w-3.5 h-3.5" />
-                          AI 회의록
-                          <span className="dark:bg-purple-700 light:bg-purple-700 px-2 py-0.5 rounded-full text-xs ml-1">
-                            작업 완료
+                        {meeting.summary && (
+                          <span className="dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30 flex items-center gap-1.5">
+                            <Zap className="w-3.5 h-3.5" />
+                            AI 회의록
+                            <span className="dark:bg-purple-700 light:bg-purple-700 px-2 py-0.5 rounded-full text-xs ml-1">
+                              작업 완료
+                            </span>
                           </span>
-                        </span>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>
