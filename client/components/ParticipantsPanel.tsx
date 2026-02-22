@@ -258,15 +258,15 @@ export default function ParticipantsPanel({
   }, [participants]);
 
   return (
-    <div className="w-80 border-l border-border/30 bg-white/40 backdrop-blur-md flex flex-col">
+    <div className="w-80 border-l border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex flex-col">
       {/* Tabs */}
-      <div className="flex border-b border-border/20 bg-white/50">
+      <div className="flex border-b border-purple-500/20 bg-black/40">
         <button
           onClick={() => setActiveTab("participants")}
           className={`flex-1 px-4 py-3 text-sm font-semibold border-b-2 transition-all duration-200 ${
             activeTab === "participants"
-              ? "text-brand-500 border-brand-500"
-              : "text-text-sub border-transparent hover:text-foreground"
+              ? "text-purple-300 border-purple-500"
+              : "text-white/50 border-transparent hover:text-white/70"
           }`}
         >
           Participant ({count})
@@ -275,8 +275,8 @@ export default function ParticipantsPanel({
           onClick={() => setActiveTab("chat")}
           className={`flex-1 px-4 py-3 text-sm font-semibold border-b-2 transition-all duration-200 flex items-center justify-center gap-2 ${
             activeTab === "chat"
-              ? "text-brand-500 border-brand-500"
-              : "text-text-sub border-transparent hover:text-foreground"
+              ? "text-purple-300 border-purple-500"
+              : "text-white/50 border-transparent hover:text-white/70"
           }`}
         >
           <MessageCircle className="w-4 h-4" />
@@ -287,11 +287,11 @@ export default function ParticipantsPanel({
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
         {activeTab === "participants" ? (
-          <div className="divide-y divide-border/20">
+          <div className="divide-y divide-purple-500/20">
             {participants.map((participant) => (
               <div
                 key={participant.id}
-                className="px-4 py-3 hover:bg-white/40 transition-colors group"
+                className="px-4 py-3 hover:bg-purple-500/10 transition-colors group"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 flex-1">
@@ -302,17 +302,17 @@ export default function ParticipantsPanel({
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       {participant.isHost && (
-                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-pink-400 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-white">
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-purple-900">
                           H
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-foreground truncate">
+                      <p className="text-sm font-semibold dark:text-white/90 light:text-purple-900 truncate">
                         {participant.name}
                       </p>
                       {participant.isHost && (
-                        <span className="text-xs text-brand-500 font-medium">
+                        <span className="text-xs dark:text-purple-400 light:text-purple-600 font-medium">
                           Host
                         </span>
                       )}
@@ -321,21 +321,21 @@ export default function ParticipantsPanel({
 
                   <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     {participant.isVideoOn ? (
-                      <div className="w-5 h-5 rounded bg-brand-500/20 flex items-center justify-center text-xs text-brand-500">
-                        📹
+                      <div className="w-5 h-5 rounded bg-purple-500/30 flex items-center justify-center text-xs text-purple-300">
+                        V
                       </div>
                     ) : (
-                      <div className="w-5 h-5 rounded bg-gray-200/30 flex items-center justify-center text-xs">
+                      <div className="w-5 h-5 rounded bg-white/10 flex items-center justify-center text-xs text-white/40">
                         ✕
                       </div>
                     )}
                     {participant.isMuted ? (
-                      <div className="w-5 h-5 rounded bg-gray-200/30 flex items-center justify-center text-xs">
-                        🔇
+                      <div className="w-5 h-5 rounded bg-white/10 flex items-center justify-center text-xs text-white/40">
+                        M
                       </div>
                     ) : (
-                      <div className="w-5 h-5 rounded bg-brand-500/20 flex items-center justify-center text-xs text-brand-500">
-                        🔊
+                      <div className="w-5 h-5 rounded bg-purple-500/30 flex items-center justify-center text-xs text-purple-300">
+                        A
                       </div>
                     )}
                   </div>
@@ -344,7 +344,7 @@ export default function ParticipantsPanel({
             ))}
           </div>
         ) : (
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full bg-black/40">
             {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.map((msg, idx) => (
@@ -367,7 +367,7 @@ export default function ParticipantsPanel({
                         className={`flex flex-col max-w-xs ${msg.isOwn ? "items-end" : "items-start"}`}
                       >
                         {/* Sender and Timestamp on same line */}
-                        <span className="text-xs text-text-sub mb-1">
+                        <span className="text-xs dark:text-white/50 light:text-purple-600 mb-1">
                           {msg.sender} {msg.timestamp}
                         </span>
 
@@ -375,14 +375,9 @@ export default function ParticipantsPanel({
                         <div
                           className={`px-3 py-2 rounded-2xl text-sm font-medium ${
                             msg.isOwn
-                              ? "bg-brand-500 text-white rounded-br-none"
-                              : "rounded-bl-none"
+                              ? "bg-purple-600 text-white rounded-br-none"
+                              : "rounded-bl-none dark:bg-purple-500/30 dark:text-white light:bg-purple-100 light:text-purple-900"
                           }`}
-                          style={
-                            !msg.isOwn
-                              ? { backgroundColor: "#E6E0F2", color: "#1F1F2E" }
-                              : {}
-                          }
                         >
                           {msg.message}
                         </div>
@@ -391,7 +386,7 @@ export default function ParticipantsPanel({
                   ) : (
                     // System message - centered
                     <div className="flex justify-center py-2">
-                      <span className="text-xs text-text-sub italic bg-white/40 px-3 py-1 rounded-full">
+                      <span className="text-xs dark:text-white/40 light:text-purple-600 italic dark:bg-purple-500/20 light:bg-purple-100/50 px-3 py-1 rounded-full">
                         {msg.sender}
                       </span>
                     </div>
@@ -402,7 +397,7 @@ export default function ParticipantsPanel({
             </div>
 
             {/* Message Input */}
-            <div className="border-t border-border/20 p-4 bg-white/50">
+            <div className="border-t border-purple-500/20 p-4 bg-purple-900/20">
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -414,11 +409,11 @@ export default function ParticipantsPanel({
                     }
                   }}
                   placeholder="Message..."
-                  className="flex-1 px-4 py-2.5 border border-border/50 rounded-full bg-white/60 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all text-sm placeholder-text-sub"
+                  className="flex-1 px-4 py-2.5 border border-purple-500/30 rounded-full bg-purple-500/10 focus:bg-purple-500/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm text-white placeholder-white/40"
                 />
                 <button
                   onClick={handleSendMessage}
-                  className="p-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white rounded-full hover:from-brand-600 hover:to-brand-700 transition-all duration-200 flex-shrink-0"
+                  className="p-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:from-purple-700 hover:to-pink-700 transition-all duration-200 flex-shrink-0"
                 >
                   <Send className="w-5 h-5" />
                 </button>

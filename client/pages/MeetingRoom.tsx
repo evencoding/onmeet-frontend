@@ -3,6 +3,8 @@ import Sidebar from "@/components/Sidebar";
 import MeetingRoomHeader from "@/components/MeetingRoomHeader";
 import ParticipantsPanel from "@/components/ParticipantsPanel";
 import InviteParticipantModal from "@/components/InviteParticipantModal";
+import AIRecordingModal from "@/components/AIRecordingModal";
+import AddChatModal from "@/components/AddChatModal";
 import {
   ChevronLeft,
   ChevronRight,
@@ -12,6 +14,8 @@ import {
   VideoOff,
   Phone,
   Circle,
+  MessageCircle,
+  Zap,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -39,6 +43,10 @@ export default function MeetingRoom() {
   const [isRecording, setIsRecording] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isAIRecordingModalOpen, setIsAIRecordingModalOpen] = useState(false);
+  const [isAddChatModalOpen, setIsAddChatModalOpen] = useState(false);
+  const [isAIRecording, setIsAIRecording] = useState(false);
+  const [isChatAdded, setIsChatAdded] = useState(false);
 
   // 게스트 정보 로드
   const [guestInfo, setGuestInfo] = useState<GuestInfo | null>(null);
@@ -116,6 +124,18 @@ export default function MeetingRoom() {
     setParticipants((prev) => [...prev, ...newParticipants]);
   };
 
+  const handleStartAIRecording = () => {
+    setIsAIRecording(true);
+  };
+
+  const handleEndAIRecording = () => {
+    setIsAIRecording(false);
+  };
+
+  const handleAddChat = () => {
+    setIsChatAdded(true);
+  };
+
   const speakers = [
     {
       name: "Akbar Husain",
@@ -175,17 +195,26 @@ export default function MeetingRoom() {
         />
 
         {/* Meeting Content */}
-        <div className="flex-1 overflow-hidden flex">
+        <div className="flex-1 overflow-hidden flex relative">
+          {/* Animated background */}
+          <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900">
+            <div className="absolute inset-0 opacity-40">
+              <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+              <div className="absolute top-0 -right-4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+              <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+            </div>
+          </div>
+
           {/* Video Area */}
           <div
-            className={`${showParticipants ? "flex-1" : "w-full"} flex flex-col bg-gradient-to-br from-bg-DEFAULT via-white/20 to-bg-DEFAULT`}
+            className={`${showParticipants ? "flex-1" : "w-full"} flex flex-col bg-gradient-to-br from-purple-950/30 via-black/60 to-purple-950/30 relative z-10`}
           >
             {/* Main Video Feed */}
             <div className="flex-1 overflow-hidden p-6 flex flex-col justify-between">
               {/* Thumbnail Carousel */}
               <div className="flex items-center gap-3 mb-6">
-                <button className="p-2 hover:bg-white/40 rounded-lg transition-colors">
-                  <ChevronLeft className="w-5 h-5 text-foreground" />
+                <button className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors">
+                  <ChevronLeft className="w-5 h-5 text-white/70" />
                 </button>
 
                 <div className="flex gap-2 flex-1 overflow-x-auto">
@@ -195,8 +224,8 @@ export default function MeetingRoom() {
                       onClick={() => setCurrentSpeaker(idx)}
                       className={`flex-shrink-0 w-32 h-24 rounded-2xl overflow-hidden transition-all duration-200 border-2 ${
                         currentSpeaker === idx
-                          ? "border-brand-500 ring-2 ring-brand-500/30"
-                          : "border-border/40 hover:border-border/60"
+                          ? "border-purple-400 ring-2 ring-purple-500/30"
+                          : "border-purple-500/30 hover:border-purple-400"
                       }`}
                     >
                       <img
@@ -208,21 +237,27 @@ export default function MeetingRoom() {
                   ))}
                 </div>
 
-                <button className="p-2 hover:bg-white/40 rounded-lg transition-colors">
-                  <ChevronRight className="w-5 h-5 text-foreground" />
+                <button className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors">
+                  <ChevronRight className="w-5 h-5 text-white/70" />
                 </button>
               </div>
 
               {/* Main Video Display */}
-              <div className="rounded-3xl overflow-hidden shadow-lg border border-border/30 group relative w-full h-full">
+              <div className="rounded-3xl overflow-hidden shadow-lg border border-purple-500/30 group relative w-full h-full">
                 <img
                   src={speakers[currentSpeaker].image}
                   alt={speakers[currentSpeaker].name}
                   className="w-full h-full object-cover"
                 />
-                {/* Recording Indicator */}
+                {/* Recording Indicators */}
+                {isAIRecording && (
+                  <div className="absolute top-6 left-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1.5 rounded-full text-white text-sm font-semibold">
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                    AI REC
+                  </div>
+                )}
                 {isRecording && (
-                  <div className="absolute top-6 left-6 flex items-center gap-2 bg-red-500/80 px-3 py-1.5 rounded-full text-white text-sm font-semibold">
+                  <div className={`absolute top-6 ${isAIRecording ? "left-40" : "left-6"} flex items-center gap-2 bg-red-500/80 px-3 py-1.5 rounded-full text-white text-sm font-semibold`}>
                     <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
                     REC
                   </div>
@@ -231,13 +266,13 @@ export default function MeetingRoom() {
             </div>
 
             {/* Controls Bar - Fixed at bottom */}
-            <div className="px-6 py-4 border-t border-border/30 bg-white/40 backdrop-blur-md flex items-center justify-center gap-3">
+            <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-center gap-3">
               <button
                 onClick={() => setIsMuted(!isMuted)}
                 className={`p-4 rounded-full transition-all duration-200 ${
                   isMuted
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-white/70 text-foreground hover:bg-white"
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
                 }`}
               >
                 {isMuted ? (
@@ -251,8 +286,8 @@ export default function MeetingRoom() {
                 onClick={() => setIsVideoOn(!isVideoOn)}
                 className={`p-4 rounded-full transition-all duration-200 ${
                   !isVideoOn
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-white/70 text-foreground hover:bg-white"
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
                 }`}
               >
                 {isVideoOn ? (
@@ -263,11 +298,35 @@ export default function MeetingRoom() {
               </button>
 
               <button
+                onClick={() => setIsAIRecordingModalOpen(true)}
+                className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
+                  isAIRecording
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+                title="AI 회의록 만들기"
+              >
+                <Zap className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={() => setIsAddChatModalOpen(true)}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  isChatAdded
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+                title="채팅 추가"
+              >
+                <MessageCircle className="w-5 h-5" />
+              </button>
+
+              <button
                 onClick={() => setIsRecording(!isRecording)}
                 className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
                   isRecording
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-white/70 text-foreground hover:bg-white"
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
                 }`}
                 title={isRecording ? "녹화 중지" : "녹화 시작"}
               >
@@ -277,7 +336,7 @@ export default function MeetingRoom() {
 
               <button
                 onClick={() => navigate("/")}
-                className="p-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-200"
+                className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200"
               >
                 <Phone className="w-6 h-6" />
               </button>
@@ -300,6 +359,22 @@ export default function MeetingRoom() {
         onClose={() => setIsInviteModalOpen(false)}
         onInvite={handleInviteParticipants}
         alreadyInvited={participants.map((p) => p.id)}
+      />
+
+      {/* AI Recording Modal */}
+      <AIRecordingModal
+        isOpen={isAIRecordingModalOpen}
+        onClose={() => setIsAIRecordingModalOpen(false)}
+        onStart={handleStartAIRecording}
+        onEnd={handleEndAIRecording}
+        isRecording={isAIRecording}
+      />
+
+      {/* Add Chat Modal */}
+      <AddChatModal
+        isOpen={isAddChatModalOpen}
+        onClose={() => setIsAddChatModalOpen(false)}
+        onConfirm={handleAddChat}
       />
     </div>
   );
