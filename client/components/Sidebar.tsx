@@ -101,14 +101,14 @@ export default function Sidebar({
   return (
     <div
       className={cn(
-        "bg-gradient-to-b from-purple-950/30 via-black/60 to-purple-950/30 border-r border-purple-500/20 flex flex-col h-screen transition-all duration-300 backdrop-blur-md",
+        "flex flex-col h-screen transition-all duration-300 dark:bg-gradient-to-b dark:from-purple-950/30 dark:via-black/60 dark:to-purple-950/30 dark:border-r dark:border-purple-500/20 dark:backdrop-blur-md light:bg-white light:border-r light:border-purple-200",
         isCollapsed ? "w-20" : "w-72",
       )}
     >
       {/* Header */}
       <div
         className={cn(
-          "border-b border-purple-500/20 bg-purple-500/10 backdrop-blur-md flex flex-col items-center justify-between",
+          "flex flex-col items-center justify-between dark:border-b dark:border-purple-500/20 dark:bg-purple-500/10 dark:backdrop-blur-md light:border-b light:border-purple-200 light:bg-white",
           isCollapsed ? "px-2 py-4" : "px-6 py-5",
         )}
       >
@@ -122,7 +122,7 @@ export default function Sidebar({
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
                 O
               </div>
-              <span className="font-bold text-lg text-foreground tracking-tight">
+              <span className="font-bold text-lg tracking-tight dark:text-foreground light:text-purple-900">
                 ONMEET
               </span>
             </button>
