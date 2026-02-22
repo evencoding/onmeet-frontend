@@ -295,18 +295,6 @@ export default function Summary() {
           </div>
         </div>
 
-        {/* Team Information */}
-        {meeting.team && (
-          <div>
-            <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-3">
-              팀
-            </p>
-            <span className="inline-block dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900 light:border light:border-purple-300/60 px-3 py-1 rounded-full text-xs font-bold light:shadow-sm light:shadow-purple-200/40">
-              {meeting.team}
-            </span>
-          </div>
-        )}
-
         {/* Tags Section */}
         <div>
           <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-3">
