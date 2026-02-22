@@ -33,6 +33,7 @@ interface TeamMember {
 interface Team {
   id: string;
   name: string;
+  description: string;
   memberCount: number;
   leader: string;
   members: TeamMember[];
@@ -64,6 +65,7 @@ export default function CompanyManagement() {
   const [editMode, setEditMode] = useState(false);
   const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
   const [colorEditingTeamId, setColorEditingTeamId] = useState<string | null>(null);
+  const [customHexColor, setCustomHexColor] = useState<Record<string, string>>({});
   
   const [companyData, setCompanyData] = useState<CompanyInfo>({
     name: "Tech Company Inc.",
@@ -128,6 +130,7 @@ export default function CompanyManagement() {
     {
       id: "1",
       name: "마케팅",
+      description: "마케팅 및 브랜드 전략을 담당하는 팀입니다. 캠페인 기획, SNS 관리, 마케팅 분석 업무를 수행합니다.",
       memberCount: 12,
       leader: "박민준",
       members: [
@@ -141,6 +144,7 @@ export default function CompanyManagement() {
     {
       id: "2",
       name: "개발",
+      description: "소프트웨어 개발 및 유지보수를 담당하는 팀입니다. 백엔드, 프론트엔드 개발 업무를 수행합니다.",
       memberCount: 18,
       leader: "이영희",
       members: [
@@ -154,6 +158,7 @@ export default function CompanyManagement() {
     {
       id: "3",
       name: "디자인",
+      description: "UI/UX 디자인 및 디자인 시스템 관리를 담당하는 팀입니다. 사용자 경험 개선 업무를 수행합니다.",
       memberCount: 8,
       leader: "미지정",
       members: [
@@ -249,6 +254,7 @@ export default function CompanyManagement() {
         {
           id: Date.now().toString(),
           name: request.teamName,
+          description: "",
           memberCount: 0,
           leader: "미지정",
           members: [],
@@ -571,9 +577,15 @@ export default function CompanyManagement() {
 
             {/* Teams List */}
             <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
-              <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900 mb-6">
-                팀 목록
-              </h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
+                  팀 목록
+                </h2>
+                <button className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-lg font-medium hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all whitespace-nowrap">
+                  <Plus className="w-4 h-4" />
+                  팀 생성
+                </button>
+              </div>
               <div className="space-y-3">
                 {teamList.map((team) => (
                   <div
@@ -617,26 +629,59 @@ export default function CompanyManagement() {
 
                     {/* Color Palette Selector */}
                     {colorEditingTeamId === team.id && (
-                      <div className="border-t dark:border-purple-500/30 light:border-purple-300/50 p-4 bg-gradient-to-br dark:from-purple-500/10 light:from-purple-100/30">
-                        <p className="text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-3">팀 색상 선택</p>
-                        <div className="flex flex-wrap gap-3">
-                          {teamColors.map((color) => (
+                      <div className="border-t dark:border-purple-500/30 light:border-purple-300/50 p-4 bg-gradient-to-br dark:from-purple-500/10 light:from-purple-100/30 space-y-4">
+                        <div>
+                          <p className="text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-3">팀 색상 선택</p>
+                          <div className="flex flex-wrap gap-3">
+                            {teamColors.map((color) => (
+                              <button
+                                key={color.value}
+                                onClick={() => changeTeamColor(team.id, color.value, color.hex)}
+                                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+                                  team.color === color.value
+                                    ? "ring-2 dark:ring-white light:ring-purple-700 scale-110"
+                                    : "opacity-70 hover:opacity-100"
+                                }`}
+                                style={{ backgroundColor: color.hex }}
+                                title={color.name}
+                              >
+                                {team.color === color.value && (
+                                  <Check className="w-4 h-4 text-white" />
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Custom Hex Color Input */}
+                        <div className="border-t dark:border-purple-500/20 light:border-purple-300/30 pt-4">
+                          <p className="text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-3">커스텀 색상</p>
+                          <div className="flex gap-3">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="color"
+                                value={customHexColor[team.id] || team.colorHex}
+                                onChange={(e) => setCustomHexColor({ ...customHexColor, [team.id]: e.target.value })}
+                                className="w-12 h-10 rounded-lg cursor-pointer border dark:border-purple-500/30 light:border-purple-300/50"
+                              />
+                              <input
+                                type="text"
+                                value={customHexColor[team.id] || team.colorHex}
+                                onChange={(e) => setCustomHexColor({ ...customHexColor, [team.id]: e.target.value })}
+                                placeholder="#000000"
+                                className="flex-1 px-3 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 dark:text-white light:text-purple-900 text-sm focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+                              />
+                            </div>
                             <button
-                              key={color.value}
-                              onClick={() => changeTeamColor(team.id, color.value, color.hex)}
-                              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
-                                team.color === color.value
-                                  ? "ring-2 dark:ring-white light:ring-purple-700 scale-110"
-                                  : "opacity-70 hover:opacity-100"
-                              }`}
-                              style={{ backgroundColor: color.hex }}
-                              title={color.name}
+                              onClick={() => {
+                                const hexColor = customHexColor[team.id] || team.colorHex;
+                                changeTeamColor(team.id, `bg-[${hexColor}]`, hexColor);
+                              }}
+                              className="px-4 py-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-lg font-medium hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all"
                             >
-                              {team.color === color.value && (
-                                <Check className="w-4 h-4 text-white" />
-                              )}
+                              적용
                             </button>
-                          ))}
+                          </div>
                         </div>
                       </div>
                     )}
@@ -644,6 +689,14 @@ export default function CompanyManagement() {
                     {/* Team Members Accordion */}
                     {expandedTeam === team.id && (
                       <div className="border-t dark:border-purple-500/30 light:border-purple-300/50 p-4 space-y-4">
+                        {/* Team Description */}
+                        <div className="p-3 dark:bg-purple-500/10 light:bg-purple-100/30 rounded-lg border dark:border-purple-500/20 light:border-purple-300/40">
+                          <p className="text-sm dark:text-white/80 light:text-purple-800">
+                            {team.description}
+                          </p>
+                        </div>
+
+                        {/* Team Members */}
                         <div className="space-y-3">
                           {team.members.map((member) => (
                             <div
