@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Users,
   Settings,
@@ -10,6 +11,7 @@ import {
   X,
   Search,
   Plus,
+  Play,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -409,6 +411,7 @@ const mockEmployees = [
 ];
 
 export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
+  const navigate = useNavigate();
   const teamData = teamsData[teamId as keyof typeof teamsData];
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState("");
@@ -725,28 +728,10 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  {/* Title and Status */}
-                  <div className="flex items-start gap-3 mb-2">
-                    <h3 className="text-base font-bold dark:text-white light:text-purple-900 flex-1">
-                      {meeting.title}
-                    </h3>
-                    <span
-                      className={cn(
-                        "px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap",
-                        meeting.status === "scheduled"
-                          ? "dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100/70 light:text-blue-800"
-                          : meeting.status === "in_progress"
-                            ? "dark:bg-green-500/20 dark:text-green-300 light:bg-green-100/70 light:text-green-800"
-                            : "dark:bg-gray-500/20 dark:text-gray-300 light:bg-gray-100/70 light:text-gray-800",
-                      )}
-                    >
-                      {meeting.status === "scheduled"
-                        ? "예정"
-                        : meeting.status === "in_progress"
-                          ? "진행중"
-                          : "완료"}
-                    </span>
-                  </div>
+                  {/* Title */}
+                  <h3 className="text-base font-bold dark:text-white light:text-purple-900 mb-2">
+                    {meeting.title}
+                  </h3>
 
                   {/* Description */}
                   <p className="text-sm dark:text-white/80 light:text-purple-700 mb-3">
@@ -782,10 +767,16 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
                   </div>
                 </div>
 
-                {/* Action Button */}
-                <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity dark:hover:bg-purple-500/20 light:hover:bg-purple-100/30 rounded-lg ml-2">
-                  <MoreVertical className="w-4 h-4 dark:text-white/40 light:text-purple-600" />
-                </button>
+                {/* Action Button - Join for ongoing meetings only */}
+                {meeting.status === "in_progress" && (
+                  <button
+                    onClick={() => navigate("/meeting")}
+                    className="px-3 py-1.5 bg-gradient-to-r from-green-600 to-green-700 dark:from-green-500 dark:to-green-600 text-white text-sm font-semibold rounded-lg hover:from-green-700 hover:to-green-800 dark:hover:from-green-600 dark:hover:to-green-700 transition-all duration-200 ml-2 flex items-center gap-2 whitespace-nowrap"
+                  >
+                    <Play className="w-3.5 h-3.5" />
+                    참여하기
+                  </button>
+                )}
               </div>
             </div>
           ))}

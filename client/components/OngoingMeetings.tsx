@@ -212,15 +212,6 @@ export default function OngoingMeetings() {
                   <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900 flex-1 leading-tight">
                     {meeting.title}
                   </h3>
-                  <span
-                    className={`text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${
-                      meeting.status === "ongoing"
-                        ? "dark:bg-pink-500/30 dark:text-pink-300 light:bg-pink-200/60 light:text-pink-700"
-                        : "dark:bg-purple-500/30 dark:text-purple-300 light:bg-purple-200/60 light:text-purple-700"
-                    }`}
-                  >
-                    {getStatusText(meeting.status)}
-                  </span>
                 </div>
 
                 {/* Tags */}
