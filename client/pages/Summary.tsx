@@ -232,10 +232,10 @@ export default function Summary() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-3xl font-bold dark:text-white/90 light:text-purple-900 mb-3">
+          <h2 className="text-4xl font-bold dark:text-white/90 light:text-purple-950 mb-3">
             {meeting.title}
           </h2>
-          <p className="dark:text-white/60 light:text-purple-700">{meeting.description}</p>
+          <p className="dark:text-white/60 light:text-purple-700/90 font-medium">{meeting.description}</p>
         </div>
         <button
           onClick={() => setExpandedMeetingId(null)}
@@ -247,47 +247,47 @@ export default function Summary() {
 
       {/* Status Badge and Team Info */}
       <div className="flex items-center gap-2">
-        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(meeting.status)}`}>
+        <span className={`inline-block px-3.5 py-1.5 rounded-full text-xs font-bold ${getStatusColor(meeting.status)}`}>
           {getStatusLabel(meeting.status)}
         </span>
         {meeting.team && (
-          <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
+          <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-800 light:border light:border-purple-300 px-3.5 py-1.5 rounded-full text-xs font-bold">
             {meeting.team}
           </span>
         )}
       </div>
 
       {/* Meeting Details Grid */}
-      <div className="grid grid-cols-2 gap-6 pb-6 border-b dark:border-purple-500/20 light:border-purple-300/40">
+      <div className="grid grid-cols-2 gap-6 pb-6 border-b dark:border-purple-500/20 light:border-purple-300">
         <div>
-          <p className="text-xs dark:text-white/60 light:text-purple-700 font-semibold uppercase mb-2">
+          <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
             회의 날짜
           </p>
-          <p className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
+          <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
             {format(meeting.date, "yyyy년 MMM dd, yyyy", { locale: ko })}
           </p>
         </div>
         <div>
-          <p className="text-xs dark:text-white/60 light:text-purple-700 font-semibold uppercase mb-2">
+          <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
             시간
           </p>
-          <p className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
+          <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
             {meeting.time}
           </p>
         </div>
         <div>
-          <p className="text-xs dark:text-white/60 light:text-purple-700 font-semibold uppercase mb-2">
+          <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
             소요 시간
           </p>
-          <p className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
+          <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
             {meeting.duration}
           </p>
         </div>
         <div>
-          <p className="text-xs dark:text-white/60 light:text-purple-700 font-semibold uppercase mb-2">
+          <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-2">
             참석자
           </p>
-          <p className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
+          <p className="text-lg font-bold dark:text-white/90 light:text-purple-950">
             {meeting.participants}명
           </p>
         </div>
@@ -296,10 +296,10 @@ export default function Summary() {
       {/* Notes */}
       {meeting.notes && (
         <div>
-          <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900 mb-3">
+          <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-3">
             회의 메모
           </h3>
-          <p className="dark:text-white/70 light:text-purple-800 dark:bg-purple-500/10 light:bg-purple-100/30 dark:border dark:border-purple-500/20 light:border light:border-purple-300/40 rounded-xl p-4">
+          <p className="dark:text-white/70 light:text-purple-900 dark:bg-purple-500/10 light:bg-purple-50 light:border-2 light:border-purple-200 dark:border dark:border-purple-500/20 rounded-xl p-4 light:shadow-md light:shadow-purple-200/30">
             {meeting.notes}
           </p>
         </div>
@@ -320,7 +320,7 @@ export default function Summary() {
               </span>
             </span>
           </div>
-          <p className="dark:text-white/70 light:text-purple-800 dark:bg-purple-500/10 light:bg-purple-100/30 dark:border dark:border-purple-500/20 light:border light:border-purple-300/40 rounded-xl p-4">
+          <p className="dark:text-white/70 light:text-purple-900 dark:bg-purple-500/10 light:bg-purple-50 light:border-2 light:border-purple-200 dark:border dark:border-purple-500/20 rounded-xl p-4 light:shadow-md light:shadow-purple-200/30">
             {meeting.summary}
           </p>
         </div>
@@ -346,17 +346,17 @@ export default function Summary() {
 
       {/* Attendees */}
       <div>
-        <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900 mb-3">참석자</h3>
+        <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-3">참석자</h3>
         <div className="flex flex-wrap gap-3">
           {meeting.attendees.map((attendee, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2 px-4 py-2 dark:bg-purple-500/10 light:bg-purple-100/30 dark:border dark:border-purple-500/20 light:border light:border-purple-300/40 rounded-full"
+              className="flex items-center gap-2 px-4 py-2 dark:bg-purple-500/10 light:bg-white/60 light:border light:border-purple-300/40 dark:border dark:border-purple-500/20 rounded-full light:shadow-md light:shadow-purple-200/30"
             >
               <img
                 src={attendee.avatar}
                 alt={attendee.name}
-                className="w-8 h-8 rounded-full"
+                className="w-8 h-8 rounded-full border-2 light:border-purple-300/40 dark:border-purple-500/20"
               />
               <span className="text-sm font-medium dark:text-white/90 light:text-purple-900">
                 {attendee.name}
@@ -372,7 +372,7 @@ export default function Summary() {
     <div className="text-left space-y-2">
       {/* Title with Team and Avatars */}
       <div className="flex items-center gap-2 flex-wrap">
-        <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900">
+        <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950">
           {meeting.title}
         </h3>
         {meeting.team && (
@@ -395,7 +395,7 @@ export default function Summary() {
       </div>
 
       {/* Status Badge */}
-      <span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${getStatusColor(meeting.status)}`}>
+      <span className={`inline-block px-2.5 py-1.5 rounded-lg text-xs font-bold ${getStatusColor(meeting.status)}`}>
         {getStatusLabel(meeting.status)}
       </span>
 
@@ -409,16 +409,19 @@ export default function Summary() {
 
   return (
     <Layout>
-      <div className="max-w-6xl space-y-6">
+      <div className="max-w-6xl space-y-6 light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-blue-50 light:rounded-3xl light:p-8">
         {/* Header */}
         {!expandedMeeting && (
           <div>
-            <h1 className="text-3xl font-bold dark:text-white/90 light:text-purple-900 mb-6">
+            <h1 className="text-4xl font-bold dark:text-white/90 light:text-purple-950 mb-2">
               회의 내역
             </h1>
+            <p className="text-sm dark:text-white/50 light:text-purple-600/80 mb-8 font-medium">
+              모든 회의 기록을 한눈에 관리하고 확인하세요
+            </p>
 
             {/* Tabs */}
-            <div className="flex gap-3 mb-6 border-b dark:border-purple-500/20 light:border-purple-300/40 pb-4">
+            <div className="flex gap-3 mb-8 border-b dark:border-purple-500/20 light:border-purple-300 pb-4">
               {[
                 { id: "all" as const, label: "모든 회의" },
                 { id: "scheduled" as const, label: "예정된 회의" },
@@ -428,10 +431,10 @@ export default function Summary() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`px-5 py-2.5 rounded-lg font-semibold transition-all duration-200 ${
                     activeTab === tab.id
-                      ? "dark:bg-purple-600 light:bg-purple-600 dark:text-white light:text-white"
-                      : "dark:bg-purple-500/10 light:bg-purple-100/30 dark:text-white/70 light:text-purple-700 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50"
+                      ? "dark:bg-purple-600 dark:text-white light:bg-gradient-to-r light:from-purple-600 light:to-purple-700 light:text-white light:shadow-lg light:shadow-purple-300/40"
+                      : "dark:bg-purple-500/10 dark:text-white/70 light:bg-white/60 light:text-purple-700 light:border light:border-purple-300/30 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/70"
                   }`}
                 >
                   {tab.label}
@@ -449,7 +452,7 @@ export default function Summary() {
               <select
                 value={featureFilter}
                 onChange={(e) => setFeatureFilter(e.target.value as any)}
-                className="px-4 py-3 dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 dark:rounded-xl light:rounded-xl dark:bg-purple-500/10 light:bg-purple-100/30 dark:focus:bg-purple-500/20 light:focus:bg-purple-100/50 dark:focus:border-purple-400 light:focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all dark:text-white light:text-purple-900 text-sm appearance-none cursor-pointer"
+                className="px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 dark:rounded-xl light:rounded-xl dark:bg-purple-500/10 light:bg-white/80 light:shadow-md light:shadow-purple-200/40 dark:focus:bg-purple-500/20 light:focus:bg-white light:focus:border-purple-400 dark:focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all dark:text-white light:text-purple-900 text-sm appearance-none cursor-pointer font-medium"
               >
                 <option value="all">모든 회의</option>
                 <option value="transcript">회의록 있음</option>
@@ -463,7 +466,7 @@ export default function Summary() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="회의 제목이나 내용으로 검색..."
-                  className="w-full px-4 py-3 pl-12 dark:border dark:border-purple-500/30 light:border light:border-purple-300/50 dark:rounded-xl light:rounded-xl dark:bg-purple-500/10 light:bg-purple-100/30 dark:focus:bg-purple-500/20 light:focus:bg-purple-100/50 dark:focus:border-purple-400 light:focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60"
+                  className="w-full px-4 py-3 pl-12 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 dark:rounded-xl light:rounded-xl dark:bg-purple-500/10 light:bg-white/80 light:shadow-md light:shadow-purple-200/40 dark:focus:bg-purple-500/20 light:focus:bg-white light:focus:border-purple-400 dark:focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/70 font-medium"
                 />
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 dark:text-white/40 light:text-purple-600" />
               </div>
@@ -473,7 +476,7 @@ export default function Summary() {
 
         {/* Expanded View */}
         {expandedMeeting && (
-          <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-white/80 light:to-purple-50 dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white/98 light:border-2 light:border-purple-200 light:shadow-xl light:shadow-purple-300/40 dark:border dark:border-purple-500/30 rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
             {renderExpandedCard(expandedMeeting)}
           </div>
         )}
@@ -495,7 +498,7 @@ export default function Summary() {
                 {filteredMeetings.map((meeting) => (
                   <div
                     key={meeting.id}
-                    className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-white/80 light:to-purple-50 dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-2xl p-6 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-lg light:hover:shadow-purple-300/20 hover:-translate-y-1 transition-all duration-300 dark:backdrop-blur-md light:backdrop-blur-sm group flex flex-col"
+                    className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white/95 light:border-2 light:border-purple-200 light:shadow-lg light:shadow-purple-300/30 dark:border dark:border-purple-500/30 rounded-2xl p-6 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-xl light:hover:shadow-purple-400/40 light:hover:border-purple-300 hover:-translate-y-1 transition-all duration-300 dark:backdrop-blur-md light:backdrop-blur-sm group flex flex-col"
                   >
                     <button
                       onClick={() => setExpandedMeetingId(meeting.id)}
@@ -543,10 +546,10 @@ export default function Summary() {
                           e.stopPropagation();
                           navigate("/meeting");
                         }}
-                        className="w-full mt-4 px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 dark:from-green-500 dark:to-green-600 text-white text-sm font-semibold rounded-lg hover:from-green-700 hover:to-green-800 dark:hover:from-green-600 dark:hover:to-green-700 transition-all duration-200 flex items-center justify-center gap-2"
+                        className="w-full mt-4 px-5 py-3 bg-gradient-to-r from-green-500 to-emerald-600 dark:from-green-500 dark:to-green-600 text-white text-sm font-bold rounded-xl hover:from-green-600 hover:to-emerald-700 dark:hover:from-green-600 dark:hover:to-green-700 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2.5 shadow-lg shadow-green-500/40 light:shadow-green-400/50 hover:shadow-xl hover:shadow-green-500/50 light:hover:shadow-green-400/60"
                       >
-                        <Play className="w-4 h-4" />
-                        회의 참여하기
+                        <Play className="w-5 h-5 fill-current" />
+                        <span>회의 참여하기</span>
                       </button>
                     )}
                   </div>
