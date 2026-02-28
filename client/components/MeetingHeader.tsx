@@ -104,7 +104,7 @@ export default function MeetingHeader() {
 
           {/* Notification Dropdown */}
           {isDropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-96 dark:bg-black/80 light:bg-white dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 rounded-2xl shadow-2xl dark:shadow-purple-900/50 light:shadow-lg light:shadow-purple-300/30 dark:backdrop-blur-md light:backdrop-blur-sm z-[9999]">
+            <div className="absolute right-0 top-full mt-2 w-96 dark:bg-black/80 light:bg-white dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 rounded-2xl shadow-2xl dark:shadow-purple-900/50 light:shadow-lg light:shadow-purple-300/30 dark:backdrop-blur-md light:backdrop-blur-sm z-[999999]">
               {/* Header */}
               <div className="px-4 py-3 dark:border-b dark:border-purple-500/20 light:border-b-2 light:border-purple-200 light:bg-purple-50/50 flex items-center justify-between">
                 <h3 className="font-semibold dark:text-white light:text-purple-900">알림</h3>
