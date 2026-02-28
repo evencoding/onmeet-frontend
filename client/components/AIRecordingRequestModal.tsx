@@ -67,17 +67,46 @@ export default function AIRecordingRequestModal({
         {/* Content */}
         <div className="px-6 py-6 space-y-4">
           {isHost ? (
-            // HOST VIEW - Show pending requests
+            // HOST VIEW - Direct start + pending requests
             <>
-              <div className="text-sm text-white/80 mb-4">
+              {/* Direct Start Section */}
+              {!isAIRecording && (
+                <div className="p-4 bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/50 rounded-lg">
+                  <p className="text-sm font-semibold text-white mb-3">
+                    AI 회의록 시작
+                  </p>
+                  <p className="text-xs text-white/70 mb-4">
+                    호스트가 직접 AI 회의록을 시작할 수 있습니다
+                  </p>
+                  <button
+                    onClick={() => onApprove()}
+                    className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg text-sm font-semibold transition-all"
+                  >
+                    지금 시작하기
+                  </button>
+                </div>
+              )}
+
+              {/* Current Status */}
+              {isAIRecording && (
+                <div className="p-4 bg-green-600/20 border border-green-500/50 rounded-lg">
+                  <p className="text-sm text-green-300 font-semibold flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                    AI 회의록 진행 중
+                  </p>
+                </div>
+              )}
+
+              {/* Pending Requests Section */}
+              <div className="text-sm text-white/80">
                 {pendingRequests.length === 0 ? (
-                  <p className="text-center py-4 text-white/60">
-                    AI 회의록 요청이 없습니다
+                  <p className="text-center py-4 text-white/60 text-xs">
+                    대기 중인 요청이 없습니다
                   </p>
                 ) : (
                   <div className="space-y-3">
                     <p className="font-semibold text-white mb-3">
-                      대기 중인 요청 ({pendingRequests.length})
+                      요청 ({pendingRequests.length})
                     </p>
                     {pendingRequests.map((request) => (
                       <div
@@ -86,7 +115,7 @@ export default function AIRecordingRequestModal({
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <p className="font-semibold text-white">
+                            <p className="font-semibold text-white text-sm">
                               {request.senderName}
                             </p>
                             <div className="flex items-center gap-1 text-xs text-white/60 mt-1">
@@ -123,15 +152,6 @@ export default function AIRecordingRequestModal({
                   </div>
                 )}
               </div>
-
-              {/* Current Status */}
-              {isAIRecording && (
-                <div className="p-4 bg-green-600/20 border border-green-500/50 rounded-lg">
-                  <p className="text-sm text-green-300 font-semibold">
-                    ✓ AI 회의록 진행 중
-                  </p>
-                </div>
-              )}
             </>
           ) : (
             // GUEST VIEW - Send request
@@ -186,20 +206,31 @@ export default function AIRecordingRequestModal({
 
         {/* Footer */}
         <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/40 flex gap-3">
-          <button
-            onClick={onClose}
-            className="flex-1 px-4 py-2 bg-purple-500/30 hover:bg-purple-500/50 text-white rounded-lg text-sm font-semibold transition-colors"
-          >
-            {requestSent ? "완료" : "취소"}
-          </button>
-          {!isHost && !requestSent && (
+          {isHost ? (
             <button
-              onClick={handleRequestSend}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg text-sm font-semibold transition-all"
+              onClick={onClose}
+              className="w-full px-4 py-2 bg-purple-500/30 hover:bg-purple-500/50 text-white rounded-lg text-sm font-semibold transition-colors"
             >
-              <Send className="w-4 h-4" />
-              요청 전송
+              닫기
             </button>
+          ) : (
+            <>
+              <button
+                onClick={onClose}
+                className="flex-1 px-4 py-2 bg-purple-500/30 hover:bg-purple-500/50 text-white rounded-lg text-sm font-semibold transition-colors"
+              >
+                {requestSent ? "완료" : "취소"}
+              </button>
+              {!requestSent && (
+                <button
+                  onClick={handleRequestSend}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg text-sm font-semibold transition-all"
+                >
+                  <Send className="w-4 h-4" />
+                  요청 전송
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>

@@ -848,13 +848,18 @@ export default function MeetingRoom() {
           setPendingAIRequests([...pendingAIRequests, newRequest]);
         }}
         onApprove={() => {
-          // Host approves and starts AI recording
+          // Host starts AI recording (either direct or from request approval)
           setIsAIRecording(true);
-          setPendingAIRequests([]);
+          // Keep pending requests if any other requests exist
+          if (pendingAIRequests.length > 0) {
+            setPendingAIRequests(pendingAIRequests.slice(1));
+          }
         }}
         onReject={() => {
           // Host rejects the request
-          setPendingAIRequests([]);
+          if (pendingAIRequests.length > 0) {
+            setPendingAIRequests(pendingAIRequests.slice(1));
+          }
         }}
         pendingRequests={pendingAIRequests}
       />
