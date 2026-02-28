@@ -22,6 +22,7 @@ import AIRecordingRequestModal from "@/components/AIRecordingRequestModal";
 import InviteParticipantModal from "@/components/InviteParticipantModal";
 import MeetingPreparationModal from "@/components/MeetingPreparationModal";
 import ExitMeetingModal from "@/components/ExitMeetingModal";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 interface Participant {
   id: string;
@@ -547,120 +548,176 @@ export default function MeetingRoom() {
         </div>
 
         {/* Control Bar */}
+        <TooltipProvider>
         <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-center gap-4">
           {/* Mic Button */}
-          <button
-            onClick={() => setIsMuted(!isMuted)}
-            className={`p-4 rounded-full transition-all duration-200 ${
-              isMuted
-                ? "bg-red-600 text-white hover:bg-red-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title={isMuted ? "음성 켜기" : "음성 끄기"}
-          >
-            {isMuted ? (
-              <MicOff className="w-6 h-6" />
-            ) : (
-              <Mic className="w-6 h-6" />
-            )}
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setIsMuted(!isMuted)}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  isMuted
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                {isMuted ? (
+                  <MicOff className="w-6 h-6" />
+                ) : (
+                  <Mic className="w-6 h-6" />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {isMuted ? "음성 켜기" : "음성 끄기"}
+            </TooltipContent>
+          </Tooltip>
 
           {/* Video Button */}
-          <button
-            onClick={() => setIsVideoOn(!isVideoOn)}
-            className={`p-4 rounded-full transition-all duration-200 ${
-              !isVideoOn
-                ? "bg-red-600 text-white hover:bg-red-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title={isVideoOn ? "카메라 끄기" : "카메라 켜기"}
-          >
-            {isVideoOn ? (
-              <Video className="w-6 h-6" />
-            ) : (
-              <VideoOff className="w-6 h-6" />
-            )}
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setIsVideoOn(!isVideoOn)}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  !isVideoOn
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                {isVideoOn ? (
+                  <Video className="w-6 h-6" />
+                ) : (
+                  <VideoOff className="w-6 h-6" />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {isVideoOn ? "카메라 끄기" : "카메라 켜기"}
+            </TooltipContent>
+          </Tooltip>
 
           {/* AI Recording Button */}
-          <button
-            onClick={() => setIsAIRecordingRequestModalOpen(true)}
-            className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
-              isAIRecording
-                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title={isHost ? "AI 회의록 관리" : "AI 회의록 요청"}
-          >
-            <Zap className="w-5 h-5" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setIsAIRecordingRequestModalOpen(true)}
+                className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
+                  isAIRecording
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                <Zap className="w-5 h-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {isHost ? "AI 회의록 관리" : "AI 회의록 요청"}
+            </TooltipContent>
+          </Tooltip>
 
           {/* View Mode Toggle */}
-          <button
-            onClick={() => setViewMode(viewMode === "gallery" ? "speaker" : "gallery")}
-            className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
-            title="화면 전환"
-          >
-            <Users className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setViewMode(viewMode === "gallery" ? "speaker" : "gallery")}
+                className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
+              >
+                <Users className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              화면 전환
+            </TooltipContent>
+          </Tooltip>
 
           {/* Screenshot Button */}
-          <button
-            onClick={handleScreenshot}
-            className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
-            title="스크린샷 촬영"
-          >
-            <Camera className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleScreenshot}
+                className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
+              >
+                <Camera className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              스크린샷 촬영
+            </TooltipContent>
+          </Tooltip>
 
           {/* Screen Share Button */}
-          <button
-            onClick={handleScreenShare}
-            className={`p-4 rounded-full transition-all duration-200 ${
-              isScreenSharing
-                ? "bg-green-600 text-white hover:bg-green-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title={isScreenSharing ? "화면 공유 중지" : "화면 공유"}
-          >
-            <Share2 className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleScreenShare}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  isScreenSharing
+                    ? "bg-green-600 text-white hover:bg-green-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                <Share2 className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {isScreenSharing ? "화면 공유 중지" : "화면 공유"}
+            </TooltipContent>
+          </Tooltip>
 
           {/* Chat Button */}
-          <button
-            onClick={() => setShowChat(!showChat)}
-            className={`p-4 rounded-full transition-all duration-200 ${
-              showChat
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title="채팅"
-          >
-            <MessageCircle className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setShowChat(!showChat)}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  showChat
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                <MessageCircle className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              채팅
+            </TooltipContent>
+          </Tooltip>
 
           {/* Participants Button */}
-          <button
-            onClick={() => setShowParticipants(!showParticipants)}
-            className={`p-4 rounded-full transition-all duration-200 ${
-              showParticipants
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title="참여자"
-          >
-            <Users className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setShowParticipants(!showParticipants)}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  showParticipants
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                <Users className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              참여자
+            </TooltipContent>
+          </Tooltip>
 
           {/* Leave Button */}
-          <button
-            onClick={() => setShowExitModal(true)}
-            className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200 ml-auto"
-            title="회의 나가기"
-          >
-            <Phone className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setShowExitModal(true)}
+                className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200 ml-auto"
+              >
+                <Phone className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              회의 나가기
+            </TooltipContent>
+          </Tooltip>
         </div>
+        </TooltipProvider>
       </div>
 
       {/* Chat Panel */}
