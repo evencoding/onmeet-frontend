@@ -1,5 +1,8 @@
 import "./global.css";
 
+// Initialize Firebase
+import "@/lib/firebase";
+
 import * as Sentry from "@sentry/react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
