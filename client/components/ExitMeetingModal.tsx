@@ -1,5 +1,4 @@
 import { AlertCircle, X } from "lucide-react";
-import { useState } from "react";
 
 interface ExitMeetingModalProps {
   isOpen: boolean;
@@ -16,8 +15,6 @@ export default function ExitMeetingModal({
   onClose,
   onConfirm,
 }: ExitMeetingModalProps) {
-  const [selectedReason, setSelectedReason] = useState("");
-
   if (!isOpen) return null;
 
   const handleConfirm = () => {
@@ -71,36 +68,6 @@ export default function ExitMeetingModal({
                 </>
               )}
             </p>
-          </div>
-
-          {/* Optional Reason Selection */}
-          <div>
-            <label className="text-xs font-semibold text-white/60 mb-2 block">
-              나가는 이유 (선택사항)
-            </label>
-            <div className="space-y-2">
-              {[
-                "회의 완료",
-                "일정상 이유",
-                "기술 문제",
-                "기타",
-              ].map((reason) => (
-                <label
-                  key={reason}
-                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-purple-500/10 cursor-pointer transition-colors"
-                >
-                  <input
-                    type="radio"
-                    name="reason"
-                    value={reason}
-                    checked={selectedReason === reason}
-                    onChange={(e) => setSelectedReason(e.target.value)}
-                    className="w-4 h-4 text-purple-500 rounded-full border-purple-400"
-                  />
-                  <span className="text-sm text-white/80">{reason}</span>
-                </label>
-              ))}
-            </div>
           </div>
         </div>
 
