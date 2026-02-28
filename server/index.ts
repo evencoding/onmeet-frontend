@@ -17,7 +17,9 @@ export function createServer() {
   const app = express();
 
   // Middleware
-  app.use(Sentry.Handlers.requestHandler());
+  if (process.env.SENTRY_DSN && Sentry.Handlers?.requestHandler) {
+    app.use(Sentry.Handlers.requestHandler());
+  }
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -31,7 +33,9 @@ export function createServer() {
   app.get("/api/demo", handleDemo);
 
   // Sentry error handler - must be last
-  app.use(Sentry.Handlers.errorHandler());
+  if (process.env.SENTRY_DSN && Sentry.Handlers?.errorHandler) {
+    app.use(Sentry.Handlers.errorHandler());
+  }
 
   return app;
 }
