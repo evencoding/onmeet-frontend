@@ -3,6 +3,7 @@ import Layout from "@/components/Layout";
 import { User, Mail, Phone, Settings, Lock, Bell, Building2, Edit2, Save, X, AlertTriangle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { ErrorButton } from "@/components/ErrorButton";
 
 export default function MyPage() {
   const { user, logout } = useAuth();
@@ -354,6 +355,19 @@ export default function MyPage() {
                 </button>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Sentry Test Button - Development Only */}
+        {import.meta.env.MODE === "development" && (
+          <div className="dark:bg-gradient-to-br dark:from-yellow-900/20 dark:via-black/80 dark:to-yellow-900/10 light:bg-gradient-to-br light:from-white light:via-yellow-50/40 light:to-yellow-100/20 dark:border dark:border-yellow-500/20 light:border-2 light:border-yellow-300/60 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-yellow-200/30 p-8">
+            <h3 className="text-lg font-semibold dark:text-yellow-300 light:text-yellow-800 mb-4">
+              Sentry Test
+            </h3>
+            <p className="dark:text-yellow-200/60 light:text-yellow-700 text-sm mb-4">
+              Click the button below to test Sentry error tracking (Development only)
+            </p>
+            <ErrorButton />
           </div>
         )}
       </div>
