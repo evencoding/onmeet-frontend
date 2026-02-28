@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
 import CalendarView from "@/components/CalendarView";
+import MeetingBookingModal from "@/components/MeetingBookingModal";
 import { Clock, MapPin, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { format, isSameDay } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -23,6 +24,13 @@ interface Meeting {
 export default function Schedule() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(true);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [bookingModalDate, setBookingModalDate] = useState<Date | undefined>();
+
+  const handleAddMeeting = (date: Date) => {
+    setBookingModalDate(date);
+    setIsBookingModalOpen(true);
+  };
 
   // Sample meetings data - updated to current month for visibility
   const allMeetings: Meeting[] = [
@@ -230,6 +238,7 @@ export default function Schedule() {
             <CalendarView
               onSelectDate={setSelectedDate}
               meetings={allMeetings}
+              onAddMeeting={handleAddMeeting}
             />
           </div>
 
@@ -334,6 +343,13 @@ export default function Schedule() {
           )}
         </div>
       </div>
+
+      {/* Meeting Booking Modal */}
+      <MeetingBookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+        selectedDate={bookingModalDate}
+      />
     </Layout>
   );
 }

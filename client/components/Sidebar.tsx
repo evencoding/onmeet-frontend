@@ -29,7 +29,9 @@ interface NavItem {
 interface Team {
   id: string;
   name: string;
-  color: string;
+  color?: string;
+  backgroundColor?: string;
+  textColor?: string;
   description?: string;
   icon?: string;
   hasCheckmark?: boolean;
@@ -270,11 +272,24 @@ export default function Sidebar({
           console.log("New team added:", {
             name: team.name,
             description: team.description,
-            color: team.color,
+            backgroundColor: team.backgroundColor,
+            textColor: team.textColor,
             membersCount: team.members.length,
             members: team.members,
           });
           // You can integrate actual API call here to save the team
+          // Example API call:
+          // await fetch('/api/teams', {
+          //   method: 'POST',
+          //   headers: { 'Content-Type': 'application/json' },
+          //   body: JSON.stringify({
+          //     name: team.name,
+          //     description: team.description,
+          //     backgroundColor: team.backgroundColor,
+          //     textColor: team.textColor,
+          //     memberIds: team.members.map(m => m.id),
+          //   })
+          // });
         }}
       />
 

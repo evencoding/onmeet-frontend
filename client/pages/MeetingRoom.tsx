@@ -15,11 +15,14 @@ import {
   Camera,
   Share2,
   FileText,
+  Minimize,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import AIRecordingModal from "@/components/AIRecordingModal";
+import AIRecordingRequestModal from "@/components/AIRecordingRequestModal";
 import InviteParticipantModal from "@/components/InviteParticipantModal";
 import MeetingPreparationModal from "@/components/MeetingPreparationModal";
+import ExitMeetingModal from "@/components/ExitMeetingModal";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 interface Participant {
   id: string;
@@ -49,6 +52,7 @@ export default function MeetingRoom() {
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isPIPMode, setIsPIPMode] = useState(false);
   const [viewMode, setViewMode] = useState<"gallery" | "speaker">("gallery");
   const [showChat, setShowChat] = useState(false);
   const [showParticipants, setShowParticipants] = useState(true);
@@ -56,6 +60,14 @@ export default function MeetingRoom() {
   const [isAIRecordingModalOpen, setIsAIRecordingModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [showPreparationModal, setShowPreparationModal] = useState(true);
+  const [showExitModal, setShowExitModal] = useState(false);
+  const [isHost, setIsHost] = useState(true);
+  const [isAIRecordingRequestModalOpen, setIsAIRecordingRequestModalOpen] = useState(false);
+  const [pendingAIRequests, setPendingAIRequests] = useState<Array<{
+    id: string;
+    senderName: string;
+    timestamp: string;
+  }>>([]);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [showNoteInput, setShowNoteInput] = useState(false);
   const [noteText, setNoteText] = useState("");
@@ -272,6 +284,100 @@ export default function MeetingRoom() {
     }
   };
 
+  // PIP 모드 UI
+  if (isPIPMode) {
+    return (
+      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="bg-gradient-to-br from-purple-950 via-black to-purple-900 rounded-2xl shadow-2xl w-96 h-72 border border-purple-500/30 overflow-hidden flex flex-col">
+          {/* Header */}
+          <div className="px-4 py-3 border-b border-purple-500/20 bg-purple-900/40 flex items-center justify-between">
+            <h3 className="text-lg font-bold text-white">회의 진행 중</h3>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsPIPMode(false)}
+                className="p-1 hover:bg-purple-500/20 rounded-lg transition-colors text-white"
+                title="전체보기로 돌아가기"
+              >
+                <Maximize className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => navigate("/")}
+                className="p-1 hover:bg-red-600/30 rounded-lg transition-colors text-red-400"
+                title="회의 나가기"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Video Preview */}
+          <div className="flex-1 relative bg-black overflow-hidden">
+            {isVideoOn ? (
+              <video
+                ref={localVideoRef}
+                autoPlay
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/40 to-black">
+                <VideoOff className="w-12 h-12 text-white/30" />
+              </div>
+            )}
+
+            {/* Floating Controls */}
+            <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-2 px-3">
+              <button
+                onClick={() => setIsMuted(!isMuted)}
+                className={`p-2 rounded-full transition-all ${
+                  isMuted
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-600 text-white hover:bg-purple-700"
+                }`}
+                title={isMuted ? "음성 켜기" : "음성 끄기"}
+              >
+                {isMuted ? (
+                  <MicOff className="w-4 h-4" />
+                ) : (
+                  <Mic className="w-4 h-4" />
+                )}
+              </button>
+              <button
+                onClick={() => setIsVideoOn(!isVideoOn)}
+                className={`p-2 rounded-full transition-all ${
+                  !isVideoOn
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-600 text-white hover:bg-purple-700"
+                }`}
+                title={isVideoOn ? "카메라 끄기" : "카메라 켜기"}
+              >
+                {isVideoOn ? (
+                  <Video className="w-4 h-4" />
+                ) : (
+                  <VideoOff className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+
+            {/* AI Recording Indicator */}
+            {isAIRecording && (
+              <div className="absolute top-3 left-3 flex items-center gap-1 bg-red-600 px-2 py-1 rounded-full text-xs font-semibold text-white">
+                <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+                녹화 중
+              </div>
+            )}
+          </div>
+
+          {/* Status Bar */}
+          <div className="px-4 py-2 border-t border-purple-500/20 bg-purple-900/40 text-xs text-white/70">
+            {participants.length}명 참여 중
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white overflow-hidden">
       {/* Hidden canvas for screenshots */}
@@ -286,20 +392,27 @@ export default function MeetingRoom() {
         <div className="px-6 py-4 border-b border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate("/")}
+              onClick={() => setShowExitModal(true)}
               className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
-              title="Back to home"
+              title="회의 나가기"
             >
               <Phone className="w-5 h-5 rotate-180" />
             </button>
-            <h1 className="text-2xl font-bold">Meeting Title</h1>
+            <h1 className="text-2xl font-bold">회의</h1>
+            <button
+              onClick={() => setIsPIPMode(true)}
+              className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
+              title="PIP 모드로 이동 (연결 유지)"
+            >
+              <Minimize className="w-5 h-5 text-purple-400" />
+            </button>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-white/60">{participants.length} participants</span>
+            <span className="text-sm text-white/60">{participants.length} 명 참여 중</span>
             <button
               onClick={toggleFullscreen}
               className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
-              title="Fullscreen"
+              title="전체화면"
             >
               <Maximize className="w-5 h-5" />
             </button>
@@ -435,120 +548,176 @@ export default function MeetingRoom() {
         </div>
 
         {/* Control Bar */}
+        <TooltipProvider>
         <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-center gap-4">
           {/* Mic Button */}
-          <button
-            onClick={() => setIsMuted(!isMuted)}
-            className={`p-4 rounded-full transition-all duration-200 ${
-              isMuted
-                ? "bg-red-600 text-white hover:bg-red-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title={isMuted ? "Unmute" : "Mute"}
-          >
-            {isMuted ? (
-              <MicOff className="w-6 h-6" />
-            ) : (
-              <Mic className="w-6 h-6" />
-            )}
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setIsMuted(!isMuted)}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  isMuted
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                {isMuted ? (
+                  <MicOff className="w-6 h-6" />
+                ) : (
+                  <Mic className="w-6 h-6" />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {isMuted ? "음성 켜기" : "음성 끄기"}
+            </TooltipContent>
+          </Tooltip>
 
           {/* Video Button */}
-          <button
-            onClick={() => setIsVideoOn(!isVideoOn)}
-            className={`p-4 rounded-full transition-all duration-200 ${
-              !isVideoOn
-                ? "bg-red-600 text-white hover:bg-red-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title={isVideoOn ? "Turn off video" : "Turn on video"}
-          >
-            {isVideoOn ? (
-              <Video className="w-6 h-6" />
-            ) : (
-              <VideoOff className="w-6 h-6" />
-            )}
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setIsVideoOn(!isVideoOn)}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  !isVideoOn
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                {isVideoOn ? (
+                  <Video className="w-6 h-6" />
+                ) : (
+                  <VideoOff className="w-6 h-6" />
+                )}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {isVideoOn ? "카메라 끄기" : "카메라 켜기"}
+            </TooltipContent>
+          </Tooltip>
 
           {/* AI Recording Button */}
-          <button
-            onClick={() => setIsAIRecordingModalOpen(true)}
-            className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
-              isAIRecording
-                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title="AI 회의록 시작"
-          >
-            <Zap className="w-5 h-5" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setIsAIRecordingRequestModalOpen(true)}
+                className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
+                  isAIRecording
+                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                <Zap className="w-5 h-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {isHost ? "AI 회의록 관리" : "AI 회의록 요청"}
+            </TooltipContent>
+          </Tooltip>
 
           {/* View Mode Toggle */}
-          <button
-            onClick={() => setViewMode(viewMode === "gallery" ? "speaker" : "gallery")}
-            className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
-            title="Toggle view mode"
-          >
-            <Users className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setViewMode(viewMode === "gallery" ? "speaker" : "gallery")}
+                className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
+              >
+                <Users className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              화면 전환
+            </TooltipContent>
+          </Tooltip>
 
           {/* Screenshot Button */}
-          <button
-            onClick={handleScreenshot}
-            className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
-            title="Take screenshot"
-          >
-            <Camera className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleScreenshot}
+                className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
+              >
+                <Camera className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              스크린샷 촬영
+            </TooltipContent>
+          </Tooltip>
 
           {/* Screen Share Button */}
-          <button
-            onClick={handleScreenShare}
-            className={`p-4 rounded-full transition-all duration-200 ${
-              isScreenSharing
-                ? "bg-green-600 text-white hover:bg-green-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title={isScreenSharing ? "Stop screen share" : "Share screen"}
-          >
-            <Share2 className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleScreenShare}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  isScreenSharing
+                    ? "bg-green-600 text-white hover:bg-green-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                <Share2 className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              {isScreenSharing ? "화면 공유 중지" : "화면 공유"}
+            </TooltipContent>
+          </Tooltip>
 
           {/* Chat Button */}
-          <button
-            onClick={() => setShowChat(!showChat)}
-            className={`p-4 rounded-full transition-all duration-200 ${
-              showChat
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title="Toggle chat"
-          >
-            <MessageCircle className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setShowChat(!showChat)}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  showChat
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                <MessageCircle className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              채팅
+            </TooltipContent>
+          </Tooltip>
 
           {/* Participants Button */}
-          <button
-            onClick={() => setShowParticipants(!showParticipants)}
-            className={`p-4 rounded-full transition-all duration-200 ${
-              showParticipants
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-            }`}
-            title="Toggle participants"
-          >
-            <Users className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setShowParticipants(!showParticipants)}
+                className={`p-4 rounded-full transition-all duration-200 ${
+                  showParticipants
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                }`}
+              >
+                <Users className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              참여자
+            </TooltipContent>
+          </Tooltip>
 
           {/* Leave Button */}
-          <button
-            onClick={() => navigate("/")}
-            className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200 ml-auto"
-            title="Leave meeting"
-          >
-            <Phone className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setShowExitModal(true)}
+                className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200 ml-auto"
+              >
+                <Phone className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              회의 나가기
+            </TooltipContent>
+          </Tooltip>
         </div>
+        </TooltipProvider>
       </div>
 
       {/* Chat Panel */}
@@ -556,7 +725,7 @@ export default function MeetingRoom() {
         <div className="w-80 border-l border-purple-500/20 bg-purple-900/30 backdrop-blur-md flex flex-col">
           {/* Chat Header */}
           <div className="px-4 py-4 border-b border-purple-500/20 flex items-center justify-between">
-            <h3 className="font-semibold">Chat</h3>
+            <h3 className="font-semibold">채팅</h3>
             <button
               onClick={() => setShowChat(false)}
               className="p-1 hover:bg-purple-500/20 rounded transition-colors"
@@ -590,11 +759,11 @@ export default function MeetingRoom() {
           {/* Note Input */}
           {showNoteInput && (
             <div className="px-4 py-3 border-t border-purple-500/20 bg-purple-500/10 space-y-2">
-              <p className="text-xs text-white/60 font-semibold">Add a note</p>
+              <p className="text-xs text-white/60 font-semibold">노트 추가</p>
               <textarea
                 value={noteText}
                 onChange={(e) => setNoteText(e.target.value)}
-                placeholder="Write a note..."
+                placeholder="노트를 입력하세요..."
                 className="w-full px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-sm text-white placeholder-white/50 focus:outline-none focus:border-purple-400 resize-none h-20"
               />
               <div className="flex gap-2">
@@ -602,7 +771,7 @@ export default function MeetingRoom() {
                   onClick={handleAddNote}
                   className="flex-1 px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold transition-colors"
                 >
-                  Save Note
+                  저장
                 </button>
                 <button
                   onClick={() => {
@@ -611,7 +780,7 @@ export default function MeetingRoom() {
                   }}
                   className="px-3 py-1 bg-purple-500/30 hover:bg-purple-500/50 rounded-lg text-sm transition-colors"
                 >
-                  Cancel
+                  취소
                 </button>
               </div>
             </div>
@@ -624,20 +793,20 @@ export default function MeetingRoom() {
               value={chatMessage}
               onChange={(e) => setChatMessage(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-              placeholder="Type a message..."
+              placeholder="메시지를 입력하세요..."
               className="flex-1 px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-sm text-white placeholder-white/50 focus:outline-none focus:border-purple-400"
             />
             <button
               onClick={handleSendMessage}
               className="p-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
-              title="Send message"
+              title="메시지 전송"
             >
               <Send className="w-4 h-4" />
             </button>
             <button
               onClick={() => setShowNoteInput(!showNoteInput)}
               className="p-2 bg-purple-500/30 hover:bg-purple-500/50 rounded-lg transition-colors"
-              title="Add note"
+              title="노트 추가"
             >
               <FileText className="w-4 h-4" />
             </button>
@@ -650,7 +819,7 @@ export default function MeetingRoom() {
         <div className="w-80 border-l border-purple-500/20 bg-purple-900/30 backdrop-blur-md flex flex-col">
           {/* Header */}
           <div className="px-4 py-4 border-b border-purple-500/20 flex items-center justify-between">
-            <h3 className="font-semibold">Participants ({participants.length})</h3>
+            <h3 className="font-semibold">참여자 ({participants.length}명)</h3>
             <button
               onClick={() => setShowParticipants(false)}
               className="p-1 hover:bg-purple-500/20 rounded transition-colors"
@@ -683,7 +852,7 @@ export default function MeetingRoom() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold truncate">
                     {participant.name}
-                    {participant.isHost && " (Host)"}
+                    {participant.isHost && " (호스트)"}
                   </p>
                   <div className="flex items-center gap-2 text-xs text-white/60">
                     {participant.isMuted && <MicOff className="w-3 h-3" />}
@@ -700,7 +869,7 @@ export default function MeetingRoom() {
               onClick={() => setIsInviteModalOpen(true)}
               className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold transition-all"
             >
-              Invite Participant
+              참여자 초대
             </button>
           </div>
         </div>
@@ -718,12 +887,38 @@ export default function MeetingRoom() {
         onStateChange={{ isMuted, setIsMuted, isVideoOn, setIsVideoOn }}
       />
 
-      <AIRecordingModal
-        isOpen={isAIRecordingModalOpen}
-        onClose={() => setIsAIRecordingModalOpen(false)}
-        onStart={handleStartAIRecording}
-        onEnd={handleEndAIRecording}
-        isRecording={isAIRecording}
+      <AIRecordingRequestModal
+        isOpen={isAIRecordingRequestModalOpen}
+        isHost={isHost}
+        isAIRecording={isAIRecording}
+        onClose={() => setIsAIRecordingRequestModalOpen(false)}
+        onRequestSend={() => {
+          // Guest sends request to host
+          const newRequest = {
+            id: Date.now().toString(),
+            senderName: "You",
+            timestamp: new Date().toLocaleTimeString("ko-KR", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          };
+          setPendingAIRequests([...pendingAIRequests, newRequest]);
+        }}
+        onApprove={() => {
+          // Host starts AI recording (either direct or from request approval)
+          setIsAIRecording(true);
+          // Keep pending requests if any other requests exist
+          if (pendingAIRequests.length > 0) {
+            setPendingAIRequests(pendingAIRequests.slice(1));
+          }
+        }}
+        onReject={() => {
+          // Host rejects the request
+          if (pendingAIRequests.length > 0) {
+            setPendingAIRequests(pendingAIRequests.slice(1));
+          }
+        }}
+        pendingRequests={pendingAIRequests}
       />
 
       <InviteParticipantModal
@@ -742,6 +937,16 @@ export default function MeetingRoom() {
           setParticipants((prev) => [...prev, ...newParticipants]);
         }}
         alreadyInvited={participants.map((p) => p.id)}
+      />
+
+      <ExitMeetingModal
+        isOpen={showExitModal}
+        isHost={isHost}
+        isAIRecording={isAIRecording}
+        onClose={() => setShowExitModal(false)}
+        onConfirm={() => {
+          navigate("/");
+        }}
       />
     </div>
   );
