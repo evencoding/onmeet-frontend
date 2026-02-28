@@ -72,13 +72,6 @@ function getOptimalTextColor(bgColor: string): string {
   return luminance > 0.5 ? "#000000" : "#FFFFFF";
 }
 
-const teamColors = [
-  { name: "Purple", value: "bg-purple-500", hex: "#a855f7" },
-  { name: "Blue", value: "bg-blue-500", hex: "#3b82f6" },
-  { name: "Pink", value: "bg-pink-500", hex: "#ec4899" },
-  { name: "Green", value: "bg-green-500", hex: "#22c55e" },
-];
-
 // Mock employee list
 const mockEmployees: Employee[] = [
   {
@@ -152,14 +145,14 @@ export default function AddTeamModal({
   onClose,
   onTeamAdded,
 }: AddTeamModalProps) {
+  const defaultColor = "#A855F7"; // Purple
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedBgColor, setSelectedBgColor] = useState(colorPalette[0]);
+  const [selectedBgColor, setSelectedBgColor] = useState(defaultColor);
   const [selectedTextColor, setSelectedTextColor] = useState(
-    getOptimalTextColor(colorPalette[0])
+    getOptimalTextColor(defaultColor)
   );
   const [customColor, setCustomColor] = useState("");
-  const [showColorPicker, setShowColorPicker] = useState(false);
   const [copiedHex, setCopiedHex] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState<TeamMember[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -167,11 +160,9 @@ export default function AddTeamModal({
 
   // 배경색이 변경될 때 자동으로 텍스트 색 업데이트
   useEffect(() => {
-    if (!customColor) {
-      const autoTextColor = getOptimalTextColor(selectedBgColor);
-      setSelectedTextColor(autoTextColor);
-    }
-  }, [selectedBgColor, customColor]);
+    const autoTextColor = getOptimalTextColor(selectedBgColor);
+    setSelectedTextColor(autoTextColor);
+  }, [selectedBgColor]);
 
   // Filter employees based on search query
   const filteredEmployees = mockEmployees.filter(
@@ -199,11 +190,6 @@ export default function AddTeamModal({
 
   const handleRemoveMember = (id: string) => {
     setSelectedMembers(selectedMembers.filter((member) => member.id !== id));
-  };
-
-  const handleColorSelect = (color: string) => {
-    setSelectedBgColor(color);
-    setCustomColor(""); // 커스텀 색상 초기화
   };
 
   const handleCustomColorChange = (hex: string) => {
@@ -251,8 +237,8 @@ export default function AddTeamModal({
       // Reset form and close modal
       setTeamName("");
       setDescription("");
-      setSelectedBgColor(colorPalette[0]);
-      setSelectedTextColor(getOptimalTextColor(colorPalette[0]));
+      setSelectedBgColor(defaultColor);
+      setSelectedTextColor(getOptimalTextColor(defaultColor));
       setCustomColor("");
       setSelectedMembers([]);
       setSearchQuery("");
@@ -268,10 +254,9 @@ export default function AddTeamModal({
   const handleClose = () => {
     setTeamName("");
     setDescription("");
-    setSelectedBgColor(colorPalette[0]);
-    setSelectedTextColor(getOptimalTextColor(colorPalette[0]));
+    setSelectedBgColor(defaultColor);
+    setSelectedTextColor(getOptimalTextColor(defaultColor));
     setCustomColor("");
-    setShowColorPicker(false);
     setSelectedMembers([]);
     setSearchQuery("");
     onClose();
@@ -326,47 +311,44 @@ export default function AddTeamModal({
             />
           </div>
 
-          {/* Color Selection */}
+          {/* Color Selection - GitHub Label Style */}
           <div className="space-y-3">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
-              팀 색상 및 텍스트 색
+              팀 색상
             </label>
 
-            {/* Color Palette */}
-            <div className="space-y-2">
-              <p className="text-xs dark:text-white/50 light:text-purple-600">
-                색상 팔레트에서 선택
-              </p>
-              <div className="grid grid-cols-8 gap-2">
-                {colorPalette.map((color) => (
-                  <button
-                    key={color}
-                    type="button"
-                    onClick={() => handleColorSelect(color)}
-                    disabled={isLoading}
-                    className={`w-8 h-8 rounded-lg transition-all transform hover:scale-110 ${
-                      (selectedBgColor === color && !customColor)
-                        ? "ring-2 ring-white scale-110 shadow-lg"
-                        : "hover:shadow-md"
-                    }`}
-                    style={{ backgroundColor: color }}
-                    title={color}
-                  />
-                ))}
-              </div>
-            </div>
+            {/* Color Picker & HEX Input */}
+            <div className="flex items-center gap-3">
+              {/* Color Picker */}
+              <input
+                type="color"
+                value={selectedBgColor}
+                onChange={(e) => {
+                  setSelectedBgColor(e.target.value);
+                  setCustomColor("");
+                }}
+                disabled={isLoading}
+                className="w-14 h-12 rounded-lg cursor-pointer border-2 dark:border-purple-500/30 light:border-purple-300/50 transition-transform hover:scale-105"
+                title="색상 선택"
+              />
 
-            {/* Custom Color Input */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
+              {/* HEX Input */}
+              <div className="flex-1 flex items-center gap-2">
                 <input
                   type="text"
-                  value={customColor}
-                  onChange={(e) => handleCustomColorChange(e.target.value)}
-                  placeholder="커스텀 색상 (#ffffff)"
+                  value={selectedBgColor}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (!value.startsWith("#")) {
+                      handleCustomColorChange("#" + value.replace(/^#+/, ""));
+                    } else {
+                      handleCustomColorChange(value);
+                    }
+                  }}
+                  placeholder="#000000"
                   maxLength={7}
                   disabled={isLoading}
-                  className="flex-1 px-3 py-2 text-sm border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50 font-mono"
+                  className="flex-1 px-3 py-2 text-sm border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50 font-mono uppercase"
                 />
                 <button
                   type="button"
@@ -384,61 +366,25 @@ export default function AddTeamModal({
               </div>
             </div>
 
-            {/* Color Preview & Text Color Selection */}
-            <div className="grid grid-cols-2 gap-3">
-              {/* Background Color Preview */}
-              <div className="space-y-2">
-                <p className="text-xs dark:text-white/50 light:text-purple-600">
-                  배경 미리보기
-                </p>
-                <div
-                  className="w-full h-20 rounded-lg border-2 border-dashed dark:border-purple-500/30 light:border-purple-300/50 flex items-center justify-center font-semibold"
-                  style={{
-                    backgroundColor: selectedBgColor,
-                    color: selectedTextColor,
-                  }}
-                >
-                  <span className="text-sm font-mono">{selectedBgColor}</span>
-                </div>
+            {/* Color Preview */}
+            <div className="space-y-2">
+              <p className="text-xs dark:text-white/50 light:text-purple-600">
+                미리보기
+              </p>
+              <div
+                className="w-full px-6 py-4 rounded-lg font-semibold transition-all"
+                style={{
+                  backgroundColor: selectedBgColor,
+                  color: selectedTextColor,
+                }}
+              >
+                팀 이름 예시
               </div>
-
-              {/* Text Color Selection */}
-              <div className="space-y-2">
-                <p className="text-xs dark:text-white/50 light:text-purple-600">
-                  텍스트 색 자동 선택
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedTextColor("#FFFFFF")}
-                    disabled={isLoading}
-                    className={`px-3 py-2 rounded-lg font-semibold text-sm transition-all ${
-                      selectedTextColor === "#FFFFFF"
-                        ? "ring-2 ring-white"
-                        : "opacity-70 hover:opacity-100"
-                    }`}
-                    style={{ backgroundColor: "#000000", color: "#FFFFFF" }}
-                  >
-                    밝은 텍스트
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedTextColor("#000000")}
-                    disabled={isLoading}
-                    className={`px-3 py-2 rounded-lg font-semibold text-sm transition-all border-2 ${
-                      selectedTextColor === "#000000"
-                        ? "ring-2 ring-black"
-                        : "opacity-70 hover:opacity-100"
-                    }`}
-                    style={{ backgroundColor: "#FFFFFF", color: "#000000" }}
-                  >
-                    어두운 텍스트
-                  </button>
-                </div>
-                <p className="text-xs dark:text-white/50 light:text-purple-600 italic">
-                  배경색 밝기에 따라 자동 설정됨
-                </p>
-              </div>
+              <p className="text-xs dark:text-white/50 light:text-purple-600">
+                <span className="font-mono">{selectedBgColor}</span> (배경)
+                <span className="mx-1">·</span>
+                <span className="font-mono">{selectedTextColor}</span> (텍스트 - 자동 선택)
+              </p>
             </div>
           </div>
 
