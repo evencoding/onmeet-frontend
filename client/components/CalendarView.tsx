@@ -27,11 +27,13 @@ interface Meeting {
 interface CalendarViewProps {
   onSelectDate?: (date: Date) => void;
   meetings?: Meeting[];
+  onAddMeeting?: (date: Date) => void;
 }
 
 export default function CalendarView({
   onSelectDate,
   meetings = [],
+  onAddMeeting,
 }: CalendarViewProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -134,39 +136,47 @@ export default function CalendarView({
                 >
                   {format(date, "d")}
                 </span>
-                <div className="text-xs space-y-1 w-full flex-1">
-                  {dateMeetings.slice(0, 2).map((meeting) => (
-                    <div
-                      key={meeting.id}
-                      className={`text-xs font-medium px-1.5 py-1 rounded ${
-                        isSelected
-                          ? "dark:bg-white/20 light:bg-white/30"
-                          : "dark:bg-purple-600/30 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-700"
-                      }`}
-                    >
-                      <div className="truncate text-xs font-semibold">
-                        {meeting.title}
-                      </div>
-                      <div
-                        className={`truncate text-xs font-normal ${
-                          isSelected
-                            ? "dark:text-white/80 light:text-white/90"
-                            : "dark:text-purple-300/80 light:text-purple-700/80"
-                        }`}
-                      >
-                        {meeting.time}
-                      </div>
+                <div className="w-full flex-1 flex flex-col gap-1.5">
+                  {/* Meeting dots/badges stack */}
+                  {dateMeetings.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {dateMeetings.slice(0, 3).map((meeting, idx) => (
+                        <div
+                          key={meeting.id}
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            isSelected
+                              ? "dark:bg-white light:bg-white"
+                              : "dark:bg-purple-400 light:bg-purple-600"
+                          }`}
+                          title={meeting.title}
+                        />
+                      ))}
+                      {dateMeetings.length > 3 && (
+                        <span
+                          className={`text-xs font-semibold ${
+                            isSelected
+                              ? "dark:text-white light:text-white"
+                              : "dark:text-purple-300 light:text-purple-700"
+                          }`}
+                          title={`${dateMeetings.length - 3}개 더보기`}
+                        >
+                          +{dateMeetings.length - 3}
+                        </span>
+                      )}
                     </div>
-                  ))}
-                  {dateMeetings.length > 2 && (
+                  )}
+
+                  {/* First meeting title (abbreviated) */}
+                  {dateMeetings.length > 0 && (
                     <div
-                      className={`text-xs px-1.5 ${
+                      className={`text-xs font-medium line-clamp-1 ${
                         isSelected
-                          ? "dark:text-white/70 light:text-white/70"
-                          : "dark:text-white/50 light:text-purple-600/70"
+                          ? "dark:text-white light:text-white"
+                          : "dark:text-white/80 light:text-purple-800"
                       }`}
+                      title={dateMeetings[0].title}
                     >
-                      +{dateMeetings.length - 2}
+                      {dateMeetings[0].title}
                     </div>
                   )}
                 </div>
@@ -177,8 +187,7 @@ export default function CalendarView({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleSelectDate(date);
-                    // TODO: Open meeting creation modal for this date
+                    onAddMeeting?.(date);
                   }}
                   className="absolute -top-2 -right-2 p-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-full shadow-lg hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all transform hover:scale-110 z-10"
                   title="이 날에 회의 추가"
