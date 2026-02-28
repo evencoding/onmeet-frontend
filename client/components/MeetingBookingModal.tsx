@@ -250,6 +250,23 @@ export default function MeetingBookingModal({
                 />
               </div>
 
+              {/* Preview */}
+              {(meetingTitle || selectedTeam) && (
+                <div className="p-4 dark:bg-gradient-to-br dark:from-purple-500/10 dark:to-pink-500/10 light:bg-gradient-to-br light:from-purple-100 light:to-pink-100 rounded-lg border dark:border-purple-500/30 light:border-purple-300/50">
+                  <p className="text-xs font-semibold dark:text-white/60 light:text-purple-700 mb-2">
+                    예시
+                  </p>
+                  <p className="text-sm dark:text-white/90 light:text-purple-900 font-medium">
+                    {meetingTitle || "회의 제목을 입력해주세요"}
+                  </p>
+                  {selectedTeam && (
+                    <p className="text-xs dark:text-white/60 light:text-purple-600 mt-1">
+                      팀 · {selectedTeam.name}
+                    </p>
+                  )}
+                </div>
+              )}
+
               <button
                 onClick={() => setStep("date")}
                 disabled={!selectedTeam || !meetingTitle.trim()}
