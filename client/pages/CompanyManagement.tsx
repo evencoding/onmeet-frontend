@@ -46,6 +46,8 @@ interface TeamCreationRequest {
   teamName: string;
   requestedBy: string;
   requestedDate: string;
+  backgroundColor?: string;
+  textColor?: string;
 }
 
 const teamColors = [
@@ -249,6 +251,7 @@ export default function CompanyManagement() {
     const request = teamCreationRequests.find((r) => r.id === requestId);
     if (request) {
       // Add new team
+      const bgColor = request.backgroundColor || "#a855f7";
       setTeamList([
         ...teamList,
         {
@@ -258,8 +261,8 @@ export default function CompanyManagement() {
           memberCount: 0,
           leader: "미지정",
           members: [],
-          color: "bg-purple-500",
-          colorHex: "#a855f7",
+          color: `bg-[${bgColor}]`,
+          colorHex: bgColor,
         },
       ]);
       // Remove request

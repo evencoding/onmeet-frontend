@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { X, Search } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, Search, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -25,17 +25,52 @@ interface AddTeamModalProps {
   onTeamAdded?: (team: {
     name: string;
     description: string;
-    color: string;
+    backgroundColor: string;
+    textColor: string;
     members: TeamMember[];
   }) => void;
 }
 
-const teamColors = [
-  { name: "Purple", value: "bg-purple-500", hex: "#a855f7" },
-  { name: "Blue", value: "bg-blue-500", hex: "#3b82f6" },
-  { name: "Pink", value: "bg-pink-500", hex: "#ec4899" },
-  { name: "Green", value: "bg-green-500", hex: "#22c55e" },
+// 색상 팔레트
+const colorPalette = [
+  "#FF6B6B", "#FFC93C", "#FF7E79", "#FFA630",
+  "#A8E6CF", "#FFD3B6", "#FFAAA5", "#AA96DA",
+  "#FCBAD3", "#A8D8EA", "#AA96DA", "#B28DFF",
+  "#D291BC", "#F8B500", "#C6B1FF", "#6BCB77",
 ];
+
+/**
+ * HEX 색상의 밝기를 계산합니다 (0-1 범위)
+ * @param hex HEX 색상 코드 (#ffffff 형식)
+ * @returns 밝기 값 (0=어두움, 1=밝음)
+ */
+function getLuminance(hex: string): number {
+  const rgb = parseInt(hex.replace("#", ""), 16);
+  const r = (rgb >> 16) & 255;
+  const g = (rgb >> 8) & 255;
+  const b = rgb & 255;
+
+  // 상대 밝기(Relative Luminance) 계산
+  const [rs, gs, bs] = [r, g, b].map((channel) => {
+    const normalized = channel / 255;
+    return normalized <= 0.03928
+      ? normalized / 12.92
+      : Math.pow((normalized + 0.055) / 1.055, 2.4);
+  });
+
+  return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
+}
+
+/**
+ * 배경색의 밝기에 따라 최적의 텍스트 색을 반환합니다
+ * @param bgColor 배경색 HEX 코드
+ * @returns 텍스트 색 HEX 코드 (#ffffff 또는 #000000)
+ */
+function getOptimalTextColor(bgColor: string): string {
+  const luminance = getLuminance(bgColor);
+  // 밝기 임계값: 0.5보다 높으면 어두운 텍스트, 아니면 밝은 텍스트
+  return luminance > 0.5 ? "#000000" : "#FFFFFF";
+}
 
 // Mock employee list
 const mockEmployees: Employee[] = [
@@ -110,12 +145,24 @@ export default function AddTeamModal({
   onClose,
   onTeamAdded,
 }: AddTeamModalProps) {
+  const defaultColor = "#A855F7"; // Purple
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedColor, setSelectedColor] = useState(teamColors[0].value);
+  const [selectedBgColor, setSelectedBgColor] = useState(defaultColor);
+  const [selectedTextColor, setSelectedTextColor] = useState(
+    getOptimalTextColor(defaultColor)
+  );
+  const [customColor, setCustomColor] = useState("");
+  const [copiedHex, setCopiedHex] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState<TeamMember[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // 배경색이 변경될 때 자동으로 텍스트 색 업데이트
+  useEffect(() => {
+    const autoTextColor = getOptimalTextColor(selectedBgColor);
+    setSelectedTextColor(autoTextColor);
+  }, [selectedBgColor]);
 
   // Filter employees based on search query
   const filteredEmployees = mockEmployees.filter(
@@ -145,6 +192,26 @@ export default function AddTeamModal({
     setSelectedMembers(selectedMembers.filter((member) => member.id !== id));
   };
 
+  const handleCustomColorChange = (hex: string) => {
+    if (!hex.startsWith("#")) {
+      setCustomColor("#" + hex.replace(/^#+/, ""));
+    } else {
+      setCustomColor(hex);
+    }
+
+    // 커스텀 색상이 유효한 HEX 코드인 경우 배경색으로 설정
+    if (/^#[0-9A-F]{6}$/i.test(hex)) {
+      setSelectedBgColor(hex);
+    }
+  };
+
+  const handleCopyColor = () => {
+    const colorToCopy = customColor || selectedBgColor;
+    navigator.clipboard.writeText(colorToCopy);
+    setCopiedHex(true);
+    setTimeout(() => setCopiedHex(false), 2000);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -162,14 +229,17 @@ export default function AddTeamModal({
       onTeamAdded?.({
         name: teamName,
         description,
-        color: selectedColor,
+        backgroundColor: selectedBgColor,
+        textColor: selectedTextColor,
         members: selectedMembers,
       });
 
       // Reset form and close modal
       setTeamName("");
       setDescription("");
-      setSelectedColor(teamColors[0].value);
+      setSelectedBgColor(defaultColor);
+      setSelectedTextColor(getOptimalTextColor(defaultColor));
+      setCustomColor("");
       setSelectedMembers([]);
       setSearchQuery("");
       onClose();
@@ -184,7 +254,9 @@ export default function AddTeamModal({
   const handleClose = () => {
     setTeamName("");
     setDescription("");
-    setSelectedColor(teamColors[0].value);
+    setSelectedBgColor(defaultColor);
+    setSelectedTextColor(getOptimalTextColor(defaultColor));
+    setCustomColor("");
     setSelectedMembers([]);
     setSearchQuery("");
     onClose();
@@ -239,30 +311,80 @@ export default function AddTeamModal({
             />
           </div>
 
-          {/* Color Selection - GitHub Style */}
+          {/* Color Selection - GitHub Label Style */}
           <div className="space-y-3">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
               팀 색상
             </label>
-            <div className="flex flex-wrap items-center gap-3 p-3 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50">
-              {teamColors.map((color) => (
-                <button
-                  key={color.value}
-                  type="button"
-                  onClick={() => setSelectedColor(color.value)}
-                  title={color.name}
+
+            {/* Color Picker & HEX Input */}
+            <div className="flex items-center gap-3">
+              {/* Color Picker */}
+              <input
+                type="color"
+                value={selectedBgColor}
+                onChange={(e) => {
+                  setSelectedBgColor(e.target.value);
+                  setCustomColor("");
+                }}
+                disabled={isLoading}
+                className="w-14 h-12 rounded-lg cursor-pointer border-2 dark:border-purple-500/30 light:border-purple-300/50 transition-transform hover:scale-105"
+                title="색상 선택"
+              />
+
+              {/* HEX Input */}
+              <div className="flex-1 flex items-center gap-2">
+                <input
+                  type="text"
+                  value={selectedBgColor}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (!value.startsWith("#")) {
+                      handleCustomColorChange("#" + value.replace(/^#+/, ""));
+                    } else {
+                      handleCustomColorChange(value);
+                    }
+                  }}
+                  placeholder="#000000"
+                  maxLength={7}
                   disabled={isLoading}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full font-medium text-sm transition-all ${
-                    selectedColor === color.value
-                      ? "ring-2 ring-offset-2 dark:ring-white light:ring-purple-700 scale-110"
-                      : "opacity-70 hover:opacity-100"
-                  } text-white dark:ring-offset-purple-900/40 light:ring-offset-purple-50`}
-                  style={{ backgroundColor: color.hex }}
+                  className="flex-1 px-3 py-2 text-sm border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50 font-mono uppercase"
+                />
+                <button
+                  type="button"
+                  onClick={handleCopyColor}
+                  disabled={isLoading}
+                  className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors dark:text-white/70 light:text-purple-600"
+                  title="색상 코드 복사"
                 >
-                  <div className="w-2.5 h-2.5 rounded-full dark:bg-white light:bg-white/80"></div>
-                  {color.name}
+                  {copiedHex ? (
+                    <Check className="w-4 h-4 text-green-500" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
                 </button>
-              ))}
+              </div>
+            </div>
+
+            {/* Color Preview */}
+            <div className="space-y-2">
+              <p className="text-xs dark:text-white/50 light:text-purple-600">
+                미리보기
+              </p>
+              <div
+                className="w-full px-6 py-4 rounded-lg font-semibold transition-all"
+                style={{
+                  backgroundColor: selectedBgColor,
+                  color: selectedTextColor,
+                }}
+              >
+                팀 이름 예시
+              </div>
+              <p className="text-xs dark:text-white/50 light:text-purple-600">
+                <span className="font-mono">{selectedBgColor}</span> (배경)
+                <span className="mx-1">·</span>
+                <span className="font-mono">{selectedTextColor}</span> (텍스트 - 자동 선택)
+              </p>
             </div>
           </div>
 

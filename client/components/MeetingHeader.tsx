@@ -1,6 +1,7 @@
-import { MoreVertical, Bell } from "lucide-react";
+import { MoreVertical, Bell, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface Notification {
   id: string;
@@ -49,8 +50,59 @@ const mockNotifications: Notification[] = [
 export default function MeetingHeader() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 });
+  const bellButtonRef = useRef<HTMLButtonElement>(null);
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  // Update dropdown position when it opens
+  useEffect(() => {
+    if (isDropdownOpen && bellButtonRef.current) {
+      const rect = bellButtonRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + 8, // mt-2 equivalent
+        right: window.innerWidth - rect.right,
+      });
+    }
+  }, [isDropdownOpen]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (bellButtonRef.current && !bellButtonRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [isDropdownOpen]);
+
+  // Update dropdown position on scroll and resize
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isDropdownOpen && bellButtonRef.current) {
+        const rect = bellButtonRef.current.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + 8,
+          right: window.innerWidth - rect.right,
+        });
+      }
+    };
+
+    if (isDropdownOpen) {
+      window.addEventListener("scroll", handleScroll, true);
+      window.addEventListener("resize", handleScroll);
+      return () => {
+        window.removeEventListener("scroll", handleScroll, true);
+        window.removeEventListener("resize", handleScroll);
+      };
+    }
+  }, [isDropdownOpen]);
 
   const handleNotificationClick = (id: string) => {
     setNotifications(
@@ -89,8 +141,9 @@ export default function MeetingHeader() {
         <ThemeToggle />
 
         {/* Notification Bell */}
-        <div className="relative">
+        <div>
           <button
+            ref={bellButtonRef}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="relative p-2 hover:bg-purple-500/20 rounded-lg transition-colors dark:text-white/50 dark:hover:text-white/80 light:text-purple-600 light:hover:text-purple-700"
           >
@@ -102,73 +155,81 @@ export default function MeetingHeader() {
             )}
           </button>
 
-          {/* Notification Dropdown */}
-          {isDropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-96 dark:bg-black/80 light:bg-white dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 rounded-2xl shadow-2xl dark:shadow-purple-900/50 light:shadow-lg light:shadow-purple-300/30 dark:backdrop-blur-md light:backdrop-blur-sm z-[9999]">
-              {/* Header */}
-              <div className="px-4 py-3 dark:border-b dark:border-purple-500/20 light:border-b-2 light:border-purple-200 light:bg-purple-50/50 flex items-center justify-between">
-                <h3 className="font-semibold dark:text-white light:text-purple-900">알림</h3>
-                {unreadCount > 0 && (
-                  <span className="text-xs px-2 py-1 dark:bg-red-500/20 dark:text-red-300 light:bg-red-100/70 light:text-red-800 rounded-full">
-                    {unreadCount}개 미읽음
-                  </span>
-                )}
-              </div>
+          {/* Notification Dropdown - Portal */}
+          {isDropdownOpen &&
+            createPortal(
+              <div
+                className="fixed w-96 dark:bg-black/80 light:bg-white dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 rounded-2xl shadow-2xl dark:shadow-purple-900/50 light:shadow-lg light:shadow-purple-300/30 dark:backdrop-blur-md light:backdrop-blur-sm z-[999999]"
+                style={{
+                  top: `${dropdownPosition.top}px`,
+                  right: `${dropdownPosition.right}px`,
+                }}
+              >
+                {/* Header */}
+                <div className="px-4 py-3 dark:border-b dark:border-purple-500/20 light:border-b-2 light:border-purple-200 light:bg-purple-50/50 flex items-center justify-between">
+                  <h3 className="font-semibold dark:text-white light:text-purple-900">알림</h3>
+                  {unreadCount > 0 && (
+                    <span className="text-xs px-2 py-1 dark:bg-red-500/20 dark:text-red-300 light:bg-red-100/70 light:text-red-800 rounded-full">
+                      {unreadCount}개 미읽음
+                    </span>
+                  )}
+                </div>
 
-              {/* Notifications List */}
-              <div className="max-h-96 overflow-y-auto">
-                {notifications.length > 0 ? (
-                  notifications.map((notification) => (
-                    <div
-                      key={notification.id}
-                      className={`px-4 py-3 border-l-4 transition-colors text-left flex items-start justify-between group ${getNotificationColor(
-                        notification.type
-                      )} ${
-                        notification.isRead
-                          ? "dark:bg-black/30 light:bg-purple-50/60"
-                          : "dark:bg-purple-500/10 light:bg-purple-100/50 light:border-b light:border-purple-200/40"
-                      } hover:dark:bg-purple-500/20 hover:light:bg-purple-100/60`}
-                    >
-                      <button
-                        onClick={() => {
-                          handleNotificationClick(notification.id);
-                        }}
-                        className="flex-1 text-left"
+                {/* Notifications List */}
+                <div className="max-h-96 overflow-y-auto">
+                  {notifications.length > 0 ? (
+                    notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className={`px-4 py-3 border-l-4 transition-colors text-left flex items-start justify-between group ${getNotificationColor(
+                          notification.type
+                        )} ${
+                          notification.isRead
+                            ? "dark:bg-black/30 light:bg-purple-50/60"
+                            : "dark:bg-purple-500/10 light:bg-purple-100/50 light:border-b light:border-purple-200/40"
+                        } hover:dark:bg-purple-500/20 hover:light:bg-purple-100/60`}
                       >
-                        <p className="font-medium text-sm dark:text-white light:text-purple-900 mb-1">
-                          {notification.title}
-                        </p>
-                        <p className="text-xs dark:text-white/60 light:text-purple-700 mb-1">
-                          {notification.message}
-                        </p>
-                        <p className="text-xs dark:text-white/40 light:text-purple-600">
-                          {notification.timestamp}
-                        </p>
-                      </button>
-                      <div className="flex items-start gap-2 ml-2">
-                        {!notification.isRead && (
-                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
-                        )}
                         <button
                           onClick={() => {
-                            setNotifications(notifications.filter((n) => n.id !== notification.id));
+                            handleNotificationClick(notification.id);
                           }}
-                          className="p-1 dark:text-white/40 dark:hover:text-red-400 light:text-purple-600 light:hover:text-red-600 transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100"
-                          title="알림 삭제"
+                          className="flex-1 text-left"
                         >
-                          <X className="w-4 h-4" />
+                          <p className="font-medium text-sm dark:text-white light:text-purple-900 mb-1">
+                            {notification.title}
+                          </p>
+                          <p className="text-xs dark:text-white/60 light:text-purple-700 mb-1">
+                            {notification.message}
+                          </p>
+                          <p className="text-xs dark:text-white/40 light:text-purple-600">
+                            {notification.timestamp}
+                          </p>
                         </button>
+                        <div className="flex items-start gap-2 ml-2">
+                          {!notification.isRead && (
+                            <div className="w-2 h-2 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
+                          )}
+                          <button
+                            onClick={() => {
+                              setNotifications(notifications.filter((n) => n.id !== notification.id));
+                            }}
+                            className="p-1 dark:text-white/40 dark:hover:text-red-400 light:text-purple-600 light:hover:text-red-600 transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100"
+                            title="알림 삭제"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-6 text-center text-sm dark:text-white/50 light:text-purple-600">
+                      알림이 없습니다
                     </div>
-                  ))
-                ) : (
-                  <div className="px-4 py-6 text-center text-sm dark:text-white/50 light:text-purple-600">
-                    알림이 없습니다
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+                  )}
+                </div>
+              </div>,
+              document.body
+            )}
         </div>
 
         <button className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors dark:text-white/50 dark:hover:text-white/80 light:text-purple-600 light:hover:text-purple-700">

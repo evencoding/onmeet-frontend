@@ -17,7 +17,7 @@ export default function Index() {
   };
 
   return (
-    <Layout showRecentPanel={true}>
+    <Layout showRecentPanel={false}>
       <div className="space-y-10 max-w-4xl">
         {/* Intro Card */}
         <IntroCard onCreateMeeting={handleCreateMeeting} />
