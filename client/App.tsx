@@ -1,5 +1,6 @@
 import "./global.css";
 
+import * as Sentry from "@sentry/react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +8,23 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+
+// Initialize Sentry
+if (import.meta.env.VITE_SENTRY_DSN) {
+  Sentry.init({
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+    environment: import.meta.env.MODE,
+    tracesSampleRate: import.meta.env.MODE === "production" ? 0.1 : 1.0,
+    integrations: [
+      new Sentry.Replay({
+        maskAllText: true,
+        blockAllMedia: true,
+      }),
+    ],
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+  });
+}
 import Index from "./pages/Index";
 import MeetingRoom from "./pages/MeetingRoom";
 import Schedule from "./pages/Schedule";
@@ -47,9 +65,11 @@ const HomeRoute = () => {
   return <Index />;
 };
 
+const SentryRoutes = Sentry.withSentryRouting(Routes);
+
 const AppContent = () => (
   <BrowserRouter>
-    <Routes>
+    <SentryRoutes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignupFlow />} />
       <Route path="/signup/company" element={<CompanySignup />} />
@@ -122,7 +142,7 @@ const AppContent = () => (
       />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
-    </Routes>
+    </SentryRoutes>
   </BrowserRouter>
 );
 
