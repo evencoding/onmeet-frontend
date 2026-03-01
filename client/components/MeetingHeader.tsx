@@ -115,25 +115,25 @@ export default function MeetingHeader() {
       case "meeting":
         return "dark:border-l-blue-500 light:border-l-blue-500";
       case "team":
-        return "dark:border-l-purple-500 light:border-l-purple-500";
+        return "dark:border-l-cyan-500 light:border-l-cyan-500";
       case "message":
-        return "dark:border-l-pink-500 light:border-l-pink-500";
+        return "dark:border-l-sky-500 light:border-l-sky-500";
       case "system":
-        return "dark:border-l-green-500 light:border-l-green-500";
+        return "dark:border-l-teal-500 light:border-l-teal-500";
       default:
-        return "dark:border-l-purple-500 light:border-l-purple-500";
+        return "dark:border-l-blue-500 light:border-l-blue-500";
     }
   };
 
   return (
-    <div className="px-6 py-4 border-b dark:border-purple-500/20 dark:bg-purple-500/10 dark:backdrop-blur-md light:border-b-2 light:border-purple-200 light:bg-white light:shadow-sm light:shadow-purple-100/50 flex items-center justify-between">
+    <div className="px-6 py-4 border-b border-border/20 dark:bg-slate-900/30 light:bg-white light:shadow-card flex items-center justify-between">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-sm font-bold text-white">
+        <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-sm font-bold text-white">
           C
         </div>
         <div>
-          <div className="text-sm font-medium dark:text-white/90 light:text-purple-900">Chloe Choi</div>
-          <div className="text-xs dark:text-white/50 light:text-purple-600">staff-and</div>
+          <div className="text-sm font-medium text-foreground">Chloe Choi</div>
+          <div className="text-xs text-muted-foreground">staff-and</div>
         </div>
       </div>
 
@@ -145,7 +145,7 @@ export default function MeetingHeader() {
           <button
             ref={bellButtonRef}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="relative p-2 hover:bg-purple-500/20 rounded-lg transition-colors dark:text-white/50 dark:hover:text-white/80 light:text-purple-600 light:hover:text-purple-700"
+            className="relative p-2 hover:bg-slate-800/50 dark:hover:bg-slate-800/50 light:hover:bg-slate-100/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground"
           >
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && (
@@ -159,15 +159,15 @@ export default function MeetingHeader() {
           {isDropdownOpen &&
             createPortal(
               <div
-                className="fixed w-96 dark:bg-black/80 light:bg-white dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 rounded-2xl shadow-2xl dark:shadow-purple-900/50 light:shadow-lg light:shadow-purple-300/30 dark:backdrop-blur-md light:backdrop-blur-sm z-[999999]"
+                className="fixed w-96 dark:bg-slate-900 light:bg-white dark:border dark:border-border/20 light:border light:border-border/40 rounded-xl shadow-2xl dark:backdrop-blur-md light:shadow-lg z-[999999]"
                 style={{
                   top: `${dropdownPosition.top}px`,
                   right: `${dropdownPosition.right}px`,
                 }}
               >
                 {/* Header */}
-                <div className="px-4 py-3 dark:border-b dark:border-purple-500/20 light:border-b-2 light:border-purple-200 light:bg-purple-50/50 flex items-center justify-between">
-                  <h3 className="font-semibold dark:text-white light:text-purple-900">알림</h3>
+                <div className="px-4 py-3 dark:border-b dark:border-border/20 light:border-b light:border-border/20 light:bg-slate-50/50 flex items-center justify-between">
+                  <h3 className="font-semibold text-foreground">알림</h3>
                   {unreadCount > 0 && (
                     <span className="text-xs px-2 py-1 dark:bg-red-500/20 dark:text-red-300 light:bg-red-100/70 light:text-red-800 rounded-full">
                       {unreadCount}개 미읽음
@@ -185,9 +185,9 @@ export default function MeetingHeader() {
                           notification.type
                         )} ${
                           notification.isRead
-                            ? "dark:bg-black/30 light:bg-purple-50/60"
-                            : "dark:bg-purple-500/10 light:bg-purple-100/50 light:border-b light:border-purple-200/40"
-                        } hover:dark:bg-purple-500/20 hover:light:bg-purple-100/60`}
+                            ? "dark:bg-slate-800/30 light:bg-slate-50/60"
+                            : "dark:bg-slate-800/50 light:bg-blue-50/40 light:border-b light:border-blue-200/40"
+                        } hover:dark:bg-slate-800/60 hover:light:bg-blue-50/60`}
                       >
                         <button
                           onClick={() => {
@@ -195,25 +195,25 @@ export default function MeetingHeader() {
                           }}
                           className="flex-1 text-left"
                         >
-                          <p className="font-medium text-sm dark:text-white light:text-purple-900 mb-1">
+                          <p className="font-medium text-sm text-foreground mb-1">
                             {notification.title}
                           </p>
-                          <p className="text-xs dark:text-white/60 light:text-purple-700 mb-1">
+                          <p className="text-xs text-muted-foreground mb-1">
                             {notification.message}
                           </p>
-                          <p className="text-xs dark:text-white/40 light:text-purple-600">
+                          <p className="text-xs text-muted-foreground/70">
                             {notification.timestamp}
                           </p>
                         </button>
                         <div className="flex items-start gap-2 ml-2">
                           {!notification.isRead && (
-                            <div className="w-2 h-2 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
+                            <div className="w-2 h-2 bg-brand-500 rounded-full mt-1 flex-shrink-0"></div>
                           )}
                           <button
                             onClick={() => {
                               setNotifications(notifications.filter((n) => n.id !== notification.id));
                             }}
-                            className="p-1 dark:text-white/40 dark:hover:text-red-400 light:text-purple-600 light:hover:text-red-600 transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100"
+                            className="p-1 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100"
                             title="알림 삭제"
                           >
                             <X className="w-4 h-4" />
@@ -222,7 +222,7 @@ export default function MeetingHeader() {
                       </div>
                     ))
                   ) : (
-                    <div className="px-4 py-6 text-center text-sm dark:text-white/50 light:text-purple-600">
+                    <div className="px-4 py-6 text-center text-sm text-muted-foreground">
                       알림이 없습니다
                     </div>
                   )}
@@ -232,7 +232,7 @@ export default function MeetingHeader() {
             )}
         </div>
 
-        <button className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors dark:text-white/50 dark:hover:text-white/80 light:text-purple-600 light:hover:text-purple-700">
+        <button className="p-2 hover:bg-slate-800/50 dark:hover:bg-slate-800/50 light:hover:bg-slate-100/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground">
           <MoreVertical className="w-5 h-5" />
         </button>
       </div>

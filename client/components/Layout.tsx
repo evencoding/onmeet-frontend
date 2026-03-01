@@ -23,24 +23,20 @@ export default function Layout({
   const { theme } = useTheme();
 
   return (
-    <div className="flex h-screen bg-background relative overflow-hidden dark:bg-background light:bg-gradient-to-br light:from-purple-50 light:via-blue-50 light:to-purple-100">
-      {/* Animated gradient background */}
+    <div className="flex h-screen bg-background relative overflow-hidden">
+      {/* Subtle animated gradient background */}
       {theme === "dark" && (
-        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900">
-          <div className="absolute inset-0 opacity-40">
-            <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-            <div className="absolute top-0 -right-4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-            <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-          </div>
+        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 overflow-hidden">
+          <div className="absolute top-0 -left-40 w-80 h-80 bg-blue-600/10 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob"></div>
+          <div className="absolute -top-20 -right-60 w-96 h-96 bg-blue-500/5 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-blob animation-delay-2000"></div>
         </div>
       )}
 
-      {/* Light mode background accent */}
+      {/* Light mode background - clean and minimal */}
       {theme === "light" && (
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 -right-40 w-96 h-96 bg-purple-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-          <div className="absolute top-40 -left-40 w-96 h-96 bg-blue-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-20 right-20 w-96 h-96 bg-pink-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+          <div className="absolute top-0 -right-80 w-96 h-96 bg-blue-100/20 rounded-full mix-blend-screen filter blur-3xl opacity-40 animate-blob"></div>
+          <div className="absolute -bottom-40 -left-60 w-96 h-96 bg-blue-50/30 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
         </div>
       )}
 
@@ -69,7 +65,7 @@ export default function Layout({
         {/* Content area with right panel */}
         <div className="flex-1 overflow-hidden flex">
           {/* Left content */}
-          <div className="flex-1 overflow-y-auto px-6 py-6">{children}</div>
+          <div className="flex-1 overflow-y-auto px-8 py-8">{children}</div>
 
           {/* Right panel - AI Meeting Search or Recent Meetings */}
           {showAIPanel && (
@@ -79,12 +75,12 @@ export default function Layout({
           )}
 
           {showRecentPanel && (
-            <div className="hidden lg:flex lg:w-96 border-l flex-col overflow-hidden dark:border-border/30 dark:bg-white/40 dark:backdrop-blur-md light:border-l-2 light:border-purple-300 light:bg-white/80 light:backdrop-blur-sm">
-              <div className="px-6 py-4 border-b dark:border-border/30 dark:bg-white/50 light:border-b-2 light:border-purple-200 light:bg-purple-50/60 light:shadow-sm">
-                <h2 className="text-lg font-bold dark:text-foreground light:text-purple-950">
+            <div className="hidden lg:flex lg:w-96 border-l flex-col overflow-hidden border-border/20 bg-background/40 backdrop-blur-md">
+              <div className="px-6 py-4 border-b border-border/20 bg-background/20">
+                <h2 className="text-base font-semibold text-foreground">
                   최근 회의 기록
                 </h2>
-                <p className="text-xs mt-1 dark:text-text-sub light:text-purple-600">최근에 열린 회의들</p>
+                <p className="text-xs mt-1 text-muted-foreground">최근에 열린 회의들</p>
               </div>
               <div className="flex-1 overflow-y-auto">
                 <div className="p-4">
