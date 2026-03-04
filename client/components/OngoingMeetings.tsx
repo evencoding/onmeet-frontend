@@ -151,7 +151,7 @@ export default function OngoingMeetings() {
 
   const handleJoinMeeting = (meeting: Meeting) => {
     if (meeting.status === "ongoing") {
-      navigate("/meeting");
+      navigate(`/meeting/${meeting.id}`);
     }
   };
 

@@ -96,7 +96,7 @@ const AppContent = () => (
       <Route path="/signup/invite-members" element={<InviteMembers />} />
       <Route path="/" element={<HomeRoute />} />
       <Route
-        path="/meeting"
+        path="/meeting/:roomId"
         element={
           <ProtectedRoute>
             <MeetingRoom />
