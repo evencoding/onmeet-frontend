@@ -3,7 +3,10 @@
     "allow": [
       "Bash(xargs ls:*)",
       "Bash(grep:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm build:client:*)"
     ]
   }
 }

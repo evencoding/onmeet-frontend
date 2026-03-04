@@ -14,7 +14,7 @@ interface InviteParticipantModalProps {
   isOpen: boolean;
   onClose: () => void;
   onInvite: (members: TeamMember[]) => void;
-  teamMembers: TeamMember[];
+  teamMembers?: TeamMember[];
   alreadyInvited?: string[];
   meetingId?: string;
 }
@@ -82,7 +82,7 @@ const defaultTeamMembers: TeamMember[] = [
 const generateGuestLink = (meetingId?: string): string => {
   const id = meetingId || Math.random().toString(36).substring(2, 11);
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  return `${baseUrl}/meeting/guest/${id}`;
+  return `${baseUrl}/meeting/${id}`;
 };
 
 export default function InviteParticipantModal({

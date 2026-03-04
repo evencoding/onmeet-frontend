@@ -770,7 +770,7 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
                 {/* Action Button - Join for ongoing meetings only */}
                 {meeting.status === "in_progress" && (
                   <button
-                    onClick={() => navigate("/meeting")}
+                    onClick={() => navigate(`/meeting/${meeting.id}`)}
                     className="px-3 py-1.5 bg-gradient-to-r from-green-600 to-green-700 dark:from-green-500 dark:to-green-600 text-white text-sm font-semibold rounded-lg hover:from-green-700 hover:to-green-800 dark:hover:from-green-600 dark:hover:to-green-700 transition-all duration-200 ml-2 flex items-center gap-2 whitespace-nowrap"
                   >
                     <Play className="w-3.5 h-3.5" />

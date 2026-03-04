@@ -9,6 +9,12 @@ import {
   FlipHorizontal,
 } from "lucide-react";
 
+export interface DeviceSelection {
+  cameraId: string;
+  microphoneId: string;
+  speakerId: string;
+}
+
 interface MeetingPreparationModalProps {
   isOpen: boolean;
   onStart: () => void;
@@ -22,12 +28,14 @@ interface MeetingPreparationModalProps {
     isVideoOn: boolean;
     setIsVideoOn: (value: boolean) => void;
   };
+  onDeviceSelect?: (devices: DeviceSelection) => void;
 }
 
 export default function MeetingPreparationModal({
   isOpen,
   onStart,
   onStateChange,
+  onDeviceSelect,
 }: MeetingPreparationModalProps) {
   const previewVideoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -169,6 +177,20 @@ export default function MeetingPreparationModal({
     onStateChange.setIsMuted(isMuted);
     onStateChange.setIsVideoOn(isVideoOn);
     stopMicTest();
+
+    // Stop preview stream before handing off to LiveKit
+    if (previewStream) {
+      previewStream.getTracks().forEach((track) => track.stop());
+      setPreviewStream(null);
+    }
+
+    // Report selected devices to parent
+    onDeviceSelect?.({
+      cameraId: selectedCamera,
+      microphoneId: selectedMicrophone,
+      speakerId: selectedSpeaker,
+    });
+
     onStart();
   };
 

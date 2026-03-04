@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Mic,
   MicOff,
@@ -17,151 +17,330 @@ import {
   FileText,
   Minimize,
 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  LiveKitRoom,
+  useParticipants,
+  useLocalParticipant,
+  useRoomContext,
+  useTracks,
+  useParticipantTracks,
+} from "@livekit/components-react";
+import {
+  Track,
+  RoomEvent,
+  DataPacket_Kind,
+  type RemoteParticipant,
+} from "livekit-client";
 import AIRecordingRequestModal from "@/components/AIRecordingRequestModal";
 import InviteParticipantModal from "@/components/InviteParticipantModal";
 import MeetingPreparationModal from "@/components/MeetingPreparationModal";
+import type { DeviceSelection } from "@/components/MeetingPreparationModal";
 import ExitMeetingModal from "@/components/ExitMeetingModal";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import WaitingRoom from "@/components/WaitingRoom";
+import ParticipantTile from "@/components/ParticipantTile";
+import { useJoinRoom } from "@/hooks/useRoomQuery";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 
-interface Participant {
-  id: string;
-  name: string;
-  avatar: string;
-  isHost?: boolean;
-  isMuted?: boolean;
-  isVideoOn?: boolean;
-  isSpeaking?: boolean;
-}
+const LIVEKIT_URL = "wss://livekit.onmeet.cloud";
+
+type Phase = "preparing" | "joining" | "waiting" | "connected" | "disconnected";
 
 interface ChatMessage {
   id: string;
   sender: string;
-  avatar: string;
   message: string;
   timestamp: string;
 }
 
 export default function MeetingRoom() {
   const navigate = useNavigate();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const localVideoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const screenShareRef = useRef<MediaStream | null>(null);
+  const { roomId } = useParams<{ roomId: string }>();
+  const { user } = useAuth();
 
+  const [phase, setPhase] = useState<Phase>("preparing");
+  const [token, setToken] = useState<string>("");
+  const [isHost, setIsHost] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(true);
+  const [deviceSelection, setDeviceSelection] =
+    useState<DeviceSelection | null>(null);
+
+  const joinRoom = useJoinRoom();
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const handleDeviceSelect = useCallback((devices: DeviceSelection) => {
+    setDeviceSelection(devices);
+  }, []);
+
+  const handleStartMeeting = useCallback(async () => {
+    if (!roomId || !user) return;
+
+    setPhase("joining");
+
+    try {
+      const res = await joinRoom.mutateAsync({
+        roomId,
+        userId: String(user.id),
+        body: {
+          displayName: user.name,
+          audioEnabled: !isMuted,
+          videoEnabled: isVideoOn,
+        },
+      });
+
+      setIsHost(res.isHost);
+
+      if (res.waitingRoom) {
+        setPhase("waiting");
+        // Poll every 4 seconds
+        pollingRef.current = setInterval(async () => {
+          try {
+            const pollRes = await joinRoom.mutateAsync({
+              roomId,
+              userId: String(user.id),
+            });
+            if (!pollRes.waitingRoom) {
+              if (pollingRef.current) clearInterval(pollingRef.current);
+              setToken(pollRes.token);
+              setIsHost(pollRes.isHost);
+              setPhase("connected");
+            }
+          } catch {
+            // Keep polling on error
+          }
+        }, 4000);
+      } else {
+        setToken(res.token);
+        setPhase("connected");
+      }
+    } catch (err) {
+      console.error("Failed to join room:", err);
+      setPhase("preparing");
+    }
+  }, [roomId, user, isMuted, isVideoOn, joinRoom]);
+
+  const handleCancelWaiting = useCallback(() => {
+    if (pollingRef.current) clearInterval(pollingRef.current);
+    setPhase("preparing");
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+    };
+  }, []);
+
+  if (!roomId) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-black text-white">
+        <p>유효하지 않은 회의 링크입니다.</p>
+      </div>
+    );
+  }
+
+  // PREPARING phase
+  if (phase === "preparing") {
+    return (
+      <div className="flex h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white items-center justify-center">
+        <MeetingPreparationModal
+          isOpen={true}
+          onStart={handleStartMeeting}
+          onInitialState={{ isMuted, isVideoOn }}
+          onStateChange={{ isMuted, setIsMuted, isVideoOn, setIsVideoOn }}
+          onDeviceSelect={handleDeviceSelect}
+        />
+      </div>
+    );
+  }
+
+  // JOINING phase
+  if (phase === "joining") {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gradient-to-br from-purple-950 via-black to-purple-900">
+        <div className="text-center space-y-4">
+          <Loader className="w-12 h-12 text-purple-400 animate-spin mx-auto" />
+          <p className="text-white/80 text-sm">회의에 연결 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // WAITING phase
+  if (phase === "waiting") {
+    return <WaitingRoom onCancel={handleCancelWaiting} />;
+  }
+
+  // DISCONNECTED phase
+  if (phase === "disconnected") {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gradient-to-br from-purple-950 via-black to-purple-900">
+        <div className="text-center space-y-4">
+          <p className="text-white text-xl font-bold">회의가 종료되었습니다</p>
+          <button
+            onClick={() => navigate("/")}
+            className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors"
+          >
+            홈으로 돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // CONNECTED phase
+  return (
+    <LiveKitRoom
+      serverUrl={LIVEKIT_URL}
+      token={token}
+      connect={true}
+      audio={!isMuted}
+      video={isVideoOn}
+      onDisconnected={() => setPhase("disconnected")}
+    >
+      <MeetingRoomContent
+        roomId={roomId}
+        isHost={isHost}
+        initialMuted={isMuted}
+        initialVideoOn={isVideoOn}
+      />
+    </LiveKitRoom>
+  );
+}
+
+// ======================================
+// MeetingRoomContent — inside LiveKitRoom
+// ======================================
+
+interface MeetingRoomContentProps {
+  roomId: string;
+  isHost: boolean;
+  initialMuted: boolean;
+  initialVideoOn: boolean;
+}
+
+function MeetingRoomContent({
+  roomId,
+  isHost,
+  initialMuted,
+  initialVideoOn,
+}: MeetingRoomContentProps) {
+  const navigate = useNavigate();
+  const room = useRoomContext();
+  const participants = useParticipants();
+  const { localParticipant } = useLocalParticipant();
+
+  const screenShareTracks = useTracks([Track.Source.ScreenShare]);
+  const isScreenSharing = screenShareTracks.some(
+    (t) => t.participant.identity === localParticipant.identity,
+  );
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const [isMuted, setIsMuted] = useState(initialMuted);
+  const [isVideoOn, setIsVideoOn] = useState(initialVideoOn);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isPIPMode, setIsPIPMode] = useState(false);
   const [viewMode, setViewMode] = useState<"gallery" | "speaker">("gallery");
   const [showChat, setShowChat] = useState(false);
   const [showParticipants, setShowParticipants] = useState(true);
   const [isAIRecording, setIsAIRecording] = useState(false);
-  const [isAIRecordingModalOpen, setIsAIRecordingModalOpen] = useState(false);
+  const [isAIRecordingRequestModalOpen, setIsAIRecordingRequestModalOpen] =
+    useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
-  const [showPreparationModal, setShowPreparationModal] = useState(true);
   const [showExitModal, setShowExitModal] = useState(false);
-  const [isHost, setIsHost] = useState(true);
-  const [isAIRecordingRequestModalOpen, setIsAIRecordingRequestModalOpen] = useState(false);
-  const [pendingAIRequests, setPendingAIRequests] = useState<Array<{
-    id: string;
-    senderName: string;
-    timestamp: string;
-  }>>([]);
-  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [pendingAIRequests, setPendingAIRequests] = useState<
+    Array<{ id: string; senderName: string; timestamp: string }>
+  >([]);
   const [showNoteInput, setShowNoteInput] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [chatMessage, setChatMessage] = useState("");
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [currentSpeaker, setCurrentSpeaker] = useState(0);
 
-  const [participants, setParticipants] = useState<Participant[]>([
-    {
-      id: "1",
-      name: "Akbar Husain",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-      isHost: true,
-      isVideoOn: true,
-      isMuted: false,
-      isSpeaking: true,
-    },
-    {
-      id: "2",
-      name: "Ameesh Menon",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
-      isVideoOn: true,
-      isMuted: false,
-      isSpeaking: false,
-    },
-    {
-      id: "3",
-      name: "Jonathan Sasi",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-      isVideoOn: true,
-      isMuted: true,
-      isSpeaking: false,
-    },
-    {
-      id: "4",
-      name: "Riska Thakur",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
-      isVideoOn: true,
-      isMuted: false,
-      isSpeaking: false,
-    },
-  ]);
+  // Sync mic/camera with LiveKit
+  const toggleMic = useCallback(async () => {
+    const next = !isMuted;
+    setIsMuted(next);
+    await localParticipant.setMicrophoneEnabled(!next);
+  }, [isMuted, localParticipant]);
 
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    {
-      id: "1",
-      sender: "Akbar Husain",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
-      message: "Good morning everyone!",
-      timestamp: "10:30",
-    },
-    {
-      id: "2",
-      sender: "Ameesh Menon",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
-      message: "Hi! Ready to start the meeting",
-      timestamp: "10:31",
-    },
-  ]);
+  const toggleCamera = useCallback(async () => {
+    const next = !isVideoOn;
+    setIsVideoOn(next);
+    await localParticipant.setCameraEnabled(next);
+  }, [isVideoOn, localParticipant]);
 
-  // Initialize camera
+  const toggleScreenShare = useCallback(async () => {
+    await localParticipant.setScreenShareEnabled(!isScreenSharing);
+  }, [isScreenSharing, localParticipant]);
+
+  // DataChannel chat
+  const encoder = useRef(new TextEncoder());
+  const decoder = useRef(new TextDecoder());
+
   useEffect(() => {
-    const startCamera = async () => {
+    const handleData = (
+      payload: Uint8Array,
+      participant?: RemoteParticipant,
+    ) => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "user" },
-          audio: !isMuted,
-        });
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = stream;
+        const data = JSON.parse(decoder.current.decode(payload));
+        if (data.type === "chat") {
+          setChatMessages((prev) => [
+            ...prev,
+            {
+              id: Date.now().toString(),
+              sender: participant?.name || participant?.identity || "Unknown",
+              message: data.message,
+              timestamp: new Date().toLocaleTimeString("ko-KR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+            },
+          ]);
         }
-      } catch (err) {
-        console.error("Error accessing media:", err);
+      } catch {
+        // ignore non-JSON data
       }
     };
 
-    if (isVideoOn) {
-      startCamera();
-    }
-
+    room.on(RoomEvent.DataReceived, handleData);
     return () => {
-      if (localVideoRef.current && localVideoRef.current.srcObject) {
-        const tracks = (localVideoRef.current.srcObject as MediaStream).getTracks();
-        tracks.forEach((track) => track.stop());
-      }
+      room.off(RoomEvent.DataReceived, handleData);
     };
-  }, [isVideoOn]);
+  }, [room]);
 
-  // Toggle fullscreen
+  const handleSendMessage = useCallback(() => {
+    if (!chatMessage.trim()) return;
+
+    const data = JSON.stringify({ type: "chat", message: chatMessage });
+    room.localParticipant.publishData(
+      encoder.current.encode(data),
+      { reliable: true },
+    );
+
+    setChatMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        sender: "You",
+        message: chatMessage,
+        timestamp: new Date().toLocaleTimeString("ko-KR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      },
+    ]);
+    setChatMessage("");
+  }, [chatMessage, room]);
+
   const toggleFullscreen = async () => {
     try {
       if (!isFullscreen) {
@@ -176,120 +355,56 @@ export default function MeetingRoom() {
     }
   };
 
-  const handleSendMessage = () => {
-    if (chatMessage.trim()) {
-      const newMessage: ChatMessage = {
-        id: Date.now().toString(),
-        sender: "You",
-        avatar:
-          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
-        message: chatMessage,
-        timestamp: new Date().toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      };
-      setChatMessages([...chatMessages, newMessage]);
-      setChatMessage("");
-    }
-  };
-
-  const handleStartAIRecording = () => {
-    setIsAIRecording(true);
-  };
-
-  const handleEndAIRecording = () => {
-    setIsAIRecording(false);
-  };
-
-  // Screenshot functionality
   const handleScreenshot = async () => {
-    try {
-      if (localVideoRef.current && localVideoRef.current.srcObject) {
-        const stream = localVideoRef.current.srcObject as MediaStream;
-        const video = localVideoRef.current;
-
-        if (canvasRef.current) {
-          const ctx = canvasRef.current.getContext("2d");
-          if (ctx) {
-            canvasRef.current.width = video.videoWidth;
-            canvasRef.current.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0);
-
-            canvasRef.current.toBlob((blob) => {
-              if (blob) {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `screenshot-${Date.now()}.png`;
-                a.click();
-                URL.revokeObjectURL(url);
-              }
-            });
+    // Find a video element on screen to screenshot
+    const videoEl = document.querySelector("video");
+    if (videoEl && canvasRef.current) {
+      const ctx = canvasRef.current.getContext("2d");
+      if (ctx) {
+        canvasRef.current.width = videoEl.videoWidth;
+        canvasRef.current.height = videoEl.videoHeight;
+        ctx.drawImage(videoEl, 0, 0);
+        canvasRef.current.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `screenshot-${Date.now()}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
           }
-        }
+        });
       }
-    } catch (err) {
-      console.error("Screenshot error:", err);
     }
   };
 
-  // Screen sharing functionality
-  const handleScreenShare = async () => {
-    try {
-      if (isScreenSharing) {
-        // Stop screen sharing
-        if (screenShareRef.current) {
-          screenShareRef.current.getTracks().forEach((track) => track.stop());
-          screenShareRef.current = null;
-        }
-        setIsScreenSharing(false);
-      } else {
-        // Start screen sharing
-        const stream = await navigator.mediaDevices.getDisplayMedia({
-          video: { cursor: "always" },
-          audio: false,
-        });
-        screenShareRef.current = stream;
-        setIsScreenSharing(true);
-
-        // Stop sharing when user stops from system dialog
-        stream.getVideoTracks()[0].addEventListener("ended", () => {
-          setIsScreenSharing(false);
-          screenShareRef.current = null;
-        });
-      }
-    } catch (err) {
-      console.error("Screen share error:", err);
-    }
-  };
-
-  // Add note to chat
   const handleAddNote = () => {
     if (noteText.trim()) {
       const newMessage: ChatMessage = {
         id: Date.now().toString(),
         sender: "You",
-        avatar:
-          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
         message: `📝 ${noteText}`,
-        timestamp: new Date().toLocaleTimeString("en-US", {
+        timestamp: new Date().toLocaleTimeString("ko-KR", {
           hour: "2-digit",
           minute: "2-digit",
         }),
       };
-      setChatMessages([...chatMessages, newMessage]);
+      setChatMessages((prev) => [...prev, newMessage]);
       setNoteText("");
       setShowNoteInput(false);
     }
   };
 
-  // PIP 모드 UI
+  const handleDisconnect = useCallback(() => {
+    room.disconnect();
+    navigate("/");
+  }, [room, navigate]);
+
+  // PIP Mode
   if (isPIPMode) {
     return (
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div className="bg-gradient-to-br from-purple-950 via-black to-purple-900 rounded-2xl shadow-2xl w-96 h-72 border border-purple-500/30 overflow-hidden flex flex-col">
-          {/* Header */}
           <div className="px-4 py-3 border-b border-purple-500/20 bg-purple-900/40 flex items-center justify-between">
             <h3 className="text-lg font-bold text-white">회의 진행 중</h3>
             <div className="flex items-center gap-2">
@@ -301,7 +416,7 @@ export default function MeetingRoom() {
                 <Maximize className="w-4 h-4" />
               </button>
               <button
-                onClick={() => navigate("/")}
+                onClick={() => setShowExitModal(true)}
                 className="p-1 hover:bg-red-600/30 rounded-lg transition-colors text-red-400"
                 title="회의 나가기"
               >
@@ -310,32 +425,23 @@ export default function MeetingRoom() {
             </div>
           </div>
 
-          {/* Video Preview */}
           <div className="flex-1 relative bg-black overflow-hidden">
-            {isVideoOn ? (
-              <video
-                ref={localVideoRef}
-                autoPlay
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              />
+            {isVideoOn && localParticipant ? (
+              <LocalVideoPreview />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/40 to-black">
                 <VideoOff className="w-12 h-12 text-white/30" />
               </div>
             )}
 
-            {/* Floating Controls */}
             <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-2 px-3">
               <button
-                onClick={() => setIsMuted(!isMuted)}
+                onClick={toggleMic}
                 className={`p-2 rounded-full transition-all ${
                   isMuted
                     ? "bg-red-600 text-white hover:bg-red-700"
                     : "bg-purple-600 text-white hover:bg-purple-700"
                 }`}
-                title={isMuted ? "음성 켜기" : "음성 끄기"}
               >
                 {isMuted ? (
                   <MicOff className="w-4 h-4" />
@@ -344,13 +450,12 @@ export default function MeetingRoom() {
                 )}
               </button>
               <button
-                onClick={() => setIsVideoOn(!isVideoOn)}
+                onClick={toggleCamera}
                 className={`p-2 rounded-full transition-all ${
                   !isVideoOn
                     ? "bg-red-600 text-white hover:bg-red-700"
                     : "bg-purple-600 text-white hover:bg-purple-700"
                 }`}
-                title={isVideoOn ? "카메라 끄기" : "카메라 켜기"}
               >
                 {isVideoOn ? (
                   <Video className="w-4 h-4" />
@@ -360,32 +465,42 @@ export default function MeetingRoom() {
               </button>
             </div>
 
-            {/* AI Recording Indicator */}
             {isAIRecording && (
               <div className="absolute top-3 left-3 flex items-center gap-1 bg-red-600 px-2 py-1 rounded-full text-xs font-semibold text-white">
-                <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+                <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                 녹화 중
               </div>
             )}
           </div>
 
-          {/* Status Bar */}
           <div className="px-4 py-2 border-t border-purple-500/20 bg-purple-900/40 text-xs text-white/70">
             {participants.length}명 참여 중
           </div>
         </div>
+
+        <ExitMeetingModal
+          isOpen={showExitModal}
+          isHost={isHost}
+          isAIRecording={isAIRecording}
+          onClose={() => setShowExitModal(false)}
+          onConfirm={handleDisconnect}
+        />
       </div>
     );
   }
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white overflow-hidden">
-      {/* Hidden canvas for screenshots */}
       <canvas ref={canvasRef} className="hidden" />
+
       {/* Main Video Area */}
       <div
         className={`flex-1 flex flex-col transition-all duration-300 ${
-          showChat && showParticipants ? "w-1/2" : showChat || showParticipants ? "w-2/3" : "w-full"
+          showChat && showParticipants
+            ? "w-1/2"
+            : showChat || showParticipants
+              ? "w-2/3"
+              : "w-full"
         }`}
       >
         {/* Header */}
@@ -408,7 +523,9 @@ export default function MeetingRoom() {
             </button>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-white/60">{participants.length} 명 참여 중</span>
+            <span className="text-sm text-white/60">
+              {participants.length} 명 참여 중
+            </span>
             <button
               onClick={toggleFullscreen}
               className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
@@ -422,107 +539,38 @@ export default function MeetingRoom() {
         {/* Video Content */}
         <div className="flex-1 overflow-hidden p-4">
           {viewMode === "gallery" ? (
-            // Gallery View - Grid of participants (2x2)
             <div className="grid grid-cols-2 gap-4 h-full overflow-auto max-w-4xl mx-auto">
-              {participants.slice(0, 4).map((participant, idx) => (
-                <div
-                  key={participant.id}
-                  className={`relative rounded-2xl overflow-hidden bg-black border-2 transition-all aspect-video ${
-                    participant.isSpeaking
-                      ? "border-purple-500 ring-2 ring-purple-500/50"
-                      : "border-purple-500/20"
-                  }`}
-                >
-                  {/* Participant Video / Avatar */}
-                  <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black flex items-center justify-center relative">
-                    {idx === 0 && isVideoOn ? (
-                      <video
-                        ref={localVideoRef}
-                        autoPlay
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <img
-                        src={participant.avatar}
-                        alt={participant.name}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-
-                    {/* Speaking indicator */}
-                    {participant.isSpeaking && (
-                      <div className="absolute top-2 left-2">
-                        <div className="flex items-center gap-1 bg-green-600 px-2 py-1 rounded-full text-xs font-semibold">
-                          <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
-                          Speaking
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Name and Status */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
-                      <p className="text-sm font-semibold">{participant.name}</p>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-white/70">
-                        {participant.isMuted && <MicOff className="w-3 h-3" />}
-                        {!participant.isVideoOn && <VideoOff className="w-3 h-3" />}
-                      </div>
-                    </div>
-
-                    {/* Host Badge */}
-                    {participant.isHost && (
-                      <div className="absolute top-2 right-2 bg-blue-600 px-2 py-1 rounded-full text-xs font-semibold">
-                        Host
-                      </div>
-                    )}
-                  </div>
-                </div>
+              {participants.slice(0, 4).map((participant) => (
+                <ParticipantTile
+                  key={participant.identity}
+                  participant={participant}
+                />
               ))}
             </div>
           ) : (
-            // Speaker View
             <div className="flex h-full gap-4">
               {/* Main Speaker */}
               <div className="flex-1 rounded-2xl overflow-hidden border-2 border-purple-500 ring-2 ring-purple-500/30 relative">
-                <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black flex items-center justify-center">
-                  {currentSpeaker === 0 && isVideoOn ? (
-                    <video
-                      ref={localVideoRef}
-                      autoPlay
-                      muted
-                      playsInline
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={participants[currentSpeaker].avatar}
-                      alt={participants[currentSpeaker].name}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+                {participants[currentSpeaker] && (
+                  <ParticipantTile
+                    participant={participants[currentSpeaker]}
+                    className="w-full h-full rounded-none border-0"
+                  />
+                )}
 
-                  {/* Speaker Info */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6">
-                    <p className="text-2xl font-bold">{participants[currentSpeaker].name}</p>
-                    <p className="text-white/70 mt-1">Now speaking</p>
+                {isAIRecording && (
+                  <div className="absolute top-6 left-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 rounded-full text-white font-semibold">
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                    AI 회의록
                   </div>
-
-                  {/* AI Recording Indicator */}
-                  {isAIRecording && (
-                    <div className="absolute top-6 left-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 rounded-full text-white font-semibold">
-                      <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                      AI 회의록
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
 
               {/* Side Thumbnails */}
               <div className="w-32 flex flex-col gap-2 overflow-y-auto">
                 {participants.map((participant, idx) => (
                   <button
-                    key={participant.id}
+                    key={participant.identity}
                     onClick={() => setCurrentSpeaker(idx)}
                     className={`relative w-full h-24 rounded-lg overflow-hidden border-2 transition-all ${
                       currentSpeaker === idx
@@ -530,15 +578,10 @@ export default function MeetingRoom() {
                         : "border-purple-500/30 hover:border-purple-400"
                     }`}
                   >
-                    <img
-                      src={participant.avatar}
-                      alt={participant.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/40 flex items-end p-1">
-                      <p className="text-xs font-semibold line-clamp-1">
-                        {participant.name}
-                      </p>
+                    <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black flex items-center justify-center">
+                      <span className="text-xs font-semibold text-white">
+                        {participant.name || participant.identity}
+                      </span>
                     </div>
                   </button>
                 ))}
@@ -549,181 +592,174 @@ export default function MeetingRoom() {
 
         {/* Control Bar */}
         <TooltipProvider>
-        <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-center gap-4">
-          {/* Mic Button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setIsMuted(!isMuted)}
-                className={`p-4 rounded-full transition-all duration-200 ${
-                  isMuted
-                    ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-              >
-                {isMuted ? (
-                  <MicOff className="w-6 h-6" />
-                ) : (
-                  <Mic className="w-6 h-6" />
-                )}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              {isMuted ? "음성 켜기" : "음성 끄기"}
-            </TooltipContent>
-          </Tooltip>
+          <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-center gap-4">
+            {/* Mic */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={toggleMic}
+                  className={`p-4 rounded-full transition-all duration-200 ${
+                    isMuted
+                      ? "bg-red-600 text-white hover:bg-red-700"
+                      : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                  }`}
+                >
+                  {isMuted ? (
+                    <MicOff className="w-6 h-6" />
+                  ) : (
+                    <Mic className="w-6 h-6" />
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                {isMuted ? "음성 켜기" : "음성 끄기"}
+              </TooltipContent>
+            </Tooltip>
 
-          {/* Video Button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setIsVideoOn(!isVideoOn)}
-                className={`p-4 rounded-full transition-all duration-200 ${
-                  !isVideoOn
-                    ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-              >
-                {isVideoOn ? (
-                  <Video className="w-6 h-6" />
-                ) : (
-                  <VideoOff className="w-6 h-6" />
-                )}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              {isVideoOn ? "카메라 끄기" : "카메라 켜기"}
-            </TooltipContent>
-          </Tooltip>
+            {/* Video */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={toggleCamera}
+                  className={`p-4 rounded-full transition-all duration-200 ${
+                    !isVideoOn
+                      ? "bg-red-600 text-white hover:bg-red-700"
+                      : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                  }`}
+                >
+                  {isVideoOn ? (
+                    <Video className="w-6 h-6" />
+                  ) : (
+                    <VideoOff className="w-6 h-6" />
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                {isVideoOn ? "카메라 끄기" : "카메라 켜기"}
+              </TooltipContent>
+            </Tooltip>
 
-          {/* AI Recording Button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setIsAIRecordingRequestModalOpen(true)}
-                className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
-                  isAIRecording
-                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-              >
-                <Zap className="w-5 h-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              {isHost ? "AI 회의록 관리" : "AI 회의록 요청"}
-            </TooltipContent>
-          </Tooltip>
+            {/* AI Recording */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setIsAIRecordingRequestModalOpen(true)}
+                  className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
+                    isAIRecording
+                      ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
+                      : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                  }`}
+                >
+                  <Zap className="w-5 h-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                {isHost ? "AI 회의록 관리" : "AI 회의록 요청"}
+              </TooltipContent>
+            </Tooltip>
 
-          {/* View Mode Toggle */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setViewMode(viewMode === "gallery" ? "speaker" : "gallery")}
-                className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
-              >
-                <Users className="w-6 h-6" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              화면 전환
-            </TooltipContent>
-          </Tooltip>
+            {/* View Mode */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() =>
+                    setViewMode(
+                      viewMode === "gallery" ? "speaker" : "gallery",
+                    )
+                  }
+                  className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
+                >
+                  <Users className="w-6 h-6" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">화면 전환</TooltipContent>
+            </Tooltip>
 
-          {/* Screenshot Button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={handleScreenshot}
-                className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
-              >
-                <Camera className="w-6 h-6" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              스크린샷 촬영
-            </TooltipContent>
-          </Tooltip>
+            {/* Screenshot */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handleScreenshot}
+                  className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
+                >
+                  <Camera className="w-6 h-6" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">스크린샷 촬영</TooltipContent>
+            </Tooltip>
 
-          {/* Screen Share Button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={handleScreenShare}
-                className={`p-4 rounded-full transition-all duration-200 ${
-                  isScreenSharing
-                    ? "bg-green-600 text-white hover:bg-green-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-              >
-                <Share2 className="w-6 h-6" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              {isScreenSharing ? "화면 공유 중지" : "화면 공유"}
-            </TooltipContent>
-          </Tooltip>
+            {/* Screen Share */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={toggleScreenShare}
+                  className={`p-4 rounded-full transition-all duration-200 ${
+                    isScreenSharing
+                      ? "bg-green-600 text-white hover:bg-green-700"
+                      : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                  }`}
+                >
+                  <Share2 className="w-6 h-6" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                {isScreenSharing ? "화면 공유 중지" : "화면 공유"}
+              </TooltipContent>
+            </Tooltip>
 
-          {/* Chat Button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setShowChat(!showChat)}
-                className={`p-4 rounded-full transition-all duration-200 ${
-                  showChat
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-              >
-                <MessageCircle className="w-6 h-6" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              채팅
-            </TooltipContent>
-          </Tooltip>
+            {/* Chat */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setShowChat(!showChat)}
+                  className={`p-4 rounded-full transition-all duration-200 ${
+                    showChat
+                      ? "bg-blue-600 text-white hover:bg-blue-700"
+                      : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                  }`}
+                >
+                  <MessageCircle className="w-6 h-6" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">채팅</TooltipContent>
+            </Tooltip>
 
-          {/* Participants Button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setShowParticipants(!showParticipants)}
-                className={`p-4 rounded-full transition-all duration-200 ${
-                  showParticipants
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "bg-purple-500/30 text-white hover:bg-purple-500/50"
-                }`}
-              >
-                <Users className="w-6 h-6" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              참여자
-            </TooltipContent>
-          </Tooltip>
+            {/* Participants */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setShowParticipants(!showParticipants)}
+                  className={`p-4 rounded-full transition-all duration-200 ${
+                    showParticipants
+                      ? "bg-blue-600 text-white hover:bg-blue-700"
+                      : "bg-purple-500/30 text-white hover:bg-purple-500/50"
+                  }`}
+                >
+                  <Users className="w-6 h-6" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">참여자</TooltipContent>
+            </Tooltip>
 
-          {/* Leave Button */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setShowExitModal(true)}
-                className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200 ml-auto"
-              >
-                <Phone className="w-6 h-6" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              회의 나가기
-            </TooltipContent>
-          </Tooltip>
-        </div>
+            {/* Leave */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => setShowExitModal(true)}
+                  className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200 ml-auto"
+                >
+                  <Phone className="w-6 h-6" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">회의 나가기</TooltipContent>
+            </Tooltip>
+          </div>
         </TooltipProvider>
       </div>
 
       {/* Chat Panel */}
       {showChat && (
         <div className="w-80 border-l border-purple-500/20 bg-purple-900/30 backdrop-blur-md flex flex-col">
-          {/* Chat Header */}
           <div className="px-4 py-4 border-b border-purple-500/20 flex items-center justify-between">
             <h3 className="font-semibold">채팅</h3>
             <button
@@ -734,15 +770,12 @@ export default function MeetingRoom() {
             </button>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
             {chatMessages.map((msg) => (
               <div key={msg.id} className="flex gap-3">
-                <img
-                  src={msg.avatar}
-                  alt={msg.sender}
-                  className="w-8 h-8 rounded-full"
-                />
+                <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                  {msg.sender[0]}
+                </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-semibold">{msg.sender}</p>
@@ -756,7 +789,6 @@ export default function MeetingRoom() {
             ))}
           </div>
 
-          {/* Note Input */}
           {showNoteInput && (
             <div className="px-4 py-3 border-t border-purple-500/20 bg-purple-500/10 space-y-2">
               <p className="text-xs text-white/60 font-semibold">노트 추가</p>
@@ -786,13 +818,12 @@ export default function MeetingRoom() {
             </div>
           )}
 
-          {/* Message Input */}
           <div className="px-4 py-4 border-t border-purple-500/20 flex gap-2">
             <input
               type="text"
               value={chatMessage}
               onChange={(e) => setChatMessage(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
               placeholder="메시지를 입력하세요..."
               className="flex-1 px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-sm text-white placeholder-white/50 focus:outline-none focus:border-purple-400"
             />
@@ -817,9 +848,10 @@ export default function MeetingRoom() {
       {/* Participants Panel */}
       {showParticipants && (
         <div className="w-80 border-l border-purple-500/20 bg-purple-900/30 backdrop-blur-md flex flex-col">
-          {/* Header */}
           <div className="px-4 py-4 border-b border-purple-500/20 flex items-center justify-between">
-            <h3 className="font-semibold">참여자 ({participants.length}명)</h3>
+            <h3 className="font-semibold">
+              참여자 ({participants.length}명)
+            </h3>
             <button
               onClick={() => setShowParticipants(false)}
               className="p-1 hover:bg-purple-500/20 rounded transition-colors"
@@ -828,11 +860,10 @@ export default function MeetingRoom() {
             </button>
           </div>
 
-          {/* Participants List */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
             {participants.map((participant) => (
               <div
-                key={participant.id}
+                key={participant.identity}
                 className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                   participant.isSpeaking
                     ? "bg-purple-500/30 border border-purple-400"
@@ -840,30 +871,31 @@ export default function MeetingRoom() {
                 }`}
               >
                 <div className="relative">
-                  <img
-                    src={participant.avatar}
-                    alt={participant.name}
-                    className="w-10 h-10 rounded-full"
-                  />
+                  <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white text-sm font-bold">
+                    {(participant.name || participant.identity)[0]?.toUpperCase()}
+                  </div>
                   {participant.isSpeaking && (
-                    <div className="absolute inset-0 rounded-full border-2 border-green-400 animate-pulse"></div>
+                    <div className="absolute inset-0 rounded-full border-2 border-green-400 animate-pulse" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold truncate">
-                    {participant.name}
-                    {participant.isHost && " (호스트)"}
+                    {participant.name || participant.identity}
+                    {participant.metadata === "host" && " (호스트)"}
                   </p>
                   <div className="flex items-center gap-2 text-xs text-white/60">
-                    {participant.isMuted && <MicOff className="w-3 h-3" />}
-                    {!participant.isVideoOn && <VideoOff className="w-3 h-3" />}
+                    {participant.isMicrophoneEnabled === false && (
+                      <MicOff className="w-3 h-3" />
+                    )}
+                    {participant.isCameraEnabled === false && (
+                      <VideoOff className="w-3 h-3" />
+                    )}
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Invite Button */}
           <div className="px-4 py-4 border-t border-purple-500/20">
             <button
               onClick={() => setIsInviteModalOpen(true)}
@@ -875,25 +907,13 @@ export default function MeetingRoom() {
         </div>
       )}
 
-
       {/* Modals */}
-      <MeetingPreparationModal
-        isOpen={showPreparationModal}
-        onStart={() => setShowPreparationModal(false)}
-        onInitialState={{
-          isMuted,
-          isVideoOn,
-        }}
-        onStateChange={{ isMuted, setIsMuted, isVideoOn, setIsVideoOn }}
-      />
-
       <AIRecordingRequestModal
         isOpen={isAIRecordingRequestModalOpen}
         isHost={isHost}
         isAIRecording={isAIRecording}
         onClose={() => setIsAIRecordingRequestModalOpen(false)}
         onRequestSend={() => {
-          // Guest sends request to host
           const newRequest = {
             id: Date.now().toString(),
             senderName: "You",
@@ -905,15 +925,12 @@ export default function MeetingRoom() {
           setPendingAIRequests([...pendingAIRequests, newRequest]);
         }}
         onApprove={() => {
-          // Host starts AI recording (either direct or from request approval)
           setIsAIRecording(true);
-          // Keep pending requests if any other requests exist
           if (pendingAIRequests.length > 0) {
             setPendingAIRequests(pendingAIRequests.slice(1));
           }
         }}
         onReject={() => {
-          // Host rejects the request
           if (pendingAIRequests.length > 0) {
             setPendingAIRequests(pendingAIRequests.slice(1));
           }
@@ -924,19 +941,11 @@ export default function MeetingRoom() {
       <InviteParticipantModal
         isOpen={isInviteModalOpen}
         onClose={() => setIsInviteModalOpen(false)}
-        onInvite={(newMembers) => {
-          const newParticipants = newMembers.map((member) => ({
-            id: member.id,
-            name: member.name,
-            avatar: member.avatar,
-            isHost: false,
-            isVideoOn: true,
-            isMuted: false,
-            isSpeaking: false,
-          }));
-          setParticipants((prev) => [...prev, ...newParticipants]);
+        onInvite={() => {
+          // LiveKit handles participant joining automatically
         }}
-        alreadyInvited={participants.map((p) => p.id)}
+        alreadyInvited={participants.map((p) => p.identity)}
+        meetingId={roomId}
       />
 
       <ExitMeetingModal
@@ -944,10 +953,39 @@ export default function MeetingRoom() {
         isHost={isHost}
         isAIRecording={isAIRecording}
         onClose={() => setShowExitModal(false)}
-        onConfirm={() => {
-          navigate("/");
-        }}
+        onConfirm={handleDisconnect}
       />
     </div>
+  );
+}
+
+// Helper component for local video preview in PIP mode
+function LocalVideoPreview() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { localParticipant } = useLocalParticipant();
+
+  const tracks = useParticipantTracks(
+    [Track.Source.Camera],
+    localParticipant.identity,
+  );
+  const cameraTrack = tracks.find((t) => t.source === Track.Source.Camera);
+
+  useEffect(() => {
+    if (videoRef.current && cameraTrack?.publication?.track) {
+      cameraTrack.publication.track.attach(videoRef.current);
+      return () => {
+        cameraTrack.publication?.track?.detach(videoRef.current!);
+      };
+    }
+  }, [cameraTrack?.publication?.track]);
+
+  return (
+    <video
+      ref={videoRef}
+      autoPlay
+      muted
+      playsInline
+      className="w-full h-full object-cover"
+    />
   );
 }

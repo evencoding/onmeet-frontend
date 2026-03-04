@@ -792,7 +792,7 @@ export default function Summary() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate("/meeting");
+                          navigate(`/meeting/${meeting.id}`);
                         }}
                         className="w-full mt-4 px-5 py-3 bg-gradient-to-r from-green-500 to-emerald-600 dark:from-green-500 dark:to-green-600 text-white text-sm font-bold rounded-xl hover:from-green-600 hover:to-emerald-700 dark:hover:from-green-600 dark:hover:to-green-700 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2.5 shadow-lg shadow-green-500/40 light:shadow-green-400/50 hover:shadow-xl hover:shadow-green-500/50 light:hover:shadow-green-400/60"
                       >
