@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useAuth } from "@/contexts/AuthContext";
+import { useCompanySignup } from "@/hooks/useAuthQuery";
+import type { ErrorResponse } from "@/lib/authApi";
 import {
   User,
   Mail,
@@ -16,39 +17,46 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
-  const { signup } = useAuth();
+  const signupMutation = useCompanySignup();
+  const isLoading = signupMutation.isPending;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
 
-    try {
-      if (!name || !email || !password || !confirmPassword) {
-        throw new Error("모든 필드를 입력해주세요");
-      }
-      if (!email.includes("@")) {
-        throw new Error("올바른 이메일 형식을 입력해주세요");
-      }
-      if (password.length < 6) {
-        throw new Error("비밀번호는 최소 6자 이상이어야 합니다");
-      }
-      if (password !== confirmPassword) {
-        throw new Error("비밀번호가 일치하지 않습니다");
-      }
-
-      await signup(name, email, password);
-      setSuccess(true);
-      setTimeout(() => navigate("/"), 2000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "회원가입 실패");
-    } finally {
-      setIsLoading(false);
+    if (!name || !email || !password || !confirmPassword) {
+      setError("모든 필드를 입력해주세요");
+      return;
     }
+    if (!email.includes("@")) {
+      setError("올바른 이메일 형식을 입력해주세요");
+      return;
+    }
+    if (password.length < 6) {
+      setError("비밀번호는 최소 6자 이상이어야 합니다");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다");
+      return;
+    }
+
+    signupMutation.mutate(
+      { data: { companyName: name, name, email, password } },
+      {
+        onSuccess: () => {
+          setSuccess(true);
+          setTimeout(() => navigate("/"), 2000);
+        },
+        onError: (err: unknown) => {
+          const apiError = err as ErrorResponse;
+          setError(apiError?.message || "회원가입에 실패했습니다");
+        },
+      },
+    );
   };
 
   return (
