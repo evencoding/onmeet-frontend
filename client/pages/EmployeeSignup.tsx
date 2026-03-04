@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -10,67 +10,62 @@ import {
   Sparkles,
   ArrowLeft,
 } from "lucide-react";
+import {
+  useEmployeeSignup,
+  useValidateInvitation,
+} from "@/hooks/useAuthQuery";
+import { validateInvitation } from "@/lib/authApi";
+import type { ErrorResponse } from "@/lib/authApi";
 
 export default function EmployeeSignup() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const inviteToken = searchParams.get("token");
+  const inviteToken = searchParams.get("token") || "";
 
   const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteCode, setInviteCode] = useState(inviteToken);
   const [companyName, setCompanyName] = useState("");
-  const [step, setStep] = useState<"verify" | "register">("verify");
+  const [step, setStep] = useState<"verify" | "register">(
+    inviteToken ? "register" : "verify",
+  );
   const [formData, setFormData] = useState({
     name: "",
-    email: inviteEmail,
+    email: "",
     password: "",
     confirmPassword: "",
     memberNum: "",
-    role: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // If have invite token, verify it automatically
-  useEffect(() => {
-    if (inviteToken) {
-      verifyInviteToken();
-    }
-  }, [inviteToken]);
-
-  const verifyInviteToken = async () => {
-    setIsLoading(true);
-    try {
-      // For demo purposes
-      setInviteEmail("employee@example.com");
-      setCompanyName("Tech Company");
-      setFormData((prev) => ({ ...prev, email: "employee@example.com" }));
-      setStep("register");
-    } catch (err) {
-      setError("유효하지 않은 초대 링크입니다");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const employeeSignupMutation = useEmployeeSignup();
 
   const handleVerifySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!inviteEmail) {
+      setError("이메일을 입력해주세요");
+      return;
+    }
+    if (!inviteEmail.includes("@")) {
+      setError("올바른 이메일 형식을 입력해주세요");
+      return;
+    }
+    if (!inviteCode) {
+      setError("초대 코드를 입력해주세요");
+      return;
+    }
+
     setIsLoading(true);
-
     try {
-      if (!inviteEmail) {
-        throw new Error("이메일을 입력해주세요");
-      }
-      if (!inviteEmail.includes("@")) {
-        throw new Error("올바른 이메일 형식을 입력해주세요");
-      }
-
-      // For demo purposes
+      const invitation = await validateInvitation(inviteEmail, inviteCode);
+      setCompanyName(invitation.companyName);
       setFormData((prev) => ({ ...prev, email: inviteEmail }));
-      setCompanyName("Tech Company");
       setStep("register");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "이메일 검증 실패");
+      const apiError = err as ErrorResponse;
+      setError(apiError.message || "초대 코드 검증에 실패했습니다");
     } finally {
       setIsLoading(false);
     }
@@ -79,29 +74,40 @@ export default function EmployeeSignup() {
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
 
-    try {
-      const { name, email, password, confirmPassword, memberNum, role } =
-        formData;
+    const { name, password, confirmPassword, memberNum } = formData;
 
-      if (!name || !password || !confirmPassword) {
-        throw new Error("모든 필드를 입력해주세요");
-      }
-      if (password.length < 6) {
-        throw new Error("비밀번호는 최소 6자 이상이어야 합니다");
-      }
-      if (password !== confirmPassword) {
-        throw new Error("비밀번호가 일치하지 않습니다");
-      }
-
-      console.log("Employee registered:", { name, email, memberNum, role });
-      navigate("/login");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "가입 실패");
-    } finally {
-      setIsLoading(false);
+    if (!name || !password || !confirmPassword) {
+      setError("모든 필드를 입력해주세요");
+      return;
     }
+    if (password.length < 6) {
+      setError("비밀번호는 최소 6자 이상이어야 합니다");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다");
+      return;
+    }
+
+    employeeSignupMutation.mutate(
+      {
+        data: {
+          email: formData.email || inviteEmail,
+          code: inviteCode,
+          password,
+          name,
+          employeeId: memberNum || undefined,
+        },
+      },
+      {
+        onSuccess: () => navigate("/login"),
+        onError: (err: unknown) => {
+          const apiError = err as ErrorResponse;
+          setError(apiError?.message || "가입에 실패했습니다");
+        },
+      },
+    );
   };
 
   if (step === "verify") {
@@ -214,6 +220,26 @@ export default function EmployeeSignup() {
                   <p className="text-xs text-white/50">
                     회사에서 초대한 이메일을 입력해주세요
                   </p>
+                </motion.div>
+
+                {/* Invite Code Input */}
+                <motion.div
+                  className="space-y-1"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.55 }}
+                >
+                  <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
+                    <Lock className="w-3 h-3 text-blue-400" />
+                    초대 코드
+                  </label>
+                  <input
+                    type="text"
+                    value={inviteCode}
+                    onChange={(e) => setInviteCode(e.target.value)}
+                    placeholder="INV-123456"
+                    className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+                  />
                 </motion.div>
 
                 {/* Submit Button */}
@@ -435,31 +461,7 @@ export default function EmployeeSignup() {
                 />
               </motion.div>
 
-              {/* Role */}
-              <motion.div
-                className="space-y-1"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.65 }}
-              >
-                <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
-                  <Building2 className="w-3 h-3 text-blue-400" />
-                  직급 (선택)
-                </label>
-                <select
-                  value={formData.role}
-                  onChange={(e) =>
-                    setFormData({ ...formData, role: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white"
-                >
-                  <option value="">선택해주세요</option>
-                  <option value="user">사원</option>
-                  <option value="team-lead">팀장</option>
-                  <option value="manager">매니저</option>
-                  <option value="director">이사</option>
-                </select>
-              </motion.div>
+
 
               {/* Password */}
               <motion.div
@@ -511,7 +513,7 @@ export default function EmployeeSignup() {
               {/* Submit Button */}
               <motion.button
                 type="submit"
-                disabled={isLoading}
+                disabled={employeeSignupMutation.isPending}
                 className="w-full px-4 py-2 mt-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -519,8 +521,8 @@ export default function EmployeeSignup() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
               >
-                {isLoading ? "가입 중..." : "계정 만들기"}
-                {!isLoading && <ArrowRight className="w-3 h-3" />}
+                {employeeSignupMutation.isPending ? "가입 중..." : "계정 만들기"}
+                {!employeeSignupMutation.isPending && <ArrowRight className="w-3 h-3" />}
               </motion.button>
             </form>
 
