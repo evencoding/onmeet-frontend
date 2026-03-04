@@ -1,65 +1,51 @@
-import { createContext, useContext, useState, ReactNode } from "react";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-}
+import { createContext, useContext, useCallback, ReactNode } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  useMe,
+  useLogin,
+  useLogout,
+  AUTH_QUERY_KEY,
+} from "@/hooks/useAuthQuery";
+import type { UserResponseDto } from "@/lib/authApi";
 
 interface AuthContextType {
-  user: User | null;
+  user: UserResponseDto | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    const stored = localStorage.getItem("auth_user");
-    return stored ? JSON.parse(stored) : null;
-  });
+  const { data: user, isLoading: isMeLoading } = useMe();
+  const loginMutation = useLogin();
+  const logoutMutation = useLogout();
+  const queryClient = useQueryClient();
 
-  const login = async (email: string, password: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  const login = useCallback(
+    async (email: string, password: string) => {
+      await loginMutation.mutateAsync({ email, password });
+      await queryClient.refetchQueries({ queryKey: AUTH_QUERY_KEY });
+    },
+    [loginMutation, queryClient],
+  );
 
-    const mockUser: User = {
-      id: "1",
-      name: email.split("@")[0],
-      email,
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
-    };
-
-    setUser(mockUser);
-    localStorage.setItem("auth_user", JSON.stringify(mockUser));
-  };
-
-  const signup = async (name: string, email: string, password: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const mockUser: User = {
-      id: Date.now().toString(),
-      name,
-      email,
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
-    };
-
-    setUser(mockUser);
-    localStorage.setItem("auth_user", JSON.stringify(mockUser));
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("auth_user");
-  };
+  const logout = useCallback(async () => {
+    await logoutMutation.mutateAsync();
+  }, [logoutMutation]);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, signup, logout }}>
+    <AuthContext.Provider
+      value={{
+        user: user ?? null,
+        isAuthenticated: !!user,
+        isLoading: isMeLoading,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

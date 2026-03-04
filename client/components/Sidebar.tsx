@@ -331,11 +331,9 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
     return (
       <div className="w-full space-y-2 flex flex-col items-center">
         <div title={user.name} className="relative">
-          <img
-            src={user.avatar}
-            alt={user.name}
-            className="w-10 h-10 rounded-full object-cover"
-          />
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
+            {user.name?.charAt(0)?.toUpperCase() || "U"}
+          </div>
           <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 border border-white"></div>
         </div>
         <button
@@ -354,7 +352,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
       {/* Company Information */}
       <div className="w-full px-4 py-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl text-center">
         <div className="text-base font-bold text-white">
-          Acme Corporation
+          {user.company?.name || "ONMEET"}
         </div>
       </div>
 
