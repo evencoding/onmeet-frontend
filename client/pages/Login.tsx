@@ -1,37 +1,41 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useAuth } from "@/contexts/AuthContext";
+import { useLogin } from "@/hooks/useAuthQuery";
+import type { ErrorResponse } from "@/lib/authApi";
 import { Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const loginMutation = useLogin();
+  const isLoading = loginMutation.isPending;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
 
-    try {
-      if (!email || !password) {
-        throw new Error("이메일과 비밀번호를 입력해주세요");
-      }
-      if (!email.includes("@")) {
-        throw new Error("올바른 이메일 형식을 입력해주세요");
-      }
-
-      await login(email, password);
-      navigate("/");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "로그인 실패");
-    } finally {
-      setIsLoading(false);
+    if (!email || !password) {
+      setError("이메일과 비밀번호를 입력해주세요");
+      return;
     }
+    if (!email.includes("@")) {
+      setError("올바른 이메일 형식을 입력해주세요");
+      return;
+    }
+
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: () => navigate("/"),
+        onError: (err: unknown) => {
+          const apiError = err as ErrorResponse;
+          setError(apiError?.message || "로그인에 실패했습니다");
+        },
+      },
+    );
   };
 
   return (
@@ -206,15 +210,6 @@ export default function Login() {
           </div>
         </motion.div>
 
-        {/* Demo Note */}
-        <motion.p
-          className="mt-6 text-center text-xs text-white/50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
-          💡 데모: 이메일과 비밀번호를 입력하면 로그인됩니다
-        </motion.p>
       </motion.div>
 
       <style>{`

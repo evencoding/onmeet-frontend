@@ -5,49 +5,59 @@ import {
   Building2,
   Mail,
   Lock,
-  Globe,
+  User,
   ArrowRight,
   Sparkles,
 } from "lucide-react";
+import { useCompanySignup } from "@/hooks/useAuthQuery";
+import type { ErrorResponse } from "@/lib/authApi";
 
 export default function CompanySignup() {
   const [companyName, setCompanyName] = useState("");
-  const [domain, setDomain] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const companySignupMutation = useCompanySignup();
+  const isLoading = companySignupMutation.isPending;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
 
-    try {
-      if (!companyName || !domain || !email || !password || !confirmPassword) {
-        throw new Error("모든 필드를 입력해주세요");
-      }
-      if (!email.includes("@")) {
-        throw new Error("올바른 이메일 형식을 입력해주세요");
-      }
-      if (password.length < 6) {
-        throw new Error("비밀번호는 최소 6자 이상이어야 합니다");
-      }
-      if (password !== confirmPassword) {
-        throw new Error("비밀번호가 일치하지 않습니다");
-      }
-
-      console.log("Company created:", { companyName, domain, email });
-      navigate("/signup/invite-members", {
-        state: { companyId: "test-company-id" },
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "기업 가입 실패");
-    } finally {
-      setIsLoading(false);
+    if (!companyName || !name || !email || !password || !confirmPassword) {
+      setError("모든 필드를 입력해주세요");
+      return;
     }
+    if (!email.includes("@")) {
+      setError("올바른 이메일 형식을 입력해주세요");
+      return;
+    }
+    if (password.length < 6) {
+      setError("비밀번호는 최소 6자 이상이어야 합니다");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다");
+      return;
+    }
+
+    companySignupMutation.mutate(
+      {
+        data: { companyName, name, email, password },
+      },
+      {
+        onSuccess: () => {
+          navigate("/signup/invite-members");
+        },
+        onError: (err: unknown) => {
+          const apiError = err as ErrorResponse;
+          setError(apiError?.message || "기업 가입에 실패했습니다");
+        },
+      },
+    );
   };
 
   return (
@@ -160,7 +170,7 @@ export default function CompanySignup() {
                 />
               </motion.div>
 
-              {/* Domain */}
+              {/* Admin Name */}
               <motion.div
                 className="space-y-1"
                 initial={{ opacity: 0, x: -20 }}
@@ -168,24 +178,16 @@ export default function CompanySignup() {
                 transition={{ delay: 0.55 }}
               >
                 <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
-                  <Globe className="w-3 h-3 text-purple-400" />
-                  회사 도메인
+                  <User className="w-3 h-3 text-purple-400" />
+                  담당자 이름
                 </label>
-                <div className="flex gap-1">
-                  <input
-                    type="text"
-                    value={domain}
-                    onChange={(e) => setDomain(e.target.value)}
-                    placeholder="example"
-                    className="flex-1 px-3 py-2 border border-purple-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-purple-500/60 focus:ring-2 focus:ring-purple-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
-                  />
-                  <div className="px-2 py-2 border border-purple-500/30 rounded-lg bg-white/10 text-white/70 text-xs font-medium">
-                    .com
-                  </div>
-                </div>
-                <p className="text-xs text-white/50">
-                  이메일 도메인 (name@example.com)
-                </p>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="홍길동"
+                  className="w-full px-3 py-2 border border-purple-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-purple-500/60 focus:ring-2 focus:ring-purple-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+                />
               </motion.div>
 
               {/* Admin Email */}

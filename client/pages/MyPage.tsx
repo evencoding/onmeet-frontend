@@ -17,7 +17,7 @@ export default function MyPage() {
     position: "Product Manager",
     team: "마케팅",
     bio: "Meeting enthusiast",
-    avatar: user?.avatar || "",
+    avatar: "",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
