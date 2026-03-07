@@ -15,7 +15,7 @@ interface MeetingResult {
 export default function AIMeetingSearch() {
   const meetings: MeetingResult[] = [
     {
-      id: 1,
+      id: "1",
       title: "3D Designer",
       status: "active",
       tag: "ACTIVE",
@@ -28,7 +28,7 @@ export default function AIMeetingSearch() {
       description: "회의 내용을 요약하기",
     },
     {
-      id: 2,
+      id: "2",
       title: "Chuyên Viên Kiến Thức ( Tester )",
       status: "pending",
       tag: "Closed",
@@ -45,7 +45,7 @@ export default function AIMeetingSearch() {
       description: "• 테스트 사례 및 테스트 계획\n• 테스트 환경 및 도구\n• 버그 리포트 및 추적",
     },
     {
-      id: 3,
+      id: "3",
       title: "AI Engineer",
       status: "active",
       tag: "Active",
@@ -62,7 +62,7 @@ export default function AIMeetingSearch() {
       description: "AI 기술 및 머신러닝에 대한 토론. 우리는 대략적인 개념과 기술 세부 사항 등을 다루고 있습니다. 이것을 시청하세요 AI와 관련된 최신 대화",
     },
     {
-      id: 4,
+      id: "4",
       title: "Front end",
       status: "completed",
       tag: "Active",
