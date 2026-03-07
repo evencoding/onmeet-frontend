@@ -48,7 +48,7 @@ import {
   TooltipProvider,
 } from "@/shared/ui/tooltip";
 
-const LIVEKIT_URL = "wss://livekit.onmeet.cloud";
+const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "wss://livekit.onmeet.cloud";
 
 type Phase = "preparing" | "joining" | "waiting" | "connected" | "disconnected";
 
