@@ -14,7 +14,10 @@
       "Bash(pnpm run build:client:*)",
       "Bash(git mv:*)",
       "Bash(for f in client/components/ui/*.tsx client/components/ui/*.ts)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(pnpm run build:*)",
+      "Bash(git fetch:*)",
+      "Bash(git log:*)"
     ]
   }
 }
