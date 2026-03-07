@@ -52,7 +52,7 @@ export default function InviteMembers() {
   };
 
   const copyInviteLink = (email: string) => {
-    const inviteLink = `${window.location.origin}/signup?token=demo-token-${email}`;
+    const inviteLink = `${window.location.origin}/signup?token=${actualInviteToken}`; // TODO: 실제 초대 토큰을 사용하도록 수정
     navigator.clipboard.writeText(inviteLink);
     setCopiedId(email);
     setTimeout(() => setCopiedId(null), 2000);
