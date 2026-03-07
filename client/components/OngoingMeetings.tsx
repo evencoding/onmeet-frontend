@@ -7,7 +7,7 @@ interface Meeting {
   hostName: string;
   hostAvatar: string;
   startTime: string;
-  duration: number; // in minutes
+  duration: number;
   description: string;
   tags: string[];
   attendeesCount: number;
@@ -140,7 +140,6 @@ export default function OngoingMeetings() {
   ];
 
   const calculateTimeRemaining = (startTime: string, duration: number) => {
-    // 간단한 예시 계산 (실제 구현에서는 정확한 시간 계산 필요)
     const remainingMinutes = Math.max(0, Math.floor(Math.random() * duration));
     if (remainingMinutes === 0) return "지금 시작됐어요!";
     if (remainingMinutes < 60) return `${remainingMinutes}분 남음`;
@@ -196,7 +195,6 @@ export default function OngoingMeetings() {
             key={meeting.id}
             className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/50 dark:to-pink-900/20 light:bg-gradient-to-br light:from-purple-50/50 light:via-white light:to-pink-100/30 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/60 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/30 light:hover:shadow-xl light:hover:shadow-purple-400/40 light:hover:border-purple-400/80 hover:-translate-y-1 group dark:backdrop-blur-md light:backdrop-blur-md"
           >
-            {/* Status bar */}
             <div
               className={`h-1 ${
                 meeting.status === "ongoing"
@@ -206,7 +204,6 @@ export default function OngoingMeetings() {
             />
 
             <div className="p-5 space-y-4">
-              {/* Header with Title and Status */}
               <div className="space-y-2">
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900 flex-1 leading-tight">
@@ -214,7 +211,6 @@ export default function OngoingMeetings() {
                   </h3>
                 </div>
 
-                {/* Tags */}
                 <div className="flex flex-wrap gap-2">
                   {meeting.tags.map((tag, idx) => (
                     <span
@@ -226,13 +222,11 @@ export default function OngoingMeetings() {
                   ))}
                 </div>
 
-                {/* Description */}
                 <p className="text-sm dark:text-white/60 light:text-purple-700 line-clamp-2">
                   {meeting.description}
                 </p>
               </div>
 
-              {/* Host Info */}
               <div className="flex items-center gap-3 pb-4 border-b-2 dark:border-purple-500/30 light:border-purple-300/80">
                 <img
                   src={meeting.hostAvatar}
@@ -247,7 +241,6 @@ export default function OngoingMeetings() {
                 </div>
               </div>
 
-              {/* Time Info */}
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-600 flex-shrink-0" />
@@ -266,7 +259,6 @@ export default function OngoingMeetings() {
                 </div>
               </div>
 
-              {/* Attendees */}
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 dark:text-white/50 light:text-purple-600 flex-shrink-0" />
                 <div className="flex items-center gap-1">
@@ -290,7 +282,6 @@ export default function OngoingMeetings() {
                 </div>
               </div>
 
-              {/* Action Button */}
               <button
                 onClick={() => handleJoinMeeting(meeting)}
                 disabled={meeting.status === "upcoming"}

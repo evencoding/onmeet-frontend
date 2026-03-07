@@ -58,7 +58,6 @@ export default function GuestJoinModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-gradient-to-br from-purple-900/40 via-black/80 to-pink-900/30 rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden border border-purple-500/30 backdrop-blur-md">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-purple-500/20 bg-gradient-to-r from-purple-900/40 to-black/60">
           <h2 className="text-xl font-bold text-white/90">회의 참여하기</h2>
           <button
@@ -69,9 +68,7 @@ export default function GuestJoinModal({
           </button>
         </div>
 
-        {/* Content */}
         <div className="px-6 py-6 space-y-5 bg-black/40">
-          {/* Guest Name */}
           <div>
             <label className="block text-sm font-semibold text-white/90 mb-2">
               이름
@@ -100,7 +97,6 @@ export default function GuestJoinModal({
             )}
           </div>
 
-          {/* Guest Description */}
           <div>
             <label className="block text-sm font-semibold text-white/90 mb-2">
               설명 (소속/역할)
@@ -129,7 +125,6 @@ export default function GuestJoinModal({
             )}
           </div>
 
-          {/* Info Text */}
           <div className="p-3 bg-purple-600/20 border border-purple-500/30 rounded-lg">
             <p className="text-xs text-purple-300 font-medium">
               이 정보는 회의 참석자에게 표시되며, 언제든 변경할 수 있습니다.
@@ -137,7 +132,6 @@ export default function GuestJoinModal({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="border-t border-purple-500/20 px-6 py-4 bg-purple-900/20 flex gap-3 backdrop-blur-md">
           <button
             onClick={onClose}

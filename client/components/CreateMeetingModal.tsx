@@ -31,7 +31,6 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:from-white light:to-purple-50 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 dark:backdrop-blur-md light:backdrop-blur-md light:shadow-2xl light:shadow-purple-300/40">
-        {/* Header */}
         <div className="sticky top-0 z-20 dark:bg-gradient-to-b dark:from-purple-900/40 dark:via-black/60 dark:to-black/40 light:bg-white light:border-b-2 light:border-purple-300/60 light:shadow-sm light:shadow-purple-200/30 px-8 py-6 dark:border-b dark:border-purple-500/20 flex items-center justify-between dark:backdrop-blur-md light:backdrop-blur-md">
           <div>
             <h2 className="text-2xl font-bold dark:text-white/90 light:text-purple-900">새 회의 생성</h2>
@@ -45,9 +44,7 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
-          {/* Title Input */}
           <div className="space-y-2">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">회의 제목</label>
             <input
@@ -60,7 +57,6 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
             />
           </div>
 
-          {/* Date and Time Row */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
@@ -91,7 +87,6 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
             </div>
           </div>
 
-          {/* Description */}
           <div className="space-y-2">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
               <Settings className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
@@ -107,7 +102,6 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
             />
           </div>
 
-          {/* Invitees */}
           <div className="space-y-2">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
               <Users className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
@@ -123,10 +117,8 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
             />
           </div>
 
-          {/* Divider */}
           <div className="dark:border-t dark:border-purple-500/20 light:border-t-2 light:border-purple-300/50 pt-6" />
 
-          {/* Buttons */}
           <div className="flex gap-3 pt-2">
             <button
               type="button"

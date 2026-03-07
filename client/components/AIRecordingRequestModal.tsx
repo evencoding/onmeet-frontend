@@ -51,7 +51,6 @@ export default function AIRecordingRequestModal({
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-gradient-to-br from-purple-950 via-black to-purple-900 rounded-2xl shadow-2xl max-w-md w-full border border-purple-500/30 overflow-hidden">
-        {/* Header */}
         <div className="px-6 py-4 border-b border-purple-500/20 flex items-center justify-between bg-purple-900/40">
           <h2 className="text-lg font-bold text-white">
             {isHost ? "AI 회의록 요청" : "AI 회의록 요청하기"}
@@ -64,12 +63,9 @@ export default function AIRecordingRequestModal({
           </button>
         </div>
 
-        {/* Content */}
         <div className="px-6 py-6 space-y-4">
           {isHost ? (
-            // HOST VIEW - Direct start + pending requests
             <>
-              {/* Direct Start Section */}
               {!isAIRecording && (
                 <div className="p-4 bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/50 rounded-lg">
                   <p className="text-sm font-semibold text-white mb-3">
@@ -87,7 +83,6 @@ export default function AIRecordingRequestModal({
                 </div>
               )}
 
-              {/* Current Status */}
               {isAIRecording && (
                 <div className="p-4 bg-green-600/20 border border-green-500/50 rounded-lg">
                   <p className="text-sm text-green-300 font-semibold flex items-center gap-2">
@@ -97,7 +92,6 @@ export default function AIRecordingRequestModal({
                 </div>
               )}
 
-              {/* Pending Requests Section */}
               <div className="text-sm text-white/80">
                 {pendingRequests.length === 0 ? (
                   <p className="text-center py-4 text-white/60 text-xs">
@@ -154,7 +148,6 @@ export default function AIRecordingRequestModal({
               </div>
             </>
           ) : (
-            // GUEST VIEW - Send request
             <>
               {requestSent ? (
                 <div className="text-center py-8">
@@ -204,7 +197,6 @@ export default function AIRecordingRequestModal({
           )}
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/40 flex gap-3">
           {isHost ? (
             <button

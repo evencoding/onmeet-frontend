@@ -20,15 +20,11 @@ import {
 } from "@/lib/authApi";
 import { AUTH_QUERY_KEY } from "./useAuthQuery";
 
-// --- Query Keys ---
-
 export const MEMBER_KEYS = {
   me: AUTH_QUERY_KEY,
   member: (id: number) => ["member", id] as const,
   jobTitles: ["member", "job-titles"] as const,
 };
-
-// --- Queries ---
 
 export function useMember(memberId: number) {
   return useQuery<UserResponseDto>({
@@ -44,8 +40,6 @@ export function useJobTitles() {
     queryFn: getJobTitles,
   });
 }
-
-// --- Mutations ---
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();

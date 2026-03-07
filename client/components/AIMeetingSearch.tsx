@@ -108,7 +108,6 @@ export default function AIMeetingSearch() {
 
   return (
     <div className="w-80 border-l border-border/30 bg-white/40 backdrop-blur-md flex flex-col">
-      {/* Header */}
       <div className="px-6 py-5 border-b border-border/30">
         <h2 className="text-sm font-semibold bg-gradient-to-r from-foreground to-text-sub bg-clip-text text-transparent mb-3">AI로 찾는 회의들</h2>
         <div className="relative">
@@ -121,7 +120,6 @@ export default function AIMeetingSearch() {
         </div>
       </div>
 
-      {/* Results */}
       <div className="flex-1 overflow-y-auto divide-y divide-border/20">
         {meetings.map((meeting) => (
           <div
@@ -146,7 +144,6 @@ export default function AIMeetingSearch() {
               </button>
             </div>
 
-            {/* Attendees */}
             <div className="flex items-center gap-1 mb-2">
               {meeting.attendees.map((attendee, idx) => (
                 <img
@@ -158,7 +155,6 @@ export default function AIMeetingSearch() {
               ))}
             </div>
 
-            {/* Description */}
             {meeting.description && (
               <p className="text-xs text-muted-foreground leading-relaxed">
                 {meeting.description}

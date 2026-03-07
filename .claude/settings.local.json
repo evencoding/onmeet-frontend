@@ -6,7 +6,11 @@
       "Bash(npx tsc:*)",
       "Bash(pnpm add:*)",
       "Bash(pnpm typecheck:*)",
-      "Bash(pnpm build:client:*)"
+      "Bash(pnpm build:client:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(pnpm install:*)",
+      "WebFetch(domain:api.onmeet.cloud)"
     ]
   }
 }

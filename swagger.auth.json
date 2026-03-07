@@ -7,8 +7,12 @@
   },
   "servers": [
     {
-      "url": "http://api.onmeet.cloud/auth",
-      "description": "Generated server url"
+      "url": "https://api.onmeet.cloud",
+      "description": "Production Server"
+    },
+    {
+      "url": "http://localhost:8080",
+      "description": "Local Development Server"
     }
   ],
   "security": [
@@ -22,6 +26,10 @@
       "description": "회원 프로필 및 팀 관리 API"
     },
     {
+      "name": "Internal User API",
+      "description": "내부 서비스 간 사용자 정보 조회 API (Gateway 인증 필요)"
+    },
+    {
       "name": "Internal Security API",
       "description": "타 서비스 전용 권한 검증 API"
     },
@@ -30,8 +38,16 @@
       "description": "기업 관리자 전용 API"
     },
     {
+      "name": "Internal Team API",
+      "description": "내부 서비스 간 팀 정보 조회 API (Gateway 인증 필요)"
+    },
+    {
       "name": "Authentication",
       "description": "인증/인가 및 토큰 관리 API"
+    },
+    {
+      "name": "Guest",
+      "description": "게스트 초대 및 참여 API"
     }
   ],
   "paths": {
@@ -54,6 +70,21 @@
           "required": true
         },
         "responses": {
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -69,6 +100,9 @@
               }
             }
           },
+          "200": {
+            "description": "비밀번호 변경 성공"
+          },
           "400": {
             "description": "잘못된 요청 - 기존 비밀번호가 일치하지 않거나 새 비밀번호 형식이 유효하지 않음",
             "content": {
@@ -79,24 +113,6 @@
                 "example": {
                   "status": 400,
                   "message": "Current password is incorrect",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "비밀번호 변경 성공"
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
                   "timestamp": 1234567890
                 }
               }
@@ -135,16 +151,31 @@
           "required": true
         },
         "responses": {
-          "404": {
-            "description": "직급을 찾을 수 없음",
+          "400": {
+            "description": "잘못된 요청 - 유효하지 않은 직급 정보",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 404,
-                  "message": "Job title not found",
+                  "status": 400,
+                  "message": "Invalid job title data",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
                   "timestamp": 1234567890
                 }
               }
@@ -175,31 +206,16 @@
               }
             }
           },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
+          "404": {
+            "description": "직급을 찾을 수 없음",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "잘못된 요청 - 유효하지 않은 직급 정보",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 400,
-                  "message": "Invalid job title data",
+                  "status": 404,
+                  "message": "Job title not found",
                   "timestamp": 1234567890
                 }
               }
@@ -241,16 +257,16 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "직급을 찾을 수 없음",
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 404,
-                  "message": "Job title not found",
+                  "status": 401,
+                  "message": "Authentication failed",
                   "timestamp": 1234567890
                 }
               }
@@ -271,16 +287,16 @@
               }
             }
           },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
+          "404": {
+            "description": "직급을 찾을 수 없음",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
+                  "status": 404,
+                  "message": "Job title not found",
                   "timestamp": 1234567890
                 }
               }
@@ -342,6 +358,21 @@
               }
             }
           },
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -363,21 +394,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
                 }
               }
             }
@@ -435,16 +451,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "사원 계정 활성화 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "잘못된 요청 - 유효하지 않은 사용자 ID",
             "content": {
@@ -455,6 +461,21 @@
                 "example": {
                   "status": 400,
                   "message": "Invalid argument",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
                   "timestamp": 1234567890
                 }
               }
@@ -475,17 +496,12 @@
               }
             }
           },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
+          "200": {
+            "description": "사원 계정 활성화 성공",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
+                  "$ref": "#/components/schemas/UserResponseDto"
                 }
               }
             }
@@ -553,6 +569,17 @@
           }
         },
         "responses": {
+          "200": {
+            "description": "사원 회원가입 성공 - 생성된 사용자 ID 반환",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -568,16 +595,16 @@
               }
             }
           },
-          "404": {
-            "description": "초대를 찾을 수 없음 - 초대가 만료되었거나 존재하지 않음",
+          "409": {
+            "description": "충돌 - 이미 존재하는 이메일",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 404,
-                  "message": "Invitation not found",
+                  "status": 409,
+                  "message": "Email already exists",
                   "timestamp": 1234567890
                 }
               }
@@ -598,27 +625,16 @@
               }
             }
           },
-          "200": {
-            "description": "사원 회원가입 성공 - 생성된 사용자 ID 반환",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int64"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "충돌 - 이미 존재하는 이메일",
+          "404": {
+            "description": "초대를 찾을 수 없음 - 초대가 만료되었거나 존재하지 않음",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 409,
-                  "message": "Email already exists",
+                  "status": 404,
+                  "message": "Invitation not found",
                   "timestamp": 1234567890
                 }
               }
@@ -672,16 +688,16 @@
               }
             }
           },
-          "409": {
-            "description": "충돌 - 이미 존재하는 이메일 또는 기업",
+          "400": {
+            "description": "잘못된 요청 - 필수 필드 누락 또는 유효하지 않은 데이터",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 409,
-                  "message": "Email already exists",
+                  "status": 400,
+                  "message": "Validation failed: email: must be a valid email",
                   "timestamp": 1234567890
                 }
               }
@@ -698,16 +714,16 @@
               }
             }
           },
-          "400": {
-            "description": "잘못된 요청 - 필수 필드 누락 또는 유효하지 않은 데이터",
+          "409": {
+            "description": "충돌 - 이미 존재하는 이메일 또는 기업",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 400,
-                  "message": "Validation failed: email: must be a valid email",
+                  "status": 409,
+                  "message": "Email already exists",
                   "timestamp": 1234567890
                 }
               }
@@ -744,16 +760,6 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "토큰 갱신 성공 - 새로운 Access/Refresh Token 발급",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TokenResponse"
-                }
-              }
-            }
-          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -769,17 +775,12 @@
               }
             }
           },
-          "401": {
-            "description": "인증 실패 - 만료되었거나 유효하지 않은 Refresh Token",
+          "200": {
+            "description": "토큰 갱신 성공 - 새로운 Access/Refresh Token 발급",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Invalid or expired refresh token",
-                  "timestamp": 1234567890
+                  "$ref": "#/components/schemas/TokenResponse"
                 }
               }
             }
@@ -794,6 +795,21 @@
                 "example": {
                   "status": 400,
                   "message": "Refresh token is missing",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패 - 만료되었거나 유효하지 않은 Refresh Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Invalid or expired refresh token",
                   "timestamp": 1234567890
                 }
               }
@@ -821,16 +837,16 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "잘못된 요청 - 필수 필드 누락 또는 유효하지 않은 데이터",
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 400,
-                  "message": "Validation failed: name: must not be blank",
+                  "status": 401,
+                  "message": "Authentication failed",
                   "timestamp": 1234567890
                 }
               }
@@ -851,32 +867,6 @@
               }
             }
           },
-          "200": {
-            "description": "팀 생성 요청 성공 - 생성된 팀 ID 반환 (일반 직원은 승인 대기, 매니저는 즉시 생성)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "integer",
-                  "format": "int64"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
           "409": {
             "description": "충돌 - 동일한 이름의 팀이 이미 존재함",
             "content": {
@@ -888,6 +878,32 @@
                   "status": 409,
                   "message": "Team already exists",
                   "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "잘못된 요청 - 필수 필드 누락 또는 유효하지 않은 데이터",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 400,
+                  "message": "Validation failed: name: must not be blank",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "팀 생성 요청 성공 - 생성된 팀 ID 반환 (일반 직원은 승인 대기, 매니저는 즉시 생성)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
                 }
               }
             }
@@ -927,16 +943,16 @@
           "200": {
             "description": "팀장 위임 성공"
           },
-          "400": {
-            "description": "잘못된 요청 - 팀에 속하지 않은 사용자에게 위임 시도",
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 400,
-                  "message": "User is not a member of this team",
+                  "status": 401,
+                  "message": "Authentication failed",
                   "timestamp": 1234567890
                 }
               }
@@ -957,6 +973,21 @@
               }
             }
           },
+          "403": {
+            "description": "권한 없음 - 팀장 또는 매니저 권한이 필요함",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 403,
+                  "message": "Access denied",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "404": {
             "description": "팀 또는 사용자를 찾을 수 없음",
             "content": {
@@ -972,31 +1003,16 @@
               }
             }
           },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
+          "400": {
+            "description": "잘못된 요청 - 팀에 속하지 않은 사용자에게 위임 시도",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "권한 없음 - 팀장 또는 매니저 권한이 필요함",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 403,
-                  "message": "Access denied",
+                  "status": 400,
+                  "message": "User is not a member of this team",
                   "timestamp": 1234567890
                 }
               }
@@ -1036,6 +1052,21 @@
         "responses": {
           "200": {
             "description": "팀 반려 성공"
+          },
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
           },
           "500": {
             "description": "서버 내부 오류",
@@ -1077,21 +1108,6 @@
                 "example": {
                   "status": 404,
                   "message": "Team not found",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
                   "timestamp": 1234567890
                 }
               }
@@ -1144,6 +1160,21 @@
               }
             }
           },
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -1174,6 +1205,9 @@
               }
             }
           },
+          "200": {
+            "description": "팀장 임명 성공"
+          },
           "404": {
             "description": "팀 또는 사용자를 찾을 수 없음",
             "content": {
@@ -1188,24 +1222,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "팀장 임명 성공"
           }
         }
       }
@@ -1230,6 +1246,21 @@
           }
         ],
         "responses": {
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -1270,21 +1301,6 @@
                 "example": {
                   "status": 404,
                   "message": "Team not found",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
                   "timestamp": 1234567890
                 }
               }
@@ -1315,16 +1331,16 @@
           "required": true
         },
         "responses": {
-          "500": {
-            "description": "서버 내부 오류",
+          "400": {
+            "description": "잘못된 요청 - 유효하지 않은 직급 정보",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 500,
-                  "message": "Internal server error occurred",
+                  "status": 400,
+                  "message": "Invalid job title data",
                   "timestamp": 1234567890
                 }
               }
@@ -1345,27 +1361,27 @@
               }
             }
           },
-          "200": {
-            "description": "직급 생성 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JobTitleResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "잘못된 요청 - 유효하지 않은 직급 정보",
+          "500": {
+            "description": "서버 내부 오류",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 400,
-                  "message": "Invalid job title data",
+                  "status": 500,
+                  "message": "Internal server error occurred",
                   "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "직급 생성 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobTitleResponse"
                 }
               }
             }
@@ -1407,13 +1423,47 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "초대 발송 성공 - 생성된 초대 ID 반환",
+          "404": {
+            "description": "기업을 찾을 수 없음",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int64"
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 404,
+                  "message": "Company not found",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "잘못된 요청 - 유효하지 않은 이메일 형식",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 400,
+                  "message": "Invalid email format",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
                 }
               }
             }
@@ -1448,21 +1498,6 @@
               }
             }
           },
-          "400": {
-            "description": "잘못된 요청 - 유효하지 않은 이메일 형식",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 400,
-                  "message": "Invalid email format",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
           "403": {
             "description": "권한 없음 - MANAGER 권한이 필요합니다",
             "content": {
@@ -1478,32 +1513,13 @@
               }
             }
           },
-          "404": {
-            "description": "기업을 찾을 수 없음",
+          "200": {
+            "description": "초대 발송 성공 - 생성된 초대 ID 반환",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 404,
-                  "message": "Company not found",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
+                  "type": "integer",
+                  "format": "int64"
                 }
               }
             }
@@ -1578,21 +1594,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "잘못된 요청 - 필수 필드 누락",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 400,
-                  "message": "Invalid argument",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -1604,6 +1605,16 @@
                   "status": 500,
                   "message": "Internal server error occurred",
                   "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "로그인 성공 - 쿠키로 Access/Refresh Token 발급",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
                 }
               }
             }
@@ -1623,12 +1634,17 @@
               }
             }
           },
-          "200": {
-            "description": "로그인 성공 - 쿠키로 Access/Refresh Token 발급",
+          "400": {
+            "description": "잘못된 요청 - 필수 필드 누락",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoginResponse"
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 400,
+                  "message": "Invalid argument",
+                  "timestamp": 1234567890
                 }
               }
             }
@@ -1655,21 +1671,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "잘못된 요청 - 필수 필드 누락",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 400,
-                  "message": "Invalid argument",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -1687,6 +1688,202 @@
           },
           "200": {
             "description": "게스트 로그인 성공 - 쿠키로 Access/Refresh Token 발급 (Refresh Token은 1일 유효)"
+          },
+          "400": {
+            "description": "잘못된 요청 - 필수 필드 누락",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 400,
+                  "message": "Invalid argument",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/guests/invite": {
+      "post": {
+        "tags": [
+          "Guest"
+        ],
+        "summary": "게스트 초대 메일 발송",
+        "description": "호스트가 게스트에게 특정 회의실의 초대 메일을 발송합니다.",
+        "operationId": "inviteGuest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuestInviteRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/internal/users/exists/batch": {
+      "post": {
+        "tags": [
+          "Internal User API"
+        ],
+        "summary": "다중 사용자 존재 여부 확인",
+        "description": "여러 사용자의 존재 여부를 일괄 확인합니다. (내부 서비스 전용)",
+        "operationId": "checkBatchUserExists",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchUserExistsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "잘못된 요청 - 필수 필드 누락",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "다중 사용자 존재 여부 확인 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchUserExistsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/users/batch": {
+      "post": {
+        "tags": [
+          "Internal User API"
+        ],
+        "summary": "다중 사용자 정보 조회",
+        "description": "여러 사용자의 기본 정보를 일괄 조회합니다. (내부 서비스 전용)",
+        "operationId": "getBatchUserInfo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchUserInfoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "다중 사용자 정보 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchUserInfoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "잘못된 요청 - 필수 필드 누락",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/teams/membership/check": {
+      "post": {
+        "tags": [
+          "Internal Team API"
+        ],
+        "summary": "팀 멤버십 확인",
+        "description": "사용자가 특정 팀의 멤버인지 확인합니다. (내부 서비스 전용)",
+        "operationId": "checkTeamMembership",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TeamMembershipRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "잘못된 요청 - 필수 필드 누락",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "팀 멤버십 확인 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamMembershipResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1700,12 +1897,17 @@
         "description": "현재 로그인한 자신의 정보를 상세 조회합니다.",
         "operationId": "getMyInfo",
         "responses": {
-          "200": {
-            "description": "내 정보 조회 성공",
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserResponseDto"
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
                 }
               }
             }
@@ -1725,17 +1927,12 @@
               }
             }
           },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
+          "200": {
+            "description": "내 정보 조회 성공",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
+                  "$ref": "#/components/schemas/UserResponseDto"
                 }
               }
             }
@@ -1760,8 +1957,20 @@
           "required": true
         },
         "responses": {
-          "204": {
-            "description": "회원 탈퇴 성공 - 응답 본문 없음"
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
           },
           "500": {
             "description": "서버 내부 오류",
@@ -1778,6 +1987,9 @@
               }
             }
           },
+          "204": {
+            "description": "회원 탈퇴 성공 - 응답 본문 없음"
+          },
           "400": {
             "description": "잘못된 요청 - 비밀번호가 일치하지 않음",
             "content": {
@@ -1788,21 +2000,6 @@
                 "example": {
                   "status": 400,
                   "message": "Password is incorrect",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
                   "timestamp": 1234567890
                 }
               }
@@ -1849,6 +2046,21 @@
               }
             }
           },
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -1878,21 +2090,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
-                }
-              }
-            }
           }
         }
       }
@@ -1917,12 +2114,17 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "회원 정보 조회 성공",
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserResponseDto"
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
                 }
               }
             }
@@ -1957,17 +2159,12 @@
               }
             }
           },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
+          "200": {
+            "description": "회원 정보 조회 성공",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
+                  "$ref": "#/components/schemas/UserResponseDto"
                 }
               }
             }
@@ -1984,6 +2181,21 @@
         "description": "현재 소속된 회사의 모든 직급 목록을 조회합니다.",
         "operationId": "getJobTitles",
         "responses": {
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -2005,21 +2217,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/JobTitleResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
                 }
               }
             }
@@ -2046,21 +2243,6 @@
           }
         ],
         "responses": {
-          "500": {
-            "description": "서버 내부 오류",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 500,
-                  "message": "Internal server error occurred",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
           "401": {
             "description": "인증 실패 - 로그인이 필요합니다",
             "content": {
@@ -2071,6 +2253,21 @@
                 "example": {
                   "status": 401,
                   "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 500,
+                  "message": "Internal server error occurred",
                   "timestamp": 1234567890
                 }
               }
@@ -2146,6 +2343,21 @@
               }
             }
           },
+          "400": {
+            "description": "잘못된 요청 - 유효하지 않은 초대 코드 또는 이메일 불일치",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 400,
+                  "message": "Invalid invitation code",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "404": {
             "description": "초대를 찾을 수 없음 - 초대가 만료되었거나 존재하지 않음",
             "content": {
@@ -2167,21 +2379,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/InvitationResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "잘못된 요청 - 유효하지 않은 초대 코드 또는 이메일 불일치",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 400,
-                  "message": "Invalid invitation code",
-                  "timestamp": 1234567890
                 }
               }
             }
@@ -2272,16 +2469,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "권한 정보 조회 성공 - 사용자의 역할, 회사, 팀 정보 반환",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserPermissionResponse"
-                }
-              }
-            }
-          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -2308,6 +2495,16 @@
                   "status": 404,
                   "message": "User not found",
                   "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "권한 정보 조회 성공 - 사용자의 역할, 회사, 팀 정보 반환",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionResponse"
                 }
               }
             }
@@ -2350,6 +2547,16 @@
               }
             }
           },
+          "200": {
+            "description": "회사 정보 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyInfoDto"
+                }
+              }
+            }
+          },
           "404": {
             "description": "사용자를 찾을 수 없음",
             "content": {
@@ -2364,16 +2571,31 @@
                 }
               }
             }
-          },
-          "200": {
-            "description": "회사 정보 조회 성공",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CompanyInfoDto"
-                }
-              }
+          }
+        }
+      }
+    },
+    "/v1/guests/join/{uuid}": {
+      "get": {
+        "tags": [
+          "Guest"
+        ],
+        "summary": "게스트 회의 참여",
+        "description": "초대 메일의 링크를 통해 회의에 참여하고 게스트 토큰을 발급받습니다.",
+        "operationId": "joinMeeting",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -2470,6 +2692,21 @@
           }
         ],
         "responses": {
+          "400": {
+            "description": "잘못된 요청 - 유효하지 않은 파라미터",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 400,
+                  "message": "Invalid argument",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "500": {
             "description": "서버 내부 오류 - 유효하지 않은 Internal Secret 포함",
             "content": {
@@ -2491,21 +2728,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SecurityCheckResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "잘못된 요청 - 유효하지 않은 파라미터",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 400,
-                  "message": "Invalid argument",
-                  "timestamp": 1234567890
                 }
               }
             }
@@ -2550,21 +2772,6 @@
           }
         ],
         "responses": {
-          "500": {
-            "description": "서버 내부 오류 - 유효하지 않은 Internal Secret 포함",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 500,
-                  "message": "Invalid internal secret",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
           "200": {
             "description": "권한 확인 성공 - 팀장 여부 반환",
             "content": {
@@ -2585,6 +2792,21 @@
                 "example": {
                   "status": 400,
                   "message": "Invalid argument",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류 - 유효하지 않은 Internal Secret 포함",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 500,
+                  "message": "Invalid internal secret",
                   "timestamp": 1234567890
                 }
               }
@@ -2630,12 +2852,17 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "권한 확인 성공 - 동일 회사 여부 반환",
+          "400": {
+            "description": "잘못된 요청 - 유효하지 않은 파라미터",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SecurityCheckResponse"
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 400,
+                  "message": "Invalid argument",
+                  "timestamp": 1234567890
                 }
               }
             }
@@ -2655,17 +2882,156 @@
               }
             }
           },
-          "400": {
-            "description": "잘못된 요청 - 유효하지 않은 파라미터",
+          "200": {
+            "description": "권한 확인 성공 - 동일 회사 여부 반환",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecurityCheckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/users/{userId}": {
+      "get": {
+        "tags": [
+          "Internal User API"
+        ],
+        "summary": "사용자 정보 조회",
+        "description": "단일 사용자의 기본 정보를 조회합니다. (내부 서비스 전용)",
+        "operationId": "getUserInfo",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "사용자를 찾을 수 없음",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 400,
-                  "message": "Invalid argument",
+                  "status": 404,
+                  "message": "User not found: 123",
                   "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "사용자 정보 조회 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/users/{userId}/exists": {
+      "get": {
+        "tags": [
+          "Internal User API"
+        ],
+        "summary": "사용자 존재 여부 확인",
+        "description": "단일 사용자의 존재 여부를 확인합니다. (내부 서비스 전용)",
+        "operationId": "checkUserExists",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "사용자 존재 여부 확인 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserExistsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/internal/teams/{teamId}/exists": {
+      "get": {
+        "tags": [
+          "Internal Team API"
+        ],
+        "summary": "팀 존재 여부 확인",
+        "description": "단일 팀의 존재 여부를 확인합니다. (내부 서비스 전용)",
+        "operationId": "checkTeamExists",
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "팀 존재 여부 확인 성공",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamExistsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2696,21 +3062,6 @@
           "200": {
             "description": "팀 해체 성공"
           },
-          "500": {
-            "description": "서버 내부 오류",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 500,
-                  "message": "Internal server error occurred",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
           "401": {
             "description": "인증 실패 - 로그인이 필요합니다",
             "content": {
@@ -2721,6 +3072,21 @@
                 "example": {
                   "status": 401,
                   "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 500,
+                  "message": "Internal server error occurred",
                   "timestamp": 1234567890
                 }
               }
@@ -2779,16 +3145,16 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "잘못된 요청 - 이미 승인된 팀이거나 취소할 수 없는 상태",
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "status": 400,
-                  "message": "Team is already approved",
+                  "status": 401,
+                  "message": "Authentication failed",
                   "timestamp": 1234567890
                 }
               }
@@ -2809,36 +3175,6 @@
               }
             }
           },
-          "403": {
-            "description": "권한 없음 - 요청자 본인이 아님",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 403,
-                  "message": "Access denied",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
           "404": {
             "description": "팀을 찾을 수 없음",
             "content": {
@@ -2854,8 +3190,38 @@
               }
             }
           },
+          "403": {
+            "description": "권한 없음 - 요청자 본인이 아님",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 403,
+                  "message": "Access denied",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "200": {
             "description": "팀 생성 요청 취소 성공"
+          },
+          "400": {
+            "description": "잘못된 요청 - 이미 승인된 팀이거나 취소할 수 없는 상태",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 400,
+                  "message": "Team is already approved",
+                  "timestamp": 1234567890
+                }
+              }
+            }
           }
         }
       }
@@ -2869,6 +3235,21 @@
         "description": "현재 로그인한 자신의 프로필 이미지를 삭제합니다.",
         "operationId": "deleteMyProfileImage",
         "responses": {
+          "401": {
+            "description": "인증 실패 - 로그인이 필요합니다",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 401,
+                  "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
           "500": {
             "description": "서버 내부 오류",
             "content": {
@@ -2890,21 +3271,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserResponseDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "인증 실패 - 로그인이 필요합니다",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 401,
-                  "message": "Authentication failed",
-                  "timestamp": 1234567890
                 }
               }
             }
@@ -2932,21 +3298,6 @@
           }
         ],
         "responses": {
-          "500": {
-            "description": "서버 내부 오류",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "status": 500,
-                  "message": "Internal server error occurred",
-                  "timestamp": 1234567890
-                }
-              }
-            }
-          },
           "401": {
             "description": "인증 실패 - 로그인이 필요합니다",
             "content": {
@@ -2957,6 +3308,21 @@
                 "example": {
                   "status": 401,
                   "message": "Authentication failed",
+                  "timestamp": 1234567890
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "서버 내부 오류",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "status": 500,
+                  "message": "Internal server error occurred",
                   "timestamp": 1234567890
                 }
               }
@@ -3425,6 +3791,186 @@
         },
         "description": "게스트 로그인 요청"
       },
+      "GuestInviteRequestDto": {
+        "required": [
+          "guestEmail",
+          "roomId",
+          "roomName"
+        ],
+        "type": "object",
+        "properties": {
+          "guestEmail": {
+            "type": "string"
+          },
+          "roomId": {
+            "type": "string"
+          },
+          "roomName": {
+            "type": "string"
+          }
+        }
+      },
+      "BatchUserExistsRequest": {
+        "required": [
+          "userIds"
+        ],
+        "type": "object",
+        "properties": {
+          "userIds": {
+            "type": "array",
+            "description": "확인할 사용자 ID 목록",
+            "items": {
+              "type": "integer",
+              "description": "확인할 사용자 ID 목록",
+              "format": "int64"
+            }
+          }
+        },
+        "description": "다중 사용자 존재 여부 확인 요청"
+      },
+      "BatchUserExistsResponse": {
+        "required": [
+          "users"
+        ],
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "description": "사용자 존재 여부 목록",
+            "items": {
+              "$ref": "#/components/schemas/UserExistsResponse"
+            }
+          }
+        },
+        "description": "다중 사용자 존재 여부 확인 응답"
+      },
+      "UserExistsResponse": {
+        "required": [
+          "exists",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "description": "사용자 ID",
+            "format": "int64"
+          },
+          "exists": {
+            "type": "boolean",
+            "description": "존재 여부"
+          }
+        },
+        "description": "사용자 존재 여부 확인 응답"
+      },
+      "BatchUserInfoRequest": {
+        "required": [
+          "userIds"
+        ],
+        "type": "object",
+        "properties": {
+          "userIds": {
+            "type": "array",
+            "description": "조회할 사용자 ID 목록",
+            "items": {
+              "type": "integer",
+              "description": "조회할 사용자 ID 목록",
+              "format": "int64"
+            }
+          }
+        },
+        "description": "다중 사용자 정보 조회 요청"
+      },
+      "BatchUserInfoResponse": {
+        "required": [
+          "users"
+        ],
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "array",
+            "description": "사용자 정보 목록",
+            "items": {
+              "$ref": "#/components/schemas/UserInfoDto"
+            }
+          }
+        },
+        "description": "다중 사용자 정보 조회 응답"
+      },
+      "UserInfoDto": {
+        "required": [
+          "email",
+          "name",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "description": "User ID",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "description": "사용자 이름"
+          },
+          "email": {
+            "type": "string",
+            "description": "이메일"
+          },
+          "profileImageId": {
+            "type": "integer",
+            "description": "프로필 이미지 ID",
+            "format": "int64"
+          }
+        },
+        "description": "내부 서비스용 사용자 정보 (간소화)"
+      },
+      "TeamMembershipRequest": {
+        "required": [
+          "teamId",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "teamId": {
+            "type": "integer",
+            "description": "팀 ID",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "description": "사용자 ID",
+            "format": "int64"
+          }
+        },
+        "description": "팀 멤버십 확인 요청"
+      },
+      "TeamMembershipResponse": {
+        "required": [
+          "isMember",
+          "teamId",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "teamId": {
+            "type": "integer",
+            "description": "팀 ID",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "description": "사용자 ID",
+            "format": "int64"
+          },
+          "isMember": {
+            "type": "boolean",
+            "description": "팀 멤버 여부"
+          }
+        },
+        "description": "팀 멤버십 확인 응답"
+      },
       "UserProfileUpdateRequest": {
         "type": "object",
         "properties": {
@@ -3598,6 +4144,25 @@
             "type": "string"
           }
         }
+      },
+      "TeamExistsResponse": {
+        "required": [
+          "exists",
+          "teamId"
+        ],
+        "type": "object",
+        "properties": {
+          "teamId": {
+            "type": "integer",
+            "description": "팀 ID",
+            "format": "int64"
+          },
+          "exists": {
+            "type": "boolean",
+            "description": "존재 여부"
+          }
+        },
+        "description": "팀 존재 여부 확인 응답"
       },
       "WithdrawRequest": {
         "required": [

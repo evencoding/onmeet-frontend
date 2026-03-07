@@ -49,20 +49,15 @@ interface TeamDetailProps {
   teamName: string;
 }
 
-// Utility function to calculate if text should be light or dark based on background color
 const getTextColorClass = (hexColor: string): string => {
-  // Remove # if present
   const hex = hexColor.replace("#", "");
 
-  // Convert to RGB
   const r = parseInt(hex.substring(0, 2), 16);
   const g = parseInt(hex.substring(2, 4), 16);
   const b = parseInt(hex.substring(4, 6), 16);
 
-  // Calculate luminance using relative luminance formula
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
-  // Return light text for dark backgrounds, dark text for light backgrounds
   return luminance > 0.5 ? "text-gray-900" : "text-white";
 };
 
@@ -77,7 +72,6 @@ const teamColors = [
   { name: "Yellow", value: "bg-yellow-500", hex: "#eab308" },
 ];
 
-// Mock data for teams
 const teamsData: Record<
   string,
   {
@@ -342,7 +336,6 @@ const teamsData: Record<
   },
 };
 
-// Mock employee list for adding members
 const mockEmployees = [
   {
     id: "1",
@@ -440,7 +433,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
 
   const handleSave = () => {
     setIsEditing(false);
-    // Here you would typically call an API to save the changes
     console.log("Saving team changes:", { editedName, editedDescription, editedColor, editedColorHex });
   };
 
@@ -484,11 +476,9 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
 
   return (
     <div className="max-w-4xl space-y-6">
-      {/* Team Header */}
       <div className={cn("bg-gradient-to-br border border-border/40 rounded-2xl p-8 dark:text-white light:text-purple-900", isEditing ? editedColor : teamData.color)}>
         {isEditing ? (
           <div className="space-y-4">
-            {/* Team Name Input */}
             <div>
               <label className="text-sm font-semibold dark:text-white/80 light:text-purple-700 block mb-2">
                 팀 이름
@@ -501,7 +491,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
               />
             </div>
 
-            {/* Description Input */}
             <div>
               <label className="text-sm font-semibold dark:text-white/80 light:text-purple-700 block mb-2">
                 설명
@@ -514,7 +503,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
               />
             </div>
 
-            {/* Color Selection */}
             <div>
               <label className="text-sm font-semibold dark:text-white/80 light:text-purple-700 block mb-2">
                 팀 색상
@@ -537,7 +525,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
               <Button
                 size="sm"
@@ -578,7 +565,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
         )}
       </div>
 
-      {/* Team Members Section */}
       <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/60 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-white/80 light:to-purple-50 border dark:border-purple-500/30 light:border-purple-300/40 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -601,10 +587,8 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
           )}
         </div>
 
-        {/* Add Member Section */}
         {isAddingMember && (
           <div className="mb-6 p-4 dark:bg-purple-500/10 light:bg-purple-50 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg space-y-3">
-            {/* Search Input */}
             <div className="relative">
               <Search className="absolute left-3 top-3 w-4 h-4 dark:text-white/40 light:text-purple-600" />
               <input
@@ -617,7 +601,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
               />
             </div>
 
-            {/* Employee List */}
             {filteredEmployees.length > 0 ? (
               <div className="border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg overflow-y-auto max-h-48 dark:bg-black/40 light:bg-white">
                 {filteredEmployees.map((employee) => (
@@ -649,7 +632,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
               </div>
             )}
 
-            {/* Action Buttons */}
             <div className="flex gap-2 pt-2">
               <Button
                 size="sm"
@@ -678,7 +660,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
           </div>
         )}
 
-        {/* Members Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {teamMembers.map((member) => (
             <div
@@ -708,7 +689,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
         </div>
       </div>
 
-      {/* Team Meetings Section */}
       <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/60 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-white/80 light:to-purple-50 border dark:border-purple-500/30 light:border-purple-300/40 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -728,17 +708,14 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  {/* Title */}
                   <h3 className="text-base font-bold dark:text-white light:text-purple-900 mb-2">
                     {meeting.title}
                   </h3>
 
-                  {/* Description */}
                   <p className="text-sm dark:text-white/80 light:text-purple-700 mb-3">
                     {meeting.description}
                   </p>
 
-                  {/* Meeting Info */}
                   <div className="flex flex-wrap gap-4 text-sm">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
@@ -758,7 +735,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
                     </div>
                   </div>
 
-                  {/* Host Info */}
                   <div className="text-xs dark:text-white/60 light:text-purple-600 mt-3">
                     주최자:{" "}
                     <span className="font-semibold dark:text-white light:text-purple-900">
@@ -767,7 +743,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
                   </div>
                 </div>
 
-                {/* Action Button - Join for ongoing meetings only */}
                 {meeting.status === "in_progress" && (
                   <button
                     onClick={() => navigate(`/meeting/${meeting.id}`)}

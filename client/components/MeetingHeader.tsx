@@ -55,18 +55,16 @@ export default function MeetingHeader() {
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-  // Update dropdown position when it opens
   useEffect(() => {
     if (isDropdownOpen && bellButtonRef.current) {
       const rect = bellButtonRef.current.getBoundingClientRect();
       setDropdownPosition({
-        top: rect.bottom + 8, // mt-2 equivalent
+        top: rect.bottom + 8,
         right: window.innerWidth - rect.right,
       });
     }
   }, [isDropdownOpen]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (bellButtonRef.current && !bellButtonRef.current.contains(event.target as Node)) {
@@ -82,7 +80,6 @@ export default function MeetingHeader() {
     }
   }, [isDropdownOpen]);
 
-  // Update dropdown position on scroll and resize
   useEffect(() => {
     const handleScroll = () => {
       if (isDropdownOpen && bellButtonRef.current) {
@@ -140,7 +137,6 @@ export default function MeetingHeader() {
       <div className="flex items-center gap-2">
         <ThemeToggle />
 
-        {/* Notification Bell */}
         <div>
           <button
             ref={bellButtonRef}
@@ -155,7 +151,6 @@ export default function MeetingHeader() {
             )}
           </button>
 
-          {/* Notification Dropdown - Portal */}
           {isDropdownOpen &&
             createPortal(
               <div
@@ -165,7 +160,6 @@ export default function MeetingHeader() {
                   right: `${dropdownPosition.right}px`,
                 }}
               >
-                {/* Header */}
                 <div className="px-4 py-3 dark:border-b dark:border-purple-500/20 light:border-b-2 light:border-purple-200 light:bg-purple-50/50 flex items-center justify-between">
                   <h3 className="font-semibold dark:text-white light:text-purple-900">알림</h3>
                   {unreadCount > 0 && (
@@ -175,7 +169,6 @@ export default function MeetingHeader() {
                   )}
                 </div>
 
-                {/* Notifications List */}
                 <div className="max-h-96 overflow-y-auto">
                   {notifications.length > 0 ? (
                     notifications.map((notification) => (

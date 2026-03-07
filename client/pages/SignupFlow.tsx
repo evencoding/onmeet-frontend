@@ -8,7 +8,6 @@ export default function SignupFlow() {
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get("token");
 
-  // If user has invite token, go directly to employee signup
   if (inviteToken) {
     navigate(`/signup/employee?token=${inviteToken}`);
     return null;
@@ -38,14 +37,14 @@ export default function SignupFlow() {
       maxWidth="max-w-4xl"
       showCard={false}
     >
-      {/* Signup Type Selection */}
+
       <motion.div
         className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Company Signup */}
+
         <motion.button
           onClick={() => navigate("/signup/company")}
           variants={itemVariants}
@@ -53,15 +52,15 @@ export default function SignupFlow() {
           whileTap={{ scale: 0.98 }}
           className="group relative"
         >
-          {/* Glow effect */}
+
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
 
           <div className="relative bg-gradient-to-br from-purple-900/40 via-purple-900/20 to-black/60 border border-purple-500/30 rounded-xl p-5 backdrop-blur-xl hover:border-purple-500/60 transition-all duration-300 h-full overflow-hidden">
-            {/* Animated gradient overlay */}
+
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
 
             <div className="relative z-10">
-              {/* Icon */}
+
               <motion.div
                 className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 mb-3"
                 whileHover={{ scale: 1.1, rotate: 5 }}
@@ -70,7 +69,6 @@ export default function SignupFlow() {
                 <Building2 className="w-6 h-6 text-white" />
               </motion.div>
 
-              {/* Content */}
               <h2 className="text-lg font-bold text-white mb-2 text-left">
                 기업 회원가입
               </h2>
@@ -80,7 +78,6 @@ export default function SignupFlow() {
                 사원들을 초대하세요
               </p>
 
-              {/* Features */}
               <div className="space-y-1.5 mb-4 text-left">
                 {["팀 생성 및 관리", "사원 초대", "팀 회의 관리"].map(
                   (feature, idx) => (
@@ -99,7 +96,6 @@ export default function SignupFlow() {
                 )}
               </div>
 
-              {/* Button */}
               <div className="flex items-center justify-between pt-3 border-t border-purple-500/20">
                 <span className="text-xs font-semibold text-purple-300">
                   시작하기
@@ -116,7 +112,6 @@ export default function SignupFlow() {
           </div>
         </motion.button>
 
-        {/* Employee Signup */}
         <motion.button
           onClick={() => navigate("/signup/employee")}
           variants={itemVariants}
@@ -124,15 +119,15 @@ export default function SignupFlow() {
           whileTap={{ scale: 0.98 }}
           className="group relative"
         >
-          {/* Glow effect */}
+
           <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
 
           <div className="relative bg-gradient-to-br from-pink-900/40 via-blue-900/20 to-black/60 border border-pink-500/30 rounded-xl p-5 backdrop-blur-xl hover:border-pink-500/60 transition-all duration-300 h-full overflow-hidden">
-            {/* Animated gradient overlay */}
+
             <div className="absolute inset-0 bg-gradient-to-br from-pink-500/0 to-blue-500/0 group-hover:from-pink-500/10 group-hover:to-blue-500/10 transition-all duration-300" />
 
             <div className="relative z-10">
-              {/* Icon */}
+
               <motion.div
                 className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-blue-500 mb-3"
                 whileHover={{ scale: 1.1, rotate: -5 }}
@@ -141,7 +136,6 @@ export default function SignupFlow() {
                 <Users className="w-6 h-6 text-white" />
               </motion.div>
 
-              {/* Content */}
               <h2 className="text-lg font-bold text-white mb-2 text-left">
                 사원 회원가입
               </h2>
@@ -151,7 +145,6 @@ export default function SignupFlow() {
                 팀에 참여하세요
               </p>
 
-              {/* Features */}
               <div className="space-y-1.5 mb-4 text-left">
                 {["초대 링크로 가입", "팀 회의 참여", "회의록 접근"].map(
                   (feature, idx) => (
@@ -170,7 +163,6 @@ export default function SignupFlow() {
                 )}
               </div>
 
-              {/* Button */}
               <div className="flex items-center justify-between pt-3 border-t border-pink-500/20">
                 <span className="text-xs font-semibold text-pink-300">
                   계속하기
@@ -188,7 +180,6 @@ export default function SignupFlow() {
         </motion.button>
       </motion.div>
 
-      {/* Demo Note */}
       <motion.p
         className="text-center text-xs text-white/60"
         initial={{ opacity: 0 }}

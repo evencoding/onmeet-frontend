@@ -23,14 +23,12 @@ export default function Landing() {
     setIsVisible(true);
   }, []);
 
-  // Spring animation for smooth transitions
   const springScroll = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     mass: 1,
   });
 
-  // Parallax effects
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 300]);
   const parallaxY2 = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.5], [1, 0.5, 0]);
@@ -84,7 +82,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
-      {/* Animated gradient background */}
+
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900">
         <div className="absolute inset-0 opacity-40">
           <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -93,7 +91,6 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* Navigation Bar */}
       <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-xl border-b border-purple-500/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <motion.div
@@ -139,9 +136,8 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <motion.section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-        {/* Animated elements */}
+
         <motion.div
           className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl"
           style={{ y: parallaxY }}
@@ -225,7 +221,6 @@ export default function Landing() {
             </motion.button>
           </motion.div>
 
-          {/* Animated hero image */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -242,7 +237,6 @@ export default function Landing() {
           </motion.div>
         </motion.div>
 
-        {/* Scroll indicator */}
         <motion.div
           className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}
@@ -263,7 +257,6 @@ export default function Landing() {
         </motion.div>
       </motion.section>
 
-      {/* Stats Section with scroll trigger */}
       <motion.section
         className="relative py-20 px-6"
         initial={{ opacity: 0 }}
@@ -302,7 +295,6 @@ export default function Landing() {
         </div>
       </motion.section>
 
-      {/* Core Features Section */}
       <motion.section
         className="relative py-32 px-6"
         initial={{ opacity: 0 }}
@@ -339,7 +331,7 @@ export default function Landing() {
                 viewport={{ once: true }}
                 className="group relative bg-gradient-to-br from-purple-500/5 to-pink-500/5 border border-purple-500/20 rounded-xl p-6 backdrop-blur-sm hover:border-purple-500/50 hover:bg-purple-500/10 transition-all duration-300 overflow-hidden"
               >
-                {/* Animated gradient overlay */}
+
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
 
                 <motion.div
@@ -362,7 +354,6 @@ export default function Landing() {
         </div>
       </motion.section>
 
-      {/* Two Pillars Section - Video + AI */}
       <motion.section
         className="relative py-32 px-6"
         initial={{ opacity: 0 }}
@@ -389,7 +380,7 @@ export default function Landing() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Video Section */}
+
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -439,7 +430,6 @@ export default function Landing() {
               </div>
             </motion.div>
 
-            {/* AI Section */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -490,7 +480,6 @@ export default function Landing() {
         </div>
       </motion.section>
 
-      {/* CTA Section */}
       <motion.section
         className="relative py-32 px-6"
         initial={{ opacity: 0 }}
@@ -550,7 +539,6 @@ export default function Landing() {
         </div>
       </motion.section>
 
-      {/* Footer */}
       <footer className="border-t border-purple-500/20 bg-black/40 backdrop-blur-md py-12 px-6">
         <div className="max-w-7xl mx-auto text-center text-white/60">
           <p>&copy; 2024 ONMEET. 모든 권리 보유.</p>

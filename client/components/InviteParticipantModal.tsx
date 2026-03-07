@@ -78,7 +78,6 @@ const defaultTeamMembers: TeamMember[] = [
   },
 ];
 
-// Generate a unique guest link
 const generateGuestLink = (meetingId?: string): string => {
   const id = meetingId || Math.random().toString(36).substring(2, 11);
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
@@ -149,7 +148,6 @@ export default function InviteParticipantModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-gradient-to-br from-purple-900/40 via-black/80 to-pink-900/30 rounded-2xl shadow-xl w-full max-w-md mx-4 max-h-[600px] flex flex-col overflow-hidden border border-purple-500/30 backdrop-blur-md">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-purple-500/20 bg-gradient-to-b from-purple-900/40 to-black/60">
           <h2 className="text-lg font-bold text-white/90">팀원 초대</h2>
           <button
@@ -160,7 +158,6 @@ export default function InviteParticipantModal({
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="flex border-b border-purple-500/20 px-6 bg-black/40">
           <button
             onClick={() => setActiveTab("team")}
@@ -192,10 +189,8 @@ export default function InviteParticipantModal({
           </button>
         </div>
 
-        {/* Team Members Tab */}
         {activeTab === "team" && (
           <>
-            {/* Search Bar */}
             <div className="px-6 py-3 border-b border-purple-500/20 bg-black/40">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/40" />
@@ -209,7 +204,6 @@ export default function InviteParticipantModal({
               </div>
             </div>
 
-            {/* Team Members List */}
             <div className="flex-1 overflow-y-auto px-6 py-3 space-y-2 bg-black/40">
               {filteredMembers.length > 0 ? (
                 filteredMembers.map((member) => (
@@ -223,14 +217,12 @@ export default function InviteParticipantModal({
                         : "hover:bg-purple-500/10 border border-transparent",
                     )}
                   >
-                    {/* Avatar */}
                     <img
                       src={member.avatar}
                       alt={member.name}
                       className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                     />
 
-                    {/* Member Info */}
                     <div className="flex-1 text-left min-w-0">
                       <div className="text-sm font-semibold text-white/90">
                         {member.name}
@@ -240,7 +232,6 @@ export default function InviteParticipantModal({
                       </div>
                     </div>
 
-                    {/* Checkbox */}
                     <div
                       className={cn(
                         "w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all",
@@ -262,7 +253,6 @@ export default function InviteParticipantModal({
               )}
             </div>
 
-            {/* Footer */}
             <div className="border-t border-purple-500/20 px-6 py-4 bg-purple-900/20 flex gap-3 backdrop-blur-md">
               <button
                 onClick={onClose}
@@ -281,11 +271,9 @@ export default function InviteParticipantModal({
           </>
         )}
 
-        {/* Guest Tab */}
         {activeTab === "guest" && (
           <>
             <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 bg-black/40">
-              {/* Info Section */}
               <div>
                 <h3 className="text-sm font-semibold text-white/90 mb-2">
                   게스트 초대 링크
@@ -296,7 +284,6 @@ export default function InviteParticipantModal({
                 </p>
               </div>
 
-              {/* Link Display */}
               <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-4 space-y-3">
                 <div className="flex items-center gap-2 mb-2">
                   <Link2 className="w-4 h-4 text-purple-400" />
@@ -305,7 +292,6 @@ export default function InviteParticipantModal({
                   </span>
                 </div>
 
-                {/* Link Display Box */}
                 <div className="bg-black/40 border border-purple-500/30 rounded-lg px-4 py-3 flex items-center justify-between group">
                   <code className="text-xs text-white/60 font-mono truncate">
                     {guestLink}
@@ -323,7 +309,6 @@ export default function InviteParticipantModal({
                   </button>
                 </div>
 
-                {/* Copy Success Message */}
                 {copied && (
                   <div className="text-xs text-purple-300 font-medium">
                     ✓ 링크가 복사되었습니다
@@ -331,7 +316,6 @@ export default function InviteParticipantModal({
                 )}
               </div>
 
-              {/* Features List */}
               <div className="bg-purple-600/20 border border-purple-500/30 rounded-xl p-4">
                 <h4 className="text-sm font-semibold text-white/90 mb-3">
                   게스트 권한
@@ -357,7 +341,6 @@ export default function InviteParticipantModal({
               </div>
             </div>
 
-            {/* Footer */}
             <div className="border-t border-purple-500/20 px-6 py-4 bg-purple-900/20 flex gap-3 backdrop-blur-md">
               <button
                 onClick={onClose}

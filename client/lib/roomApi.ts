@@ -27,10 +27,6 @@ async function roomFetch<T>(
   return text ? JSON.parse(text) : ({} as T);
 }
 
-// =====================
-// Types
-// =====================
-
 export interface JoinRoomRequest {
   displayName?: string;
   audioEnabled?: boolean;
@@ -44,10 +40,6 @@ export interface JoinRoomResponse {
   participantName: string;
   isHost: boolean;
 }
-
-// =====================
-// Room API
-// =====================
 
 export function joinRoom(
   roomId: string,

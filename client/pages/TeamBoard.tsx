@@ -177,7 +177,7 @@ export default function TeamBoard() {
   return (
     <Layout>
       <div className="space-y-6">
-        {/* Header */}
+
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -193,7 +193,6 @@ export default function TeamBoard() {
           </button>
         </div>
 
-        {/* Team Filter */}
         <div className="flex gap-3 flex-wrap">
           <button
             onClick={() => setSelectedTeam("all")}
@@ -223,11 +222,10 @@ export default function TeamBoard() {
           ))}
         </div>
 
-        {/* Team Boards */}
         <div className="space-y-8">
           {displayTeams.map((team) => (
             <div key={team.id} className="space-y-4">
-              {/* Team Header */}
+
               <div className="flex items-center gap-3 mb-6">
                 <div className={cn("w-4 h-4 rounded-full", team.color)} />
                 <h2 className="text-2xl font-bold text-foreground">
@@ -238,7 +236,6 @@ export default function TeamBoard() {
                 </span>
               </div>
 
-              {/* Meetings List */}
               <div className="grid grid-cols-1 gap-4">
                 {team.meetings.map((meeting) => (
                   <div
@@ -247,7 +244,7 @@ export default function TeamBoard() {
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        {/* Title and Status */}
+
                         <div className="flex items-start gap-3 mb-3">
                           <h3 className="text-lg font-bold text-foreground flex-1">
                             {meeting.title}
@@ -262,14 +259,12 @@ export default function TeamBoard() {
                           </span>
                         </div>
 
-                        {/* Description */}
                         <p className="text-sm text-text-sub mb-4">
                           {meeting.description}
                         </p>
 
-                        {/* Meeting Info Grid */}
                         <div className="grid grid-cols-3 gap-4 mb-4 pb-4 border-t border-border/20 pt-4">
-                          {/* Start Time */}
+
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-brand-500 flex-shrink-0" />
                             <div>
@@ -282,7 +277,6 @@ export default function TeamBoard() {
                             </div>
                           </div>
 
-                          {/* Duration */}
                           {meeting.endTime && (
                             <div className="flex items-center gap-2">
                               <Clock className="w-4 h-4 text-brand-500 flex-shrink-0" />
@@ -297,7 +291,6 @@ export default function TeamBoard() {
                             </div>
                           )}
 
-                          {/* Attendees */}
                           <div className="flex items-center gap-2">
                             <Users className="w-4 h-4 text-brand-500 flex-shrink-0" />
                             <div>
@@ -311,7 +304,6 @@ export default function TeamBoard() {
                           </div>
                         </div>
 
-                        {/* Host Info */}
                         <div className="text-xs text-text-sub">
                           주최자:{" "}
                           <span className="font-semibold text-foreground">
@@ -320,7 +312,6 @@ export default function TeamBoard() {
                         </div>
                       </div>
 
-                      {/* Action Button */}
                       <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 rounded-lg">
                         <MoreVertical className="w-4 h-4 text-muted-foreground" />
                       </button>

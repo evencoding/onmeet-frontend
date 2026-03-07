@@ -216,7 +216,6 @@ export default function CompanyManagement() {
   const toggleEmployeeManager = (id: string) => {
     const managerCount = employeeList.filter((e) => e.isManager).length;
     
-    // Check if trying to remove the last manager
     const employee = employeeList.find((e) => e.id === id);
     if (employee?.isManager && managerCount === 1) {
       alert("최소 1명 이상의 매니저가 필요합니다.");
@@ -250,7 +249,6 @@ export default function CompanyManagement() {
   const approveTeamCreation = (requestId: string) => {
     const request = teamCreationRequests.find((r) => r.id === requestId);
     if (request) {
-      // Add new team
       const bgColor = request.backgroundColor || "#a855f7";
       setTeamList([
         ...teamList,
@@ -265,7 +263,6 @@ export default function CompanyManagement() {
           colorHex: bgColor,
         },
       ]);
-      // Remove request
       setTeamCreationRequests(teamCreationRequests.filter((r) => r.id !== requestId));
     }
   };
@@ -279,7 +276,7 @@ export default function CompanyManagement() {
   return (
     <Layout showRecentPanel={false}>
       <div className="max-w-4xl space-y-6">
-        {/* Back Button and Title */}
+
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={() => navigate("/mypage")}
@@ -293,7 +290,6 @@ export default function CompanyManagement() {
           </h1>
         </div>
 
-        {/* Tabs */}
         <div className="flex items-center justify-between border-b dark:border-purple-500/20 light:border-purple-300/40">
           <div className="flex gap-2">
             {[
@@ -329,11 +325,10 @@ export default function CompanyManagement() {
           )}
         </div>
 
-        {/* Company Info Tab */}
         {activeTab === "info" && (
           <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
             <div className="flex gap-8">
-              {/* Logo Section */}
+
               <div className="flex flex-col items-center gap-3 flex-shrink-0">
                 <div className="relative">
                   <img
@@ -364,9 +359,8 @@ export default function CompanyManagement() {
                 )}
               </div>
 
-              {/* Information Section */}
               <div className="flex-1 space-y-6">
-              {/* Company Name */}
+
               <div>
                 <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
                   회사명
@@ -384,7 +378,6 @@ export default function CompanyManagement() {
                 )}
               </div>
 
-              {/* Email */}
               <div>
                 <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
                   이메일
@@ -402,7 +395,6 @@ export default function CompanyManagement() {
                 )}
               </div>
 
-              {/* Phone */}
               <div>
                 <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
                   전화
@@ -420,7 +412,6 @@ export default function CompanyManagement() {
                 )}
               </div>
 
-              {/* Industry */}
               <div>
                 <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
                   업종
@@ -438,7 +429,6 @@ export default function CompanyManagement() {
                 )}
               </div>
 
-              {/* Employee Count */}
               <div>
                 <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
                   직원 수
@@ -458,7 +448,6 @@ export default function CompanyManagement() {
 
               </div>
 
-              {/* Save Button */}
               {editMode && (
                 <div className="flex gap-3 pt-4 mt-8">
                   <button
@@ -481,7 +470,6 @@ export default function CompanyManagement() {
           </div>
         )}
 
-        {/* Employee Management Tab */}
         {activeTab === "employees" && (
           <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
             <div className="space-y-4">
@@ -532,10 +520,9 @@ export default function CompanyManagement() {
           </div>
         )}
 
-        {/* Team Management Tab */}
         {activeTab === "teams" && (
           <div className="space-y-6">
-            {/* Team Creation Requests Section */}
+
             {teamCreationRequests.length > 0 && (
               <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
                 <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900 mb-6 flex items-center gap-2">
@@ -578,7 +565,6 @@ export default function CompanyManagement() {
               </div>
             )}
 
-            {/* Teams List */}
             <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
@@ -595,7 +581,7 @@ export default function CompanyManagement() {
                     key={team.id}
                     className="dark:bg-purple-500/10 light:bg-purple-50 rounded-xl border dark:border-purple-500/30 light:border-purple-300/50 overflow-hidden"
                   >
-                    {/* Team Header */}
+
                     <div className="w-full flex items-center justify-between p-4 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50 transition-colors">
                       <button
                         onClick={() => setExpandedTeam(expandedTeam === team.id ? null : team.id)}
@@ -630,7 +616,6 @@ export default function CompanyManagement() {
                       </button>
                     </div>
 
-                    {/* Color Palette Selector */}
                     {colorEditingTeamId === team.id && (
                       <div className="border-t dark:border-purple-500/30 light:border-purple-300/50 p-4 bg-gradient-to-br dark:from-purple-500/10 light:from-purple-100/30 space-y-4">
                         <div>
@@ -656,7 +641,6 @@ export default function CompanyManagement() {
                           </div>
                         </div>
 
-                        {/* Custom Hex Color Input */}
                         <div className="border-t dark:border-purple-500/20 light:border-purple-300/30 pt-4">
                           <p className="text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-3">커스텀 색상</p>
                           <div className="flex gap-3">
@@ -689,17 +673,15 @@ export default function CompanyManagement() {
                       </div>
                     )}
 
-                    {/* Team Members Accordion */}
                     {expandedTeam === team.id && (
                       <div className="border-t dark:border-purple-500/30 light:border-purple-300/50 p-4 space-y-4">
-                        {/* Team Description */}
+
                         <div className="p-3 dark:bg-purple-500/10 light:bg-purple-100/30 rounded-lg border dark:border-purple-500/20 light:border-purple-300/40">
                           <p className="text-sm dark:text-white/80 light:text-purple-800">
                             {team.description}
                           </p>
                         </div>
 
-                        {/* Team Members */}
                         <div className="space-y-3">
                           {team.members.map((member) => (
                             <div

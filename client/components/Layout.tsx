@@ -24,7 +24,6 @@ export default function Layout({
 
   return (
     <div className="flex h-screen bg-background relative overflow-hidden dark:bg-background light:bg-gradient-to-br light:from-purple-50 light:via-blue-50 light:to-purple-100">
-      {/* Animated gradient background */}
       {theme === "dark" && (
         <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900">
           <div className="absolute inset-0 opacity-40">
@@ -35,7 +34,6 @@ export default function Layout({
         </div>
       )}
 
-      {/* Light mode background accent */}
       {theme === "light" && (
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
           <div className="absolute top-20 -right-40 w-96 h-96 bg-purple-200/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
@@ -44,12 +42,10 @@ export default function Layout({
         </div>
       )}
 
-      {/* Sidebar - hidden on mobile, visible on md and above */}
       <div className="hidden md:block md:w-72">
         <Sidebar onTeamSelect={setSelectedTeamId} />
       </div>
 
-      {/* Mobile sidebar */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 md:hidden z-40"
@@ -61,17 +57,12 @@ export default function Layout({
         </div>
       )}
 
-      {/* Main content */}
       <main className="flex-1 flex flex-col overflow-hidden relative z-10">
-        {/* Header */}
         <MeetingHeader />
 
-        {/* Content area with right panel */}
         <div className="flex-1 overflow-hidden flex">
-          {/* Left content */}
           <div className="flex-1 overflow-y-auto px-6 py-6">{children}</div>
 
-          {/* Right panel - AI Meeting Search or Recent Meetings */}
           {showAIPanel && (
             <div className="hidden lg:block">
               <AIMeetingSearch />

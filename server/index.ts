@@ -4,7 +4,6 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 
-// Initialize Sentry for Node.js
 if (process.env.SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
@@ -16,7 +15,6 @@ if (process.env.SENTRY_DSN) {
 export function createServer() {
   const app = express();
 
-  // Middleware
   if (process.env.SENTRY_DSN && Sentry.Handlers?.requestHandler) {
     app.use(Sentry.Handlers.requestHandler());
   }
@@ -24,7 +22,6 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Example API routes
   app.get("/api/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "ping";
     res.json({ message: ping });
@@ -32,7 +29,6 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
-  // Sentry error handler - must be last
   if (process.env.SENTRY_DSN && Sentry.Handlers?.errorHandler) {
     app.use(Sentry.Handlers.errorHandler());
   }

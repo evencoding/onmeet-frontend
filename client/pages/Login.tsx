@@ -64,7 +64,7 @@ export default function Login() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Email Input */}
+
         <motion.div
           className="space-y-2"
           initial={{ opacity: 0, x: -20 }}
@@ -84,7 +84,6 @@ export default function Login() {
           />
         </motion.div>
 
-        {/* Password Input */}
         <motion.div
           className="space-y-2"
           initial={{ opacity: 0, x: -20 }}
@@ -104,7 +103,6 @@ export default function Login() {
           />
         </motion.div>
 
-        {/* Submit Button */}
         <motion.button
           type="submit"
           disabled={isLoading}
@@ -120,7 +118,6 @@ export default function Login() {
         </motion.button>
       </form>
 
-      {/* Divider */}
       <motion.div
         className="my-6 flex items-center gap-3"
         initial={{ opacity: 0 }}
@@ -132,7 +129,6 @@ export default function Login() {
         <div className="flex-1 h-px bg-purple-500/20"></div>
       </motion.div>
 
-      {/* Signup Link */}
       <motion.p
         className="text-center text-sm text-white/70"
         initial={{ opacity: 0 }}

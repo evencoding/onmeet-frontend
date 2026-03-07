@@ -31,7 +31,6 @@ interface AddTeamModalProps {
   }) => void;
 }
 
-// 색상 팔레트
 const colorPalette = [
   "#FF6B6B", "#FFC93C", "#FF7E79", "#FFA630",
   "#A8E6CF", "#FFD3B6", "#FFAAA5", "#AA96DA",
@@ -39,18 +38,12 @@ const colorPalette = [
   "#D291BC", "#F8B500", "#C6B1FF", "#6BCB77",
 ];
 
-/**
- * HEX 색상의 밝기를 계산합니다 (0-1 범위)
- * @param hex HEX 색상 코드 (#ffffff 형식)
- * @returns 밝기 값 (0=어두움, 1=밝음)
- */
 function getLuminance(hex: string): number {
   const rgb = parseInt(hex.replace("#", ""), 16);
   const r = (rgb >> 16) & 255;
   const g = (rgb >> 8) & 255;
   const b = rgb & 255;
 
-  // 상대 밝기(Relative Luminance) 계산
   const [rs, gs, bs] = [r, g, b].map((channel) => {
     const normalized = channel / 255;
     return normalized <= 0.03928
@@ -61,18 +54,11 @@ function getLuminance(hex: string): number {
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 }
 
-/**
- * 배경색의 밝기에 따라 최적의 텍스트 색을 반환합니다
- * @param bgColor 배경색 HEX 코드
- * @returns 텍스트 색 HEX 코드 (#ffffff 또는 #000000)
- */
 function getOptimalTextColor(bgColor: string): string {
   const luminance = getLuminance(bgColor);
-  // 밝기 임계값: 0.5보다 높으면 어두운 텍스트, 아니면 밝은 텍스트
   return luminance > 0.5 ? "#000000" : "#FFFFFF";
 }
 
-// Mock employee list
 const mockEmployees: Employee[] = [
   {
     id: "1",
@@ -145,7 +131,7 @@ export default function AddTeamModal({
   onClose,
   onTeamAdded,
 }: AddTeamModalProps) {
-  const defaultColor = "#A855F7"; // Purple
+  const defaultColor = "#A855F7";
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedBgColor, setSelectedBgColor] = useState(defaultColor);
@@ -158,13 +144,11 @@ export default function AddTeamModal({
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // 배경색이 변경될 때 자동으로 텍스트 색 업데이트
   useEffect(() => {
     const autoTextColor = getOptimalTextColor(selectedBgColor);
     setSelectedTextColor(autoTextColor);
   }, [selectedBgColor]);
 
-  // Filter employees based on search query
   const filteredEmployees = mockEmployees.filter(
     (emp) =>
       emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -179,7 +163,6 @@ export default function AddTeamModal({
     } else {
       setSelectedMembers([...selectedMembers, employee]);
     }
-    // Keep search input focused and don't clear it
     setTimeout(() => {
       const searchInput = document.querySelector(
         'input[placeholder="이름, 이메일, 부서로 검색"]'
@@ -199,7 +182,6 @@ export default function AddTeamModal({
       setCustomColor(hex);
     }
 
-    // 커스텀 색상이 유효한 HEX 코드인 경우 배경색으로 설정
     if (/^#[0-9A-F]{6}$/i.test(hex)) {
       setSelectedBgColor(hex);
     }
@@ -222,10 +204,8 @@ export default function AddTeamModal({
 
     setIsLoading(true);
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Call the callback with new team data
       onTeamAdded?.({
         name: teamName,
         description,
@@ -234,7 +214,6 @@ export default function AddTeamModal({
         members: selectedMembers,
       });
 
-      // Reset form and close modal
       setTeamName("");
       setDescription("");
       setSelectedBgColor(defaultColor);
@@ -280,7 +259,6 @@ export default function AddTeamModal({
         </AlertDialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Team Name Input */}
           <div className="space-y-2">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
               팀 이름 <span className="text-red-500">*</span>
@@ -296,7 +274,6 @@ export default function AddTeamModal({
             />
           </div>
 
-          {/* Description Input */}
           <div className="space-y-2">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
               설명
@@ -311,15 +288,12 @@ export default function AddTeamModal({
             />
           </div>
 
-          {/* Color Selection - GitHub Label Style */}
           <div className="space-y-3">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
               팀 색상
             </label>
 
-            {/* Color Picker & HEX Input */}
             <div className="flex items-center gap-3">
-              {/* Color Picker */}
               <input
                 type="color"
                 value={selectedBgColor}
@@ -332,7 +306,6 @@ export default function AddTeamModal({
                 title="색상 선택"
               />
 
-              {/* HEX Input */}
               <div className="flex-1 flex items-center gap-2">
                 <input
                   type="text"
@@ -366,7 +339,6 @@ export default function AddTeamModal({
               </div>
             </div>
 
-            {/* Color Preview */}
             <div className="space-y-2">
               <p className="text-xs dark:text-white/50 light:text-purple-600">
                 미리보기
@@ -388,18 +360,15 @@ export default function AddTeamModal({
             </div>
           </div>
 
-          {/* Members Section */}
           <div className="space-y-3">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
               팀원 선택
             </label>
 
-            {/* Search Bar with Inline Tags */}
             <div className="relative">
               <div className="flex flex-wrap items-center gap-2 pl-10 pr-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus-within:ring-2 focus-within:ring-purple-500 transition-all">
                 <Search className="absolute left-3 w-4 h-4 dark:text-white/40 light:text-purple-600" />
 
-                {/* Selected Member Tags Inside Input */}
                 {selectedMembers.map((member) => (
                   <div
                     key={member.id}
@@ -424,7 +393,6 @@ export default function AddTeamModal({
                   </div>
                 ))}
 
-                {/* Search Input */}
                 <input
                   type="text"
                   value={searchQuery}
@@ -436,7 +404,6 @@ export default function AddTeamModal({
               </div>
             </div>
 
-            {/* Employee List */}
             <div className="border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg overflow-hidden max-h-48 overflow-y-auto dark:bg-black/40 light:bg-purple-50/30">
               {filteredEmployees.length === 0 ? (
                 <div className="p-4 text-center text-sm dark:text-white/60 light:text-purple-600">
@@ -489,7 +456,6 @@ export default function AddTeamModal({
               )}
             </div>
 
-            {/* Member Count Info */}
             {selectedMembers.length > 0 && (
               <p className="text-xs dark:text-white/50 light:text-purple-600">
                 {selectedMembers.length}명 선택됨
@@ -497,7 +463,6 @@ export default function AddTeamModal({
             )}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-3 pt-4">
             <Button
               type="button"

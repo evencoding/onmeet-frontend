@@ -21,14 +21,10 @@ import {
 } from "@/lib/authApi";
 import { MEMBER_KEYS } from "./useMemberQuery";
 
-// --- Query Keys ---
-
 export const MANAGER_KEYS = {
   employees: (pageable: Pageable) => ["manager", "employees", pageable] as const,
   jobTitles: MEMBER_KEYS.jobTitles,
 };
-
-// --- Queries ---
 
 export function useAllEmployees(pageable: Pageable) {
   return useQuery<PageResponse<UserResponseDto>>({
@@ -36,8 +32,6 @@ export function useAllEmployees(pageable: Pageable) {
     queryFn: () => getAllEmployees(pageable),
   });
 }
-
-// --- Mutations ---
 
 export function useDeactivateUser() {
   const queryClient = useQueryClient();

@@ -108,7 +108,6 @@ export default function Sidebar({
         isCollapsed ? "w-20" : "w-72",
       )}
     >
-      {/* Header */}
       <div
         className={cn(
           "flex flex-col items-center justify-between dark:border-b dark:border-purple-500/20 dark:bg-purple-500/10 dark:backdrop-blur-md light:border-b-2 light:border-purple-200 light:bg-white light:shadow-sm",
@@ -155,7 +154,6 @@ export default function Sidebar({
         </div>
       </div>
 
-      {/* Main Navigation */}
       <div className="flex-1 overflow-y-auto px-2 py-4 space-y-2">
         {navItems.map((item) => {
           const isActive = location.pathname === item.route;
@@ -204,7 +202,6 @@ export default function Sidebar({
         })}
       </div>
 
-      {/* Teams Section */}
       {!isCollapsed && (
         <div className="px-3 py-4 dark:border-t dark:border-purple-500/20 dark:bg-purple-500/5 dark:backdrop-blur-md light:border-t-2 light:border-purple-200 light:bg-purple-50/60 light:shadow-inner light:shadow-purple-200/10">
           <div className="flex items-center justify-between px-4 mb-3">
@@ -263,12 +260,10 @@ export default function Sidebar({
         </div>
       )}
 
-      {/* Add Team Modal */}
       <AddTeamModal
         isOpen={isAddTeamModalOpen}
         onClose={() => setIsAddTeamModalOpen(false)}
         onTeamAdded={(team) => {
-          // Handle team added - can be extended for actual API calls
           console.log("New team added:", {
             name: team.name,
             description: team.description,
@@ -277,23 +272,9 @@ export default function Sidebar({
             membersCount: team.members.length,
             members: team.members,
           });
-          // You can integrate actual API call here to save the team
-          // Example API call:
-          // await fetch('/api/teams', {
-          //   method: 'POST',
-          //   headers: { 'Content-Type': 'application/json' },
-          //   body: JSON.stringify({
-          //     name: team.name,
-          //     description: team.description,
-          //     backgroundColor: team.backgroundColor,
-          //     textColor: team.textColor,
-          //     memberIds: team.members.map(m => m.id),
-          //   })
-          // });
         }}
       />
 
-      {/* User Profile */}
       <div
         className={cn(
           "dark:border-t dark:border-purple-500/20 dark:bg-purple-500/5 dark:backdrop-blur-md light:border-t-2 light:border-purple-200 light:bg-purple-50/60",
@@ -349,14 +330,12 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
 
   return (
     <div className="space-y-2">
-      {/* Company Information */}
       <div className="w-full px-4 py-4 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl text-center">
         <div className="text-base font-bold text-white">
           {user.company?.name || "ONMEET"}
         </div>
       </div>
 
-      {/* Logout Button */}
       <button
         onClick={logout}
         className="w-full flex items-center justify-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-white/90 dark:hover:bg-purple-500/20 light:border-2 light:border-purple-300 light:bg-purple-50 light:text-purple-700 light:hover:bg-purple-100 text-sm font-medium rounded-xl transition-all duration-200 light:shadow-sm light:shadow-purple-200/30"

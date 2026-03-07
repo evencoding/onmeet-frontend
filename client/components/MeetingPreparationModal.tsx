@@ -54,7 +54,6 @@ export default function MeetingPreparationModal({
   const [microphoneLevel, setMicrophoneLevel] = useState(0);
   const [micTestStream, setMicTestStream] = useState<MediaStream | null>(null);
 
-  // Get available devices
   useEffect(() => {
     const getDevices = async () => {
       try {
@@ -63,7 +62,6 @@ export default function MeetingPreparationModal({
         setMicrophones(devices.filter((d) => d.kind === "audioinput"));
         setSpeakers(devices.filter((d) => d.kind === "audiooutput"));
 
-        // Set default devices
         const defaultCamera = devices.find((d) => d.kind === "videoinput");
         const defaultMic = devices.find((d) => d.kind === "audioinput");
         const defaultSpeaker = devices.find((d) => d.kind === "audiooutput");
@@ -79,7 +77,6 @@ export default function MeetingPreparationModal({
     getDevices();
   }, []);
 
-  // Start camera preview
   useEffect(() => {
     if (!isOpen || !isVideoOn) {
       return;
@@ -111,14 +108,12 @@ export default function MeetingPreparationModal({
     };
   }, [isOpen, isVideoOn, selectedCamera]);
 
-  // Cleanup on modal close
   useEffect(() => {
     return () => {
       stopMicTest();
     };
   }, [isOpen]);
 
-  // Microphone test function
   const startMicTest = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -129,7 +124,6 @@ export default function MeetingPreparationModal({
       setMicTestStream(stream);
       setIsMicTesting(true);
 
-      // Create audio context and analyser
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(stream);
@@ -138,7 +132,6 @@ export default function MeetingPreparationModal({
       audioContextRef.current = audioContext;
       analyserRef.current = analyser;
 
-      // Analyse microphone levels
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
       const updateLevel = () => {
         analyser.getByteFrequencyData(dataArray);
@@ -148,7 +141,6 @@ export default function MeetingPreparationModal({
 
       const interval = setInterval(updateLevel, 50);
 
-      // Cleanup on unmount
       return () => {
         clearInterval(interval);
       };
@@ -178,13 +170,11 @@ export default function MeetingPreparationModal({
     onStateChange.setIsVideoOn(isVideoOn);
     stopMicTest();
 
-    // Stop preview stream before handing off to LiveKit
     if (previewStream) {
       previewStream.getTracks().forEach((track) => track.stop());
       setPreviewStream(null);
     }
 
-    // Report selected devices to parent
     onDeviceSelect?.({
       cameraId: selectedCamera,
       microphoneId: selectedMicrophone,
@@ -199,7 +189,6 @@ export default function MeetingPreparationModal({
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-gradient-to-br from-purple-900/95 via-purple-950/95 to-black/95 rounded-2xl border border-purple-500/30 w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Header */}
         <div className="px-8 py-4 border-b border-purple-500/20 flex items-center justify-between flex-shrink-0">
           <h2 className="text-xl font-bold text-white">회의 준비</h2>
           <button
@@ -210,9 +199,7 @@ export default function MeetingPreparationModal({
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto px-8 py-6 space-y-6">
-          {/* Camera Preview */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-white">카메라 미리보기</h3>
@@ -245,9 +232,7 @@ export default function MeetingPreparationModal({
             </div>
           </div>
 
-          {/* Controls Grid */}
           <div className="grid grid-cols-2 gap-4">
-            {/* Left Column - Device Selection */}
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-semibold text-white mb-2">
@@ -301,9 +286,7 @@ export default function MeetingPreparationModal({
               </div>
             </div>
 
-            {/* Right Column - Settings */}
             <div className="space-y-3">
-              {/* Camera Toggle */}
               <div className="flex items-center justify-between p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
                 <div className="flex items-center gap-3">
                   {isVideoOn ? (
@@ -325,7 +308,6 @@ export default function MeetingPreparationModal({
                 </button>
               </div>
 
-              {/* Microphone Toggle */}
               <div className="flex items-center justify-between p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
                 <div className="flex items-center gap-3">
                   {!isMuted ? (
@@ -347,7 +329,6 @@ export default function MeetingPreparationModal({
                 </button>
               </div>
 
-              {/* Info Box */}
               <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
                 <div className="flex items-start gap-2">
                   <Volume2 className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
@@ -359,7 +340,6 @@ export default function MeetingPreparationModal({
             </div>
           </div>
 
-          {/* Microphone Test Section */}
           <div className="space-y-3 p-4 bg-purple-500/10 rounded-lg border border-purple-500/20">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -378,7 +358,6 @@ export default function MeetingPreparationModal({
               </button>
             </div>
 
-            {/* Microphone Level Visualizer */}
             {isMicTesting && (
               <div className="space-y-2">
                 <p className="text-xs text-white/70">마이크에서 음성이 감지되는지 확인하세요</p>
@@ -400,7 +379,6 @@ export default function MeetingPreparationModal({
             )}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-3 pt-4 border-t border-purple-500/20 mt-auto">
             <button
               onClick={handleStart}

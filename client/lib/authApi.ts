@@ -25,17 +25,11 @@ async function authFetch<T>(
   return text ? JSON.parse(text) : ({} as T);
 }
 
-// =====================
-// Types
-// =====================
-
 export interface ErrorResponse {
   status: number;
   message: string;
   timestamp: number;
 }
-
-// --- Auth ---
 
 export interface LoginRequest {
   email: string;
@@ -78,8 +72,6 @@ export interface InvitationResponse {
   companyName: string;
   role: "USER" | "ADMIN" | "MANAGER";
 }
-
-// --- Member ---
 
 export interface CompanyInfoDto {
   id: number;
@@ -135,8 +127,6 @@ export interface TeamRequest {
   leaderId?: number;
 }
 
-// --- Manager ---
-
 export interface JobTitleRequest {
   name: string;
   isDefault: boolean;
@@ -165,10 +155,6 @@ export interface PageResponse<T = unknown> {
   totalPages: number;
   last: boolean;
 }
-
-// =====================
-// Authentication API
-// =====================
 
 export function login(data: LoginRequest): Promise<LoginResponse> {
   return authFetch("/v1/login", {
@@ -243,10 +229,6 @@ export function validateInvitation(
   const params = new URLSearchParams({ email, code });
   return authFetch(`/v1/invitations/validate?${params}`);
 }
-
-// =====================
-// Member Management API
-// =====================
 
 export function getMe(): Promise<UserResponseDto> {
   return authFetch("/v1/member/me");
@@ -327,10 +309,6 @@ export function cancelTeamRequest(teamId: number): Promise<void> {
     method: "DELETE",
   });
 }
-
-// =====================
-// Manager Management API
-// =====================
 
 export function getAllEmployees(
   pageable: Pageable,

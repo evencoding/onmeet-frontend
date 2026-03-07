@@ -1,9 +1,9 @@
 import "./global.css";
 
-// Initialize Firebase
 import "@/lib/firebase";
 
 import * as Sentry from "@sentry/react";
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,7 +12,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
-// Initialize Sentry
 if (import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({
     dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -29,39 +28,36 @@ if (import.meta.env.VITE_SENTRY_DSN) {
     replaysOnErrorSampleRate: 1.0,
   });
 }
-import Index from "./pages/Index";
-import MeetingRoom from "./pages/MeetingRoom";
-import Schedule from "./pages/Schedule";
-import Summary from "./pages/Summary";
-import TeamBoard from "./pages/TeamBoard";
-import Team from "./pages/Team";
-import MyPage from "./pages/MyPage";
-import CompanyManagement from "./pages/CompanyManagement";
-import Login from "./pages/Login";
-import SignupFlow from "./pages/SignupFlow";
-import CompanySignup from "./pages/CompanySignup";
-import EmployeeSignup from "./pages/EmployeeSignup";
-import InviteMembers from "./pages/InviteMembers";
-import Landing from "./pages/Landing";
-import NotFound from "./pages/NotFound";
+
+const Index = lazy(() => import("./pages/Index"));
+const MeetingRoom = lazy(() => import("./pages/MeetingRoom"));
+const Schedule = lazy(() => import("./pages/Schedule"));
+const Summary = lazy(() => import("./pages/Summary"));
+const TeamBoard = lazy(() => import("./pages/TeamBoard"));
+const Team = lazy(() => import("./pages/Team"));
+const MyPage = lazy(() => import("./pages/MyPage"));
+const CompanyManagement = lazy(() => import("./pages/CompanyManagement"));
+const Login = lazy(() => import("./pages/Login"));
+const SignupFlow = lazy(() => import("./pages/SignupFlow"));
+const CompanySignup = lazy(() => import("./pages/CompanySignup"));
+const EmployeeSignup = lazy(() => import("./pages/EmployeeSignup"));
+const InviteMembers = lazy(() => import("./pages/InviteMembers"));
+const Landing = lazy(() => import("./pages/Landing"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
-// Protected route component
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-black">
+    <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
+
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  if (isLoading) return <PageLoader />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return <>{children}</>;
 }
@@ -69,17 +65,8 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 const HomeRoute = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Landing />;
-  }
+  if (isLoading) return <PageLoader />;
+  if (!isAuthenticated) return <Landing />;
 
   return <Index />;
 };
@@ -88,80 +75,81 @@ const SentryRoutes = Sentry.withSentryRouting(Routes);
 
 const AppContent = () => (
   <BrowserRouter>
-    <SentryRoutes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignupFlow />} />
-      <Route path="/signup/company" element={<CompanySignup />} />
-      <Route path="/signup/employee" element={<EmployeeSignup />} />
-      <Route path="/signup/invite-members" element={<InviteMembers />} />
-      <Route path="/" element={<HomeRoute />} />
-      <Route
-        path="/meeting/:roomId"
-        element={
-          <ProtectedRoute>
-            <MeetingRoom />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/schedule"
-        element={
-          <ProtectedRoute>
-            <Schedule />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/summary"
-        element={
-          <ProtectedRoute>
-            <Summary />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/records"
-        element={
-          <ProtectedRoute>
-            <Summary />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/board"
-        element={
-          <ProtectedRoute>
-            <TeamBoard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/team/:teamId"
-        element={
-          <ProtectedRoute>
-            <Team />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/mypage"
-        element={
-          <ProtectedRoute>
-            <MyPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/company"
-        element={
-          <ProtectedRoute>
-            <CompanyManagement />
-          </ProtectedRoute>
-        }
-      />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </SentryRoutes>
+    <Suspense fallback={<PageLoader />}>
+      <SentryRoutes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignupFlow />} />
+        <Route path="/signup/company" element={<CompanySignup />} />
+        <Route path="/signup/employee" element={<EmployeeSignup />} />
+        <Route path="/signup/invite-members" element={<InviteMembers />} />
+        <Route path="/" element={<HomeRoute />} />
+        <Route
+          path="/meeting/:roomId"
+          element={
+            <ProtectedRoute>
+              <MeetingRoom />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/schedule"
+          element={
+            <ProtectedRoute>
+              <Schedule />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/summary"
+          element={
+            <ProtectedRoute>
+              <Summary />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/records"
+          element={
+            <ProtectedRoute>
+              <Summary />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/board"
+          element={
+            <ProtectedRoute>
+              <TeamBoard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/team/:teamId"
+          element={
+            <ProtectedRoute>
+              <Team />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/mypage"
+          element={
+            <ProtectedRoute>
+              <MyPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/company"
+          element={
+            <ProtectedRoute>
+              <CompanyManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </SentryRoutes>
+    </Suspense>
   </BrowserRouter>
 );
 
