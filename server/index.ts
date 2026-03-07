@@ -15,9 +15,6 @@ if (process.env.SENTRY_DSN) {
 export function createServer() {
   const app = express();
 
-  if (process.env.SENTRY_DSN && Sentry.Handlers?.requestHandler) {
-    app.use(Sentry.Handlers.requestHandler());
-  }
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -29,8 +26,8 @@ export function createServer() {
 
   app.get("/api/demo", handleDemo);
 
-  if (process.env.SENTRY_DSN && Sentry.Handlers?.errorHandler) {
-    app.use(Sentry.Handlers.errorHandler());
+  if (process.env.SENTRY_DSN) {
+    Sentry.setupExpressErrorHandler(app);
   }
 
   return app;

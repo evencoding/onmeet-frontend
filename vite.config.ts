@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => ({
             "@tiptap/extension-highlight",
             "@tiptap/extension-text-align",
           ],
-          firebase: ["firebase"],
+          firebase: ["firebase/app", "firebase/analytics"],
           charts: ["recharts"],
           motion: ["framer-motion"],
         },
