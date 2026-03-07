@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://api.onmeet.cloud/video",
+      "url": "https://api.onmeet.cloud/video",
       "description": "Generated server url"
     }
   ],

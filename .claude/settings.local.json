@@ -17,7 +17,8 @@
       "Bash(done)",
       "Bash(pnpm run build:*)",
       "Bash(git fetch:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(python3:*)"
     ]
   }
 }
