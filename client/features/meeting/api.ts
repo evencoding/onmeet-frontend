@@ -1,18 +1,18 @@
 const ROOM_BASE_URL = "https://api.onmeet.cloud/api";
 
-async function roomFetch<T>(
+export async function roomFetch<T>(
   endpoint: string,
   userId: string,
   options?: RequestInit,
 ): Promise<T> {
   const res = await fetch(`${ROOM_BASE_URL}${endpoint}`, {
     credentials: "include",
+    ...options,
     headers: {
       "Content-Type": "application/json",
       "X-User-Id": userId,
       ...options?.headers,
     },
-    ...options,
   });
 
   if (!res.ok) {
@@ -24,30 +24,24 @@ async function roomFetch<T>(
   }
 
   const text = await res.text();
-  return text ? JSON.parse(text) : ({} as T);
+  if (!text) return {} as T;
+
+  const json = JSON.parse(text);
+  if (json && typeof json === "object" && "success" in json) {
+    if (!json.success && json.error) throw json.error;
+    return json.data as T;
+  }
+  return json as T;
 }
 
-export interface JoinRoomRequest {
-  displayName?: string;
-  audioEnabled?: boolean;
-  videoEnabled?: boolean;
-}
-
-export interface JoinRoomResponse {
-  token: string;
-  waitingRoom: boolean;
-  roomName: string;
-  participantName: string;
-  isHost: boolean;
-}
-
-export function joinRoom(
-  roomId: string,
-  userId: string,
-  body?: JoinRoomRequest,
-): Promise<JoinRoomResponse> {
-  return roomFetch(`/rooms/${roomId}/join`, userId, {
-    method: "POST",
-    body: body ? JSON.stringify(body) : undefined,
-  });
-}
+export * from "./api/types";
+export * from "./api/room";
+export * from "./api/room-schedule";
+export * from "./api/room-discovery";
+export * from "./api/room-settings";
+export * from "./api/participant";
+export * from "./api/waiting-room";
+export * from "./api/recording";
+export * from "./api/invitation";
+export * from "./api/screen-share";
+export * from "./api/chat";

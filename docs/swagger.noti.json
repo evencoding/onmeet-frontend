@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://api.onmeet.cloud/notification",
+      "url": "https://api.onmeet.cloud/notification",
       "description": "Generated server url"
     }
   ],
