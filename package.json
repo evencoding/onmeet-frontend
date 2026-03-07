@@ -22,7 +22,8 @@
     "@tiptap/react": "^3.20.0",
     "@tiptap/starter-kit": "^3.20.0",
     "firebase": "^12.10.0",
-    "livekit-client": "^2.17.2"
+    "livekit-client": "^2.17.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.14",
