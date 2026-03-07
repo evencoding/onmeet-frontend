@@ -141,6 +141,16 @@ export interface TeamRejectRequest {
   reason?: string;
 }
 
+export interface GuestInviteRequestDto {
+  guestEmail: string;
+  roomId: string;
+  roomName: string;
+}
+
+export interface RefreshRequest {
+  refreshToken: string;
+}
+
 export interface Pageable {
   page?: number;
   size?: number;
@@ -176,9 +186,10 @@ export function logout(): Promise<void> {
   });
 }
 
-export function refreshToken(): Promise<TokenResponse> {
+export function refreshToken(data?: RefreshRequest): Promise<TokenResponse> {
   return authFetch("/v1/refresh", {
     method: "POST",
+    body: data ? JSON.stringify(data) : undefined,
   });
 }
 
@@ -278,7 +289,7 @@ export function getMemberInfo(memberId: number): Promise<UserResponseDto> {
   return authFetch(`/v1/member/${memberId}`);
 }
 
-export function getJobTitles(): Promise<JobTitleResponse> {
+export function getJobTitles(): Promise<JobTitleResponse[]> {
   return authFetch("/v1/member/job-titles");
 }
 
@@ -393,4 +404,15 @@ export function assignLeader(
   return authFetch(`/v1/manager/teams/${teamId}/leader/${userId}`, {
     method: "POST",
   });
+}
+
+export function inviteGuest(data: GuestInviteRequestDto): Promise<void> {
+  return authFetch("/v1/guests/invite", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function joinMeetingAsGuest(uuid: string): Promise<void> {
+  return authFetch(`/v1/guests/join/${uuid}`);
 }

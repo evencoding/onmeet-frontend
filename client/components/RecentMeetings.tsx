@@ -133,7 +133,7 @@ export default function RecentMeetings() {
     <div className="space-y-4">
       <div className="relative">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 dark:text-white/50 light:text-purple-600" />
           <input
             type="text"
             value={searchQuery}
@@ -146,7 +146,7 @@ export default function RecentMeetings() {
               onClick={() => setSearchQuery("")}
               className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-purple-500/20 rounded-lg transition-colors"
             >
-              <X className="w-4 h-4 text-white/50" />
+              <X className="w-4 h-4 dark:text-white/50 light:text-purple-600" />
             </button>
           )}
         </div>
@@ -193,7 +193,7 @@ export default function RecentMeetings() {
                   </div>
                 </div>
                 <button className="p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-purple-500/20 rounded-lg">
-                  <MoreVertical className="w-4 h-4 text-white/40" />
+                  <MoreVertical className="w-4 h-4 dark:text-white/40 light:text-purple-400" />
                 </button>
               </div>
 
