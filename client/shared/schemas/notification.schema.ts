@@ -1,23 +1,15 @@
 import { z } from "zod";
 
-export const LocalTimeSchema = z.object({
-  hour: z.number(),
-  minute: z.number(),
-  second: z.number(),
-  nano: z.number(),
-});
-export type LocalTimeDto = z.infer<typeof LocalTimeSchema>;
-
 export const NotificationSettingSchema = z.object({
-  doNotDisturbStartTime: LocalTimeSchema.optional(),
-  doNotDisturbEndTime: LocalTimeSchema.optional(),
-  pushEnabled: z.boolean().optional(),
-  meetingInviteNotification: z.boolean().optional(),
-  meetingStartNotification: z.boolean().optional(),
-  meetingRemindNotification: z.boolean().optional(),
-  minutesCompletedNotification: z.boolean().optional(),
-  systemNoticeNotification: z.boolean().optional(),
-  doNotDisturbEnabled: z.boolean().optional(),
+  doNotDisturbStartTime: z.string().optional(),
+  doNotDisturbEndTime: z.string().optional(),
+  isPushEnabled: z.boolean().optional(),
+  isMeetingInviteNotification: z.boolean().optional(),
+  isMeetingStartNotification: z.boolean().optional(),
+  isMeetingRemindNotification: z.boolean().optional(),
+  isMinutesCompletedNotification: z.boolean().optional(),
+  isSystemNoticeNotification: z.boolean().optional(),
+  isDoNotDisturbEnabled: z.boolean().optional(),
 });
 export type NotificationSettingDto = z.infer<typeof NotificationSettingSchema>;
 
@@ -45,12 +37,13 @@ export const NotificationResponseSchema = z.object({
   ]),
   title: z.string(),
   body: z.string(),
-  deeplink: z.string(),
+  isRead: z.boolean(),
+  deeplink: z.string().nullable(),
   createdAt: z.string(),
-  scheduledAt: z.string(),
+  scheduledAt: z.string().nullable(),
   resourceType: z.enum(["MEETING", "MINUTES", "TEAM", "NOTICE", "EVENT"]),
-  dedupeKey: z.string(),
+  dedupeKey: z.string().nullable(),
   resourceId: z.string(),
-  actorUserId: z.number(),
+  actorUserId: z.number().nullable(),
 });
 export type NotificationResponseDto = z.infer<typeof NotificationResponseSchema>;

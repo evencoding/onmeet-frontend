@@ -14,7 +14,7 @@ export type {
   NotificationSettingDto,
   NotificationResponseDto,
 } from "@/shared/schemas/notification.schema";
-export type { LocalTimeDto as LocalTime } from "@/shared/schemas/notification.schema";
+
 
 // ── Request Types (feature-local) ──
 
@@ -77,7 +77,7 @@ export function getNotifications(userId: string, pageable?: Pageable) {
 }
 
 export function getUnreadCount(userId: string) {
-  return notiApi<{ count: number }>("/v1/notifications/unread/count", {
+  return notiApi<{ unreadCount: number }>("/v1/notifications/unread/count", {
     userId,
   });
 }
@@ -90,7 +90,7 @@ export function markAsRead(notificationId: number, userId: string) {
 }
 
 export function markAllAsRead(userId: string) {
-  return notiApi<void>("/v1/notifications/read/all", {
+  return notiApi<{ updatedCount: number }>("/v1/notifications/read/all", {
     userId,
     method: "PATCH",
   });
