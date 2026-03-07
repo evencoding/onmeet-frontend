@@ -3,7 +3,21 @@
     "allow": [
       "Bash(xargs ls:*)",
       "Bash(grep:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm build:client:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(pnpm install:*)",
+      "WebFetch(domain:api.onmeet.cloud)",
+      "Bash(pnpm run build:client:*)",
+      "Bash(git mv:*)",
+      "Bash(for f in client/components/ui/*.tsx client/components/ui/*.ts)",
+      "Bash(done)",
+      "Bash(pnpm run build:*)",
+      "Bash(git fetch:*)",
+      "Bash(git log:*)"
     ]
   }
 }

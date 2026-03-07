@@ -1,0 +1,396 @@
+import { useState } from "react";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  User,
+  Mail,
+  Lock,
+  Building2,
+  ArrowRight,
+  Sparkles,
+  ArrowLeft,
+} from "lucide-react";
+import { useEmployeeSignup } from "@/features/auth/hooks";
+import { validateInvitation } from "@/features/auth/api";
+import type { ErrorResponse } from "@/features/auth/api";
+import AuthLayout from "@/shared/components/AuthLayout";
+
+export default function EmployeeSignup() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const inviteToken = searchParams.get("token") || "";
+
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteCode, setInviteCode] = useState(inviteToken);
+  const [companyName, setCompanyName] = useState("");
+  const [step, setStep] = useState<"verify" | "register">(
+    inviteToken ? "register" : "verify",
+  );
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    memberNum: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const employeeSignupMutation = useEmployeeSignup();
+
+  const handleVerifySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!inviteEmail) {
+      setError("이메일을 입력해주세요");
+      return;
+    }
+    if (!inviteEmail.includes("@")) {
+      setError("올바른 이메일 형식을 입력해주세요");
+      return;
+    }
+    if (!inviteCode) {
+      setError("초대 코드를 입력해주세요");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const invitation = await validateInvitation(inviteEmail, inviteCode);
+      setCompanyName(invitation.companyName);
+      setFormData((prev) => ({ ...prev, email: inviteEmail }));
+      setStep("register");
+    } catch (err) {
+      const apiError = err as ErrorResponse;
+      setError(apiError.message || "초대 코드 검증에 실패했습니다");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    const { name, password, confirmPassword, memberNum } = formData;
+
+    if (!name || !password || !confirmPassword) {
+      setError("모든 필드를 입력해주세요");
+      return;
+    }
+    if (password.length < 6) {
+      setError("비밀번호는 최소 6자 이상이어야 합니다");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다");
+      return;
+    }
+
+    employeeSignupMutation.mutate(
+      {
+        data: {
+          email: formData.email || inviteEmail,
+          code: inviteCode,
+          password,
+          name,
+          employeeId: memberNum || undefined,
+        },
+      },
+      {
+        onSuccess: () => navigate("/login"),
+        onError: (err: unknown) => {
+          const apiError = err as ErrorResponse;
+          setError(apiError?.message || "가입에 실패했습니다");
+        },
+      },
+    );
+  };
+
+  if (step === "verify") {
+    return (
+      <AuthLayout subtitle="사원 회원가입" colorTheme="blue">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
+          <div className="flex items-center gap-2 mb-0">
+            <h2 className="text-lg font-bold text-white">계정 인증</h2>
+            <Sparkles className="w-4 h-4 text-blue-400" />
+          </div>
+          <p className="text-white/60 text-xs mb-4">
+            회사 이메일을 입력해주세요
+          </p>
+        </motion.div>
+
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg backdrop-blur-sm"
+          >
+            <p className="text-sm text-red-300 font-medium">{error}</p>
+          </motion.div>
+        )}
+
+        <form onSubmit={handleVerifySubmit} className="space-y-2.5">
+
+          <motion.div
+            className="space-y-1"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
+              <Mail className="w-3 h-3 text-blue-400" />
+              회사 이메일
+            </label>
+            <input
+              type="email"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              placeholder="your@company.com"
+              className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+            />
+            <p className="text-xs text-white/50">
+              회사에서 초대한 이메일을 입력해주세요
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="space-y-1"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.55 }}
+          >
+            <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
+              <Lock className="w-3 h-3 text-blue-400" />
+              초대 코드
+            </label>
+            <input
+              type="text"
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.target.value)}
+              placeholder="INV-123456"
+              className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+            />
+          </motion.div>
+
+          <motion.button
+            type="submit"
+            disabled={isLoading}
+            className="w-full px-4 py-2 mt-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            {isLoading ? "확인 중..." : "다음"}
+            {!isLoading && <ArrowRight className="w-3 h-3" />}
+          </motion.button>
+        </form>
+
+        <motion.div
+          className="my-3 flex items-center gap-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.7 }}
+        >
+          <div className="flex-1 h-px bg-blue-500/20"></div>
+          <span className="text-xs text-white/40">또는</span>
+          <div className="flex-1 h-px bg-blue-500/20"></div>
+        </motion.div>
+
+        <motion.p
+          className="text-center text-xs text-white/70"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+        >
+          <Link
+            to="/signup"
+            className="text-blue-300 font-semibold hover:text-purple-300 transition-colors"
+          >
+            뒤로가기
+          </Link>
+        </motion.p>
+      </AuthLayout>
+    );
+  }
+
+  return (
+    <AuthLayout subtitle="사원 정보 입력" colorTheme="blue">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
+        <h2 className="text-lg font-bold text-white mb-0">{companyName}</h2>
+        <p className="text-white/60 text-xs mb-4">사원 정보를 입력해주세요</p>
+      </motion.div>
+
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg backdrop-blur-sm"
+        >
+          <p className="text-sm text-red-300 font-medium">{error}</p>
+        </motion.div>
+      )}
+
+      <form onSubmit={handleRegisterSubmit} className="space-y-2">
+
+        <motion.div
+          className="space-y-1"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
+            <User className="w-3 h-3 text-blue-400" />
+            이름
+          </label>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData({ ...formData, name: e.target.value })
+            }
+            placeholder="홍길동"
+            className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+          />
+        </motion.div>
+
+        <motion.div
+          className="space-y-1"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.55 }}
+        >
+          <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
+            <Mail className="w-3 h-3 text-blue-400" />
+            이메일
+          </label>
+          <input
+            type="email"
+            value={formData.email}
+            disabled
+            className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 text-white/70 cursor-not-allowed opacity-60 text-sm"
+          />
+        </motion.div>
+
+        <motion.div
+          className="space-y-1"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
+            <Building2 className="w-3 h-3 text-blue-400" />
+            직원번호 (선택)
+          </label>
+          <input
+            type="text"
+            value={formData.memberNum}
+            onChange={(e) =>
+              setFormData({ ...formData, memberNum: e.target.value })
+            }
+            placeholder="EMP-001"
+            className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+          />
+        </motion.div>
+
+        <motion.div
+          className="space-y-1"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.7 }}
+        >
+          <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
+            <Lock className="w-3 h-3 text-blue-400" />
+            비밀번호
+          </label>
+          <input
+            type="password"
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            placeholder="••••••••"
+            className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+          />
+        </motion.div>
+
+        <motion.div
+          className="space-y-1"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.75 }}
+        >
+          <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
+            <Lock className="w-3 h-3 text-blue-400" />
+            비밀번호 확인
+          </label>
+          <input
+            type="password"
+            value={formData.confirmPassword}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                confirmPassword: e.target.value,
+              })
+            }
+            placeholder="••••••••"
+            className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+          />
+        </motion.div>
+
+        <motion.button
+          type="submit"
+          disabled={employeeSignupMutation.isPending}
+          className="w-full px-4 py-2 mt-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+        >
+          {employeeSignupMutation.isPending ? "가입 중..." : "계정 만들기"}
+          {!employeeSignupMutation.isPending && (
+            <ArrowRight className="w-3 h-3" />
+          )}
+        </motion.button>
+      </form>
+
+      <motion.div
+        className="my-3 flex items-center gap-3"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.9 }}
+      >
+        <div className="flex-1 h-px bg-blue-500/20"></div>
+        <span className="text-xs text-white/40">또는</span>
+        <div className="flex-1 h-px bg-blue-500/20"></div>
+      </motion.div>
+
+      <motion.p
+        className="text-center text-xs text-white/70"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+      >
+        <button
+          type="button"
+          onClick={() => setStep("verify")}
+          className="text-blue-300 font-semibold hover:text-purple-300 transition-colors flex items-center justify-center gap-1 mx-auto"
+        >
+          <ArrowLeft className="w-3 h-3" /> 이전 단계로
+        </button>
+      </motion.p>
+    </AuthLayout>
+  );
+}

@@ -12,8 +12,38 @@ export default defineConfig(({ mode }) => ({
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
   },
+  optimizeDeps: {
+    include: [
+      "lucide-react",
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "@tanstack/react-query",
+      "framer-motion",
+    ],
+  },
   build: {
     outDir: "dist/spa",
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          query: ["@tanstack/react-query"],
+          livekit: ["livekit-client", "@livekit/components-react"],
+          editor: [
+            "@tiptap/react",
+            "@tiptap/starter-kit",
+            "@tiptap/extension-color",
+            "@tiptap/extension-highlight",
+            "@tiptap/extension-text-align",
+          ],
+          firebase: ["firebase/app", "firebase/analytics"],
+          charts: ["recharts"],
+          motion: ["framer-motion"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
   },
   plugins: [react(), expressPlugin()],
   resolve: {
@@ -27,11 +57,9 @@ export default defineConfig(({ mode }) => ({
 function expressPlugin(): Plugin {
   return {
     name: "express-plugin",
-    apply: "serve", // Only apply during development (serve mode)
+    apply: "serve",
     configureServer(server) {
       const app = createServer();
-
-      // Add Express app as middleware to Vite dev server
       server.middlewares.use(app);
     },
   };
