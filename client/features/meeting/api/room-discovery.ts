@@ -1,4 +1,13 @@
-import { roomFetch } from "../api";
+import { roomApi } from "@/shared/api";
+import {
+  MeetingRoomResponseSchema,
+  MeetingRoomDetailResponseSchema,
+  RoomStatsResponseSchema,
+  MonthlyStatsResponseSchema,
+  TimelineEntrySchema,
+} from "@/shared/schemas";
+import { pageSchema } from "@/shared/schemas/pagination.schema";
+import { pageableToParams } from "@/shared/types";
 import type {
   MeetingRoomResponse,
   MeetingRoomDetailResponse,
@@ -8,60 +17,62 @@ import type {
   Page,
   Pageable,
 } from "./types";
+import { z } from "zod";
 
-function pageQs(pageable?: Pageable): string {
-  if (!pageable) return "";
-  const qs = new URLSearchParams();
-  if (pageable.page !== undefined) qs.set("page", String(pageable.page));
-  if (pageable.size !== undefined) qs.set("size", String(pageable.size));
-  if (pageable.sort) pageable.sort.forEach((s) => qs.append("sort", s));
-  const str = qs.toString();
-  return str ? `?${str}` : "";
-}
+const PageMeetingRoomSchema = pageSchema(MeetingRoomResponseSchema);
 
 export function getRoomByCode(roomCode: string, userId: string) {
-  return roomFetch<MeetingRoomDetailResponse>(
+  return roomApi<MeetingRoomDetailResponse>(
     `/rooms/code/${encodeURIComponent(roomCode)}`,
-    userId,
+    { userId, schema: MeetingRoomDetailResponseSchema },
   );
 }
 
 export function searchRoomsByTag(tagName: string, userId: string, pageable?: Pageable) {
-  return roomFetch<Page<MeetingRoomResponse>>(
-    `/rooms/tags/${encodeURIComponent(tagName)}${pageQs(pageable)}`,
-    userId,
+  return roomApi<Page<MeetingRoomResponse>>(
+    `/rooms/tags/${encodeURIComponent(tagName)}${pageableToParams(pageable)}`,
+    { userId, schema: PageMeetingRoomSchema },
   );
 }
 
 export function listScheduledRooms(userId: string, pageable?: Pageable) {
-  return roomFetch<Page<MeetingRoomResponse>>(
-    `/rooms/scheduled${pageQs(pageable)}`,
-    userId,
+  return roomApi<Page<MeetingRoomResponse>>(
+    `/rooms/scheduled${pageableToParams(pageable)}`,
+    { userId, schema: PageMeetingRoomSchema },
   );
 }
 
 export function listRoomHistory(userId: string, pageable?: Pageable) {
-  return roomFetch<Page<MeetingRoomResponse>>(
-    `/rooms/history${pageQs(pageable)}`,
-    userId,
+  return roomApi<Page<MeetingRoomResponse>>(
+    `/rooms/history${pageableToParams(pageable)}`,
+    { userId, schema: PageMeetingRoomSchema },
   );
 }
 
 export function getMonthlyStats(userId: string) {
-  return roomFetch<MonthlyStatsResponse[]>("/rooms/history/monthly", userId);
+  return roomApi<MonthlyStatsResponse[]>("/rooms/history/monthly", {
+    userId,
+    schema: z.array(MonthlyStatsResponseSchema),
+  });
 }
 
 export function listFavoriteRooms(userId: string, pageable?: Pageable) {
-  return roomFetch<Page<MeetingRoomResponse>>(
-    `/rooms/favorites${pageQs(pageable)}`,
-    userId,
+  return roomApi<Page<MeetingRoomResponse>>(
+    `/rooms/favorites${pageableToParams(pageable)}`,
+    { userId, schema: PageMeetingRoomSchema },
   );
 }
 
 export function getRoomStats(roomId: number, userId: string) {
-  return roomFetch<RoomStatsResponse>(`/rooms/${roomId}/stats`, userId);
+  return roomApi<RoomStatsResponse>(`/rooms/${roomId}/stats`, {
+    userId,
+    schema: RoomStatsResponseSchema,
+  });
 }
 
 export function getRoomTimeline(roomId: number, userId: string) {
-  return roomFetch<TimelineEntry[]>(`/rooms/${roomId}/timeline`, userId);
+  return roomApi<TimelineEntry[]>(`/rooms/${roomId}/timeline`, {
+    userId,
+    schema: z.array(TimelineEntrySchema),
+  });
 }
