@@ -13,10 +13,37 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    include: ["lucide-react"],
+    include: [
+      "lucide-react",
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "@tanstack/react-query",
+      "framer-motion",
+    ],
   },
   build: {
     outDir: "dist/spa",
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          query: ["@tanstack/react-query"],
+          livekit: ["livekit-client", "@livekit/components-react"],
+          editor: [
+            "@tiptap/react",
+            "@tiptap/starter-kit",
+            "@tiptap/extension-color",
+            "@tiptap/extension-highlight",
+            "@tiptap/extension-text-align",
+          ],
+          firebase: ["firebase"],
+          charts: ["recharts"],
+          motion: ["framer-motion"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
   },
   plugins: [react(), expressPlugin()],
   resolve: {
