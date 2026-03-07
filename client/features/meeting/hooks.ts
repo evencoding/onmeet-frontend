@@ -3,7 +3,7 @@ import {
   joinRoom,
   type JoinRoomRequest,
   type JoinRoomResponse,
-} from "@/lib/roomApi";
+} from "@/features/meeting/api";
 
 export function useJoinRoom() {
   return useMutation<

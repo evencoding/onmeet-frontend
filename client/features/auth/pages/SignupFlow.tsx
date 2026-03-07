@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Building2, Users, ArrowRight } from "lucide-react";
-import AuthLayout from "@/components/AuthLayout";
+import AuthLayout from "@/shared/components/AuthLayout";
 
 export default function SignupFlow() {
   const navigate = useNavigate();

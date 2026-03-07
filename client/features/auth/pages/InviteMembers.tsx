@@ -10,7 +10,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-import AuthLayout from "@/components/AuthLayout";
+import AuthLayout from "@/shared/components/AuthLayout";
 
 interface InvitedEmail {
   id: string;

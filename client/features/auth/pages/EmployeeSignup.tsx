@@ -10,10 +10,10 @@ import {
   Sparkles,
   ArrowLeft,
 } from "lucide-react";
-import { useEmployeeSignup } from "@/hooks/useAuthQuery";
-import { validateInvitation } from "@/lib/authApi";
-import type { ErrorResponse } from "@/lib/authApi";
-import AuthLayout from "@/components/AuthLayout";
+import { useEmployeeSignup } from "@/features/auth/hooks";
+import { validateInvitation } from "@/features/auth/api";
+import type { ErrorResponse } from "@/features/auth/api";
+import AuthLayout from "@/shared/components/AuthLayout";
 
 export default function EmployeeSignup() {
   const navigate = useNavigate();

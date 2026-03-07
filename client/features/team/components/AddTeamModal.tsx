@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { X, Search, Copy, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/shared/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@/shared/ui/alert-dialog";
 
 interface Employee {
   id: string;

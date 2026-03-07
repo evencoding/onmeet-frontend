@@ -1,5 +1,5 @@
 import { MoreVertical, Search, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { useState } from "react";
 
 interface Participant {

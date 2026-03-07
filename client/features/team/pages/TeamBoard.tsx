@@ -1,7 +1,7 @@
-import Layout from "@/components/Layout";
+import Layout from "@/shared/components/Layout";
 import { Plus, MoreVertical, Clock, Users, Calendar } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface Meeting {
   id: string;

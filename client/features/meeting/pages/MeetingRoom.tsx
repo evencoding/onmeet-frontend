@@ -32,21 +32,21 @@ import {
   DataPacket_Kind,
   type RemoteParticipant,
 } from "livekit-client";
-import AIRecordingRequestModal from "@/components/AIRecordingRequestModal";
-import InviteParticipantModal from "@/components/InviteParticipantModal";
-import MeetingPreparationModal from "@/components/MeetingPreparationModal";
-import type { DeviceSelection } from "@/components/MeetingPreparationModal";
-import ExitMeetingModal from "@/components/ExitMeetingModal";
-import WaitingRoom from "@/components/WaitingRoom";
-import ParticipantTile from "@/components/ParticipantTile";
-import { useJoinRoom } from "@/hooks/useRoomQuery";
-import { useAuth } from "@/contexts/AuthContext";
+import AIRecordingRequestModal from "@/features/meeting/components/AIRecordingRequestModal";
+import InviteParticipantModal from "@/features/meeting/components/InviteParticipantModal";
+import MeetingPreparationModal from "@/features/meeting/components/MeetingPreparationModal";
+import type { DeviceSelection } from "@/features/meeting/components/MeetingPreparationModal";
+import ExitMeetingModal from "@/features/meeting/components/ExitMeetingModal";
+import WaitingRoom from "@/features/meeting/components/WaitingRoom";
+import ParticipantTile from "@/features/meeting/components/ParticipantTile";
+import { useJoinRoom } from "@/features/meeting/hooks";
+import { useAuth } from "@/features/auth/context";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
   TooltipProvider,
-} from "@/components/ui/tooltip";
+} from "@/shared/ui/tooltip";
 
 const LIVEKIT_URL = "wss://livekit.onmeet.cloud";
 

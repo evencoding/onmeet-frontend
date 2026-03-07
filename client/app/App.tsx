@@ -1,16 +1,16 @@
 import "./global.css";
 
-import "@/lib/firebase";
+import "@/shared/lib/firebase";
 
 import * as Sentry from "@sentry/react";
 import { Suspense, lazy } from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/shared/ui/toaster";
+import { Toaster as Sonner } from "@/shared/ui/sonner";
+import { TooltipProvider } from "@/shared/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+import { AuthProvider, useAuth } from "@/features/auth/context";
+import { ThemeProvider } from "@/shared/contexts/ThemeContext";
 
 if (import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({
@@ -29,21 +29,21 @@ if (import.meta.env.VITE_SENTRY_DSN) {
   });
 }
 
-const Index = lazy(() => import("./pages/Index"));
-const MeetingRoom = lazy(() => import("./pages/MeetingRoom"));
-const Schedule = lazy(() => import("./pages/Schedule"));
-const Summary = lazy(() => import("./pages/Summary"));
-const TeamBoard = lazy(() => import("./pages/TeamBoard"));
-const Team = lazy(() => import("./pages/Team"));
-const MyPage = lazy(() => import("./pages/MyPage"));
-const CompanyManagement = lazy(() => import("./pages/CompanyManagement"));
-const Login = lazy(() => import("./pages/Login"));
-const SignupFlow = lazy(() => import("./pages/SignupFlow"));
-const CompanySignup = lazy(() => import("./pages/CompanySignup"));
-const EmployeeSignup = lazy(() => import("./pages/EmployeeSignup"));
-const InviteMembers = lazy(() => import("./pages/InviteMembers"));
-const Landing = lazy(() => import("./pages/Landing"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+const Index = lazy(() => import("@/features/dashboard/pages/Index"));
+const MeetingRoom = lazy(() => import("@/features/meeting/pages/MeetingRoom"));
+const Schedule = lazy(() => import("@/features/schedule/pages/Schedule"));
+const Summary = lazy(() => import("@/features/dashboard/pages/Summary"));
+const TeamBoard = lazy(() => import("@/features/team/pages/TeamBoard"));
+const Team = lazy(() => import("@/features/team/pages/Team"));
+const MyPage = lazy(() => import("@/features/settings/pages/MyPage"));
+const CompanyManagement = lazy(() => import("@/features/settings/pages/CompanyManagement"));
+const Login = lazy(() => import("@/features/auth/pages/Login"));
+const SignupFlow = lazy(() => import("@/features/auth/pages/SignupFlow"));
+const CompanySignup = lazy(() => import("@/features/auth/pages/CompanySignup"));
+const EmployeeSignup = lazy(() => import("@/features/auth/pages/EmployeeSignup"));
+const InviteMembers = lazy(() => import("@/features/auth/pages/InviteMembers"));
+const Landing = lazy(() => import("@/pages/Landing"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient();
 

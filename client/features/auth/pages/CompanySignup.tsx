@@ -9,9 +9,9 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-import { useCompanySignup } from "@/hooks/useAuthQuery";
-import type { ErrorResponse } from "@/lib/authApi";
-import AuthLayout from "@/components/AuthLayout";
+import { useCompanySignup } from "@/features/auth/hooks";
+import type { ErrorResponse } from "@/features/auth/api";
+import AuthLayout from "@/shared/components/AuthLayout";
 
 export default function CompanySignup() {
   const [companyName, setCompanyName] = useState("");

@@ -12,7 +12,7 @@ import {
   type JoinRequest,
   type GuestLoginRequest,
   type UserResponseDto,
-} from "@/lib/authApi";
+} from "@/features/auth/api";
 
 export const AUTH_QUERY_KEY = ["auth", "me"] as const;
 

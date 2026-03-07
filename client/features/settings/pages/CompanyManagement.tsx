@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Layout from "@/components/Layout";
+import Layout from "@/shared/components/Layout";
 import { Building2, Users, Shield, ArrowLeft, Edit2, Save, X, ChevronDown, Check, ChevronUp, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
 
 interface CompanyInfo {
   name: string;
