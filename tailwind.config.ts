@@ -15,24 +15,24 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: "#EDEBFF",
-          500: "#6C5CE7",
-          600: "#5A4EDC",
-          700: "#4B3FD6",
+          50: "#E8F4FF",
+          500: "#2E7FE4",
+          600: "#2472D1",
+          700: "#1A5FBC",
         },
         bg: {
-          DEFAULT: "#F6F5FA",
-          grad: "#F3F1FD",
+          DEFAULT: "#F9FBFC",
+          grad: "#F5F9FC",
         },
         surface: {
           DEFAULT: "#FFFFFF",
-          subtle: "#FAFAFF",
+          subtle: "#FAFBFC",
         },
         text: {
-          title: "#1F1F2E",
-          body: "#3D3F55",
-          sub: "#6B6F85",
-          disabled: "#A1A4B8",
+          title: "#161F32",
+          body: "#3A4554",
+          sub: "#7E8895",
+          disabled: "#B4BAC4",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -88,8 +88,9 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       boxShadow: {
-        card: "0 8px 24px rgba(31, 31, 46, 0.06)",
-        hover: "0 12px 32px rgba(31, 31, 46, 0.08)",
+        card: "0 2px 8px rgba(22, 31, 50, 0.04)",
+        hover: "0 4px 16px rgba(22, 31, 50, 0.08)",
+        subtle: "0 1px 4px rgba(22, 31, 50, 0.03)",
       },
       backgroundImage: {
         "hero-gradient":

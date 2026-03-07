@@ -157,13 +157,13 @@ export default function OngoingMeetings() {
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case "ongoing":
-        return "dark:bg-red-500/30 dark:text-red-300 light:bg-red-100 light:text-red-600";
+        return "bg-red-100 text-red-600";
       case "upcoming":
-        return "dark:bg-blue-500/30 dark:text-blue-300 light:bg-blue-100 light:text-blue-600";
+        return "bg-brand-50 text-brand-600";
       case "completed":
-        return "dark:bg-gray-500/30 dark:text-gray-300 light:bg-gray-100 light:text-gray-600";
+        return "bg-slate-100 text-slate-600";
       default:
-        return "dark:bg-gray-500/30 dark:text-gray-300 light:bg-gray-100 light:text-gray-600";
+        return "bg-slate-100 text-slate-600";
     }
   };
 
@@ -183,8 +183,8 @@ export default function OngoingMeetings() {
   return (
     <div>
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-2.5 h-2.5 rounded-full bg-pink-500 animate-pulse"></div>
-        <h2 className="text-xs font-bold dark:text-white/90 light:text-purple-900 uppercase tracking-widest letter-spacing-wider">
+        <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></div>
+        <h2 className="text-xs font-bold text-foreground uppercase tracking-widest">
           진행 중인 회의
         </h2>
       </div>
@@ -193,20 +193,22 @@ export default function OngoingMeetings() {
         {meetings.map((meeting) => (
           <div
             key={meeting.id}
-            className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/50 dark:to-pink-900/20 light:bg-gradient-to-br light:from-purple-50/50 light:via-white light:to-pink-100/30 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/60 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/30 light:hover:shadow-xl light:hover:shadow-purple-400/40 light:hover:border-purple-400/80 hover:-translate-y-1 group dark:backdrop-blur-md light:backdrop-blur-md"
+            className="dark:bg-slate-800/40 light:bg-white dark:border dark:border-border/20 light:border light:border-border/40 rounded-xl overflow-hidden transition-all duration-300 dark:hover:shadow-hover light:hover:shadow-hover hover:-translate-y-0.5 group dark:backdrop-blur-sm"
           >
+            {/* Status bar */}
             <div
               className={`h-1 ${
                 meeting.status === "ongoing"
-                  ? "bg-gradient-to-r from-pink-500 to-pink-600"
-                  : "bg-gradient-to-r from-purple-500 to-purple-600"
+                  ? "bg-red-500"
+                  : "bg-brand-500"
               }`}
             />
 
             <div className="p-5 space-y-4">
+              {/* Header with Title and Status */}
               <div className="space-y-2">
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-900 flex-1 leading-tight">
+                  <h3 className="text-lg font-bold text-foreground flex-1 leading-tight">
                     {meeting.title}
                   </h3>
                 </div>
@@ -215,80 +217,85 @@ export default function OngoingMeetings() {
                   {meeting.tags.map((tag, idx) => (
                     <span
                       key={idx}
-                      className="text-xs dark:bg-purple-500/30 dark:text-purple-300 light:bg-purple-300/50 light:text-purple-900 light:border light:border-purple-400/60 px-2 py-1 rounded-full font-semibold"
+                      className="text-xs dark:bg-brand-500/20 dark:text-brand-400 light:bg-brand-50/60 light:text-brand-700 light:border light:border-brand-200/60 px-2 py-1 rounded-full font-semibold"
                     >
                       #{tag}
                     </span>
                   ))}
                 </div>
 
-                <p className="text-sm dark:text-white/60 light:text-purple-700 line-clamp-2">
+                {/* Description */}
+                <p className="text-sm text-muted-foreground line-clamp-2">
                   {meeting.description}
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 pb-4 border-b-2 dark:border-purple-500/30 light:border-purple-300/80">
+              {/* Host Info */}
+              <div className="flex items-center gap-3 pb-4 border-b border-border/20">
                 <img
                   src={meeting.hostAvatar}
                   alt={meeting.hostName}
                   className="w-10 h-10 rounded-full object-cover"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium dark:text-white/90 light:text-purple-900">
+                  <p className="text-sm font-medium text-foreground">
                     {meeting.hostName}
                   </p>
-                  <p className="text-xs dark:text-white/50 light:text-purple-600">주최자</p>
+                  <p className="text-xs text-muted-foreground">주최자</p>
                 </div>
               </div>
 
+              {/* Time Info */}
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-600 flex-shrink-0" />
+                  <Clock className="w-4 h-4 text-brand-500 flex-shrink-0" />
                   <div>
-                    <p className="text-xs dark:text-white/50 light:text-purple-600">시작</p>
-                    <p className="font-medium dark:text-white/90 light:text-purple-900">
+                    <p className="text-xs text-muted-foreground">시작</p>
+                    <p className="font-medium text-foreground">
                       {meeting.startTime}
                     </p>
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs dark:text-white/50 light:text-purple-600">남은 시간</p>
-                  <p className="font-medium dark:text-pink-400 light:text-pink-600">
+                  <p className="text-xs text-muted-foreground">남은 시간</p>
+                  <p className="font-medium text-red-500">
                     {calculateTimeRemaining(meeting.startTime, meeting.duration)}
                   </p>
                 </div>
               </div>
 
+              {/* Attendees */}
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 dark:text-white/50 light:text-purple-600 flex-shrink-0" />
+                <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                 <div className="flex items-center gap-1">
                   {meeting.attendees.slice(0, 3).map((attendee, idx) => (
                     <img
                       key={idx}
                       src={attendee.avatar}
                       alt={attendee.name}
-                      className="w-6 h-6 rounded-full border-2 dark:border-purple-500/30 light:border-purple-300/50 shadow-sm"
+                      className="w-6 h-6 rounded-full border-2 dark:border-border/20 light:border-border/20 shadow-sm"
                       title={attendee.name}
                     />
                   ))}
                   {meeting.attendeesCount > 3 && (
-                    <span className="text-xs font-semibold dark:text-white/60 light:text-purple-600 ml-1">
+                    <span className="text-xs font-semibold text-muted-foreground ml-1">
                       +{meeting.attendeesCount - 3}명
                     </span>
                   )}
-                  <span className="text-xs dark:text-white/60 light:text-purple-600 ml-auto">
+                  <span className="text-xs text-muted-foreground ml-auto">
                     {meeting.attendeesCount}명 참석
                   </span>
                 </div>
               </div>
 
+              {/* Join Button */}
               <button
                 onClick={() => handleJoinMeeting(meeting)}
                 disabled={meeting.status === "upcoming"}
-                className={`w-full px-4 py-2.5 font-semibold rounded-xl text-sm transition-all duration-200 ${
+                className={`w-full px-4 py-2.5 font-semibold rounded-lg text-sm transition-all duration-200 ${
                   meeting.status === "ongoing"
-                    ? "bg-gradient-to-r from-pink-600 to-pink-700 text-white hover:from-pink-700 hover:to-pink-800 dark:shadow-lg dark:shadow-pink-500/30 light:shadow-md light:shadow-pink-400/30 hover:scale-105 active:scale-95"
-                    : "dark:bg-purple-500/20 dark:text-white/60 light:bg-purple-300/30 light:text-purple-700 cursor-not-allowed"
+                    ? "bg-red-500 text-white hover:bg-red-600 dark:shadow-lg dark:shadow-red-500/30 light:shadow-md light:shadow-red-400/30 hover:scale-105 active:scale-95"
+                    : "dark:bg-slate-800/50 dark:text-muted-foreground light:bg-slate-100 light:text-muted-foreground cursor-not-allowed"
                 }`}
               >
                 {meeting.status === "ongoing"
