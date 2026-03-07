@@ -49,7 +49,6 @@ export default function AuthLayout({
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden flex items-center justify-center p-4">
-      {/* Animated gradient background */}
       <div className={`fixed inset-0 -z-10 bg-gradient-to-br ${t.bg}`}>
         <div className="absolute inset-0 opacity-40">
           <div
@@ -70,7 +69,6 @@ export default function AuthLayout({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        {/* Logo and Header */}
         <div className="text-center mb-6">
           <motion.div
             className={`inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br ${t.badge} text-white mb-3 relative overflow-hidden`}
@@ -112,7 +110,6 @@ export default function AuthLayout({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            {/* Glow effect */}
             <div
               className={`absolute inset-0 bg-gradient-to-br ${t.glow} rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100`}
             />

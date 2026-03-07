@@ -37,15 +37,12 @@ export default function MeetingDetailPanel({
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
-      {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/20 transition-opacity"
         onClick={onClose}
       />
 
-      {/* Slide-in Panel */}
       <div className="absolute right-0 top-0 h-full w-96 bg-white shadow-2xl overflow-y-auto transition-transform duration-300 ease-out">
-        {/* Header */}
         <div className="sticky top-0 bg-white border-b border-border/20 px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-foreground flex-1">
             회의 상세
@@ -58,18 +55,14 @@ export default function MeetingDetailPanel({
           </button>
         </div>
 
-        {/* Content */}
         <div className="px-6 py-6 space-y-6">
-          {/* Title */}
           <div>
             <h3 className="text-2xl font-bold text-foreground mb-2">
               {meeting.title}
             </h3>
           </div>
 
-          {/* Main Info Grid */}
           <div className="space-y-5">
-            {/* Author */}
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 flex-1">
                 <Avatar className="w-8 h-8">
@@ -85,7 +78,6 @@ export default function MeetingDetailPanel({
               </span>
             </div>
 
-            {/* Meeting Date */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-brand-500" />
@@ -98,7 +90,6 @@ export default function MeetingDetailPanel({
               </span>
             </div>
 
-            {/* Meeting Description */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-brand-500" />
@@ -111,7 +102,6 @@ export default function MeetingDetailPanel({
               </span>
             </div>
 
-            {/* Issues Badge */}
             {meeting.key_points && meeting.key_points.length > 0 && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -127,7 +117,6 @@ export default function MeetingDetailPanel({
             )}
           </div>
 
-          {/* Meeting Minutes Section */}
           <div className="pt-4 border-t border-border/20">
             <h4 className="text-lg font-bold text-foreground mb-4">회의록</h4>
             <div className="space-y-3">
@@ -153,7 +142,6 @@ export default function MeetingDetailPanel({
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="space-y-3 pt-6 border-t border-border/20">
             <Button className="w-full bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-full">
               회의록 수정하기

@@ -24,7 +24,6 @@ export default function ExitMeetingModal({
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-gradient-to-br from-purple-950 via-black to-purple-900 rounded-2xl shadow-2xl max-w-md w-full border border-purple-500/30 overflow-hidden">
-        {/* Header */}
         <div className="px-6 py-4 border-b border-purple-500/20 flex items-center justify-between bg-purple-900/40">
           <div className="flex items-center gap-3">
             <AlertCircle className="w-5 h-5 text-red-400" />
@@ -38,9 +37,7 @@ export default function ExitMeetingModal({
           </button>
         </div>
 
-        {/* Content */}
         <div className="px-6 py-6 space-y-4">
-          {/* AI Recording Warning */}
           {isAIRecording && (
             <div className="bg-red-600/20 border border-red-500/50 rounded-lg p-4">
               <p className="text-sm text-red-300">
@@ -51,7 +48,6 @@ export default function ExitMeetingModal({
             </div>
           )}
 
-          {/* Host/Guest Message */}
           <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4">
             <p className="text-sm text-white/80">
               {isHost ? (
@@ -71,7 +67,6 @@ export default function ExitMeetingModal({
           </div>
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/40 flex gap-3">
           <button
             onClick={onClose}

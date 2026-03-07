@@ -136,7 +136,7 @@ export default function EmployeeSignup() {
         )}
 
         <form onSubmit={handleVerifySubmit} className="space-y-2.5">
-          {/* Email Input */}
+
           <motion.div
             className="space-y-1"
             initial={{ opacity: 0, x: -20 }}
@@ -159,7 +159,6 @@ export default function EmployeeSignup() {
             </p>
           </motion.div>
 
-          {/* Invite Code Input */}
           <motion.div
             className="space-y-1"
             initial={{ opacity: 0, x: -20 }}
@@ -179,7 +178,6 @@ export default function EmployeeSignup() {
             />
           </motion.div>
 
-          {/* Submit Button */}
           <motion.button
             type="submit"
             disabled={isLoading}
@@ -195,7 +193,6 @@ export default function EmployeeSignup() {
           </motion.button>
         </form>
 
-        {/* Divider */}
         <motion.div
           className="my-3 flex items-center gap-3"
           initial={{ opacity: 0 }}
@@ -207,7 +204,6 @@ export default function EmployeeSignup() {
           <div className="flex-1 h-px bg-blue-500/20"></div>
         </motion.div>
 
-        {/* Back Link */}
         <motion.p
           className="text-center text-xs text-white/70"
           initial={{ opacity: 0 }}
@@ -247,7 +243,7 @@ export default function EmployeeSignup() {
       )}
 
       <form onSubmit={handleRegisterSubmit} className="space-y-2">
-        {/* Name */}
+
         <motion.div
           className="space-y-1"
           initial={{ opacity: 0, x: -20 }}
@@ -269,7 +265,6 @@ export default function EmployeeSignup() {
           />
         </motion.div>
 
-        {/* Email (readonly) */}
         <motion.div
           className="space-y-1"
           initial={{ opacity: 0, x: -20 }}
@@ -288,7 +283,6 @@ export default function EmployeeSignup() {
           />
         </motion.div>
 
-        {/* Member Number */}
         <motion.div
           className="space-y-1"
           initial={{ opacity: 0, x: -20 }}
@@ -310,7 +304,6 @@ export default function EmployeeSignup() {
           />
         </motion.div>
 
-        {/* Password */}
         <motion.div
           className="space-y-1"
           initial={{ opacity: 0, x: -20 }}
@@ -332,7 +325,6 @@ export default function EmployeeSignup() {
           />
         </motion.div>
 
-        {/* Confirm Password */}
         <motion.div
           className="space-y-1"
           initial={{ opacity: 0, x: -20 }}
@@ -357,7 +349,6 @@ export default function EmployeeSignup() {
           />
         </motion.div>
 
-        {/* Submit Button */}
         <motion.button
           type="submit"
           disabled={employeeSignupMutation.isPending}
@@ -375,7 +366,6 @@ export default function EmployeeSignup() {
         </motion.button>
       </form>
 
-      {/* Divider */}
       <motion.div
         className="my-3 flex items-center gap-3"
         initial={{ opacity: 0 }}
@@ -387,7 +377,6 @@ export default function EmployeeSignup() {
         <div className="flex-1 h-px bg-blue-500/20"></div>
       </motion.div>
 
-      {/* Back Link */}
       <motion.p
         className="text-center text-xs text-white/70"
         initial={{ opacity: 0 }}

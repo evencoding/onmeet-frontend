@@ -13,14 +13,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
 
-  // Load theme from localStorage on mount
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as Theme | null;
     if (savedTheme) {
       setTheme(savedTheme);
       applyTheme(savedTheme);
     } else {
-      // Default to dark mode
       setTheme("dark");
       applyTheme("dark");
     }

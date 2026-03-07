@@ -131,7 +131,6 @@ export default function RecentMeetings() {
 
   return (
     <div className="space-y-4">
-      {/* Search Input */}
       <div className="relative">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
@@ -158,7 +157,6 @@ export default function RecentMeetings() {
         {searchQuery && ` (${searchQuery} 검색 결과)`}
       </p>
 
-      {/* Results */}
       {filteredMeetings.length === 0 ? (
         <div className="text-center py-12 dark:bg-purple-500/10 dark:border dark:border-purple-500/30 light:bg-purple-50/80 light:border-2 light:border-purple-300/50 rounded-2xl">
           <Search className="w-12 h-12 dark:text-white/20 light:text-purple-400/40 mx-auto mb-3" />
@@ -174,7 +172,6 @@ export default function RecentMeetings() {
               key={meeting.id}
               className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/40 dark:to-pink-900/20 light:bg-white light:border-2 light:border-purple-300/60 dark:border dark:border-purple-500/30 rounded-2xl p-5 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-md light:hover:shadow-purple-300/30 light:hover:border-purple-400/60 transition-all duration-300 group dark:backdrop-blur-md light:backdrop-blur-sm"
             >
-              {/* Header with Title and Status */}
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
@@ -200,12 +197,10 @@ export default function RecentMeetings() {
                 </button>
               </div>
 
-              {/* Description */}
               <p className="text-sm dark:text-white/60 light:text-purple-700 mb-4 line-clamp-2 leading-relaxed">
                 {meeting.description}
               </p>
 
-              {/* Footer with Participants and Department */}
               <div className="flex items-center gap-4 pt-3 border-t dark:border-purple-500/20 light:border-purple-200">
                 <div className="flex -space-x-2">
                   {meeting.participants.slice(0, 3).map((participant, idx) => (

@@ -1,9 +1,6 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "",
@@ -14,7 +11,6 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "",
 };
 
-// Validate Firebase configuration
 const isFirebaseConfigValid = () => {
   const requiredFields = ["apiKey", "authDomain", "projectId", "appId"];
   return requiredFields.every((field) => firebaseConfig[field as keyof typeof firebaseConfig]);
@@ -23,7 +19,6 @@ const isFirebaseConfigValid = () => {
 let app: any = null;
 let analytics: any = null;
 
-// Initialize Firebase only if config is valid
 if (isFirebaseConfigValid()) {
   try {
     app = initializeApp(firebaseConfig);

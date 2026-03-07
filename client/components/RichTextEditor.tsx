@@ -54,9 +54,7 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
 
   return (
     <div className={`flex flex-col dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:to-purple-50/40 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-xl overflow-hidden ${className}`}>
-      {/* Toolbar */}
       <div className="flex flex-wrap gap-1 p-3 border-b-2 dark:border-purple-500/20 light:border-purple-300/60 dark:bg-purple-500/5 light:bg-purple-100/40">
-        {/* Heading 1 */}
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           className={`p-2 rounded-lg transition-all ${
@@ -69,7 +67,6 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
           <Heading1 className="w-4 h-4 dark:text-purple-300 light:text-purple-700" />
         </button>
 
-        {/* Heading 2 */}
         <button
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={`p-2 rounded-lg transition-all ${
@@ -82,10 +79,8 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
           <Heading2 className="w-4 h-4 dark:text-purple-300 light:text-purple-700" />
         </button>
 
-        {/* Divider */}
         <div className="w-px dark:bg-purple-500/20 light:bg-purple-300/30"></div>
 
-        {/* Bold */}
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`p-2 rounded-lg transition-all ${
@@ -98,7 +93,6 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
           <Bold className="w-4 h-4 dark:text-purple-300 light:text-purple-700" />
         </button>
 
-        {/* Italic */}
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`p-2 rounded-lg transition-all ${
@@ -111,10 +105,8 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
           <Italic className="w-4 h-4 dark:text-purple-300 light:text-purple-700" />
         </button>
 
-        {/* Divider */}
         <div className="w-px dark:bg-purple-500/20 light:bg-purple-300/30"></div>
 
-        {/* Bullet List */}
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`p-2 rounded-lg transition-all ${
@@ -127,7 +119,6 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
           <List className="w-4 h-4 dark:text-purple-300 light:text-purple-700" />
         </button>
 
-        {/* Ordered List */}
         <button
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={`p-2 rounded-lg transition-all ${
@@ -140,10 +131,8 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
           <ListOrdered className="w-4 h-4 dark:text-purple-300 light:text-purple-700" />
         </button>
 
-        {/* Divider */}
         <div className="w-px dark:bg-purple-500/20 light:bg-purple-300/30"></div>
 
-        {/* Code Block */}
         <button
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
           className={`p-2 rounded-lg transition-all ${
@@ -157,13 +146,11 @@ export default function RichTextEditor({ value, onChange, placeholder = "내용�
         </button>
       </div>
 
-      {/* Editor Content */}
       <EditorContent
         editor={editor}
         className="flex-1 overflow-auto"
       />
 
-      {/* CSS for editor styling */}
       <style>{`
         .ProseMirror {
           padding: 1rem;

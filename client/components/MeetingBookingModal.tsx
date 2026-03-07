@@ -132,7 +132,6 @@ export default function MeetingBookingModal({
 
     setIsLoading(true);
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500));
       console.log("Meeting booked:", {
         title: meetingTitle,
@@ -141,7 +140,6 @@ export default function MeetingBookingModal({
         time: meetingTime,
         participants: selectedParticipants.map((p) => p.name),
       });
-      // Reset and close
       setMeetingTitle("");
       setSelectedTeam(null);
       setSelectedParticipants([]);
@@ -181,7 +179,6 @@ export default function MeetingBookingModal({
             </button>
           </div>
 
-          {/* Progress Steps */}
           <div className="flex items-center gap-2 mt-4">
             <div
               className={`flex-1 h-2 rounded-full transition-colors ${
@@ -208,7 +205,6 @@ export default function MeetingBookingModal({
         </AlertDialogHeader>
 
         <div className="space-y-6">
-          {/* Step 1: Team Selection */}
           {step === "team" && (
             <div className="space-y-4">
               <div>
@@ -250,7 +246,6 @@ export default function MeetingBookingModal({
                 />
               </div>
 
-              {/* Preview */}
               {(meetingTitle || selectedTeam) && (
                 <div className="p-4 dark:bg-gradient-to-br dark:from-purple-500/10 dark:to-pink-500/10 light:bg-gradient-to-br light:from-purple-100 light:to-pink-100 rounded-lg border dark:border-purple-500/30 light:border-purple-300/50">
                   <p className="text-xs font-semibold dark:text-white/60 light:text-purple-700 mb-2">
@@ -277,7 +272,6 @@ export default function MeetingBookingModal({
             </div>
           )}
 
-          {/* Step 2: Date & Time Selection */}
           {step === "date" && (
             <div className="space-y-4">
               <div>
@@ -321,7 +315,6 @@ export default function MeetingBookingModal({
             </div>
           )}
 
-          {/* Step 3: Participants Selection */}
           {step === "participants" && (
             <div className="space-y-4">
               <div>
@@ -351,7 +344,6 @@ export default function MeetingBookingModal({
                 />
               </div>
 
-              {/* Selected Participants */}
               {selectedParticipants.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-xs font-semibold dark:text-white/60 light:text-purple-700">
@@ -387,7 +379,6 @@ export default function MeetingBookingModal({
                 </div>
               )}
 
-              {/* Employee List */}
               <div className="border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg overflow-hidden max-h-48 overflow-y-auto dark:bg-black/40 light:bg-purple-50/30">
                 {filteredEmployees.length === 0 ? (
                   <div className="p-4 text-center text-sm dark:text-white/60 light:text-purple-600">

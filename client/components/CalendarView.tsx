@@ -42,15 +42,12 @@ export default function CalendarView({
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
 
-  // Calculate the starting day for the calendar grid (previous month's last days)
-  const startDay = getDay(monthStart); // 0 = Sunday, 6 = Saturday
+  const startDay = getDay(monthStart);
   const calendarStart = subDays(monthStart, startDay);
 
-  // Calculate the ending day for the calendar grid (next month's first days)
-  const endDay = getDay(monthEnd); // 0 = Sunday, 6 = Saturday
+  const endDay = getDay(monthEnd);
   const calendarEnd = addDays(monthEnd, 6 - endDay);
 
-  // Get all days to display in calendar
   const paddedDays = eachDayOfInterval({
     start: calendarStart,
     end: calendarEnd,
@@ -69,7 +66,6 @@ export default function CalendarView({
 
   return (
     <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6 pb-4 dark:border-b dark:border-purple-500/20 light:border-b-2 light:border-purple-300/50">
         <h2 className="text-xl font-bold dark:text-white/90 light:text-purple-950">
           {format(currentDate, "MMMM yyyy", { locale: ko })}
@@ -90,7 +86,6 @@ export default function CalendarView({
         </div>
       </div>
 
-      {/* Weekday Headers */}
       <div className="grid grid-cols-7 gap-3 mb-3">
         {weekDays.map((day) => (
           <div
@@ -102,7 +97,6 @@ export default function CalendarView({
         ))}
       </div>
 
-      {/* Calendar Grid */}
       <div className="grid grid-cols-7 gap-3">
         {paddedDays.map((date, idx) => {
           const isCurrentMonth = isSameMonth(date, currentDate);
@@ -137,7 +131,6 @@ export default function CalendarView({
                   {format(date, "d")}
                 </span>
                 <div className="w-full flex-1 flex flex-col gap-1.5">
-                  {/* Meeting dots/badges stack */}
                   {dateMeetings.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {dateMeetings.slice(0, 3).map((meeting, idx) => (
@@ -166,7 +159,6 @@ export default function CalendarView({
                     </div>
                   )}
 
-                  {/* First meeting title (abbreviated) */}
                   {dateMeetings.length > 0 && (
                     <div
                       className={`text-xs font-medium line-clamp-1 ${
@@ -182,7 +174,6 @@ export default function CalendarView({
                 </div>
               </button>
 
-              {/* Add Meeting Button on Hover */}
               {isHovered && isCurrentMonth && (
                 <button
                   onClick={(e) => {

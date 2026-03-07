@@ -40,12 +40,11 @@ export default function Summary() {
   const [showDownloadMenu, setShowDownloadMenu] = useState<string | null>(null);
   const [copiedMeetingId, setCopiedMeetingId] = useState<string | null>(null);
   const [audioProgress, setAudioProgress] = useState<Record<string, number>>({});
-  const [audioDuration, setAudioDuration] = useState<Record<string, number>>({ default: 240 }); // 4:00
-  const [audioVolume, setAudioVolume] = useState<Record<string, number>>({ default: 1 }); // 0-1
-  const [audioPlaybackSpeed, setAudioPlaybackSpeed] = useState<Record<string, number>>({ default: 1 }); // 0.5, 1, 1.5, 2
+  const [audioDuration, setAudioDuration] = useState<Record<string, number>>({ default: 240 });
+  const [audioVolume, setAudioVolume] = useState<Record<string, number>>({ default: 1 });
+  const [audioPlaybackSpeed, setAudioPlaybackSpeed] = useState<Record<string, number>>({ default: 1 });
   const [transcriptTab, setTranscriptTab] = useState<Record<string, "full" | "raw">>({});
 
-  // Sample meetings data with status and summaries
   const allMeetings: Meeting[] = [
     {
       id: "1",
@@ -248,7 +247,7 @@ export default function Summary() {
 
   const renderExpandedCard = (meeting: Meeting) => (
     <div className="space-y-6">
-      {/* Header */}
+
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-4xl font-bold dark:text-white/90 light:text-purple-950 mb-3">
@@ -264,7 +263,6 @@ export default function Summary() {
         </button>
       </div>
 
-      {/* Status Badge and Team Info */}
       <div className="flex items-center gap-2">
         <span className={`inline-block px-3.5 py-1.5 rounded-full text-xs font-bold ${getStatusColor(meeting.status)}`}>
           {getStatusLabel(meeting.status)}
@@ -276,9 +274,8 @@ export default function Summary() {
         )}
       </div>
 
-      {/* Meeting Details Grid */}
       <div className="space-y-6 pb-6 border-b dark:border-purple-500/20 light:border-purple-300">
-        {/* Time Information */}
+
         <div>
           <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-3">
             일정
@@ -293,7 +290,6 @@ export default function Summary() {
           </div>
         </div>
 
-        {/* Tags Section */}
         <div>
           <p className="text-xs dark:text-white/60 light:text-purple-600 font-bold uppercase mb-3">
             태그
@@ -319,10 +315,9 @@ export default function Summary() {
         </div>
       </div>
 
-      {/* AI Transcript/Summary Section */}
       {meeting.summary && (
         <div className="space-y-4">
-          {/* AI Summary Section - Only shown when AI processed */}
+
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950">
@@ -340,7 +335,6 @@ export default function Summary() {
             </div>
           </div>
 
-          {/* Full Transcript Section with Tabs */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950">
@@ -371,7 +365,6 @@ export default function Summary() {
               </button>
             </div>
 
-            {/* Tabs */}
             <div className="flex gap-2 border-b dark:border-purple-500/20 light:border-purple-300">
               <button
                 onClick={() => setTranscriptTab({ ...transcriptTab, [meeting.id]: "full" })}
@@ -397,7 +390,6 @@ export default function Summary() {
               )}
             </div>
 
-            {/* Full Transcript Editor/Viewer */}
             {(transcriptTab[meeting.id] ?? "full") === "full" && (
               <div className="space-y-2">
                 {editingMeetingId === meeting.id ? (
@@ -420,7 +412,6 @@ export default function Summary() {
               </div>
             )}
 
-            {/* Raw Transcript */}
             {(transcriptTab[meeting.id] ?? "full") === "raw" && meeting.rawTranscript && (
               <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto">
                 <div className="dark:text-white/80 light:text-purple-900 text-sm leading-relaxed whitespace-pre-wrap font-mono">
@@ -432,20 +423,18 @@ export default function Summary() {
         </div>
       )}
 
-
-      {/* Action Section */}
       {meeting.status === "completed" && (
         <div className="space-y-4">
-          {/* iOS-Style Audio Player */}
+
           <div className="space-y-3">
             <p className="text-sm font-bold dark:text-white/70 light:text-purple-700">음성 녹음</p>
 
             <div className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-purple-900/20 dark:to-black/40 light:bg-gradient-to-br light:from-white/70 light:via-purple-50/50 light:to-white/70 dark:border dark:border-purple-500/15 light:border light:border-purple-200/60 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/20 dark:shadow-lg dark:shadow-purple-900/20 space-y-5">
-              {/* Central Circular Player */}
+
               <div className="flex flex-col items-center gap-5">
-                {/* Circular Progress Indicator */}
+
                 <div className="relative w-24 h-24 flex items-center justify-center">
-                  {/* Background Circle */}
+
                   <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
                     <circle
                       cx="50"
@@ -456,7 +445,7 @@ export default function Summary() {
                       strokeWidth="1.5"
                       className="dark:text-purple-500/15 light:text-purple-300/25"
                     />
-                    {/* Progress Circle */}
+
                     <circle
                       cx="50"
                       cy="50"
@@ -475,7 +464,6 @@ export default function Summary() {
                     />
                   </svg>
 
-                  {/* Play Button */}
                   <button
                     onClick={() => setAudioPlayingId(audioPlayingId === meeting.id ? null : meeting.id)}
                     className="relative z-10 flex items-center justify-center w-14 h-14 dark:bg-gradient-to-br dark:from-purple-600 dark:to-purple-700 light:bg-gradient-to-br light:from-purple-600 light:to-purple-700 text-white rounded-full shadow-lg dark:shadow-purple-500/40 light:shadow-purple-400/40 hover:scale-105 active:scale-95 transition-all duration-200"
@@ -491,7 +479,6 @@ export default function Summary() {
                   </button>
                 </div>
 
-                {/* Time Display */}
                 <div className="text-center">
                   <p className="text-xs dark:text-white/50 light:text-purple-600 font-medium mb-1.5">재생 시간</p>
                   <p className="text-sm font-bold dark:text-white light:text-purple-950 font-mono tracking-wide">
@@ -502,7 +489,6 @@ export default function Summary() {
                 </div>
               </div>
 
-              {/* Time Slider */}
               <div>
                 <input
                   type="range"
@@ -514,9 +500,8 @@ export default function Summary() {
                 />
               </div>
 
-              {/* Controls Row: Volume + Playback Speed */}
               <div className="grid grid-cols-2 gap-3 pt-3 border-t dark:border-purple-500/10 light:border-purple-200/40">
-                {/* Volume Control */}
+
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="text-xs dark:text-white/50 light:text-purple-600 font-medium">볼륨</span>
@@ -534,7 +519,6 @@ export default function Summary() {
                   />
                 </div>
 
-                {/* Playback Speed Control */}
                 <div className="space-y-1.5">
                   <label className="text-xs dark:text-white/50 light:text-purple-600 font-medium block">속도</label>
                   <select
@@ -554,9 +538,8 @@ export default function Summary() {
             </div>
           </div>
 
-          {/* Download and Share Buttons */}
           <div className="flex flex-wrap gap-3">
-            {/* Download Dropdown */}
+
             <div className="relative">
               <button
                 onClick={() => setShowDownloadMenu(showDownloadMenu === meeting.id ? null : meeting.id)}
@@ -585,7 +568,6 @@ export default function Summary() {
               )}
             </div>
 
-            {/* Share Button - Copy to Clipboard */}
             <button
               onClick={() => {
                 navigator.clipboard.writeText(`https://meeting.app/transcripts/${meeting.id}`);
@@ -618,7 +600,7 @@ export default function Summary() {
 
   const renderSimpleCard = (meeting: Meeting) => (
     <div className="text-left space-y-2">
-      {/* Title with Team and Avatars */}
+
       <div className="flex items-center gap-2 flex-wrap">
         <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950">
           {meeting.title}
@@ -628,7 +610,7 @@ export default function Summary() {
             {meeting.team}
           </span>
         )}
-        {/* Avatars */}
+
         <div className="flex items-center gap-1 ml-auto">
           {meeting.attendees.map((attendee, idx) => (
             <img
@@ -642,12 +624,10 @@ export default function Summary() {
         </div>
       </div>
 
-      {/* Status Badge */}
       <span className={`inline-block px-2.5 py-1.5 rounded-lg text-xs font-bold ${getStatusColor(meeting.status)}`}>
         {getStatusLabel(meeting.status)}
       </span>
 
-      {/* Date and Time */}
       <div className="flex items-center gap-2 text-sm dark:text-white/60 light:text-purple-900/80 font-medium">
         <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-700" />
         {format(meeting.date, "MMM dd", { locale: ko })} {meeting.time}
@@ -658,7 +638,7 @@ export default function Summary() {
   return (
     <Layout>
       <div className="max-w-6xl space-y-6 light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-blue-50 light:rounded-3xl light:p-8">
-        {/* Header */}
+  
         {!expandedMeeting && (
           <div>
             <h1 className="text-4xl font-bold dark:text-white/90 light:text-purple-950 mb-2">
@@ -668,7 +648,6 @@ export default function Summary() {
               모든 회의 기록을 한눈에 관리하고 확인하세요
             </p>
 
-            {/* Tabs */}
             <div className="flex gap-3 mb-8 border-b-2 dark:border-purple-500/30 light:border-purple-300/70 pb-4">
               {[
                 { id: "all" as const, label: "모든 회의" },
@@ -692,10 +671,9 @@ export default function Summary() {
           </div>
         )}
 
-        {/* Search and Filters */}
         {!expandedMeeting && (
           <div className="space-y-4">
-            {/* Search Bar with Filter Select */}
+
             <div className="flex gap-3">
               <select
                 value={featureFilter}
@@ -722,14 +700,12 @@ export default function Summary() {
           </div>
         )}
 
-        {/* Expanded View */}
         {expandedMeeting && (
           <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/30 light:border-2 light:border-purple-300/70 light:shadow-xl light:shadow-purple-300/40 dark:border dark:border-purple-500/30 rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
             {renderExpandedCard(expandedMeeting)}
           </div>
         )}
 
-        {/* Grid View */}
         {!expandedMeeting && (
           <>
             {filteredMeetings.length === 0 ? (
@@ -754,7 +730,6 @@ export default function Summary() {
                     >
                       {renderSimpleCard(meeting)}
 
-                      {/* Summary Preview */}
                       {meeting.summary && (
                         <p className="text-sm dark:text-white/60 light:text-purple-800 line-clamp-2 mb-4 group-hover:dark:text-white/80 group-hover:light:text-purple-950 transition-colors font-medium">
                           {meeting.summary}
@@ -762,7 +737,6 @@ export default function Summary() {
                       )}
                     </button>
 
-                    {/* Meeting Features Chips - Only show for completed meetings */}
                     {meeting.status === "completed" && (
                       <div className="flex items-center gap-2 flex-wrap mb-4">
                         {meeting.hasTranscript && (
@@ -787,7 +761,6 @@ export default function Summary() {
                       </div>
                     )}
 
-                    {/* Join Meeting Button - Only for in_progress meetings */}
                     {meeting.status === "in_progress" && (
                       <button
                         onClick={(e) => {

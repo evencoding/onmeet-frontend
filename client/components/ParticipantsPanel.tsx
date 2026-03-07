@@ -207,23 +207,19 @@ export default function ParticipantsPanel({
 
   const participants = propsParticipants || defaultParticipants;
 
-  // 참가자 변화 감시 - 입장/퇴장 메시지 자동 추가
   useEffect(() => {
     if (!participants || participants.length === 0) return;
 
     const previousParticipants = previousParticipantsRef.current;
 
-    // 새로 입장한 참가자 찾기
     const newParticipants = participants.filter(
       (p) => !previousParticipants.find((prev) => prev.id === p.id),
     );
 
-    // 퇴장한 참가자 찾기
     const leftParticipants = previousParticipants.filter(
       (p) => !participants.find((curr) => curr.id === p.id),
     );
 
-    // 입장 메시지 추가
     newParticipants.forEach((participant) => {
       const systemMessage: ChatMessage = {
         id: `system-join-${Date.now()}-${participant.id}`,
@@ -238,7 +234,6 @@ export default function ParticipantsPanel({
       setMessages((prev) => [...prev, systemMessage]);
     });
 
-    // 퇴장 메시지 추가
     leftParticipants.forEach((participant) => {
       const systemMessage: ChatMessage = {
         id: `system-leave-${Date.now()}-${participant.id}`,
@@ -253,13 +248,11 @@ export default function ParticipantsPanel({
       setMessages((prev) => [...prev, systemMessage]);
     });
 
-    // 현재 참가자 목록을 이전 목록으로 업데이트
     previousParticipantsRef.current = participants;
   }, [participants]);
 
   return (
     <div className="w-80 border-l border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex flex-col">
-      {/* Tabs */}
       <div className="flex border-b border-purple-500/20 bg-black/40">
         <button
           onClick={() => setActiveTab("participants")}
@@ -284,7 +277,6 @@ export default function ParticipantsPanel({
         </button>
       </div>
 
-      {/* Content */}
       <div className="flex-1 overflow-y-auto">
         {activeTab === "participants" ? (
           <div className="divide-y divide-purple-500/20">
@@ -345,7 +337,6 @@ export default function ParticipantsPanel({
           </div>
         ) : (
           <div className="flex flex-col h-full bg-black/40">
-            {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.map((msg, idx) => (
                 <div key={msg.id}>
@@ -353,7 +344,6 @@ export default function ParticipantsPanel({
                     <div
                       className={`flex gap-2 ${msg.isOwn ? "flex-row-reverse" : "flex-row"}`}
                     >
-                      {/* Avatar */}
                       {msg.avatar && (
                         <img
                           src={msg.avatar}
@@ -362,16 +352,13 @@ export default function ParticipantsPanel({
                         />
                       )}
 
-                      {/* Message Content */}
                       <div
                         className={`flex flex-col max-w-xs ${msg.isOwn ? "items-end" : "items-start"}`}
                       >
-                        {/* Sender and Timestamp on same line */}
                         <span className="text-xs dark:text-white/50 light:text-purple-600 mb-1">
                           {msg.sender} {msg.timestamp}
                         </span>
 
-                        {/* Message Bubble */}
                         <div
                           className={`px-3 py-2 rounded-2xl text-sm font-medium ${
                             msg.isOwn
@@ -384,7 +371,6 @@ export default function ParticipantsPanel({
                       </div>
                     </div>
                   ) : (
-                    // System message - centered
                     <div className="flex justify-center py-2">
                       <span className="text-xs dark:text-white/40 light:text-purple-600 italic dark:bg-purple-500/20 light:bg-purple-100/50 px-3 py-1 rounded-full">
                         {msg.sender}
@@ -396,7 +382,6 @@ export default function ParticipantsPanel({
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Message Input */}
             <div className="border-t border-purple-500/20 p-4 bg-purple-900/20">
               <div className="flex gap-2">
                 <input

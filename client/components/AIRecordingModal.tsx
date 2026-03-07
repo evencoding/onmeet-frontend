@@ -43,13 +43,10 @@ export default function AIRecordingModal({
 
   return (
     <>
-      {/* Overlay */}
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" onClick={onClose} />
 
-      {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div className="bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:from-white light:to-purple-50 border dark:border-purple-500/30 light:border-purple-300/40 rounded-3xl shadow-2xl w-full max-w-md dark:backdrop-blur-md light:backdrop-blur-sm">
-          {/* Close Button */}
           <button
             onClick={onClose}
             className="absolute top-6 right-6 p-2 hover:bg-purple-500/20 rounded-lg transition-colors dark:text-white/60 light:text-purple-600"

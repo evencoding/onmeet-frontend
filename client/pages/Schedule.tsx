@@ -32,7 +32,6 @@ export default function Schedule() {
     setIsBookingModalOpen(true);
   };
 
-  // Sample meetings data - updated to current month for visibility
   const allMeetings: Meeting[] = [
     {
       id: "1",
@@ -204,7 +203,6 @@ export default function Schedule() {
   return (
     <Layout>
       <div className="w-full space-y-6">
-        {/* Header */}
         <div>
           <h1 className="text-3xl font-bold dark:text-white/90 light:text-purple-950 mb-2">일정</h1>
           <p className="dark:text-white/60 light:text-purple-700 mb-4">예정된 회의를 확인하세요</p>
@@ -227,13 +225,11 @@ export default function Schedule() {
           </button>
         </div>
 
-        {/* Content Grid */}
         <div
           className={`grid gap-6 transition-all duration-300 ${
             isRightPanelOpen ? "grid-cols-1 xl:grid-cols-2" : "grid-cols-1"
           }`}
         >
-          {/* Calendar */}
           <div className="w-full flex flex-col gap-4">
             <CalendarView
               onSelectDate={setSelectedDate}
@@ -242,7 +238,6 @@ export default function Schedule() {
             />
           </div>
 
-          {/* Meetings List - Conditionally Shown */}
           {isRightPanelOpen && (
             <div className="w-full space-y-4">
               <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
@@ -292,7 +287,6 @@ export default function Schedule() {
                           {meeting.description}
                         </p>
 
-                        {/* Attendees */}
                         <div className="flex items-center gap-2 mb-4">
                           {meeting.attendees.map((attendee, idx) => (
                             <img
@@ -305,7 +299,6 @@ export default function Schedule() {
                           ))}
                         </div>
 
-                        {/* Action Button */}
                         <button className="w-full px-4 py-2.5 dark:bg-purple-600 light:bg-gradient-to-r light:from-purple-600 light:to-purple-700 text-white text-sm font-semibold rounded-xl dark:hover:bg-purple-700 light:hover:from-purple-700 light:hover:to-purple-800 transition-all duration-200">
                           회의 참여
                         </button>
@@ -315,7 +308,6 @@ export default function Schedule() {
                 )}
               </div>
 
-              {/* Upcoming Meetings Summary */}
               <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-purple-50/50 light:via-white light:to-pink-100/30 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
                 <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-4">
                   앞으로의 회의
@@ -344,7 +336,6 @@ export default function Schedule() {
         </div>
       </div>
 
-      {/* Meeting Booking Modal */}
       <MeetingBookingModal
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}

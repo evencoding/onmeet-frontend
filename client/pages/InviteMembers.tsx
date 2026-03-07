@@ -67,7 +67,6 @@ export default function InviteMembers() {
         throw new Error("최소 1명 이상의 사원을 초대해야 합니다");
       }
 
-      // TODO: API call to send invites
       console.log(
         "Invites sent:",
         emails.map((e) => e.email),
@@ -114,7 +113,6 @@ export default function InviteMembers() {
         </motion.div>
       )}
 
-      {/* Email Input Section */}
       <motion.div
         className="mb-6 space-y-3"
         initial={{ opacity: 0, x: -20 }}
@@ -148,7 +146,6 @@ export default function InviteMembers() {
         </div>
       </motion.div>
 
-      {/* Invited Emails List */}
       {emails.length > 0 && (
         <motion.div
           className="mb-6"
@@ -196,7 +193,6 @@ export default function InviteMembers() {
         </motion.div>
       )}
 
-      {/* Info Box */}
       <motion.div
         className="mb-6 p-4 bg-purple-500/10 border border-purple-500/30 rounded-xl"
         initial={{ opacity: 0 }}
@@ -210,7 +206,6 @@ export default function InviteMembers() {
         </p>
       </motion.div>
 
-      {/* Action Buttons */}
       <div className="flex gap-3">
         <motion.button
           onClick={handleSkip}

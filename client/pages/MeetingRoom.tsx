@@ -99,7 +99,6 @@ export default function MeetingRoom() {
 
       if (res.waitingRoom) {
         setPhase("waiting");
-        // Poll every 4 seconds
         pollingRef.current = setInterval(async () => {
           try {
             const pollRes = await joinRoom.mutateAsync({
@@ -113,7 +112,6 @@ export default function MeetingRoom() {
               setPhase("connected");
             }
           } catch {
-            // Keep polling on error
           }
         }, 4000);
       } else {
@@ -145,7 +143,6 @@ export default function MeetingRoom() {
     );
   }
 
-  // PREPARING phase
   if (phase === "preparing") {
     return (
       <div className="flex h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white items-center justify-center">
@@ -160,7 +157,6 @@ export default function MeetingRoom() {
     );
   }
 
-  // JOINING phase
   if (phase === "joining") {
     return (
       <div className="flex h-screen items-center justify-center bg-gradient-to-br from-purple-950 via-black to-purple-900">
@@ -172,12 +168,10 @@ export default function MeetingRoom() {
     );
   }
 
-  // WAITING phase
   if (phase === "waiting") {
     return <WaitingRoom onCancel={handleCancelWaiting} />;
   }
 
-  // DISCONNECTED phase
   if (phase === "disconnected") {
     return (
       <div className="flex h-screen items-center justify-center bg-gradient-to-br from-purple-950 via-black to-purple-900">
@@ -194,7 +188,6 @@ export default function MeetingRoom() {
     );
   }
 
-  // CONNECTED phase
   return (
     <LiveKitRoom
       serverUrl={LIVEKIT_URL}
@@ -213,10 +206,6 @@ export default function MeetingRoom() {
     </LiveKitRoom>
   );
 }
-
-// ======================================
-// MeetingRoomContent — inside LiveKitRoom
-// ======================================
 
 interface MeetingRoomContentProps {
   roomId: string;
@@ -264,7 +253,6 @@ function MeetingRoomContent({
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [currentSpeaker, setCurrentSpeaker] = useState(0);
 
-  // Sync mic/camera with LiveKit
   const toggleMic = useCallback(async () => {
     const next = !isMuted;
     setIsMuted(next);
@@ -281,7 +269,6 @@ function MeetingRoomContent({
     await localParticipant.setScreenShareEnabled(!isScreenSharing);
   }, [isScreenSharing, localParticipant]);
 
-  // DataChannel chat
   const encoder = useRef(new TextEncoder());
   const decoder = useRef(new TextDecoder());
 
@@ -307,7 +294,6 @@ function MeetingRoomContent({
           ]);
         }
       } catch {
-        // ignore non-JSON data
       }
     };
 
@@ -356,7 +342,6 @@ function MeetingRoomContent({
   };
 
   const handleScreenshot = async () => {
-    // Find a video element on screen to screenshot
     const videoEl = document.querySelector("video");
     if (videoEl && canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
@@ -400,7 +385,6 @@ function MeetingRoomContent({
     navigate("/");
   }, [room, navigate]);
 
-  // PIP Mode
   if (isPIPMode) {
     return (
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -493,7 +477,6 @@ function MeetingRoomContent({
     <div className="flex h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white overflow-hidden">
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* Main Video Area */}
       <div
         className={`flex-1 flex flex-col transition-all duration-300 ${
           showChat && showParticipants
@@ -503,7 +486,6 @@ function MeetingRoomContent({
               : "w-full"
         }`}
       >
-        {/* Header */}
         <div className="px-6 py-4 border-b border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
@@ -536,7 +518,6 @@ function MeetingRoomContent({
           </div>
         </div>
 
-        {/* Video Content */}
         <div className="flex-1 overflow-hidden p-4">
           {viewMode === "gallery" ? (
             <div className="grid grid-cols-2 gap-4 h-full overflow-auto max-w-4xl mx-auto">
@@ -549,7 +530,6 @@ function MeetingRoomContent({
             </div>
           ) : (
             <div className="flex h-full gap-4">
-              {/* Main Speaker */}
               <div className="flex-1 rounded-2xl overflow-hidden border-2 border-purple-500 ring-2 ring-purple-500/30 relative">
                 {participants[currentSpeaker] && (
                   <ParticipantTile
@@ -566,7 +546,6 @@ function MeetingRoomContent({
                 )}
               </div>
 
-              {/* Side Thumbnails */}
               <div className="w-32 flex flex-col gap-2 overflow-y-auto">
                 {participants.map((participant, idx) => (
                   <button
@@ -590,10 +569,9 @@ function MeetingRoomContent({
           )}
         </div>
 
-        {/* Control Bar */}
         <TooltipProvider>
           <div className="px-6 py-4 border-t border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-center gap-4">
-            {/* Mic */}
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -616,7 +594,6 @@ function MeetingRoomContent({
               </TooltipContent>
             </Tooltip>
 
-            {/* Video */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -639,7 +616,6 @@ function MeetingRoomContent({
               </TooltipContent>
             </Tooltip>
 
-            {/* AI Recording */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -658,7 +634,6 @@ function MeetingRoomContent({
               </TooltipContent>
             </Tooltip>
 
-            {/* View Mode */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -675,7 +650,6 @@ function MeetingRoomContent({
               <TooltipContent side="top">화면 전환</TooltipContent>
             </Tooltip>
 
-            {/* Screenshot */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -688,7 +662,6 @@ function MeetingRoomContent({
               <TooltipContent side="top">스크린샷 촬영</TooltipContent>
             </Tooltip>
 
-            {/* Screen Share */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -707,7 +680,6 @@ function MeetingRoomContent({
               </TooltipContent>
             </Tooltip>
 
-            {/* Chat */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -724,7 +696,6 @@ function MeetingRoomContent({
               <TooltipContent side="top">채팅</TooltipContent>
             </Tooltip>
 
-            {/* Participants */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -741,7 +712,6 @@ function MeetingRoomContent({
               <TooltipContent side="top">참여자</TooltipContent>
             </Tooltip>
 
-            {/* Leave */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -757,7 +727,6 @@ function MeetingRoomContent({
         </TooltipProvider>
       </div>
 
-      {/* Chat Panel */}
       {showChat && (
         <div className="w-80 border-l border-purple-500/20 bg-purple-900/30 backdrop-blur-md flex flex-col">
           <div className="px-4 py-4 border-b border-purple-500/20 flex items-center justify-between">
@@ -845,7 +814,6 @@ function MeetingRoomContent({
         </div>
       )}
 
-      {/* Participants Panel */}
       {showParticipants && (
         <div className="w-80 border-l border-purple-500/20 bg-purple-900/30 backdrop-blur-md flex flex-col">
           <div className="px-4 py-4 border-b border-purple-500/20 flex items-center justify-between">
@@ -907,7 +875,6 @@ function MeetingRoomContent({
         </div>
       )}
 
-      {/* Modals */}
       <AIRecordingRequestModal
         isOpen={isAIRecordingRequestModalOpen}
         isHost={isHost}
@@ -942,7 +909,6 @@ function MeetingRoomContent({
         isOpen={isInviteModalOpen}
         onClose={() => setIsInviteModalOpen(false)}
         onInvite={() => {
-          // LiveKit handles participant joining automatically
         }}
         alreadyInvited={participants.map((p) => p.identity)}
         meetingId={roomId}
@@ -959,7 +925,6 @@ function MeetingRoomContent({
   );
 }
 
-// Helper component for local video preview in PIP mode
 function LocalVideoPreview() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { localParticipant } = useLocalParticipant();

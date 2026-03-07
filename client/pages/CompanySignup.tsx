@@ -88,7 +88,7 @@ export default function CompanySignup() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-2.5">
-        {/* Company Name */}
+
         <motion.div
           className="space-y-1"
           initial={{ opacity: 0, x: -20 }}
@@ -108,7 +108,6 @@ export default function CompanySignup() {
           />
         </motion.div>
 
-        {/* Admin Name */}
         <motion.div
           className="space-y-1"
           initial={{ opacity: 0, x: -20 }}
@@ -128,7 +127,6 @@ export default function CompanySignup() {
           />
         </motion.div>
 
-        {/* Admin Email */}
         <motion.div
           className="space-y-1"
           initial={{ opacity: 0, x: -20 }}
@@ -148,7 +146,6 @@ export default function CompanySignup() {
           />
         </motion.div>
 
-        {/* Password */}
         <motion.div
           className="space-y-1"
           initial={{ opacity: 0, x: -20 }}
@@ -168,7 +165,6 @@ export default function CompanySignup() {
           />
         </motion.div>
 
-        {/* Confirm Password */}
         <motion.div
           className="space-y-1"
           initial={{ opacity: 0, x: -20 }}
@@ -188,7 +184,6 @@ export default function CompanySignup() {
           />
         </motion.div>
 
-        {/* Submit Button */}
         <motion.button
           type="submit"
           disabled={isLoading}
@@ -204,7 +199,6 @@ export default function CompanySignup() {
         </motion.button>
       </form>
 
-      {/* Divider */}
       <motion.div
         className="my-3 flex items-center gap-3"
         initial={{ opacity: 0 }}
@@ -216,7 +210,6 @@ export default function CompanySignup() {
         <div className="flex-1 h-px bg-purple-500/20"></div>
       </motion.div>
 
-      {/* Switch to Employee Signup */}
       <motion.p
         className="text-center text-xs text-white/70"
         initial={{ opacity: 0 }}
@@ -232,7 +225,6 @@ export default function CompanySignup() {
         </Link>
       </motion.p>
 
-      {/* Back Link */}
       <motion.p
         className="text-center text-xs text-white/60 mt-2"
         initial={{ opacity: 0 }}
