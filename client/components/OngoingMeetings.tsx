@@ -157,13 +157,13 @@ export default function OngoingMeetings() {
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case "ongoing":
-        return "bg-red-100 text-red-600";
+        return "dark:bg-red-500/30 dark:text-red-300 light:bg-red-100 light:text-red-600";
       case "upcoming":
-        return "bg-blue-100 text-blue-600";
+        return "dark:bg-blue-500/30 dark:text-blue-300 light:bg-blue-100 light:text-blue-600";
       case "completed":
-        return "bg-gray-100 text-gray-600";
+        return "dark:bg-gray-500/30 dark:text-gray-300 light:bg-gray-100 light:text-gray-600";
       default:
-        return "bg-gray-100 text-gray-600";
+        return "dark:bg-gray-500/30 dark:text-gray-300 light:bg-gray-100 light:text-gray-600";
     }
   };
 

@@ -42,8 +42,8 @@ export default function MeetingDetailPanel({
         onClick={onClose}
       />
 
-      <div className="absolute right-0 top-0 h-full w-96 bg-white shadow-2xl overflow-y-auto transition-transform duration-300 ease-out">
-        <div className="sticky top-0 bg-white border-b border-border/20 px-6 py-4 flex items-center justify-between">
+      <div className="absolute right-0 top-0 h-full w-96 dark:bg-gray-900 light:bg-white shadow-2xl overflow-y-auto transition-transform duration-300 ease-out">
+        <div className="sticky top-0 dark:bg-gray-900 light:bg-white border-b border-border/20 px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-foreground flex-1">
             회의 상세
           </h2>
