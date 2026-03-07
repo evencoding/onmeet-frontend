@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useLogin } from "@/hooks/useAuthQuery";
-import type { ErrorResponse } from "@/lib/authApi";
+import { useLogin } from "@/features/auth/hooks";
+import type { ErrorResponse } from "@/features/auth/api";
 import { Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
-import AuthLayout from "@/components/AuthLayout";
+import AuthLayout from "@/shared/components/AuthLayout";
 
 export default function Login() {
   const [email, setEmail] = useState("");

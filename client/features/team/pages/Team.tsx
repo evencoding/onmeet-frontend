@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
-import Layout from "@/components/Layout";
-import TeamDetail from "@/components/TeamDetail";
+import Layout from "@/shared/components/Layout";
+import TeamDetail from "@/features/team/components/TeamDetail";
 
 const teamNames: Record<string, string> = {
   marketing: "Marketing",

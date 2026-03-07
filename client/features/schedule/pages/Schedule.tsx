@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Layout from "@/components/Layout";
-import CalendarView from "@/components/CalendarView";
-import MeetingBookingModal from "@/components/MeetingBookingModal";
+import Layout from "@/shared/components/Layout";
+import CalendarView from "@/features/schedule/components/CalendarView";
+import MeetingBookingModal from "@/features/schedule/components/MeetingBookingModal";
 import { Clock, MapPin, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { format, isSameDay } from "date-fns";
 import { ko } from "date-fns/locale";

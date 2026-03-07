@@ -1,11 +1,11 @@
 import Sidebar from "./Sidebar";
 import MeetingHeader from "./MeetingHeader";
-import AIMeetingSearch from "./AIMeetingSearch";
-import RecentMeetings from "./RecentMeetings";
+import AIMeetingSearch from "@/features/dashboard/components/AIMeetingSearch";
+import RecentMeetings from "@/features/dashboard/components/RecentMeetings";
 import ThemeToggle from "./ThemeToggle";
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/shared/contexts/ThemeContext";
 
 interface LayoutProps {
   children: React.ReactNode;

@@ -13,9 +13,9 @@ import {
   Plus,
   Play,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
+import { cn } from "@/shared/lib/utils";
 
 interface TeamMember {
   id: string;

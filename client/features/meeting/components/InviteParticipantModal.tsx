@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { X, Check, Search, Copy, Link2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/shared/lib/utils";
+import { useToast } from "@/shared/hooks/use-toast";
 
 interface TeamMember {
   id: string;

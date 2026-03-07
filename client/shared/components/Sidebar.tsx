@@ -11,11 +11,11 @@ import {
   ChevronRight,
   User,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useAuth } from "@/contexts/AuthContext";
+import { cn } from "@/shared/lib/utils";
+import { useAuth } from "@/features/auth/context";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import AddTeamModal from "@/components/AddTeamModal";
+import AddTeamModal from "@/features/team/components/AddTeamModal";
 
 interface NavItem {
   id: string;

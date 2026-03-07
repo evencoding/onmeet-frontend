@@ -5,8 +5,8 @@ import {
   useLogin,
   useLogout,
   AUTH_QUERY_KEY,
-} from "@/hooks/useAuthQuery";
-import type { UserResponseDto } from "@/lib/authApi";
+} from "@/features/auth/hooks";
+import type { UserResponseDto } from "@/features/auth/api";
 
 interface AuthContextType {
   user: UserResponseDto | null;

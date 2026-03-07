@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Layout from "@/components/Layout";
+import Layout from "@/shared/components/Layout";
 import { User, Mail, Phone, Settings, Lock, Bell, Building2, Edit2, Save, X, AlertTriangle, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth/context";
 import { useNavigate } from "react-router-dom";
-import { changePassword } from "@/lib/authApi";
+import { changePassword } from "@/features/auth/api";
 
 export default function MyPage() {
   const { user, logout } = useAuth();

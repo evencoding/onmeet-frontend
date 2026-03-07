@@ -1,10 +1,10 @@
-import Layout from "@/components/Layout";
+import Layout from "@/shared/components/Layout";
 import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play, Copy, Edit, Check, ChevronDown, Music, FileCode, BookOpen, Tag, Volume2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import RichTextEditor from "@/components/RichTextEditor";
+import RichTextEditor from "@/features/dashboard/components/RichTextEditor";
 
 interface Meeting {
   id: string;

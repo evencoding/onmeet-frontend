@@ -7,8 +7,8 @@ import {
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+} from "@/shared/ui/alert-dialog";
+import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
 
 interface Team {
   id: string;
