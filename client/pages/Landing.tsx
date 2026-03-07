@@ -23,14 +23,12 @@ export default function Landing() {
     setIsVisible(true);
   }, []);
 
-  // Spring animation for smooth transitions
   const springScroll = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     mass: 1,
   });
 
-  // Parallax effects
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 300]);
   const parallaxY2 = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.5], [1, 0.5, 0]);
@@ -83,9 +81,9 @@ export default function Landing() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
-      {/* Animated gradient background */}
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900">
+    <div className="min-h-screen dark:bg-black light:bg-white dark:text-white light:text-purple-900 overflow-hidden">
+
+      <div className="fixed inset-0 -z-10 dark:bg-gradient-to-br dark:from-purple-950 dark:via-black dark:to-purple-900 light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-purple-100">
         <div className="absolute inset-0 opacity-40">
           <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
           <div className="absolute top-0 -right-4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
@@ -93,8 +91,7 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* Navigation Bar */}
-      <nav className="fixed top-0 w-full z-50 bg-black/30 backdrop-blur-xl border-b border-purple-500/20">
+      <nav className="fixed top-0 w-full z-50 dark:bg-black/30 light:bg-white/70 backdrop-blur-xl border-b dark:border-purple-500/20 light:border-purple-200/50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <motion.div
             className="flex items-center gap-3"
@@ -123,7 +120,7 @@ export default function Landing() {
           >
             <button
               onClick={() => navigate("/login")}
-              className="px-6 py-2.5 text-white/80 font-medium hover:text-white transition-colors"
+              className="px-6 py-2.5 dark:text-white/80 light:text-purple-700 font-medium dark:hover:text-white light:hover:text-purple-900 transition-colors"
             >
               로그인
             </button>
@@ -139,9 +136,8 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <motion.section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-        {/* Animated elements */}
+
         <motion.div
           className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl"
           style={{ y: parallaxY }}
@@ -162,9 +158,9 @@ export default function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-block mb-6 px-4 py-2 bg-purple-500/20 border border-purple-500/50 rounded-full backdrop-blur-sm"
+            className="inline-block mb-6 px-4 py-2 dark:bg-purple-500/20 light:bg-purple-100/70 border dark:border-purple-500/50 light:border-purple-300/60 rounded-full backdrop-blur-sm"
           >
-            <span className="flex items-center gap-2 text-purple-300 font-semibold">
+            <span className="flex items-center gap-2 dark:text-purple-300 light:text-purple-700 font-semibold">
               <Sparkles className="w-4 h-4" /> 미래의 회의 솔루션
             </span>
           </motion.div>
@@ -180,14 +176,14 @@ export default function Landing() {
               미래를 만나보세요
             </span>
             <span className="block mt-2 text-4xl md:text-6xl">
-              <span className="text-white">영상</span>
+              <span className="dark:text-white light:text-purple-900">영상</span>
               <span className="text-purple-400"> + </span>
               <span className="text-pink-400">AI</span>
             </span>
           </motion.h1>
 
           <motion.p
-            className="text-xl md:text-2xl text-white/70 max-w-3xl mx-auto mb-12 leading-relaxed"
+            className="text-xl md:text-2xl dark:text-white/70 light:text-purple-700 max-w-3xl mx-auto mb-12 leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -195,7 +191,7 @@ export default function Landing() {
             회의에만 집중하세요. 영상 기록과 AI 회의록은 ONMEET이 자동으로
             처리합니다.
             <br />
-            <span className="text-purple-300 font-semibold">
+            <span className="dark:text-purple-300 light:text-purple-600 font-semibold">
               기술과 신뢰가 만나는 순간
             </span>
           </motion.p>
@@ -217,7 +213,7 @@ export default function Landing() {
             </motion.button>
             <motion.button
               onClick={() => navigate("/login")}
-              className="px-10 py-4 border-2 border-purple-500 text-white text-lg font-semibold rounded-lg hover:bg-purple-500/10 transition-all"
+              className="px-10 py-4 border-2 border-purple-500 dark:text-white light:text-purple-900 text-lg font-semibold rounded-lg hover:bg-purple-500/10 transition-all"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -225,12 +221,11 @@ export default function Landing() {
             </motion.button>
           </motion.div>
 
-          {/* Animated hero image */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl shadow-purple-500/20 backdrop-blur-sm"
+            className="rounded-2xl overflow-hidden border dark:border-purple-500/30 light:border-purple-300/50 shadow-2xl dark:shadow-purple-500/20 light:shadow-purple-300/30 backdrop-blur-sm"
           >
             <motion.img
               src="https://images.pexels.com/photos/4226261/pexels-photo-4226261.jpeg?w=1200&h=600&fit=crop"
@@ -242,19 +237,18 @@ export default function Landing() {
           </motion.div>
         </motion.div>
 
-        {/* Scroll indicator */}
         <motion.div
           className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
           <div className="flex flex-col items-center gap-2">
-            <span className="text-white/60 text-sm font-semibold">
+            <span className="dark:text-white/60 light:text-purple-700 text-sm font-semibold">
               스크롤하세요
             </span>
-            <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
+            <div className="w-6 h-10 border-2 dark:border-white/30 light:border-purple-400/50 rounded-full flex items-start justify-center p-2">
               <motion.div
-                className="w-1 h-2 bg-white/60 rounded-full"
+                className="w-1 h-2 dark:bg-white/60 light:bg-purple-500/60 rounded-full"
                 animate={{ y: [0, 12, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
@@ -263,7 +257,6 @@ export default function Landing() {
         </motion.div>
       </motion.section>
 
-      {/* Stats Section with scroll trigger */}
       <motion.section
         className="relative py-20 px-6"
         initial={{ opacity: 0 }}
@@ -282,7 +275,7 @@ export default function Landing() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: idx * 0.15 }}
                   viewport={{ once: true }}
-                  className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-blue-500/10 border border-purple-500/30 rounded-2xl p-8 backdrop-blur-sm hover:border-purple-500/60 transition-all"
+                  className="dark:bg-gradient-to-br dark:from-purple-500/10 dark:via-pink-500/10 dark:to-blue-500/10 light:bg-white light:border-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-2xl p-8 backdrop-blur-sm dark:hover:border-purple-500/60 light:hover:border-purple-400/70 light:hover:shadow-lg light:hover:shadow-purple-200/30 transition-all"
                 >
                   <motion.div
                     className="text-purple-400 mb-4"
@@ -294,7 +287,7 @@ export default function Landing() {
                   <div className="text-4xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent mb-2">
                     {stat.number}
                   </div>
-                  <p className="text-white/70 font-medium">{stat.label}</p>
+                  <p className="dark:text-white/70 light:text-purple-700 font-medium">{stat.label}</p>
                 </motion.div>
               );
             })}
@@ -302,7 +295,6 @@ export default function Landing() {
         </div>
       </motion.section>
 
-      {/* Core Features Section */}
       <motion.section
         className="relative py-32 px-6"
         initial={{ opacity: 0 }}
@@ -319,12 +311,12 @@ export default function Landing() {
             viewport={{ once: true }}
           >
             <h2 className="text-5xl md:text-6xl font-black mb-4">
-              <span className="text-white">강력한</span>{" "}
+              <span className="dark:text-white light:text-purple-900">강력한</span>{" "}
               <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                 기능들
               </span>
             </h2>
-            <p className="text-xl text-white/60">
+            <p className="text-xl dark:text-white/60 light:text-purple-700">
               ONMEET의 고급 기능으로 회의를 완전히 다르게 경험하세요
             </p>
           </motion.div>
@@ -337,9 +329,9 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: idx * 0.1 }}
                 viewport={{ once: true }}
-                className="group relative bg-gradient-to-br from-purple-500/5 to-pink-500/5 border border-purple-500/20 rounded-xl p-6 backdrop-blur-sm hover:border-purple-500/50 hover:bg-purple-500/10 transition-all duration-300 overflow-hidden"
+                className="group relative dark:bg-gradient-to-br dark:from-purple-500/5 dark:to-pink-500/5 light:bg-white border dark:border-purple-500/20 light:border-purple-300/40 rounded-xl p-6 backdrop-blur-sm dark:hover:border-purple-500/50 dark:hover:bg-purple-500/10 light:hover:border-purple-400/60 light:hover:shadow-lg light:hover:shadow-purple-200/30 transition-all duration-300 overflow-hidden"
               >
-                {/* Animated gradient overlay */}
+
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
 
                 <motion.div
@@ -350,10 +342,10 @@ export default function Landing() {
                   {feature.icon}
                 </motion.div>
 
-                <h3 className="text-lg font-bold text-white mb-2 relative z-10">
+                <h3 className="text-lg font-bold dark:text-white light:text-purple-900 mb-2 relative z-10">
                   {feature.title}
                 </h3>
-                <p className="text-white/60 relative z-10">
+                <p className="dark:text-white/60 light:text-purple-700 relative z-10">
                   {feature.description}
                 </p>
               </motion.div>
@@ -362,7 +354,6 @@ export default function Landing() {
         </div>
       </motion.section>
 
-      {/* Two Pillars Section - Video + AI */}
       <motion.section
         className="relative py-32 px-6"
         initial={{ opacity: 0 }}
@@ -383,13 +374,13 @@ export default function Landing() {
                 완벽한 조합
               </span>
             </h2>
-            <p className="text-xl text-white/60">
+            <p className="text-xl dark:text-white/60 light:text-purple-700">
               영상 회의와 AI 회의록이 만나 새로운 경험을 만듭니다
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Video Section */}
+
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -399,7 +390,7 @@ export default function Landing() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/0 rounded-3xl blur-2xl group-hover:from-purple-500/30 transition-all duration-500" />
 
-              <div className="relative bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-3xl p-12 backdrop-blur-sm hover:border-purple-500/60 transition-all">
+              <div className="relative dark:bg-gradient-to-br dark:from-purple-500/10 dark:to-pink-500/10 light:bg-white border dark:border-purple-500/30 light:border-purple-300/50 rounded-3xl p-12 backdrop-blur-sm dark:hover:border-purple-500/60 light:hover:border-purple-400/70 light:hover:shadow-lg light:hover:shadow-purple-200/30 transition-all">
                 <motion.div
                   className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white mb-6"
                   animate={{ y: [0, -10, 0] }}
@@ -408,10 +399,10 @@ export default function Landing() {
                   <Video className="w-8 h-8" />
                 </motion.div>
 
-                <h3 className="text-3xl font-bold text-white mb-4">
+                <h3 className="text-3xl font-bold dark:text-white light:text-purple-900 mb-4">
                   영상 회의 자동 기록
                 </h3>
-                <p className="text-white/70 text-lg mb-8 leading-relaxed">
+                <p className="dark:text-white/70 light:text-purple-700 text-lg mb-8 leading-relaxed">
                   모든 회의를 자동으로 녹화하여 나중에 언제든지 확인할 수
                   있습니다. 회의 중에 놓친 부분이나 중요한 결정 사항을 다시
                   확인하세요.
@@ -425,13 +416,13 @@ export default function Landing() {
                   ].map((item, idx) => (
                     <motion.li
                       key={idx}
-                      className="flex items-center gap-3 text-white/80"
+                      className="flex items-center gap-3 dark:text-white/80 light:text-purple-800"
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.4, delay: idx * 0.1 }}
                       viewport={{ once: true }}
                     >
-                      <CheckCircle className="w-5 h-5 text-purple-400 flex-shrink-0" />
+                      <CheckCircle className="w-5 h-5 dark:text-purple-400 light:text-purple-600 flex-shrink-0" />
                       {item}
                     </motion.li>
                   ))}
@@ -439,7 +430,6 @@ export default function Landing() {
               </div>
             </motion.div>
 
-            {/* AI Section */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -449,7 +439,7 @@ export default function Landing() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-blue-500/0 rounded-3xl blur-2xl group-hover:from-pink-500/30 transition-all duration-500" />
 
-              <div className="relative bg-gradient-to-br from-pink-500/10 to-blue-500/10 border border-pink-500/30 rounded-3xl p-12 backdrop-blur-sm hover:border-pink-500/60 transition-all">
+              <div className="relative dark:bg-gradient-to-br dark:from-pink-500/10 dark:to-blue-500/10 light:bg-white border dark:border-pink-500/30 light:border-pink-300/50 rounded-3xl p-12 backdrop-blur-sm dark:hover:border-pink-500/60 light:hover:border-pink-400/70 light:hover:shadow-lg light:hover:shadow-pink-200/30 transition-all">
                 <motion.div
                   className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-500 to-blue-500 flex items-center justify-center text-white mb-6"
                   animate={{ y: [0, -10, 0] }}
@@ -458,10 +448,10 @@ export default function Landing() {
                   <Brain className="w-8 h-8" />
                 </motion.div>
 
-                <h3 className="text-3xl font-bold text-white mb-4">
+                <h3 className="text-3xl font-bold dark:text-white light:text-purple-900 mb-4">
                   AI 회의록 자동 생성
                 </h3>
-                <p className="text-white/70 text-lg mb-8 leading-relaxed">
+                <p className="dark:text-white/70 light:text-purple-700 text-lg mb-8 leading-relaxed">
                   첨단 AI가 회의 내용을 분석하여 핵심 내용, 결정사항, 할일
                   항목을 자동으로 정리해줍니다. 시간 낭비 없이 결과에
                   집중하세요.
@@ -472,13 +462,13 @@ export default function Landing() {
                     (item, idx) => (
                       <motion.li
                         key={idx}
-                        className="flex items-center gap-3 text-white/80"
+                        className="flex items-center gap-3 dark:text-white/80 light:text-purple-800"
                         initial={{ opacity: 0, x: -10 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, delay: idx * 0.1 }}
                         viewport={{ once: true }}
                       >
-                        <CheckCircle className="w-5 h-5 text-pink-400 flex-shrink-0" />
+                        <CheckCircle className="w-5 h-5 dark:text-pink-400 light:text-pink-600 flex-shrink-0" />
                         {item}
                       </motion.li>
                     ),
@@ -490,7 +480,6 @@ export default function Landing() {
         </div>
       </motion.section>
 
-      {/* CTA Section */}
       <motion.section
         className="relative py-32 px-6"
         initial={{ opacity: 0 }}
@@ -508,9 +497,9 @@ export default function Landing() {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-purple-600/50 via-pink-600/50 to-blue-600/50 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500" />
 
-            <div className="relative bg-gradient-to-br from-purple-900/50 via-pink-900/30 to-blue-900/50 border border-purple-500/50 rounded-3xl p-16 text-center backdrop-blur-sm">
+            <div className="relative dark:bg-gradient-to-br dark:from-purple-900/50 dark:via-pink-900/30 dark:to-blue-900/50 light:bg-gradient-to-br light:from-purple-100/80 light:via-pink-50/60 light:to-blue-100/80 border dark:border-purple-500/50 light:border-purple-300/60 rounded-3xl p-16 text-center backdrop-blur-sm">
               <motion.h2
-                className="text-5xl md:text-6xl font-black mb-6 text-white"
+                className="text-5xl md:text-6xl font-black mb-6 dark:text-white light:text-purple-900"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -520,7 +509,7 @@ export default function Landing() {
               </motion.h2>
 
               <motion.p
-                className="text-xl md:text-2xl text-white/80 mb-10 leading-relaxed"
+                className="text-xl md:text-2xl dark:text-white/80 light:text-purple-700 mb-10 leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
@@ -550,9 +539,8 @@ export default function Landing() {
         </div>
       </motion.section>
 
-      {/* Footer */}
-      <footer className="border-t border-purple-500/20 bg-black/40 backdrop-blur-md py-12 px-6">
-        <div className="max-w-7xl mx-auto text-center text-white/60">
+      <footer className="border-t dark:border-purple-500/20 light:border-purple-200/50 dark:bg-black/40 light:bg-white/70 backdrop-blur-md py-12 px-6">
+        <div className="max-w-7xl mx-auto text-center dark:text-white/60 light:text-purple-700">
           <p>&copy; 2024 ONMEET. 모든 권리 보유.</p>
         </div>
       </footer>
