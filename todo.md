@@ -31,3 +31,5 @@
       - State Machine 패턴 (XState 등) 상태가 가질 수 있는 유한한 단계와 전이 조건(Transition)을 정의하는 방식 논리적 오류(Z-State)를 원천 차단
       - Hybrid Storage
         - 낙관적 업데이트, Snapshot & Delta Sync SSE로 실시간 데이터를 받되(Delta), 1분마다 혹은 특정 시점에 전체 데이터를 서버와 동기화(Snapshot)하여 데이터 유실을 방지
+5. 반복되는 코드 삭제
+6. 빌드 빠르게
