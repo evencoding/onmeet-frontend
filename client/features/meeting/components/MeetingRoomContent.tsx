@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Phone,
@@ -23,12 +23,116 @@ import VideoGrid from "./VideoGrid";
 import ChatPanel from "./ChatPanel";
 import MeetingToolbar from "./MeetingToolbar";
 
+// ── Self-subscribing modal containers ──
+// Each modal subscribes to only its own slice of state,
+// preventing layout re-renders when modal state changes.
+
+function ConnectedAIRecordingModal({ isHost }: { isHost: boolean }) {
+  const { isOpen, isAIRecording, pendingAIRequests } = useMeetingRoomStore(
+    useShallow((s) => ({
+      isOpen: s.isAIRecordingRequestModalOpen,
+      isAIRecording: s.isAIRecording,
+      pendingAIRequests: s.pendingAIRequests,
+    })),
+  );
+
+  const handleClose = useCallback(() => {
+    useMeetingRoomStore.getState().setIsAIRecordingRequestModalOpen(false);
+  }, []);
+
+  const handleRequestSend = useCallback(() => {
+    useMeetingRoomStore.getState().addPendingAIRequest({
+      id: Date.now().toString(),
+      senderName: "You",
+      timestamp: new Date().toLocaleTimeString("ko-KR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    });
+  }, []);
+
+  const handleApprove = useCallback(() => {
+    const store = useMeetingRoomStore.getState();
+    store.setIsAIRecording(true);
+    if (store.pendingAIRequests.length > 0) {
+      store.removePendingAIRequest();
+    }
+  }, []);
+
+  const handleReject = useCallback(() => {
+    const store = useMeetingRoomStore.getState();
+    if (store.pendingAIRequests.length > 0) {
+      store.removePendingAIRequest();
+    }
+  }, []);
+
+  return (
+    <AIRecordingRequestModal
+      isOpen={isOpen}
+      isHost={isHost}
+      isAIRecording={isAIRecording}
+      onClose={handleClose}
+      onRequestSend={handleRequestSend}
+      onApprove={handleApprove}
+      onReject={handleReject}
+      pendingRequests={pendingAIRequests}
+    />
+  );
+}
+
+function ConnectedInviteModal({
+  roomId,
+  participantIdentities,
+}: {
+  roomId: string;
+  participantIdentities: string[];
+}) {
+  const isOpen = useMeetingRoomStore((s) => s.isInviteModalOpen);
+
+  return (
+    <InviteParticipantModal
+      isOpen={isOpen}
+      onClose={() => useMeetingRoomStore.getState().setIsInviteModalOpen(false)}
+      onInvite={() => {}}
+      alreadyInvited={participantIdentities}
+      meetingId={roomId}
+    />
+  );
+}
+
+function ConnectedExitModal({
+  isHost,
+  onConfirm,
+}: {
+  isHost: boolean;
+  onConfirm: () => void;
+}) {
+  const { showExitModal, isAIRecording } = useMeetingRoomStore(
+    useShallow((s) => ({
+      showExitModal: s.showExitModal,
+      isAIRecording: s.isAIRecording,
+    })),
+  );
+
+  return (
+    <ExitMeetingModal
+      isOpen={showExitModal}
+      isHost={isHost}
+      isAIRecording={isAIRecording}
+      onClose={() => useMeetingRoomStore.getState().setShowExitModal(false)}
+      onConfirm={onConfirm}
+    />
+  );
+}
+
+// ── Main content component ──
+
 interface MeetingRoomContentProps {
   roomId: string;
   isHost: boolean;
 }
 
-export default function MeetingRoomContent({
+export default memo(function MeetingRoomContent({
   roomId,
   isHost,
 }: MeetingRoomContentProps) {
@@ -38,42 +142,18 @@ export default function MeetingRoomContent({
 
   const decoder = useRef(new TextDecoder());
 
-  const {
-    isFullscreen,
-    isPIPMode,
-    showChat,
-    showParticipants,
-    showExitModal,
-    isAIRecordingRequestModalOpen,
-    isInviteModalOpen,
-    isAIRecording,
-    pendingAIRequests,
-  } = useMeetingRoomStore(
+  const { isPIPMode, showChat, showParticipants } = useMeetingRoomStore(
     useShallow((s) => ({
-      isFullscreen: s.isFullscreen,
       isPIPMode: s.isPIPMode,
       showChat: s.showChat,
       showParticipants: s.showParticipants,
-      showExitModal: s.showExitModal,
-      isAIRecordingRequestModalOpen: s.isAIRecordingRequestModalOpen,
-      isInviteModalOpen: s.isInviteModalOpen,
-      isAIRecording: s.isAIRecording,
-      pendingAIRequests: s.pendingAIRequests,
     })),
   );
 
-  const setIsFullscreen = useMeetingRoomStore((s) => s.setIsFullscreen);
-  const setIsPIPMode = useMeetingRoomStore((s) => s.setIsPIPMode);
-  const setShowExitModal = useMeetingRoomStore((s) => s.setShowExitModal);
-  const setIsAIRecordingRequestModalOpen = useMeetingRoomStore(
-    (s) => s.setIsAIRecordingRequestModalOpen,
+  const participantIdentities = useMemo(
+    () => participants.map((p) => p.identity),
+    [participants],
   );
-  const setIsInviteModalOpen = useMeetingRoomStore((s) => s.setIsInviteModalOpen);
-  const setShowParticipants = useMeetingRoomStore((s) => s.toggleParticipants);
-  const setIsAIRecording = useMeetingRoomStore((s) => s.setIsAIRecording);
-  const addPendingAIRequest = useMeetingRoomStore((s) => s.addPendingAIRequest);
-  const removePendingAIRequest = useMeetingRoomStore((s) => s.removePendingAIRequest);
-  const addChatMessage = useMeetingRoomStore((s) => s.addChatMessage);
 
   // DataChannel chat listener
   useEffect(() => {
@@ -84,7 +164,7 @@ export default function MeetingRoomContent({
       try {
         const data = JSON.parse(decoder.current.decode(payload));
         if (data.type === "chat") {
-          addChatMessage({
+          useMeetingRoomStore.getState().addChatMessage({
             id: Date.now().toString(),
             sender: participant?.name || participant?.identity || "Unknown",
             message: data.message,
@@ -103,21 +183,22 @@ export default function MeetingRoomContent({
     return () => {
       room.off(RoomEvent.DataReceived, handleData);
     };
-  }, [room, addChatMessage]);
+  }, [room]);
 
   const toggleFullscreen = useCallback(async () => {
     try {
+      const isFullscreen = useMeetingRoomStore.getState().isFullscreen;
       if (!isFullscreen) {
         await document.documentElement.requestFullscreen();
-        setIsFullscreen(true);
+        useMeetingRoomStore.getState().setIsFullscreen(true);
       } else {
         await document.exitFullscreen();
-        setIsFullscreen(false);
+        useMeetingRoomStore.getState().setIsFullscreen(false);
       }
     } catch (err) {
       console.error("Fullscreen error:", err);
     }
-  }, [isFullscreen, setIsFullscreen]);
+  }, []);
 
   const handleDisconnect = useCallback(() => {
     room.disconnect();
@@ -146,7 +227,7 @@ export default function MeetingRoomContent({
         <div className="px-6 py-4 border-b border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => setShowExitModal(true)}
+              onClick={() => useMeetingRoomStore.getState().setShowExitModal(true)}
               className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
               title="회의 나가기"
             >
@@ -154,7 +235,7 @@ export default function MeetingRoomContent({
             </button>
             <h1 className="text-2xl font-bold">회의</h1>
             <button
-              onClick={() => setIsPIPMode(true)}
+              onClick={() => useMeetingRoomStore.getState().setIsPIPMode(true)}
               className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
               title="PIP 모드로 이동 (연결 유지)"
             >
@@ -195,7 +276,7 @@ export default function MeetingRoomContent({
               참여자 ({participants.length}명)
             </h3>
             <button
-              onClick={setShowParticipants}
+              onClick={() => useMeetingRoomStore.getState().toggleParticipants()}
               className="p-1 hover:bg-purple-500/20 rounded transition-colors"
             >
               <X className="w-5 h-5" />
@@ -240,7 +321,7 @@ export default function MeetingRoomContent({
 
           <div className="px-4 py-4 border-t border-purple-500/20">
             <button
-              onClick={() => setIsInviteModalOpen(true)}
+              onClick={() => useMeetingRoomStore.getState().setIsInviteModalOpen(true)}
               className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold transition-all"
             >
               참여자 초대
@@ -249,51 +330,10 @@ export default function MeetingRoomContent({
         </div>
       )}
 
-      {/* Modals */}
-      <AIRecordingRequestModal
-        isOpen={isAIRecordingRequestModalOpen}
-        isHost={isHost}
-        isAIRecording={isAIRecording}
-        onClose={() => setIsAIRecordingRequestModalOpen(false)}
-        onRequestSend={() => {
-          addPendingAIRequest({
-            id: Date.now().toString(),
-            senderName: "You",
-            timestamp: new Date().toLocaleTimeString("ko-KR", {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-          });
-        }}
-        onApprove={() => {
-          setIsAIRecording(true);
-          if (pendingAIRequests.length > 0) {
-            removePendingAIRequest();
-          }
-        }}
-        onReject={() => {
-          if (pendingAIRequests.length > 0) {
-            removePendingAIRequest();
-          }
-        }}
-        pendingRequests={pendingAIRequests}
-      />
-
-      <InviteParticipantModal
-        isOpen={isInviteModalOpen}
-        onClose={() => setIsInviteModalOpen(false)}
-        onInvite={() => {}}
-        alreadyInvited={participants.map((p) => p.identity)}
-        meetingId={roomId}
-      />
-
-      <ExitMeetingModal
-        isOpen={showExitModal}
-        isHost={isHost}
-        isAIRecording={isAIRecording}
-        onClose={() => setShowExitModal(false)}
-        onConfirm={handleDisconnect}
-      />
+      {/* Modals — self-subscribing containers */}
+      <ConnectedAIRecordingModal isHost={isHost} />
+      <ConnectedInviteModal roomId={roomId} participantIdentities={participantIdentities} />
+      <ConnectedExitModal isHost={isHost} onConfirm={handleDisconnect} />
     </div>
   );
-}
+});
