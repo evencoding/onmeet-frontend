@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Maximize, X, Mic, MicOff, Video, VideoOff } from "lucide-react";
 import { useParticipants } from "@livekit/components-react";
 import { useShallow } from "zustand/react/shallow";
@@ -11,7 +12,7 @@ interface PIPModeViewProps {
   onDisconnect: () => void;
 }
 
-export default function PIPModeView({ isHost, onDisconnect }: PIPModeViewProps) {
+export default memo(function PIPModeView({ isHost, onDisconnect }: PIPModeViewProps) {
   const participants = useParticipants();
   const { toggleMic, toggleCamera } = useMeetingMedia();
 
@@ -26,9 +27,6 @@ export default function PIPModeView({ isHost, onDisconnect }: PIPModeViewProps) 
       })),
     );
 
-  const setIsPIPMode = useMeetingRoomStore((s) => s.setIsPIPMode);
-  const setShowExitModal = useMeetingRoomStore((s) => s.setShowExitModal);
-
   if (!isPIPMode) return null;
 
   return (
@@ -38,14 +36,14 @@ export default function PIPModeView({ isHost, onDisconnect }: PIPModeViewProps) 
           <h3 className="text-lg font-bold text-white">회의 진행 중</h3>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setIsPIPMode(false)}
+              onClick={() => useMeetingRoomStore.getState().setIsPIPMode(false)}
               className="p-1 hover:bg-purple-500/20 rounded-lg transition-colors text-white"
               title="전체보기로 돌아가기"
             >
               <Maximize className="w-4 h-4" />
             </button>
             <button
-              onClick={() => setShowExitModal(true)}
+              onClick={() => useMeetingRoomStore.getState().setShowExitModal(true)}
               className="p-1 hover:bg-red-600/30 rounded-lg transition-colors text-red-400"
               title="회의 나가기"
             >
@@ -111,9 +109,9 @@ export default function PIPModeView({ isHost, onDisconnect }: PIPModeViewProps) 
         isOpen={showExitModal}
         isHost={isHost}
         isAIRecording={isAIRecording}
-        onClose={() => setShowExitModal(false)}
+        onClose={() => useMeetingRoomStore.getState().setShowExitModal(false)}
         onConfirm={onDisconnect}
       />
     </div>
   );
-}
+});

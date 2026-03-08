@@ -1,3 +1,4 @@
+import { memo, useRef, useCallback } from "react";
 import {
   Mic,
   MicOff,
@@ -10,7 +11,6 @@ import {
   Camera,
   Share2,
 } from "lucide-react";
-import { useRef, useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 import {
   Tooltip,
@@ -25,30 +25,21 @@ interface MeetingToolbarProps {
   isHost: boolean;
 }
 
-export default function MeetingToolbar({ isHost }: MeetingToolbarProps) {
+export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toggleMic, toggleCamera, toggleScreenShare, isScreenSharing } =
     useMeetingMedia();
 
-  const { isMuted, isVideoOn, isAIRecording, viewMode, showChat, showParticipants } =
+  const { isMuted, isVideoOn, isAIRecording, showChat, showParticipants } =
     useMeetingRoomStore(
       useShallow((s) => ({
         isMuted: s.isMuted,
         isVideoOn: s.isVideoOn,
         isAIRecording: s.isAIRecording,
-        viewMode: s.viewMode,
         showChat: s.showChat,
         showParticipants: s.showParticipants,
       })),
     );
-
-  const setViewMode = useMeetingRoomStore((s) => s.setViewMode);
-  const toggleChatPanel = useMeetingRoomStore((s) => s.toggleChat);
-  const toggleParticipantsPanel = useMeetingRoomStore((s) => s.toggleParticipants);
-  const setShowExitModal = useMeetingRoomStore((s) => s.setShowExitModal);
-  const setIsAIRecordingRequestModalOpen = useMeetingRoomStore(
-    (s) => s.setIsAIRecordingRequestModalOpen,
-  );
 
   const handleScreenshot = useCallback(async () => {
     const videoEl = document.querySelector("video");
@@ -123,7 +114,7 @@ export default function MeetingToolbar({ isHost }: MeetingToolbarProps) {
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              onClick={() => setIsAIRecordingRequestModalOpen(true)}
+              onClick={() => useMeetingRoomStore.getState().setIsAIRecordingRequestModalOpen(true)}
               className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
                 isAIRecording
                   ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
@@ -141,9 +132,10 @@ export default function MeetingToolbar({ isHost }: MeetingToolbarProps) {
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              onClick={() =>
-                setViewMode(viewMode === "gallery" ? "speaker" : "gallery")
-              }
+              onClick={() => {
+                const { viewMode, setViewMode } = useMeetingRoomStore.getState();
+                setViewMode(viewMode === "gallery" ? "speaker" : "gallery");
+              }}
               className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
             >
               <Users className="w-6 h-6" />
@@ -185,7 +177,7 @@ export default function MeetingToolbar({ isHost }: MeetingToolbarProps) {
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              onClick={toggleChatPanel}
+              onClick={() => useMeetingRoomStore.getState().toggleChat()}
               className={`p-4 rounded-full transition-all duration-200 ${
                 showChat
                   ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -201,7 +193,7 @@ export default function MeetingToolbar({ isHost }: MeetingToolbarProps) {
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              onClick={toggleParticipantsPanel}
+              onClick={() => useMeetingRoomStore.getState().toggleParticipants()}
               className={`p-4 rounded-full transition-all duration-200 ${
                 showParticipants
                   ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -217,7 +209,7 @@ export default function MeetingToolbar({ isHost }: MeetingToolbarProps) {
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              onClick={() => setShowExitModal(true)}
+              onClick={() => useMeetingRoomStore.getState().setShowExitModal(true)}
               className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200 ml-auto"
             >
               <Phone className="w-6 h-6" />
@@ -228,4 +220,4 @@ export default function MeetingToolbar({ isHost }: MeetingToolbarProps) {
       </div>
     </TooltipProvider>
   );
-}
+});

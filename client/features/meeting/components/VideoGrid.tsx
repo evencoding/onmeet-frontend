@@ -1,13 +1,19 @@
+import { memo } from "react";
 import { useParticipants } from "@livekit/components-react";
+import { useShallow } from "zustand/react/shallow";
 import { useMeetingRoomStore } from "../store";
 import ParticipantTile from "./ParticipantTile";
 
-export default function VideoGrid() {
+export default memo(function VideoGrid() {
   const participants = useParticipants();
-  const viewMode = useMeetingRoomStore((s) => s.viewMode);
-  const currentSpeaker = useMeetingRoomStore((s) => s.currentSpeaker);
-  const isAIRecording = useMeetingRoomStore((s) => s.isAIRecording);
-  const setCurrentSpeaker = useMeetingRoomStore((s) => s.setCurrentSpeaker);
+
+  const { viewMode, currentSpeaker, isAIRecording } = useMeetingRoomStore(
+    useShallow((s) => ({
+      viewMode: s.viewMode,
+      currentSpeaker: s.currentSpeaker,
+      isAIRecording: s.isAIRecording,
+    })),
+  );
 
   if (viewMode === "gallery") {
     return (
@@ -44,7 +50,7 @@ export default function VideoGrid() {
         {participants.map((participant, idx) => (
           <button
             key={participant.identity}
-            onClick={() => setCurrentSpeaker(idx)}
+            onClick={() => useMeetingRoomStore.getState().setCurrentSpeaker(idx)}
             className={`relative w-full h-24 rounded-lg overflow-hidden border-2 transition-all ${
               currentSpeaker === idx
                 ? "border-purple-400"
@@ -61,4 +67,4 @@ export default function VideoGrid() {
       </div>
     </div>
   );
-}
+});

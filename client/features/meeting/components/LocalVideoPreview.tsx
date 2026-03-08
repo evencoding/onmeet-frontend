@@ -1,11 +1,11 @@
-import { useRef, useEffect } from "react";
+import { memo, useRef, useEffect } from "react";
 import {
   useLocalParticipant,
   useParticipantTracks,
 } from "@livekit/components-react";
 import { Track } from "livekit-client";
 
-export default function LocalVideoPreview() {
+export default memo(function LocalVideoPreview() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { localParticipant } = useLocalParticipant();
 
@@ -33,4 +33,4 @@ export default function LocalVideoPreview() {
       className="w-full h-full object-cover"
     />
   );
-}
+});
