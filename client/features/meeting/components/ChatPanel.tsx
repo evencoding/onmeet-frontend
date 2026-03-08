@@ -1,0 +1,152 @@
+import { useCallback, useRef } from "react";
+import { Send, X, FileText } from "lucide-react";
+import { useRoomContext } from "@livekit/components-react";
+import { useShallow } from "zustand/react/shallow";
+import { useMeetingRoomStore } from "../store";
+
+export default function ChatPanel() {
+  const room = useRoomContext();
+  const encoder = useRef(new TextEncoder());
+
+  const { showChat, chatMessages, chatInput, noteText, showNoteInput } =
+    useMeetingRoomStore(
+      useShallow((s) => ({
+        showChat: s.showChat,
+        chatMessages: s.chatMessages,
+        chatInput: s.chatInput,
+        noteText: s.noteText,
+        showNoteInput: s.showNoteInput,
+      })),
+    );
+
+  const toggleChat = useMeetingRoomStore((s) => s.toggleChat);
+  const setChatInput = useMeetingRoomStore((s) => s.setChatInput);
+  const addChatMessage = useMeetingRoomStore((s) => s.addChatMessage);
+  const setNoteText = useMeetingRoomStore((s) => s.setNoteText);
+  const setShowNoteInput = useMeetingRoomStore((s) => s.setShowNoteInput);
+
+  const handleSendMessage = useCallback(() => {
+    if (!chatInput.trim()) return;
+
+    const data = JSON.stringify({ type: "chat", message: chatInput });
+    room.localParticipant.publishData(encoder.current.encode(data), {
+      reliable: true,
+    });
+
+    addChatMessage({
+      id: Date.now().toString(),
+      sender: "You",
+      message: chatInput,
+      timestamp: new Date().toLocaleTimeString("ko-KR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    });
+    setChatInput("");
+  }, [chatInput, room, addChatMessage, setChatInput]);
+
+  const handleAddNote = useCallback(() => {
+    if (noteText.trim()) {
+      addChatMessage({
+        id: Date.now().toString(),
+        sender: "You",
+        message: `📝 ${noteText}`,
+        timestamp: new Date().toLocaleTimeString("ko-KR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      });
+      setNoteText("");
+      setShowNoteInput(false);
+    }
+  }, [noteText, addChatMessage, setNoteText, setShowNoteInput]);
+
+  if (!showChat) return null;
+
+  return (
+    <div className="w-80 border-l border-purple-500/20 bg-purple-900/30 backdrop-blur-md flex flex-col">
+      <div className="px-4 py-4 border-b border-purple-500/20 flex items-center justify-between">
+        <h3 className="font-semibold">채팅</h3>
+        <button
+          onClick={toggleChat}
+          className="p-1 hover:bg-purple-500/20 rounded transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+        {chatMessages.map((msg) => (
+          <div key={msg.id} className="flex gap-3">
+            <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+              {msg.sender[0]}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-semibold">{msg.sender}</p>
+                <p className="text-xs text-white/50">{msg.timestamp}</p>
+              </div>
+              <p className="text-sm text-white/90 bg-purple-500/20 rounded-lg p-2 mt-1">
+                {msg.message}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {showNoteInput && (
+        <div className="px-4 py-3 border-t border-purple-500/20 bg-purple-500/10 space-y-2">
+          <p className="text-xs text-white/60 font-semibold">노트 추가</p>
+          <textarea
+            value={noteText}
+            onChange={(e) => setNoteText(e.target.value)}
+            placeholder="노트를 입력하세요..."
+            className="w-full px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-sm text-white placeholder-white/50 focus:outline-none focus:border-purple-400 resize-none h-20"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={handleAddNote}
+              className="flex-1 px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-semibold transition-colors"
+            >
+              저장
+            </button>
+            <button
+              onClick={() => {
+                setShowNoteInput(false);
+                setNoteText("");
+              }}
+              className="px-3 py-1 bg-purple-500/30 hover:bg-purple-500/50 rounded-lg text-sm transition-colors"
+            >
+              취소
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="px-4 py-4 border-t border-purple-500/20 flex gap-2">
+        <input
+          type="text"
+          value={chatInput}
+          onChange={(e) => setChatInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+          placeholder="메시지를 입력하세요..."
+          className="flex-1 px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-sm text-white placeholder-white/50 focus:outline-none focus:border-purple-400"
+        />
+        <button
+          onClick={handleSendMessage}
+          className="p-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
+          title="메시지 전송"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+        <button
+          onClick={() => setShowNoteInput(!showNoteInput)}
+          className="p-2 bg-purple-500/30 hover:bg-purple-500/50 rounded-lg transition-colors"
+          title="노트 추가"
+        >
+          <FileText className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
