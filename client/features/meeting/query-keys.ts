@@ -38,6 +38,10 @@ export const roomKeys = {
   // Screen share
   activeScreenShares: (roomId: number) => [...roomKeys.detail(roomId), "screen-shares"] as const,
 
+  // STT
+  stt: (roomId: number) => [...roomKeys.detail(roomId), "stt"] as const,
+  sttTranscript: (roomId: number) => [...roomKeys.detail(roomId), "stt-transcript"] as const,
+
   // Monthly stats
   monthlyStats: () => [...roomKeys.all, "monthly-stats"] as const,
 };

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getNotificationSettings,
@@ -131,74 +131,59 @@ export function useNotificationSSE(
   onMessage?: (notification: NotificationResponseDto) => void,
 ) {
   const qc = useQueryClient();
-  const abortRef = useRef<AbortController | null>(null);
+  const esRef = useRef<EventSource | null>(null);
+  const reconnectTimer = useRef<ReturnType<typeof setTimeout>>();
   const [connected, setConnected] = useState(false);
-
-  const connect = useCallback(() => {
-    if (!userId) return;
-
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
-    (async () => {
-      try {
-        const res = await fetch(SSE_URL, {
-          credentials: "include",
-          headers: { "X-User-Id": userId },
-          signal: controller.signal,
-        });
-
-        if (!res.ok || !res.body) {
-          setConnected(false);
-          return;
-        }
-
-        setConnected(true);
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
-
-          for (const line of lines) {
-            if (line.startsWith("data:")) {
-              const raw = line.slice(5).trim();
-              if (!raw) continue;
-              try {
-                const notification = JSON.parse(raw) as NotificationResponseDto;
-                onMessage?.(notification);
-                qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
-                qc.invalidateQueries({ queryKey: notiKeys.list() });
-              } catch {
-                // ignore non-JSON keepalive messages
-              }
-            }
-          }
-        }
-      } catch (err) {
-        if ((err as DOMException)?.name !== "AbortError") {
-          setConnected(false);
-          // reconnect after delay
-          setTimeout(connect, 5_000);
-        }
-      }
-    })();
-  }, [userId, onMessage, qc]);
+  const onMessageRef = useRef(onMessage);
+  onMessageRef.current = onMessage;
 
   useEffect(() => {
+    if (!userId) return;
+
+    function connect() {
+      // Clean up any previous connection
+      esRef.current?.close();
+      clearTimeout(reconnectTimer.current);
+
+      const url = `${SSE_URL}?userId=${encodeURIComponent(userId!)}`;
+      const es = new EventSource(url, { withCredentials: true });
+      esRef.current = es;
+
+      es.addEventListener("connect", () => {
+        setConnected(true);
+      });
+
+      es.addEventListener("notification", (e) => {
+        try {
+          const notification = JSON.parse(e.data) as NotificationResponseDto;
+          onMessageRef.current?.(notification);
+          qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
+          qc.invalidateQueries({ queryKey: notiKeys.list() });
+        } catch {
+          // ignore malformed data
+        }
+      });
+
+      es.addEventListener("heartbeat", () => {
+        // keep-alive, no action needed
+      });
+
+      es.onerror = () => {
+        setConnected(false);
+        es.close();
+        // Manual reconnect after 3 seconds
+        reconnectTimer.current = setTimeout(connect, 3_000);
+      };
+    }
+
     connect();
+
     return () => {
-      abortRef.current?.abort();
+      esRef.current?.close();
+      clearTimeout(reconnectTimer.current);
       setConnected(false);
     };
-  }, [connect]);
+  }, [userId, qc]);
 
   return { connected };
 }
