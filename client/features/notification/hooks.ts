@@ -17,8 +17,6 @@ import {
   type Pageable,
 } from "./api";
 
-// ── Query Keys ──
-
 export const notiKeys = {
   all: ["notifications"] as const,
   user: (userId: string) => [...notiKeys.all, userId] as const,
@@ -27,8 +25,6 @@ export const notiKeys = {
   unreadCount: (userId: string) => [...notiKeys.user(userId), "unread-count"] as const,
   settings: (userId: number) => [...notiKeys.all, "settings", userId] as const,
 };
-
-// ── Query Hooks ──
 
 export function useNotificationSettings(userId: number) {
   return useQuery({
@@ -56,8 +52,6 @@ export function useUnreadCount(userId: string) {
     refetchInterval: 30_000,
   });
 }
-
-// ── Mutation Hooks ──
 
 export function useUpdateNotificationSettings() {
   const qc = useQueryClient();
@@ -130,8 +124,6 @@ export function useDeleteAllNotifications() {
   });
 }
 
-// ── FCM Hook ──
-
 const FCM_TOKEN_KEY = "onmeet_fcm_token";
 
 export function useFcmSetup(userId: string | undefined) {
@@ -164,9 +156,7 @@ export function useFcmSetup(userId: string | undefined) {
           userId,
           data: { token, deviceId, deviceType: "WEB" },
         });
-      } catch {
-        // FCM not available (no service worker, permission denied, etc.)
-      }
+      } catch {}
     })();
 
     return () => {
@@ -178,11 +168,8 @@ export function useFcmSetup(userId: string | undefined) {
         tokenRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 }
-
-// ── SSE Hook ──
 
 const SSE_URL = `${import.meta.env.VITE_API_BASE_URL}/notification/v1/sse/subscribe`;
 
@@ -257,14 +244,11 @@ export function useNotificationSSE(
                 onMessage?.(notification);
                 qc.invalidateQueries({ queryKey: notiKeys.unreadCount(userId) });
                 qc.invalidateQueries({ queryKey: notiKeys.lists(userId) });
-              } catch {
-                // ignore non-JSON keepalive messages
-              }
+              } catch {}
             }
           }
         }
 
-        // Stream ended normally — reset and reconnect
         setConnected(false);
         scheduleReconnect(connect);
       } catch (err) {
