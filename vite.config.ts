@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ["react", "react-dom", "react-router-dom", "zustand"],
+          vendor: ["react", "react-dom", "react-router-dom"],
           query: ["@tanstack/react-query"],
           livekit: ["livekit-client", "@livekit/components-react"],
           editor: [

@@ -1,19 +1,37 @@
-import { roomApi } from "@/shared/api";
-import type { FetchOptions } from "@/shared/api";
+const ROOM_BASE_URL = "https://api.onmeet.cloud/api";
 
-/**
- * Backward-compatible roomFetch wrapper around the shared roomApi.
- * Sub-API modules import this; the `userId` param becomes the X-User-Id header.
- */
 export async function roomFetch<T>(
   endpoint: string,
   userId: string,
   options?: RequestInit,
 ): Promise<T> {
-  return roomApi<T>(endpoint, {
+  const res = await fetch(`${ROOM_BASE_URL}${endpoint}`, {
+    credentials: "include",
     ...options,
-    userId,
-  } as FetchOptions);
+    headers: {
+      "Content-Type": "application/json",
+      "X-User-Id": userId,
+      ...options?.headers,
+    },
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({
+      message: "요청에 실패했습니다",
+      status: res.status,
+    }));
+    throw error;
+  }
+
+  const text = await res.text();
+  if (!text) return {} as T;
+
+  const json = JSON.parse(text);
+  if (json && typeof json === "object" && "success" in json) {
+    if (!json.success && json.error) throw json.error;
+    return json.data as T;
+  }
+  return json as T;
 }
 
 export * from "./api/types";

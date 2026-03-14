@@ -1,18 +1,29 @@
-import { authApi } from "@/shared/api";
-import {
-  UserResponseSchema,
-  LoginResponseSchema,
-  TokenResponseSchema,
-  InvitationValidationResponseSchema,
-  JobTitleResponseSchema,
-} from "@/shared/schemas";
-import { pageableToParams } from "@/shared/types";
+const AUTH_BASE_URL = "https://api.onmeet.cloud/auth";
 
-// ── Re-export shared types for backward compatibility ──
-export type { UserResponseDto } from "@/shared/schemas/auth.schema";
-export type { Pageable, PageResponse } from "@/shared/types/pagination";
+async function authFetch<T>(
+  endpoint: string,
+  options?: RequestInit,
+): Promise<T> {
+  const res = await fetch(`${AUTH_BASE_URL}${endpoint}`, {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+    ...options,
+  });
 
-// ── Request Types (feature-local, not validated) ──
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({
+      message: "요청에 실패했습니다",
+      status: res.status,
+    }));
+    throw error;
+  }
+
+  const text = await res.text();
+  return text ? JSON.parse(text) : ({} as T);
+}
 
 export interface ErrorResponse {
   status: number;
@@ -23,6 +34,11 @@ export interface ErrorResponse {
 export interface LoginRequest {
   email: string;
   password: string;
+}
+
+export interface LoginResponse {
+  message: string;
+  tokenType: string;
 }
 
 export interface GuestLoginRequest {
@@ -43,6 +59,48 @@ export interface JoinRequest {
   password: string;
   name: string;
   employeeId?: string;
+}
+
+export interface TokenResponse {
+  accessToken: string;
+  refreshToken?: string;
+  tokenType: string;
+}
+
+export interface InvitationResponse {
+  email: string;
+  companyName: string;
+  role: "USER" | "ADMIN" | "MANAGER";
+}
+
+export interface CompanyInfoDto {
+  id: number;
+  name: string;
+}
+
+export interface TeamInfoDto {
+  id: number;
+  name: string;
+  color?: string;
+}
+
+export interface JobTitleResponse {
+  id: number;
+  name: string;
+  isDefault: boolean;
+}
+
+export interface UserResponseDto {
+  id: number;
+  email: string;
+  name: string;
+  employeeId?: string;
+  roles: string[];
+  status: string;
+  company?: CompanyInfoDto;
+  jobTitle?: JobTitleResponse;
+  teams: TeamInfoDto[];
+  profileImageId?: number;
 }
 
 export interface ChangePasswordRequest {
@@ -93,48 +151,45 @@ export interface RefreshRequest {
   refreshToken: string;
 }
 
-// ── Backward-compat re-exports for inline types that were exported before ──
+export interface Pageable {
+  page?: number;
+  size?: number;
+  sort?: string[];
+}
 
-export type { LoginResponseDto as LoginResponse } from "@/shared/schemas/auth.schema";
-export type { TokenResponseDto as TokenResponse } from "@/shared/schemas/auth.schema";
-export type {
-  InvitationValidationResponseDto as InvitationResponse,
-} from "@/shared/schemas/auth.schema";
-export type { CompanyInfoDto } from "@/shared/schemas/auth.schema";
-export type { TeamInfoDto } from "@/shared/schemas/auth.schema";
-export type { JobTitleResponseDto as JobTitleResponse } from "@/shared/schemas/auth.schema";
+export interface PageResponse<T = unknown> {
+  content: T[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
 
-// ── API Functions ──
-
-import type { LoginResponseDto, TokenResponseDto, InvitationValidationResponseDto, UserResponseDto, JobTitleResponseDto } from "@/shared/schemas/auth.schema";
-import type { Pageable, PageResponse } from "@/shared/types/pagination";
-
-export function login(data: LoginRequest) {
-  return authApi<LoginResponseDto>("/v1/login", {
+export function login(data: LoginRequest): Promise<LoginResponse> {
+  return authFetch("/v1/login", {
     method: "POST",
     body: JSON.stringify(data),
-    schema: LoginResponseSchema,
   });
 }
 
 export function guestLogin(data: GuestLoginRequest): Promise<void> {
-  return authApi("/v1/login/guest", {
+  return authFetch("/v1/login/guest", {
     method: "POST",
     body: JSON.stringify(data),
   });
 }
 
 export function logout(): Promise<void> {
-  return authApi("/v1/logout", {
+  return authFetch("/v1/logout", {
     method: "POST",
   });
 }
 
-export function refreshToken(data?: RefreshRequest) {
-  return authApi<TokenResponseDto>("/v1/refresh", {
+export function refreshToken(data?: RefreshRequest): Promise<TokenResponse> {
+  return authFetch("/v1/refresh", {
     method: "POST",
     body: data ? JSON.stringify(data) : undefined,
-    schema: TokenResponseSchema,
   });
 }
 
@@ -151,7 +206,7 @@ export function signupCompany(
     formData.append("profileImage", profileImage);
   }
 
-  return authApi("/v1/register/company", {
+  return authFetch("/v1/register/company", {
     method: "POST",
     headers: {},
     body: formData,
@@ -171,30 +226,29 @@ export function registerEmployee(
     formData.append("profileImage", profileImage);
   }
 
-  return authApi("/v1/register/join", {
+  return authFetch("/v1/register/join", {
     method: "POST",
     headers: {},
     body: formData,
   });
 }
 
-export function validateInvitation(email: string, code: string) {
+export function validateInvitation(
+  email: string,
+  code: string,
+): Promise<InvitationResponse> {
   const params = new URLSearchParams({ email, code });
-  return authApi<InvitationValidationResponseDto>(`/v1/invitations/validate?${params}`, {
-    schema: InvitationValidationResponseSchema,
-  });
+  return authFetch(`/v1/invitations/validate?${params}`);
 }
 
-export function getMe() {
-  return authApi<UserResponseDto>("/v1/member/me", {
-    schema: UserResponseSchema,
-  });
+export function getMe(): Promise<UserResponseDto> {
+  return authFetch("/v1/member/me");
 }
 
 export function updateProfile(
   data: UserProfileUpdateRequest,
   profileImage?: File,
-) {
+): Promise<UserResponseDto> {
   const formData = new FormData();
   formData.append(
     "request",
@@ -204,7 +258,7 @@ export function updateProfile(
     formData.append("profileImage", profileImage);
   }
 
-  return authApi<UserResponseDto>("/v1/member/me", {
+  return authFetch("/v1/member/me", {
     method: "PATCH",
     headers: {},
     body: formData,
@@ -212,37 +266,35 @@ export function updateProfile(
 }
 
 export function withdraw(data: WithdrawRequest): Promise<void> {
-  return authApi("/v1/member/me", {
+  return authFetch("/v1/member/me", {
     method: "DELETE",
     body: JSON.stringify(data),
   });
 }
 
 export function changePassword(data: ChangePasswordRequest): Promise<void> {
-  return authApi("/v1/member/me/password", {
+  return authFetch("/v1/member/me/password", {
     method: "PUT",
     body: JSON.stringify(data),
   });
 }
 
-export function deleteMyProfileImage() {
-  return authApi<UserResponseDto>("/v1/member/me/profile-image", {
+export function deleteMyProfileImage(): Promise<UserResponseDto> {
+  return authFetch("/v1/member/me/profile-image", {
     method: "DELETE",
   });
 }
 
-export function getMemberInfo(memberId: number) {
-  return authApi<UserResponseDto>(`/v1/member/${memberId}`, {
-    schema: UserResponseSchema,
-  });
+export function getMemberInfo(memberId: number): Promise<UserResponseDto> {
+  return authFetch(`/v1/member/${memberId}`);
 }
 
-export function getJobTitles() {
-  return authApi<JobTitleResponseDto[]>("/v1/member/job-titles");
+export function getJobTitles(): Promise<JobTitleResponse[]> {
+  return authFetch("/v1/member/job-titles");
 }
 
 export function createTeam(data: TeamRequest): Promise<number> {
-  return authApi("/v1/member/teams", {
+  return authFetch("/v1/member/teams", {
     method: "POST",
     body: JSON.stringify(data),
   });
@@ -252,78 +304,85 @@ export function delegateLeader(
   teamId: number,
   userId: number,
 ): Promise<void> {
-  return authApi(`/v1/member/teams/${teamId}/delegate/${userId}`, {
+  return authFetch(`/v1/member/teams/${teamId}/delegate/${userId}`, {
     method: "POST",
   });
 }
 
 export function dissolveTeam(teamId: number): Promise<void> {
-  return authApi(`/v1/member/teams/${teamId}`, {
+  return authFetch(`/v1/member/teams/${teamId}`, {
     method: "DELETE",
   });
 }
 
 export function cancelTeamRequest(teamId: number): Promise<void> {
-  return authApi(`/v1/member/teams/${teamId}/cancel`, {
+  return authFetch(`/v1/member/teams/${teamId}/cancel`, {
     method: "DELETE",
   });
 }
 
-export function getAllEmployees(pageable: Pageable) {
-  return authApi<PageResponse<UserResponseDto>>(
-    `/v1/manager/employees${pageableToParams(pageable)}`,
-  );
+export function getAllEmployees(
+  pageable: Pageable,
+): Promise<PageResponse<UserResponseDto>> {
+  const params = new URLSearchParams();
+  if (pageable.page !== undefined) params.set("page", String(pageable.page));
+  if (pageable.size !== undefined) params.set("size", String(pageable.size));
+  if (pageable.sort) {
+    pageable.sort.forEach((s) => params.append("sort", s));
+  }
+  return authFetch(`/v1/manager/employees?${params}`);
 }
 
-export function deactivateUser(userId: number) {
-  return authApi<UserResponseDto>(`/v1/manager/employees/${userId}/deactivate`, {
+export function deactivateUser(userId: number): Promise<UserResponseDto> {
+  return authFetch(`/v1/manager/employees/${userId}/deactivate`, {
     method: "PUT",
   });
 }
 
-export function activateUser(userId: number) {
-  return authApi<UserResponseDto>(`/v1/manager/employees/${userId}/activate`, {
+export function activateUser(userId: number): Promise<UserResponseDto> {
+  return authFetch(`/v1/manager/employees/${userId}/activate`, {
     method: "PUT",
   });
 }
 
 export function resetProfileImage(userId: number): Promise<void> {
-  return authApi(`/v1/manager/employees/${userId}/profile-image`, {
+  return authFetch(`/v1/manager/employees/${userId}/profile-image`, {
     method: "DELETE",
   });
 }
 
-export function createJobTitle(data: JobTitleRequest) {
-  return authApi<JobTitleResponseDto>("/v1/manager/job-titles", {
+export function createJobTitle(data: JobTitleRequest): Promise<JobTitleResponse> {
+  return authFetch("/v1/manager/job-titles", {
     method: "POST",
     body: JSON.stringify(data),
-    schema: JobTitleResponseSchema,
   });
 }
 
-export function updateJobTitle(id: number, data: JobTitleRequest) {
-  return authApi<JobTitleResponseDto>(`/v1/manager/job-titles/${id}`, {
+export function updateJobTitle(
+  id: number,
+  data: JobTitleRequest,
+): Promise<JobTitleResponse> {
+  return authFetch(`/v1/manager/job-titles/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
-    schema: JobTitleResponseSchema,
   });
 }
 
 export function deleteJobTitle(id: number): Promise<void> {
-  return authApi(`/v1/manager/job-titles/${id}`, {
+  return authFetch(`/v1/manager/job-titles/${id}`, {
     method: "DELETE",
   });
 }
 
 export function inviteMember(data: InvitationRequest): Promise<number> {
-  return authApi("/v1/manager/invite", {
+  return authFetch("/v1/manager/invite", {
     method: "POST",
     body: JSON.stringify(data),
   });
 }
 
 export function approveTeam(teamId: number): Promise<void> {
-  return authApi(`/v1/manager/teams/${teamId}/approve`, {
+  return authFetch(`/v1/manager/teams/${teamId}/approve`, {
     method: "POST",
   });
 }
@@ -332,7 +391,7 @@ export function rejectTeam(
   teamId: number,
   data?: TeamRejectRequest,
 ): Promise<void> {
-  return authApi(`/v1/manager/teams/${teamId}/reject`, {
+  return authFetch(`/v1/manager/teams/${teamId}/reject`, {
     method: "POST",
     body: data ? JSON.stringify(data) : undefined,
   });
@@ -342,18 +401,18 @@ export function assignLeader(
   teamId: number,
   userId: number,
 ): Promise<void> {
-  return authApi(`/v1/manager/teams/${teamId}/leader/${userId}`, {
+  return authFetch(`/v1/manager/teams/${teamId}/leader/${userId}`, {
     method: "POST",
   });
 }
 
 export function inviteGuest(data: GuestInviteRequestDto): Promise<void> {
-  return authApi("/v1/guests/invite", {
+  return authFetch("/v1/guests/invite", {
     method: "POST",
     body: JSON.stringify(data),
   });
 }
 
 export function joinMeetingAsGuest(uuid: string): Promise<void> {
-  return authApi(`/v1/guests/join/${uuid}`);
+  return authFetch(`/v1/guests/join/${uuid}`);
 }

@@ -1,12 +1,8 @@
-import { roomApi } from "@/shared/api";
-import { RoomSettingsResponseSchema } from "@/shared/schemas";
+import { roomFetch } from "../api";
 import type { RoomSettingsResponse, RoomSettingsUpdateRequest } from "./types";
 
 export function getRoomSettings(roomId: number, userId: string) {
-  return roomApi<RoomSettingsResponse>(`/rooms/${roomId}/settings`, {
-    userId,
-    schema: RoomSettingsResponseSchema,
-  });
+  return roomFetch<RoomSettingsResponse>(`/rooms/${roomId}/settings`, userId);
 }
 
 export function updateRoomSettings(
@@ -14,10 +10,8 @@ export function updateRoomSettings(
   userId: string,
   data: RoomSettingsUpdateRequest,
 ) {
-  return roomApi<RoomSettingsResponse>(`/rooms/${roomId}/settings`, {
-    userId,
+  return roomFetch<RoomSettingsResponse>(`/rooms/${roomId}/settings`, userId, {
     method: "PATCH",
     body: JSON.stringify(data),
-    schema: RoomSettingsResponseSchema,
   });
 }

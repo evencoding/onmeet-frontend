@@ -18,10 +18,7 @@
       "Bash(pnpm run build:*)",
       "Bash(git fetch:*)",
       "Bash(git log:*)",
-      "Bash(python3:*)",
-      "Bash(node -e:*)",
-      "Bash(pnpm exec tsc:*)",
-      "Bash(pnpm build:*)"
+      "Bash(python3:*)"
     ]
   }
 }
