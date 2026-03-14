@@ -150,6 +150,14 @@ export default memo(function MeetingRoomContent({
     })),
   );
 
+  // Switch speaker device on initial connection
+  useEffect(() => {
+    const speakerId = useMeetingRoomStore.getState().deviceSelection?.speakerId;
+    if (speakerId) {
+      room.switchActiveDevice("audiooutput", speakerId).catch(() => {});
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const participantIdentities = useMemo(
     () => participants.map((p) => p.identity),
     [participants],

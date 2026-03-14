@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getMessaging, isSupported, type Messaging } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
@@ -18,17 +19,31 @@ const isFirebaseConfigValid = () => {
 
 let app: any = null;
 let analytics: any = null;
+let messaging: Messaging | null = null;
 
 if (isFirebaseConfigValid()) {
   try {
     app = initializeApp(firebaseConfig);
     analytics = getAnalytics(app);
-    console.log("Firebase initialized successfully");
   } catch (error) {
     console.error("Firebase initialization error:", error);
+  }
+
+  if (app) {
+    isSupported()
+      .then((supported) => {
+        if (supported) {
+          try {
+            messaging = getMessaging(app);
+          } catch (error) {
+            console.warn("Firebase Messaging init failed:", error);
+          }
+        }
+      })
+      .catch(() => {});
   }
 } else {
   console.warn("Firebase configuration is incomplete. Some Firebase features may not work.");
 }
 
-export { app, analytics };
+export { app, analytics, messaging };

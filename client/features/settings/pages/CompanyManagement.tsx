@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Layout from "@/shared/components/Layout";
 import { Building2, Users, Shield, ArrowLeft, Edit2, Save, X, ChevronDown, Check, ChevronUp, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
 
 interface CompanyInfo {
@@ -62,6 +62,7 @@ const teamColors = [
 ];
 
 export default function CompanyManagement() {
+  useDocumentTitle("회사 관리 - OnMeet");
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"info" | "employees" | "teams">("info");
   const [editMode, setEditMode] = useState(false);
@@ -274,7 +275,7 @@ export default function CompanyManagement() {
   const managerCount = employeeList.filter((e) => e.isManager).length;
 
   return (
-    <Layout showRecentPanel={false}>
+    <>
       <div className="max-w-4xl space-y-6">
 
         <div className="flex items-center gap-3 mb-6">
@@ -725,6 +726,6 @@ export default function CompanyManagement() {
           </div>
         )}
       </div>
-    </Layout>
+    </>
   );
 }

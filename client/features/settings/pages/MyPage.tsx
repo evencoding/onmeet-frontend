@@ -1,13 +1,39 @@
 import { useState } from "react";
-import Layout from "@/shared/components/Layout";
 import { User, Mail, Phone, Settings, Lock, Bell, Building2, Edit2, Save, X, AlertTriangle, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/features/auth/context";
 import { useNavigate } from "react-router-dom";
 import { changePassword } from "@/features/auth/api";
+import {
+  useNotificationSettings,
+  useUpdateNotificationSettings,
+} from "@/features/notification/hooks";
+import type { NotificationSettingDto } from "@/features/notification/api";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function MyPage() {
+  useDocumentTitle("설정 - OnMeet");
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { data: notiSettings } = useNotificationSettings(user?.id ?? 0);
+  const updateSettingsMutation = useUpdateNotificationSettings();
+
+  const settingItems: { key: keyof NotificationSettingDto; label: string; description: string }[] = [
+    { key: "pushEnabled", label: "푸시 알림", description: "전체 푸시 알림 활성화" },
+    { key: "meetingInviteNotification", label: "회의 초대 알림", description: "새로운 회의 초대 알림" },
+    { key: "meetingStartNotification", label: "회의 시작 알림", description: "회의 시작 시 알림" },
+    { key: "meetingRemindNotification", label: "회의 리마인더", description: "예정된 회의 리마인더 알림" },
+    { key: "minutesCompletedNotification", label: "회의록 완성 알림", description: "회의록 완성 시 알림" },
+    { key: "systemNoticeNotification", label: "시스템 알림", description: "시스템 공지 및 업데이트" },
+    { key: "doNotDisturbEnabled", label: "방해금지 모드", description: "특정 시간대 알림 무음" },
+  ];
+
+  const handleToggleSetting = (key: keyof NotificationSettingDto) => {
+    if (!user || !notiSettings) return;
+    updateSettingsMutation.mutate({
+      userId: user.id,
+      data: { ...notiSettings, [key]: !notiSettings[key] },
+    });
+  };
   const [activeTab, setActiveTab] = useState<"profile" | "settings">("profile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -100,7 +126,7 @@ export default function MyPage() {
   };
 
   return (
-    <Layout showRecentPanel={false}>
+    <>
       <div className="max-w-4xl space-y-6">
 
         <div className="flex items-center justify-between border-b dark:border-purple-500/20 light:border-purple-300/40">
@@ -378,27 +404,24 @@ export default function MyPage() {
                 </h3>
               </div>
               <div className="space-y-4">
-                {[
-                  { label: "회의 알림", description: "새로운 회의 초대 및 변경사항" },
-                  { label: "회의록 완성 알림", description: "회의 녹음 및 회의록 완성 알림" },
-                  { label: "팀 알림", description: "팀 멤버 추가, 팀 설정 변경" },
-                ].map((notification, idx) => (
+                {settingItems.map((item) => (
                   <div
-                    key={idx}
+                    key={item.key}
                     className="flex items-center justify-between p-4 dark:bg-purple-500/10 light:bg-purple-50 rounded-xl"
                   >
                     <div>
                       <p className="font-medium dark:text-white light:text-purple-900">
-                        {notification.label}
+                        {item.label}
                       </p>
                       <p className="text-sm dark:text-white/50 light:text-purple-600">
-                        {notification.description}
+                        {item.description}
                       </p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
-                        defaultChecked
+                        checked={!!notiSettings?.[item.key]}
+                        onChange={() => handleToggleSetting(item.key)}
                         className="sr-only peer"
                       />
                       <div className="w-11 h-6 dark:bg-purple-500/30 light:bg-purple-200 peer-focus:outline-none rounded-full peer dark:peer-checked:bg-purple-600 light:peer-checked:bg-purple-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
@@ -476,6 +499,6 @@ export default function MyPage() {
           </div>
         )}
       </div>
-    </Layout>
+    </>
   );
 }

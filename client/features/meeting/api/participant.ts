@@ -1,8 +1,5 @@
-import { roomApi } from "@/shared/api";
-import { RoomParticipantResponseSchema } from "@/shared/schemas";
-import { pageSchema } from "@/shared/schemas/pagination.schema";
-import { pageableToParams } from "@/shared/types";
-import { z } from "zod";
+import { roomFetch } from "../api";
+import { pageQs } from "@/shared/utils/api";
 import type {
   RoomParticipantResponse,
   ParticipantRoleUpdateRequest,
@@ -10,40 +7,41 @@ import type {
   Pageable,
 } from "./types";
 
-const PageParticipantSchema = pageSchema(RoomParticipantResponseSchema);
-
 export function listParticipants(roomId: number, userId: string) {
-  return roomApi<RoomParticipantResponse[]>(
+  return roomFetch<RoomParticipantResponse[]>(
     `/rooms/${roomId}/participants`,
-    { userId, schema: z.array(RoomParticipantResponseSchema) },
+    userId,
   );
 }
 
 export function listParticipantHistory(roomId: number, userId: string, pageable?: Pageable) {
-  return roomApi<Page<RoomParticipantResponse>>(
-    `/rooms/${roomId}/participants/history${pageableToParams(pageable)}`,
-    { userId, schema: PageParticipantSchema },
+  return roomFetch<Page<RoomParticipantResponse>>(
+    `/rooms/${roomId}/participants/history${pageQs(pageable)}`,
+    userId,
   );
 }
 
 export function muteParticipant(roomId: number, targetUserId: number, userId: string) {
-  return roomApi<void>(
+  return roomFetch<void>(
     `/rooms/${roomId}/participants/${targetUserId}/mute`,
-    { userId, method: "POST" },
+    userId,
+    { method: "POST" },
   );
 }
 
 export function unmuteParticipant(roomId: number, targetUserId: number, userId: string) {
-  return roomApi<void>(
+  return roomFetch<void>(
     `/rooms/${roomId}/participants/${targetUserId}/unmute`,
-    { userId, method: "POST" },
+    userId,
+    { method: "POST" },
   );
 }
 
 export function kickParticipant(roomId: number, targetUserId: number, userId: string) {
-  return roomApi<void>(
+  return roomFetch<void>(
     `/rooms/${roomId}/participants/${targetUserId}/kick`,
-    { userId, method: "POST" },
+    userId,
+    { method: "POST" },
   );
 }
 
@@ -53,23 +51,23 @@ export function updateParticipantRole(
   userId: string,
   data: ParticipantRoleUpdateRequest,
 ) {
-  return roomApi<void>(
+  return roomFetch<void>(
     `/rooms/${roomId}/participants/${targetUserId}/role`,
-    { userId, method: "PATCH", body: JSON.stringify(data) },
+    userId,
+    { method: "PATCH", body: JSON.stringify(data) },
   );
 }
 
 export function muteAll(roomId: number, userId: string) {
-  return roomApi<void>(`/rooms/${roomId}/mute-all`, { userId, method: "POST" });
+  return roomFetch<void>(`/rooms/${roomId}/mute-all`, userId, { method: "POST" });
 }
 
 export function unmuteAll(roomId: number, userId: string) {
-  return roomApi<void>(`/rooms/${roomId}/unmute-all`, { userId, method: "POST" });
+  return roomFetch<void>(`/rooms/${roomId}/unmute-all`, userId, { method: "POST" });
 }
 
 export function disableVideoAll(roomId: number, userId: string) {
-  return roomApi<void>(`/rooms/${roomId}/disable-video-all`, {
-    userId,
+  return roomFetch<void>(`/rooms/${roomId}/disable-video-all`, userId, {
     method: "POST",
   });
 }

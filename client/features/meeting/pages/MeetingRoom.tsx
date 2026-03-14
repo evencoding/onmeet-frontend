@@ -8,22 +8,25 @@ import WaitingRoom from "@/features/meeting/components/WaitingRoom";
 import MeetingRoomContent from "@/features/meeting/components/MeetingRoomContent";
 import { useJoinRoom } from "@/features/meeting/hooks";
 import { useAuth } from "@/features/auth/context";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useMeetingRoomStore, type DeviceSelection } from "../store";
 
 const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "wss://livekit.onmeet.cloud";
 
 export default function MeetingRoom() {
+  useDocumentTitle("회의 - OnMeet");
   const navigate = useNavigate();
   const { roomId } = useParams<{ roomId: string }>();
   const { user } = useAuth();
 
-  const { phase, token, isHost, isMuted, isVideoOn } = useMeetingRoomStore(
+  const { phase, token, isHost, isMuted, isVideoOn, deviceSelection } = useMeetingRoomStore(
     useShallow((s) => ({
       phase: s.phase,
       token: s.token,
       isHost: s.isHost,
       isMuted: s.isMuted,
       isVideoOn: s.isVideoOn,
+      deviceSelection: s.deviceSelection,
     })),
   );
 
@@ -156,13 +159,25 @@ export default function MeetingRoom() {
     );
   }
 
+  const audioOptions = !isMuted
+    ? deviceSelection?.microphoneId
+      ? { deviceId: deviceSelection.microphoneId }
+      : true
+    : false;
+
+  const videoOptions = isVideoOn
+    ? deviceSelection?.cameraId
+      ? { deviceId: deviceSelection.cameraId }
+      : true
+    : false;
+
   return (
     <LiveKitRoom
       serverUrl={LIVEKIT_URL}
       token={token}
       connect={true}
-      audio={!isMuted}
-      video={isVideoOn}
+      audio={audioOptions}
+      video={videoOptions}
       onDisconnected={() => useMeetingRoomStore.getState().setPhase("disconnected")}
     >
       <MeetingRoomContent roomId={roomId} isHost={isHost} />

@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 .config/
-!.env
-.claude
+.env
+!.env.example
+.claude/
 .builder

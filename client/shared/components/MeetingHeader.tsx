@@ -1,59 +1,77 @@
-import { MoreVertical, Bell, X } from "lucide-react";
+import { MoreVertical, Bell, X, CheckCheck, Trash2 } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useAuth } from "@/features/auth/context";
+import {
+  useNotifications,
+  useUnreadCount,
+  useMarkAsRead,
+  useMarkAllAsRead,
+  useDeleteNotification,
+  useDeleteAllNotifications,
+  useNotificationSSE,
+  useFcmSetup,
+} from "@/features/notification/hooks";
+import { getUnreadTotal, type NotificationType } from "@/features/notification/api";
 
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  timestamp: string;
-  isRead: boolean;
-  type: "meeting" | "team" | "message" | "system";
+function formatRelativeTime(dateStr: string): string {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const minutes = Math.floor(diff / 60_000);
+  if (minutes < 1) return "방금 전";
+  if (minutes < 60) return `${minutes}분 전`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}시간 전`;
+  const days = Math.floor(hours / 24);
+  return `${days}일 전`;
 }
 
-const mockNotifications: Notification[] = [
-  {
-    id: "1",
-    title: "새로운 회의 초대",
-    message: "정호준님이 '제품 로드맵 리뷰' 회의에 초대했습니다",
-    timestamp: "5분 전",
-    isRead: false,
-    type: "meeting",
-  },
-  {
-    id: "2",
-    title: "팀 멤버 추가",
-    message: "마케팅 팀에 새로운 멤버가 추가되었습니다",
-    timestamp: "1시간 전",
-    isRead: false,
-    type: "team",
-  },
-  {
-    id: "3",
-    title: "새로운 메시지",
-    message: "김철수님이 마케팅 채널에 메시지를 보냈습니다",
-    timestamp: "2시간 전",
-    isRead: true,
-    type: "message",
-  },
-  {
-    id: "4",
-    title: "회의 완료",
-    message: "'SNS 콘텐츠 회의'가 완료되었습니다",
-    timestamp: "3시간 전",
-    isRead: true,
-    type: "system",
-  },
-];
+function getNotificationColor(type: NotificationType) {
+  switch (type) {
+    case "MEETING_CREATED":
+    case "MEETING_TODAY":
+    case "MEETING_STARTED":
+    case "MEETING_INVITATION":
+    case "MEETING_REMINDER":
+    case "SCHEDULE_CREATED":
+    case "SCHEDULE_CHANGED":
+    case "SCHEDULE_CANCELLED":
+      return "dark:border-l-blue-500 light:border-l-blue-500";
+    case "TEAM_MEMBER_ADDED":
+      return "dark:border-l-cyan-500 light:border-l-cyan-500";
+    case "INVITATION_ACCEPTED":
+    case "INVITATION_DECLINED":
+    case "INVITATION_CANCELLED":
+    case "PARTICIPANT_JOINED_NOTIFY":
+      return "dark:border-l-sky-500 light:border-l-sky-500";
+    case "PARTICIPANT_KICKED":
+    case "WAITING_ROOM_ADMITTED":
+    case "WAITING_ROOM_REJECTED":
+      return "dark:border-l-amber-500 light:border-l-amber-500";
+    default:
+      return "dark:border-l-teal-500 light:border-l-teal-500";
+  }
+}
 
 export default function MeetingHeader() {
+  const { user } = useAuth();
+  const userId = user ? String(user.id) : "";
+
+  const { data: notificationPage } = useNotifications(userId, { page: 0, size: 20 });
+  const { data: unreadData } = useUnreadCount(userId);
+  const markAsReadMutation = useMarkAsRead();
+  const markAllAsReadMutation = useMarkAllAsRead();
+  const deleteMutation = useDeleteNotification();
+  const deleteAllMutation = useDeleteAllNotifications();
+  useNotificationSSE(userId || undefined);
+  useFcmSetup(userId || undefined);
+
+  const notifications = notificationPage?.content ?? [];
+  const unreadCount = unreadData ? getUnreadTotal(unreadData) : 0;
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 });
   const bellButtonRef = useRef<HTMLButtonElement>(null);
-
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   useEffect(() => {
     if (isDropdownOpen && bellButtonRef.current) {
@@ -101,36 +119,42 @@ export default function MeetingHeader() {
     }
   }, [isDropdownOpen]);
 
-  const handleNotificationClick = (id: string) => {
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-    );
+  const handleNotificationClick = (notificationId: number) => {
+    if (!userId) return;
+    markAsReadMutation.mutate({ notificationId, userId });
   };
 
-  const getNotificationColor = (type: string) => {
-    switch (type) {
-      case "meeting":
-        return "dark:border-l-blue-500 light:border-l-blue-500";
-      case "team":
-        return "dark:border-l-cyan-500 light:border-l-cyan-500";
-      case "message":
-        return "dark:border-l-sky-500 light:border-l-sky-500";
-      case "system":
-        return "dark:border-l-teal-500 light:border-l-teal-500";
-      default:
-        return "dark:border-l-blue-500 light:border-l-blue-500";
-    }
+  const handleDeleteNotification = (notificationId: number) => {
+    if (!userId) return;
+    deleteMutation.mutate({ notificationId, userId });
+  };
+
+  const handleMarkAllAsRead = () => {
+    if (!userId) return;
+    markAllAsReadMutation.mutate({ userId });
+  };
+
+  const handleDeleteAll = () => {
+    if (!userId) return;
+    deleteAllMutation.mutate({ userId });
   };
 
   return (
     <div className="px-6 py-4 border-b border-border/20 dark:bg-slate-900/30 light:bg-white light:shadow-card flex items-center justify-between">
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-sm font-bold text-white">
-          C
+          {user?.name?.charAt(0) ?? "U"}
         </div>
         <div>
-          <div className="text-sm font-medium text-foreground">Chloe Choi</div>
-          <div className="text-xs text-muted-foreground">staff-and</div>
+          <div className="text-sm font-medium text-foreground">
+            {user?.name ?? ""}
+            {user?.jobTitle && (
+              <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                {user.jobTitle.name}
+              </span>
+            )}
+          </div>
+          <div className="text-xs text-muted-foreground">{user?.company?.name ?? ""}</div>
         </div>
       </div>
 
@@ -162,11 +186,31 @@ export default function MeetingHeader() {
               >
                 {/* Header */}
                 <div className="px-4 py-3 dark:border-b dark:border-border/20 light:border-b light:border-border/20 light:bg-slate-50/50 flex items-center justify-between">
-                  <h3 className="font-semibold text-foreground">알림</h3>
-                  {unreadCount > 0 && (
-                    <span className="text-xs px-2 py-1 dark:bg-red-500/20 dark:text-red-300 light:bg-red-100/70 light:text-red-800 rounded-full">
-                      {unreadCount}개 미읽음
-                    </span>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-foreground">알림</h3>
+                    {unreadCount > 0 && (
+                      <span className="text-xs px-2 py-1 dark:bg-red-500/20 dark:text-red-300 light:bg-red-100/70 light:text-red-800 rounded-full">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </div>
+                  {notifications.length > 0 && (
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={handleMarkAllAsRead}
+                        className="p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:dark:bg-slate-800 hover:light:bg-slate-100"
+                        title="모두 읽음"
+                      >
+                        <CheckCheck className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={handleDeleteAll}
+                        className="p-1.5 text-muted-foreground hover:text-destructive transition-colors rounded-md hover:dark:bg-slate-800 hover:light:bg-slate-100"
+                        title="모두 삭제"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   )}
                 </div>
 
@@ -178,35 +222,31 @@ export default function MeetingHeader() {
                         className={`px-4 py-3 border-l-4 transition-colors text-left flex items-start justify-between group ${getNotificationColor(
                           notification.type
                         )} ${
-                          notification.isRead
+                          notification.read
                             ? "dark:bg-slate-800/30 light:bg-slate-50/60"
                             : "dark:bg-slate-800/50 light:bg-blue-50/40 light:border-b light:border-blue-200/40"
                         } hover:dark:bg-slate-800/60 hover:light:bg-blue-50/60`}
                       >
                         <button
-                          onClick={() => {
-                            handleNotificationClick(notification.id);
-                          }}
+                          onClick={() => handleNotificationClick(notification.id)}
                           className="flex-1 text-left"
                         >
                           <p className="font-medium text-sm text-foreground mb-1">
                             {notification.title}
                           </p>
                           <p className="text-xs text-muted-foreground mb-1">
-                            {notification.message}
+                            {notification.body}
                           </p>
                           <p className="text-xs text-muted-foreground/70">
-                            {notification.timestamp}
+                            {formatRelativeTime(notification.createdAt)}
                           </p>
                         </button>
                         <div className="flex items-start gap-2 ml-2">
-                          {!notification.isRead && (
+                          {!notification.read && (
                             <div className="w-2 h-2 bg-brand-500 rounded-full mt-1 flex-shrink-0"></div>
                           )}
                           <button
-                            onClick={() => {
-                              setNotifications(notifications.filter((n) => n.id !== notification.id));
-                            }}
+                            onClick={() => handleDeleteNotification(notification.id)}
                             className="p-1 text-muted-foreground hover:text-destructive transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100"
                             title="알림 삭제"
                           >
