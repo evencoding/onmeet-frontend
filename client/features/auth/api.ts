@@ -22,7 +22,14 @@ async function authFetch<T>(
   }
 
   const text = await res.text();
-  return text ? JSON.parse(text) : ({} as T);
+  if (!text) return {} as T;
+
+  const json = JSON.parse(text);
+  if (json && typeof json === "object" && "success" in json) {
+    if (!json.success && json.error) throw json.error;
+    return json.data as T;
+  }
+  return json as T;
 }
 
 export interface ErrorResponse {
