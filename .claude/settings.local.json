@@ -18,7 +18,8 @@
       "Bash(pnpm run build:*)",
       "Bash(git fetch:*)",
       "Bash(git log:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(npx vite build:*)"
     ]
   }
 }
