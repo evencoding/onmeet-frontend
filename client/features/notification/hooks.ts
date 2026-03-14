@@ -21,9 +21,10 @@ import {
 
 export const notiKeys = {
   all: ["notifications"] as const,
-  lists: () => [...notiKeys.all, "list"] as const,
-  list: (pageable?: Pageable) => [...notiKeys.lists(), pageable] as const,
-  unreadCount: () => [...notiKeys.all, "unread-count"] as const,
+  user: (userId: string) => [...notiKeys.all, userId] as const,
+  lists: (userId: string) => [...notiKeys.user(userId), "list"] as const,
+  list: (userId: string, pageable?: Pageable) => [...notiKeys.lists(userId), pageable] as const,
+  unreadCount: (userId: string) => [...notiKeys.user(userId), "unread-count"] as const,
   settings: (userId: number) => [...notiKeys.all, "settings", userId] as const,
 };
 
@@ -40,7 +41,7 @@ export function useNotificationSettings(userId: number) {
 
 export function useNotifications(userId: string, pageable?: Pageable) {
   return useQuery({
-    queryKey: notiKeys.list(pageable),
+    queryKey: notiKeys.list(userId, pageable),
     queryFn: () => getNotifications(userId, pageable),
     enabled: !!userId,
     staleTime: 30_000,
@@ -49,7 +50,7 @@ export function useNotifications(userId: string, pageable?: Pageable) {
 
 export function useUnreadCount(userId: string) {
   return useQuery({
-    queryKey: notiKeys.unreadCount(),
+    queryKey: notiKeys.unreadCount(userId),
     queryFn: () => getUnreadCount(userId),
     enabled: !!userId,
     refetchInterval: 30_000,
@@ -88,9 +89,9 @@ export function useMarkAsRead() {
   return useMutation({
     mutationFn: (args: { notificationId: number; userId: string }) =>
       markAsRead(args.notificationId, args.userId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: notiKeys.lists() });
-      qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: notiKeys.lists(vars.userId) });
+      qc.invalidateQueries({ queryKey: notiKeys.unreadCount(vars.userId) });
     },
   });
 }
@@ -99,9 +100,9 @@ export function useMarkAllAsRead() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (args: { userId: string }) => markAllAsRead(args.userId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: notiKeys.lists() });
-      qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: notiKeys.lists(vars.userId) });
+      qc.invalidateQueries({ queryKey: notiKeys.unreadCount(vars.userId) });
     },
   });
 }
@@ -111,9 +112,9 @@ export function useDeleteNotification() {
   return useMutation({
     mutationFn: (args: { notificationId: number; userId: string }) =>
       deleteNotification(args.notificationId, args.userId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: notiKeys.lists() });
-      qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: notiKeys.lists(vars.userId) });
+      qc.invalidateQueries({ queryKey: notiKeys.unreadCount(vars.userId) });
     },
   });
 }
@@ -122,9 +123,9 @@ export function useDeleteAllNotifications() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (args: { userId: string }) => deleteAllNotifications(args.userId),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: notiKeys.lists() });
-      qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: notiKeys.lists(vars.userId) });
+      qc.invalidateQueries({ queryKey: notiKeys.unreadCount(vars.userId) });
     },
   });
 }
@@ -191,12 +192,32 @@ export function useNotificationSSE(
 ) {
   const qc = useQueryClient();
   const abortRef = useRef<AbortController | null>(null);
+  const reconnectRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const disposedRef = useRef(false);
   const [connected, setConnected] = useState(false);
 
+  const clearReconnect = useCallback(() => {
+    if (reconnectRef.current !== null) {
+      clearTimeout(reconnectRef.current);
+      reconnectRef.current = null;
+    }
+  }, []);
+
+  const scheduleReconnect = useCallback(
+    (fn: () => void) => {
+      clearReconnect();
+      if (!disposedRef.current) {
+        reconnectRef.current = setTimeout(fn, 5_000);
+      }
+    },
+    [clearReconnect],
+  );
+
   const connect = useCallback(() => {
-    if (!userId) return;
+    if (!userId || disposedRef.current) return;
 
     abortRef.current?.abort();
+    clearReconnect();
     const controller = new AbortController();
     abortRef.current = controller;
 
@@ -210,6 +231,7 @@ export function useNotificationSSE(
 
         if (!res.ok || !res.body) {
           setConnected(false);
+          scheduleReconnect(connect);
           return;
         }
 
@@ -233,30 +255,37 @@ export function useNotificationSSE(
               try {
                 const notification = JSON.parse(raw) as NotificationResponseDto;
                 onMessage?.(notification);
-                qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
-                qc.invalidateQueries({ queryKey: notiKeys.lists() });
+                qc.invalidateQueries({ queryKey: notiKeys.unreadCount(userId) });
+                qc.invalidateQueries({ queryKey: notiKeys.lists(userId) });
               } catch {
                 // ignore non-JSON keepalive messages
               }
             }
           }
         }
+
+        // Stream ended normally — reset and reconnect
+        setConnected(false);
+        scheduleReconnect(connect);
       } catch (err) {
         if ((err as DOMException)?.name !== "AbortError") {
           setConnected(false);
-          setTimeout(connect, 5_000);
+          scheduleReconnect(connect);
         }
       }
     })();
-  }, [userId, onMessage, qc]);
+  }, [userId, onMessage, qc, clearReconnect, scheduleReconnect]);
 
   useEffect(() => {
+    disposedRef.current = false;
     connect();
     return () => {
+      disposedRef.current = true;
+      clearReconnect();
       abortRef.current?.abort();
       setConnected(false);
     };
-  }, [connect]);
+  }, [connect, clearReconnect]);
 
   return { connected };
 }

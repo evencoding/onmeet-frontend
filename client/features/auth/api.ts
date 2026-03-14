@@ -32,14 +32,17 @@ async function authFetch<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
+  const isFormData = options?.body instanceof FormData;
+  const headers: HeadersInit = {
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
+    ...options?.headers,
+  };
+
   const doFetch = () =>
     fetch(`${AUTH_BASE_URL}${endpoint}`, {
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        ...options?.headers,
-      },
       ...options,
+      headers,
     });
 
   let res = await doFetch();
@@ -254,7 +257,6 @@ export function signupCompany(
 
   return authFetch("/v1/register/company", {
     method: "POST",
-    headers: {},
     body: formData,
   });
 }
@@ -274,7 +276,6 @@ export function registerEmployee(
 
   return authFetch("/v1/register/join", {
     method: "POST",
-    headers: {},
     body: formData,
   });
 }
@@ -306,7 +307,6 @@ export function updateProfile(
 
   return authFetch("/v1/member/me", {
     method: "PATCH",
-    headers: {},
     body: formData,
   });
 }
