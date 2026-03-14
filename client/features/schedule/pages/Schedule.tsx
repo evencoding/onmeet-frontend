@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import CalendarView from "@/features/schedule/components/CalendarView";
 import MeetingBookingModal from "@/features/schedule/components/MeetingBookingModal";
 import { Clock, MapPin, Users, ChevronLeft, ChevronRight } from "lucide-react";
@@ -21,6 +22,7 @@ interface Meeting {
 }
 
 export default function Schedule() {
+  useDocumentTitle("회의 일정 - OnMeet");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(true);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);

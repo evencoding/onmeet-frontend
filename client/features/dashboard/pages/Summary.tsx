@@ -1,5 +1,6 @@
 import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play, Copy, Edit, Check, ChevronDown, Music, FileCode, BookOpen, Tag, Volume2 } from "lucide-react";
 import { useState } from "react";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -28,6 +29,7 @@ interface Meeting {
 }
 
 export default function Summary() {
+  useDocumentTitle("회의 내역 - OnMeet");
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "scheduled" | "in_progress" | "completed">("all");

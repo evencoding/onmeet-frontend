@@ -2,8 +2,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Building2, Users, ArrowRight } from "lucide-react";
 import AuthLayout from "@/shared/components/AuthLayout";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function SignupFlow() {
+  useDocumentTitle("회원가입 - OnMeet");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get("token");

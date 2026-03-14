@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { motion } from "framer-motion";
 import { useLogin } from "@/features/auth/hooks";
 import type { ErrorResponse } from "@/features/auth/api";
@@ -7,6 +8,7 @@ import { Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
 import AuthLayout from "@/shared/components/AuthLayout";
 
 export default function Login() {
+  useDocumentTitle("로그인 - OnMeet");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

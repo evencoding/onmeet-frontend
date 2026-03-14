@@ -1,7 +1,9 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 const NotFound = () => {
+  useDocumentTitle("페이지를 찾을 수 없습니다 - OnMeet");
   const location = useLocation();
 
   useEffect(() => {

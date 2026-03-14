@@ -1,5 +1,6 @@
 import { Plus, MoreVertical, Clock, Users, Calendar } from "lucide-react";
 import { useState } from "react";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { cn } from "@/shared/lib/utils";
 
 interface Meeting {
@@ -22,6 +23,7 @@ interface Team {
 }
 
 export default function TeamBoard() {
+  useDocumentTitle("팀 보드 - OnMeet");
   const [selectedTeam, setSelectedTeam] = useState("all");
 
   const teams: Team[] = [

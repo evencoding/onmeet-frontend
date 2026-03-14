@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import {
   Video,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 
 export default function Landing() {
+  useDocumentTitle("OnMeet");
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
   const [isVisible, setIsVisible] = useState(false);

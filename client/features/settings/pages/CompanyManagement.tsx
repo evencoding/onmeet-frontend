@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Building2, Users, Shield, ArrowLeft, Edit2, Save, X, ChevronDown, Check, ChevronUp, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
 
 interface CompanyInfo {
@@ -61,6 +62,7 @@ const teamColors = [
 ];
 
 export default function CompanyManagement() {
+  useDocumentTitle("회사 관리 - OnMeet");
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"info" | "employees" | "teams">("info");
   const [editMode, setEditMode] = useState(false);

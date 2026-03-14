@@ -8,8 +8,10 @@ import {
   useUpdateNotificationSettings,
 } from "@/features/notification/hooks";
 import type { NotificationSettingDto } from "@/features/notification/api";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function MyPage() {
+  useDocumentTitle("설정 - OnMeet");
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { data: notiSettings } = useNotificationSettings(user?.id ?? 0);
