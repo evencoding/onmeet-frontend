@@ -152,11 +152,12 @@ export function getUnreadTotal(data: UnreadCountResponse): number {
 export function getNotificationSettings(userId: number) {
   return notiFetch<NotificationSettingDto>(
     `/v1/settings/${userId}`,
+    String(userId),
   );
 }
 
 export function updateNotificationSettings(userId: number, data: NotificationSettingDto) {
-  return notiFetch<void>(`/v1/settings/${userId}`, undefined, {
+  return notiFetch<void>(`/v1/settings/${userId}`, String(userId), {
     method: "POST",
     body: JSON.stringify(data),
   });
