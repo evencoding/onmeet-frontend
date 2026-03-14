@@ -1,6 +1,6 @@
 import { pageQs } from "@/shared/utils/api";
 
-const AUTH_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/auth`;
+const AUTH_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || ""}/auth`;
 
 let refreshPromise: Promise<void> | null = null;
 

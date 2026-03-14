@@ -1,4 +1,4 @@
-const AI_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/ai`;
+const AI_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || ""}/ai`;
 
 async function aiFetch<T>(
   endpoint: string,
