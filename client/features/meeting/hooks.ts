@@ -8,3 +8,6 @@ export * from "./hooks/useRecording";
 export * from "./hooks/useInvitation";
 export * from "./hooks/useScreenShare";
 export * from "./hooks/useChat";
+export { useMeetingMedia } from "./hooks/useMeetingMedia";
+export { useMeetingSTT } from "./hooks/useMeetingSTT";
+export type { STTChunk } from "./hooks/useMeetingSTT";
