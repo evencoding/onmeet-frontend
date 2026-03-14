@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Layout from "@/shared/components/Layout";
 import { User, Mail, Phone, Settings, Lock, Bell, Building2, Edit2, Save, X, AlertTriangle, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/features/auth/context";
 import { useNavigate } from "react-router-dom";
@@ -125,7 +124,7 @@ export default function MyPage() {
   };
 
   return (
-    <Layout showRecentPanel={false}>
+    <>
       <div className="max-w-4xl space-y-6">
 
         <div className="flex items-center justify-between border-b dark:border-purple-500/20 light:border-purple-300/40">
@@ -498,6 +497,6 @@ export default function MyPage() {
           </div>
         )}
       </div>
-    </Layout>
+    </>
   );
 }

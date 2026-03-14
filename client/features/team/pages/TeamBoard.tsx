@@ -1,4 +1,3 @@
-import Layout from "@/shared/components/Layout";
 import { Plus, MoreVertical, Clock, Users, Calendar } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/shared/lib/utils";
@@ -175,7 +174,7 @@ export default function TeamBoard() {
   };
 
   return (
-    <Layout>
+    <>
       <div className="space-y-6">
 
         <div className="flex items-center justify-between">
@@ -323,6 +322,6 @@ export default function TeamBoard() {
           ))}
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

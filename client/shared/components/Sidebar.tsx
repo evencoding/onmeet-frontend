@@ -14,6 +14,7 @@ import {
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "@/features/auth/context";
 import { useNavigate, useLocation } from "react-router-dom";
+import { routePrefetchMap } from "@/app/App";
 import { useState } from "react";
 import AddTeamModal from "@/features/team/components/AddTeamModal";
 
@@ -161,6 +162,7 @@ export default function Sidebar({
           return (
             <div key={item.id} title={isCollapsed ? item.label : ""}>
               <button
+                onMouseEnter={() => routePrefetchMap[item.route]?.()}
                 onClick={() => navigate(item.route)}
                 className={cn(
                   "w-full flex items-center rounded-lg transition-all duration-200 group",

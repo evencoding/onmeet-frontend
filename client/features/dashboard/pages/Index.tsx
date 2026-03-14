@@ -1,4 +1,3 @@
-import Layout from "@/shared/components/Layout";
 import IntroCard from "@/features/dashboard/components/IntroCard";
 import OngoingMeetings from "@/features/dashboard/components/OngoingMeetings";
 import RecentMeetings from "@/features/dashboard/components/RecentMeetings";
@@ -17,7 +16,7 @@ export default function Index() {
   };
 
   return (
-    <Layout showRecentPanel={false}>
+    <>
       <div className="space-y-10 max-w-4xl">
         <IntroCard onCreateMeeting={handleCreateMeeting} />
         <OngoingMeetings />
@@ -27,6 +26,6 @@ export default function Index() {
         isOpen={isCreateModalOpen}
         onClose={handleCloseModal}
       />
-    </Layout>
+    </>
   );
 }

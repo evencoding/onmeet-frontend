@@ -1,4 +1,3 @@
-import Layout from "@/shared/components/Layout";
 import { Clock, Search, X, Download, Share2, FileText, Mic, Zap, Play, Copy, Edit, Check, ChevronDown, Music, FileCode, BookOpen, Tag, Volume2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -636,7 +635,7 @@ export default function Summary() {
   );
 
   return (
-    <Layout>
+    <>
       <div className="max-w-6xl space-y-6 light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-blue-50 light:rounded-3xl light:p-8">
   
         {!expandedMeeting && (
@@ -780,6 +779,6 @@ export default function Summary() {
           </>
         )}
       </div>
-    </Layout>
+    </>
   );
 }

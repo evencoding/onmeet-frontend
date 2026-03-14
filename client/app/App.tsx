@@ -8,9 +8,10 @@ import { Toaster } from "@/shared/ui/toaster";
 import { Toaster as Sonner } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/features/auth/context";
 import { ThemeProvider } from "@/shared/contexts/ThemeContext";
+import Layout from "@/shared/components/Layout";
 
 if (import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({
@@ -29,7 +30,12 @@ if (import.meta.env.VITE_SENTRY_DSN) {
   });
 }
 
-const Index = lazy(() => import("@/features/dashboard/pages/Index"));
+// Direct imports for frequently visited pages (no lazy loading delay)
+import Index from "@/features/dashboard/pages/Index";
+import Landing from "@/pages/Landing";
+import Login from "@/features/auth/pages/Login";
+
+// Lazy imports for heavier/less frequent pages
 const MeetingRoom = lazy(() => import("@/features/meeting/pages/MeetingRoom"));
 const Schedule = lazy(() => import("@/features/schedule/pages/Schedule"));
 const Summary = lazy(() => import("@/features/dashboard/pages/Summary"));
@@ -37,13 +43,22 @@ const TeamBoard = lazy(() => import("@/features/team/pages/TeamBoard"));
 const Team = lazy(() => import("@/features/team/pages/Team"));
 const MyPage = lazy(() => import("@/features/settings/pages/MyPage"));
 const CompanyManagement = lazy(() => import("@/features/settings/pages/CompanyManagement"));
-const Login = lazy(() => import("@/features/auth/pages/Login"));
 const SignupFlow = lazy(() => import("@/features/auth/pages/SignupFlow"));
 const CompanySignup = lazy(() => import("@/features/auth/pages/CompanySignup"));
 const EmployeeSignup = lazy(() => import("@/features/auth/pages/EmployeeSignup"));
 const InviteMembers = lazy(() => import("@/features/auth/pages/InviteMembers"));
-const Landing = lazy(() => import("@/pages/Landing"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
+
+// Route prefetch map — call on hover to preload chunks
+export const routePrefetchMap: Record<string, () => void> = {
+  "/": () => {},
+  "/schedule": () => { import("@/features/schedule/pages/Schedule"); },
+  "/summary": () => { import("@/features/dashboard/pages/Summary"); },
+  "/records": () => { import("@/features/dashboard/pages/Summary"); },
+  "/board": () => { import("@/features/team/pages/TeamBoard"); },
+  "/mypage": () => { import("@/features/settings/pages/MyPage"); },
+  "/company": () => { import("@/features/settings/pages/CompanyManagement"); },
+};
 
 const queryClient = new QueryClient();
 
@@ -53,6 +68,31 @@ const PageLoader = () => (
   </div>
 );
 
+const ContentLoader = () => (
+  <div className="flex-1 flex items-center justify-center py-32">
+    <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+  </div>
+);
+
+/** Protected route that keeps Layout visible, only content area transitions */
+function ProtectedLayout() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) return <PageLoader />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  return (
+    <Layout>
+      <Suspense fallback={<ContentLoader />}>
+        <div className="animate-in fade-in duration-200">
+          <Outlet />
+        </div>
+      </Suspense>
+    </Layout>
+  );
+}
+
+/** Protected route without Layout (e.g. MeetingRoom full-screen) */
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -68,88 +108,70 @@ const HomeRoute = () => {
   if (isLoading) return <PageLoader />;
   if (!isAuthenticated) return <Landing />;
 
-  return <Index />;
+  return (
+    <Layout>
+      <div className="animate-in fade-in duration-200">
+        <Index />
+      </div>
+    </Layout>
+  );
 };
 
 const SentryRoutes = Sentry.withSentryRouting(Routes);
 
 const AppContent = () => (
   <BrowserRouter>
-    <Suspense fallback={<PageLoader />}>
-      <SentryRoutes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignupFlow />} />
-        <Route path="/signup/company" element={<CompanySignup />} />
-        <Route path="/signup/employee" element={<EmployeeSignup />} />
-        <Route path="/signup/invite-members" element={<InviteMembers />} />
-        <Route path="/" element={<HomeRoute />} />
-        <Route
-          path="/meeting/:roomId"
-          element={
-            <ProtectedRoute>
+    <SentryRoutes>
+      {/* Public routes — direct import, no Suspense needed */}
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/signup"
+        element={<Suspense fallback={<PageLoader />}><SignupFlow /></Suspense>}
+      />
+      <Route
+        path="/signup/company"
+        element={<Suspense fallback={<PageLoader />}><CompanySignup /></Suspense>}
+      />
+      <Route
+        path="/signup/employee"
+        element={<Suspense fallback={<PageLoader />}><EmployeeSignup /></Suspense>}
+      />
+      <Route
+        path="/signup/invite-members"
+        element={<Suspense fallback={<PageLoader />}><InviteMembers /></Suspense>}
+      />
+
+      {/* Home — auth-dependent, both pages direct-imported */}
+      <Route path="/" element={<HomeRoute />} />
+
+      {/* Protected routes with shared Layout */}
+      <Route element={<ProtectedLayout />}>
+        <Route path="/schedule" element={<Schedule />} />
+        <Route path="/summary" element={<Summary />} />
+        <Route path="/records" element={<Summary />} />
+        <Route path="/board" element={<TeamBoard />} />
+        <Route path="/team/:teamId" element={<Team />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/company" element={<CompanyManagement />} />
+      </Route>
+
+      {/* MeetingRoom — protected, full-screen (no Layout) */}
+      <Route
+        path="/meeting/:roomId"
+        element={
+          <ProtectedRoute>
+            <Suspense fallback={<PageLoader />}>
               <MeetingRoom />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/schedule"
-          element={
-            <ProtectedRoute>
-              <Schedule />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/summary"
-          element={
-            <ProtectedRoute>
-              <Summary />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/records"
-          element={
-            <ProtectedRoute>
-              <Summary />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/board"
-          element={
-            <ProtectedRoute>
-              <TeamBoard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/team/:teamId"
-          element={
-            <ProtectedRoute>
-              <Team />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/mypage"
-          element={
-            <ProtectedRoute>
-              <MyPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/company"
-          element={
-            <ProtectedRoute>
-              <CompanyManagement />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-      </SentryRoutes>
-    </Suspense>
+            </Suspense>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="*"
+        element={<Suspense fallback={<PageLoader />}><NotFound /></Suspense>}
+      />
+    </SentryRoutes>
   </BrowserRouter>
 );
 

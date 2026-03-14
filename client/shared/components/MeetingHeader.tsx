@@ -146,7 +146,14 @@ export default function MeetingHeader() {
           {user?.name?.charAt(0) ?? "U"}
         </div>
         <div>
-          <div className="text-sm font-medium text-foreground">{user?.name ?? ""}</div>
+          <div className="text-sm font-medium text-foreground">
+            {user?.name ?? ""}
+            {user?.jobTitle && (
+              <span className="ml-1.5 text-xs font-normal text-muted-foreground">
+                {user.jobTitle.name}
+              </span>
+            )}
+          </div>
           <div className="text-xs text-muted-foreground">{user?.company?.name ?? ""}</div>
         </div>
       </div>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Layout from "@/shared/components/Layout";
 import CalendarView from "@/features/schedule/components/CalendarView";
 import MeetingBookingModal from "@/features/schedule/components/MeetingBookingModal";
 import { Clock, MapPin, Users, ChevronLeft, ChevronRight } from "lucide-react";
@@ -201,7 +200,7 @@ export default function Schedule() {
   );
 
   return (
-    <Layout>
+    <>
       <div className="w-full space-y-6">
         <div>
           <h1 className="text-3xl font-bold dark:text-white/90 light:text-purple-950 mb-2">일정</h1>
@@ -341,6 +340,6 @@ export default function Schedule() {
         onClose={() => setIsBookingModalOpen(false)}
         selectedDate={bookingModalDate}
       />
-    </Layout>
+    </>
   );
 }
