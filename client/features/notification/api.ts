@@ -141,6 +141,12 @@ export interface Pageable {
   sort?: string[];
 }
 
+export type UnreadCountResponse = Record<string, number>;
+
+export function getUnreadTotal(data: UnreadCountResponse): number {
+  return Object.values(data).reduce((sum, v) => sum + v, 0);
+}
+
 // ── API Functions ──
 
 export function getNotificationSettings(userId: number) {
@@ -171,19 +177,14 @@ export function unregisterFcmToken(userId: string, token: string) {
 }
 
 export function getNotifications(userId: string, pageable?: Pageable) {
-  const qs = new URLSearchParams();
-  if (pageable?.page !== undefined) qs.set("page", String(pageable.page));
-  if (pageable?.size !== undefined) qs.set("size", String(pageable.size));
-  if (pageable?.sort) pageable.sort.forEach((s) => qs.append("sort", s));
-  const str = qs.toString();
   return notiFetch<PageNotificationResponseDto>(
-    `/v1/notifications${str ? `?${str}` : ""}`,
+    `/v1/notifications${pageQs(pageable)}`,
     userId,
   );
 }
 
 export function getUnreadCount(userId: string) {
-  return notiFetch<Record<string, number>>("/v1/notifications/unread/count", userId);
+  return notiFetch<UnreadCountResponse>("/v1/notifications/unread/count", userId);
 }
 
 export function markAsRead(notificationId: number, userId: string) {
@@ -195,7 +196,7 @@ export function markAsRead(notificationId: number, userId: string) {
 }
 
 export function markAllAsRead(userId: string) {
-  return notiFetch<Record<string, number>>("/v1/notifications/read/all", userId, {
+  return notiFetch<UnreadCountResponse>("/v1/notifications/read/all", userId, {
     method: "PATCH",
   });
 }
