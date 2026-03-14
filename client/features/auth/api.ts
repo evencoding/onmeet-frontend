@@ -2,18 +2,62 @@ import { pageQs } from "@/shared/utils/api";
 
 const AUTH_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/auth`;
 
+let refreshPromise: Promise<void> | null = null;
+
+async function tryRefreshToken(): Promise<boolean> {
+  try {
+    const res = await fetch(`${AUTH_BASE_URL}/v1/refresh`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+function parseResponseBody<T>(text: string): T {
+  if (!text) return {} as T;
+
+  const json = JSON.parse(text);
+  if (json && typeof json === "object" && "success" in json) {
+    if (!json.success && json.error) throw json.error;
+    return json.data as T;
+  }
+  return json as T;
+}
+
 async function authFetch<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-  const res = await fetch(`${AUTH_BASE_URL}${endpoint}`, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-    ...options,
-  });
+  const doFetch = () =>
+    fetch(`${AUTH_BASE_URL}${endpoint}`, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      ...options,
+    });
+
+  let res = await doFetch();
+
+  if (res.status === 401 && !endpoint.includes("/v1/refresh") && !endpoint.includes("/v1/login")) {
+    if (!refreshPromise) {
+      refreshPromise = tryRefreshToken().then((ok) => {
+        refreshPromise = null;
+        if (!ok) throw new Error("refresh_failed");
+      });
+    }
+    try {
+      await refreshPromise;
+      res = await doFetch();
+    } catch {
+      // refresh failed — fall through to error below
+    }
+  }
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({
@@ -24,14 +68,7 @@ async function authFetch<T>(
   }
 
   const text = await res.text();
-  if (!text) return {} as T;
-
-  const json = JSON.parse(text);
-  if (json && typeof json === "object" && "success" in json) {
-    if (!json.success && json.error) throw json.error;
-    return json.data as T;
-  }
-  return json as T;
+  return parseResponseBody<T>(text);
 }
 
 export interface ErrorResponse {

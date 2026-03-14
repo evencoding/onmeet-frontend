@@ -21,7 +21,8 @@
       "Bash(python3:*)",
       "Bash(npx vite build:*)",
       "Bash(pnpm list:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(pnpm tsc:*)"
     ]
   }
 }
