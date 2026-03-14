@@ -8,11 +8,13 @@ import WaitingRoom from "@/features/meeting/components/WaitingRoom";
 import MeetingRoomContent from "@/features/meeting/components/MeetingRoomContent";
 import { useJoinRoom } from "@/features/meeting/hooks";
 import { useAuth } from "@/features/auth/context";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useMeetingRoomStore, type DeviceSelection } from "../store";
 
 const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "wss://livekit.onmeet.cloud";
 
 export default function MeetingRoom() {
+  useDocumentTitle("회의 - OnMeet");
   const navigate = useNavigate();
   const { roomId } = useParams<{ roomId: string }>();
   const { user } = useAuth();

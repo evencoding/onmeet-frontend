@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import TeamDetail from "@/features/team/components/TeamDetail";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 const teamNames: Record<string, string> = {
   marketing: "Marketing",
@@ -8,6 +9,7 @@ const teamNames: Record<string, string> = {
 };
 
 export default function Team() {
+  useDocumentTitle("팀 - OnMeet");
   const { teamId } = useParams<{ teamId: string }>();
 
   if (!teamId || !teamNames[teamId]) {
