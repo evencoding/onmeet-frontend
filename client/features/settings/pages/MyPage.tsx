@@ -2,7 +2,7 @@ import { useState } from "react";
 import { User, Mail, Phone, Settings, Lock, Bell, Building2, Edit2, Save, X, AlertTriangle, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/features/auth/context";
 import { useNavigate } from "react-router-dom";
-import { changePassword } from "@/features/auth/api";
+import { useUpdateProfile, useWithdraw, useChangePasswordMutation } from "@/features/auth/hooks";
 import {
   useNotificationSettings,
   useUpdateNotificationSettings,
@@ -16,6 +16,9 @@ export default function MyPage() {
   const navigate = useNavigate();
   const { data: notiSettings } = useNotificationSettings(user?.id ?? 0);
   const updateSettingsMutation = useUpdateNotificationSettings();
+  const updateProfileMutation = useUpdateProfile();
+  const withdrawMutation = useWithdraw();
+  const changePasswordMutation = useChangePasswordMutation();
 
   const settingItems: { key: keyof NotificationSettingDto; label: string; description: string }[] = [
     { key: "pushEnabled", label: "푸시 알림", description: "전체 푸시 알림 활성화" },
@@ -50,14 +53,14 @@ export default function MyPage() {
   });
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
-  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [profileImage, setProfileImage] = useState<File | undefined>();
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
-    phone: "+82 (010) 1234-5678",
-    position: "Product Manager",
-    team: "마케팅",
-    bio: "Meeting enthusiast",
+    position: user?.jobTitle?.name || "",
+    team: user?.teams?.map((t) => t.name).join(", ") || "",
     avatar: "",
   });
 
@@ -69,6 +72,7 @@ export default function MyPage() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setProfileImage(file);
       const reader = new FileReader();
       reader.onload = (event) => {
         setFormData((prev) => ({ ...prev, avatar: event.target?.result as string }));
@@ -78,10 +82,21 @@ export default function MyPage() {
   };
 
   const handleSave = () => {
-    setEditMode(false);
+    updateProfileMutation.mutate(
+      {
+        data: { name: formData.name },
+        profileImage,
+      },
+      {
+        onSuccess: () => {
+          setEditMode(false);
+          setProfileImage(undefined);
+        },
+      },
+    );
   };
 
-  const handlePasswordChange = async () => {
+  const handlePasswordChange = () => {
     setPasswordError("");
     setPasswordSuccess("");
 
@@ -100,24 +115,46 @@ export default function MyPage() {
       return;
     }
 
-    try {
-      setPasswordLoading(true);
-      await changePassword({
+    changePasswordMutation.mutate(
+      {
         oldPassword: passwordForm.oldPassword,
         newPassword: passwordForm.newPassword,
-      });
-      setPasswordSuccess("비밀번호가 변경되었습니다.");
-      setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
-      setTimeout(() => {
-        setShowPasswordSection(false);
-        setPasswordSuccess("");
-      }, 2000);
-    } catch (err: unknown) {
-      const error = err as { message?: string };
-      setPasswordError(error.message || "비밀번호 변경에 실패했습니다.");
-    } finally {
-      setPasswordLoading(false);
+      },
+      {
+        onSuccess: () => {
+          setPasswordSuccess("비밀번호가 변경되었습니다.");
+          setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
+          setTimeout(() => {
+            setShowPasswordSection(false);
+            setPasswordSuccess("");
+          }, 2000);
+        },
+        onError: (err: unknown) => {
+          const error = err as { message?: string };
+          setPasswordError(error.message || "비밀번호 변경에 실패했습니다.");
+        },
+      },
+    );
+  };
+
+  const handleDeleteAccount = () => {
+    if (!deletePassword) {
+      setDeleteError("비밀번호를 입력해주세요.");
+      return;
     }
+    withdrawMutation.mutate(
+      { password: deletePassword },
+      {
+        onSuccess: async () => {
+          await logout();
+          navigate("/login");
+        },
+        onError: (err: unknown) => {
+          const error = err as { message?: string };
+          setDeleteError(error.message || "계정 삭제에 실패했습니다.");
+        },
+      },
+    );
   };
 
   const handleLogout = () => {
@@ -223,72 +260,17 @@ export default function MyPage() {
                 </div>
 
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                    <Phone className="w-4 h-4" />
-                    전화
-                  </label>
-                  {editMode ? (
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
-                    />
-                  ) : (
-                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.phone}</p>
-                  )}
-                </div>
-
-                <div>
                   <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
                     직급
                   </label>
-                  {editMode ? (
-                    <input
-                      type="text"
-                      name="position"
-                      value={formData.position}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
-                    />
-                  ) : (
-                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.position}</p>
-                  )}
+                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.position || "-"}</p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
                     소속 팀
                   </label>
-                  {editMode ? (
-                    <input
-                      type="text"
-                      name="team"
-                      value={formData.team}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
-                    />
-                  ) : (
-                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.team}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
-                    소개
-                  </label>
-                  {editMode ? (
-                    <textarea
-                      name="bio"
-                      value={formData.bio}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
-                    />
-                  ) : (
-                    <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.bio}</p>
-                  )}
+                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.team || "-"}</p>
                 </div>
 
                 <div className="pt-4 border-t dark:border-purple-500/20 light:border-purple-300/40">
@@ -349,15 +331,15 @@ export default function MyPage() {
                       <div className="flex gap-3">
                         <button
                           onClick={handlePasswordChange}
-                          disabled={passwordLoading}
+                          disabled={changePasswordMutation.isPending}
                           className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/30 disabled:opacity-50"
                         >
-                          {passwordLoading ? (
+                          {changePasswordMutation.isPending ? (
                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                           ) : (
                             <Lock className="w-4 h-4" />
                           )}
-                          {passwordLoading ? "변경 중..." : "비밀번호 변경"}
+                          {changePasswordMutation.isPending ? "변경 중..." : "비밀번호 변경"}
                         </button>
                         <button
                           onClick={() => setShowPasswordSection(false)}
@@ -374,10 +356,11 @@ export default function MyPage() {
                   <div className="flex gap-3 pt-6">
                     <button
                       onClick={handleSave}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/30"
+                      disabled={updateProfileMutation.isPending}
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all shadow-lg shadow-purple-500/30 disabled:opacity-50"
                     >
                       <Save className="w-4 h-4" />
-                      저장
+                      {updateProfileMutation.isPending ? "저장 중..." : "저장"}
                     </button>
                     <button
                       onClick={() => setEditMode(false)}
@@ -438,7 +421,13 @@ export default function MyPage() {
                   계정 보안
                 </h3>
               </div>
-              <button className="w-full px-6 py-3 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-xl font-medium dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-all">
+              <button
+                onClick={() => {
+                  setActiveTab("profile");
+                  setTimeout(() => setShowPasswordSection(true), 100);
+                }}
+                className="w-full px-6 py-3 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-xl font-medium dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-all"
+              >
                 비밀번호 변경
               </button>
             </div>
@@ -478,21 +467,39 @@ export default function MyPage() {
                 이 작업은 되돌릴 수 없습니다. 계정의 모든 데이터가 영구적으로 삭제됩니다.
               </p>
 
+              <div className="mb-4">
+                <label className="block text-sm font-medium dark:text-white/70 light:text-red-800 mb-1.5">
+                  비밀번호 확인
+                </label>
+                <input
+                  type="password"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  placeholder="비밀번호를 입력하세요"
+                  className="w-full px-4 py-3 dark:border dark:border-red-500/30 light:border-2 light:border-red-400/50 rounded-xl dark:bg-red-500/10 light:bg-white dark:text-white light:text-red-900 focus:border-red-400 focus:ring-2 dark:focus:ring-red-500/20 light:focus:ring-red-300/40 transition-all placeholder:dark:text-white/30 placeholder:light:text-red-400"
+                />
+                {deleteError && (
+                  <p className="text-sm text-red-400 mt-2">{deleteError}</p>
+                )}
+              </div>
+
               <div className="space-y-3">
                 <button
-                  onClick={() => setShowDeleteModal(false)}
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setDeletePassword("");
+                    setDeleteError("");
+                  }}
                   className="w-full px-4 py-3 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-xl font-medium dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-all"
                 >
                   취소
                 </button>
                 <button
-                  onClick={() => {
-                    logout();
-                    navigate("/login");
-                  }}
-                  className="w-full px-4 py-3 dark:bg-red-600 light:bg-red-600 dark:text-white light:text-white rounded-xl font-medium dark:hover:bg-red-700 light:hover:bg-red-700 transition-all"
+                  onClick={handleDeleteAccount}
+                  disabled={withdrawMutation.isPending}
+                  className="w-full px-4 py-3 dark:bg-red-600 light:bg-red-600 dark:text-white light:text-white rounded-xl font-medium dark:hover:bg-red-700 light:hover:bg-red-700 transition-all disabled:opacity-50"
                 >
-                  계정 삭제하기
+                  {withdrawMutation.isPending ? "삭제 중..." : "계정 삭제하기"}
                 </button>
               </div>
             </div>

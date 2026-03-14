@@ -9,77 +9,16 @@ import {
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
-
-interface Team {
-  id: string;
-  name: string;
-  color: string;
-  icon?: string;
-}
-
-interface Employee {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  department?: string;
-}
+import { useAuth } from "@/features/auth/context";
+import { useAllEmployees } from "@/features/auth/hooks";
+import { useScheduleRoom, useBulkInviteToRoom } from "@/features/meeting/hooks";
+import type { UserResponseDto } from "@/features/auth/api";
 
 interface MeetingBookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedDate?: Date;
 }
-
-const teams: Team[] = [
-  { id: "marketing", name: "Marketing", color: "bg-pink-500" },
-  { id: "product", name: "Product", color: "bg-blue-500" },
-  { id: "design", name: "Design", color: "bg-purple-500" },
-  { id: "engineering", name: "Engineering", color: "bg-green-500" },
-];
-
-const mockEmployees: Employee[] = [
-  {
-    id: "1",
-    name: "김철수",
-    email: "kim@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
-    department: "마케팅",
-  },
-  {
-    id: "2",
-    name: "이영희",
-    email: "lee@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
-    department: "제품",
-  },
-  {
-    id: "3",
-    name: "박민준",
-    email: "park@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
-    department: "마케팅",
-  },
-  {
-    id: "4",
-    name: "정준호",
-    email: "jung@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
-    department: "엔지니어링",
-  },
-  {
-    id: "5",
-    name: "최수진",
-    email: "choi@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
-    department: "제품",
-  },
-];
 
 type BookingStep = "team" | "date" | "participants";
 
@@ -88,30 +27,39 @@ export default function MeetingBookingModal({
   onClose,
   selectedDate,
 }: MeetingBookingModalProps) {
+  const { user } = useAuth();
+  const userId = user ? String(user.id) : "";
+  const teams = user?.teams ?? [];
+
+  const { data: employeesData } = useAllEmployees({ size: 100 });
+  const employees: UserResponseDto[] = employeesData?.content ?? [];
+
+  const scheduleRoomMutation = useScheduleRoom();
+  const bulkInviteMutation = useBulkInviteToRoom();
+
   const [step, setStep] = useState<BookingStep>("team");
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [meetingDate, setMeetingDate] = useState(selectedDate || new Date());
   const [meetingTime, setMeetingTime] = useState("10:00");
-  const [selectedParticipants, setSelectedParticipants] = useState<Employee[]>(
-    []
-  );
+  const [selectedParticipants, setSelectedParticipants] = useState<UserResponseDto[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [meetingTitle, setMeetingTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const filteredEmployees = mockEmployees.filter(
+  const selectedTeam = teams.find((t) => t.id === selectedTeamId);
+
+  const filteredEmployees = employees.filter(
     (emp) =>
       emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      emp.department?.toLowerCase().includes(searchQuery.toLowerCase())
+      emp.email.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const handleSelectTeam = (team: Team) => {
-    setSelectedTeam(team);
+  const handleSelectTeam = (teamId: number) => {
+    setSelectedTeamId(teamId);
     setStep("date");
   };
 
-  const handleParticipantToggle = (employee: Employee) => {
+  const handleParticipantToggle = (employee: UserResponseDto) => {
     const isSelected = selectedParticipants.some((p) => p.id === employee.id);
     if (isSelected) {
       setSelectedParticipants(selectedParticipants.filter((p) => p.id !== employee.id));
@@ -120,35 +68,45 @@ export default function MeetingBookingModal({
     }
   };
 
-  const handleRemoveParticipant = (id: string) => {
+  const handleRemoveParticipant = (id: number) => {
     setSelectedParticipants(selectedParticipants.filter((p) => p.id !== id));
   };
 
   const handleBookMeeting = async () => {
-    if (!selectedTeam || !meetingTitle.trim()) {
-      alert("팀과 회의 제목을 입력해주세요");
+    if (!selectedTeamId || !meetingTitle.trim()) {
       return;
     }
 
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log("Meeting booked:", {
-        title: meetingTitle,
-        team: selectedTeam.name,
-        date: meetingDate,
-        time: meetingTime,
-        participants: selectedParticipants.map((p) => p.name),
+      const scheduledAt = `${format(meetingDate, "yyyy-MM-dd")}T${meetingTime}:00`;
+      const room = await scheduleRoomMutation.mutateAsync({
+        userId,
+        data: {
+          title: meetingTitle,
+          scheduledAt,
+          teamId: selectedTeamId,
+        },
       });
+
+      if (selectedParticipants.length > 0) {
+        await bulkInviteMutation.mutateAsync({
+          roomId: room.id,
+          userId,
+          data: {
+            inviteeUserIds: selectedParticipants.map((p) => p.id),
+          },
+        });
+      }
+
       setMeetingTitle("");
-      setSelectedTeam(null);
+      setSelectedTeamId(null);
       setSelectedParticipants([]);
       setSearchQuery("");
       setStep("team");
       onClose();
-    } catch (error) {
-      console.error("Failed to book meeting:", error);
-      alert("회의 예약에 실패했습니다");
+    } catch {
+      // Error handled by mutation
     } finally {
       setIsLoading(false);
     }
@@ -156,7 +114,7 @@ export default function MeetingBookingModal({
 
   const handleClose = () => {
     setMeetingTitle("");
-    setSelectedTeam(null);
+    setSelectedTeamId(null);
     setSelectedParticipants([]);
     setSearchQuery("");
     setStep("team");
@@ -211,26 +169,37 @@ export default function MeetingBookingModal({
                 <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-3 block">
                   팀 선택 <span className="text-red-500">*</span>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {teams.map((team) => (
-                    <button
-                      key={team.id}
-                      onClick={() => handleSelectTeam(team)}
-                      className={`p-4 rounded-xl border-2 transition-all text-left font-semibold ${
-                        selectedTeam?.id === team.id
-                          ? "dark:border-purple-600 dark:bg-purple-600/20 light:border-purple-600 light:bg-purple-100"
-                          : "dark:border-purple-500/30 dark:bg-purple-500/10 light:border-purple-300/50 light:bg-purple-50"
-                      } hover:dark:border-purple-500 hover:light:border-purple-500 transition-colors`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="dark:text-white light:text-purple-900">
-                          {team.name}
-                        </span>
-                        <div className={`w-3 h-3 rounded-full ${team.color}`} />
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                {teams.length === 0 ? (
+                  <p className="text-sm dark:text-white/60 light:text-purple-700 py-4 text-center">
+                    소속된 팀이 없습니다
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {teams.map((team) => (
+                      <button
+                        key={team.id}
+                        onClick={() => handleSelectTeam(team.id)}
+                        className={`p-4 rounded-xl border-2 transition-all text-left font-semibold ${
+                          selectedTeamId === team.id
+                            ? "dark:border-purple-600 dark:bg-purple-600/20 light:border-purple-600 light:bg-purple-100"
+                            : "dark:border-purple-500/30 dark:bg-purple-500/10 light:border-purple-300/50 light:bg-purple-50"
+                        } hover:dark:border-purple-500 hover:light:border-purple-500 transition-colors`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="dark:text-white light:text-purple-900">
+                            {team.name}
+                          </span>
+                          {team.color && (
+                            <div
+                              className="w-3 h-3 rounded-full"
+                              style={{ backgroundColor: team.color }}
+                            />
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div>
@@ -264,7 +233,7 @@ export default function MeetingBookingModal({
 
               <button
                 onClick={() => setStep("date")}
-                disabled={!selectedTeam || !meetingTitle.trim()}
+                disabled={!selectedTeamId || !meetingTitle.trim()}
                 className="w-full mt-4 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 다음 <ChevronRight className="w-4 h-4" />
@@ -323,7 +292,7 @@ export default function MeetingBookingModal({
                 </label>
                 <div className="p-3 dark:bg-purple-500/10 light:bg-purple-50 rounded-lg border dark:border-purple-500/20 light:border-purple-300/50">
                   <p className="text-sm dark:text-white/90 light:text-purple-900">
-                    <span className="font-semibold">{meetingTitle}</span> • {selectedTeam?.name}
+                    <span className="font-semibold">{meetingTitle}</span> · {selectedTeam?.name}
                   </p>
                   <p className="text-xs dark:text-white/60 light:text-purple-700 mt-1">
                     {format(meetingDate, "M월 d일 (EEEE)", { locale: ko })} · {meetingTime}
@@ -339,7 +308,7 @@ export default function MeetingBookingModal({
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="이름, 이메일, 부서로 검색"
+                  placeholder="이름, 이메일로 검색"
                   className="w-full px-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
                 />
               </div>
@@ -356,10 +325,6 @@ export default function MeetingBookingModal({
                         className="flex items-center gap-1.5 px-2.5 py-1.5 dark:bg-purple-600/40 light:bg-purple-200/60 rounded-full border dark:border-purple-500/50 light:border-purple-300/50 text-xs"
                       >
                         <Avatar className="w-4 h-4">
-                          <AvatarImage
-                            src={participant.avatar}
-                            alt={participant.name}
-                          />
                           <AvatarFallback>
                             {participant.name.charAt(0)}
                           </AvatarFallback>
@@ -387,7 +352,7 @@ export default function MeetingBookingModal({
                 ) : (
                   filteredEmployees.map((employee) => {
                     const isSelected = selectedParticipants.some(
-                      (p) => p.id === employee.id
+                      (p) => p.id === employee.id,
                     );
                     return (
                       <button
@@ -406,10 +371,6 @@ export default function MeetingBookingModal({
                           className="cursor-pointer"
                         />
                         <Avatar className="w-8 h-8">
-                          <AvatarImage
-                            src={employee.avatar}
-                            alt={employee.name}
-                          />
                           <AvatarFallback>
                             {employee.name.charAt(0)}
                           </AvatarFallback>
@@ -419,7 +380,7 @@ export default function MeetingBookingModal({
                             {employee.name}
                           </p>
                           <p className="text-xs dark:text-white/50 light:text-purple-600">
-                            {employee.department} · {employee.email}
+                            {employee.jobTitle?.name ?? ""} · {employee.email}
                           </p>
                         </div>
                         {isSelected && (

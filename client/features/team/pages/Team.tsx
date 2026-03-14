@@ -1,18 +1,16 @@
 import { useParams } from "react-router-dom";
 import TeamDetail from "@/features/team/components/TeamDetail";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
-
-const teamNames: Record<string, string> = {
-  marketing: "Marketing",
-  product: "Product",
-  design: "Design",
-};
+import { useAuth } from "@/features/auth/context";
 
 export default function Team() {
   useDocumentTitle("팀 - OnMeet");
   const { teamId } = useParams<{ teamId: string }>();
+  const { user } = useAuth();
 
-  if (!teamId || !teamNames[teamId]) {
+  const team = user?.teams.find((t) => String(t.id) === teamId);
+
+  if (!teamId || !team) {
     return (
       <div className="text-center py-12">
         <h1 className="text-2xl font-bold text-foreground mb-2">
@@ -23,5 +21,5 @@ export default function Team() {
     );
   }
 
-  return <TeamDetail teamId={teamId} teamName={teamNames[teamId]} />;
+  return <TeamDetail teamId={teamId} teamName={team.name} />;
 }

@@ -267,16 +267,6 @@ export default function Sidebar({
       <AddTeamModal
         isOpen={isAddTeamModalOpen}
         onClose={() => setIsAddTeamModalOpen(false)}
-        onTeamAdded={(team) => {
-          console.log("New team added:", {
-            name: team.name,
-            description: team.description,
-            backgroundColor: team.backgroundColor,
-            textColor: team.textColor,
-            membersCount: team.members.length,
-            members: team.members,
-          });
-        }}
       />
 
       {/* User Profile */}
