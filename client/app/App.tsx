@@ -30,12 +30,10 @@ if (import.meta.env.VITE_SENTRY_DSN) {
   });
 }
 
-// Direct imports for frequently visited pages (no lazy loading delay)
 import Index from "@/features/dashboard/pages/Index";
 import Landing from "@/pages/Landing";
 import Login from "@/features/auth/pages/Login";
 
-// Lazy imports for heavier/less frequent pages
 const MeetingRoom = lazy(() => import("@/features/meeting/pages/MeetingRoom"));
 const Schedule = lazy(() => import("@/features/schedule/pages/Schedule"));
 const Summary = lazy(() => import("@/features/dashboard/pages/Summary"));
@@ -63,7 +61,6 @@ const ContentLoader = () => (
   </div>
 );
 
-/** Protected route that keeps Layout visible, only content area transitions */
 function ProtectedLayout() {
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -81,7 +78,6 @@ function ProtectedLayout() {
   );
 }
 
-/** Protected route without Layout (e.g. MeetingRoom full-screen) */
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -111,7 +107,6 @@ const SentryRoutes = Sentry.withSentryRouting(Routes);
 const AppContent = () => (
   <BrowserRouter>
     <SentryRoutes>
-      {/* Public routes — direct import, no Suspense needed */}
       <Route path="/login" element={<Login />} />
       <Route
         path="/signup"
@@ -130,10 +125,8 @@ const AppContent = () => (
         element={<Suspense fallback={<PageLoader />}><InviteMembers /></Suspense>}
       />
 
-      {/* Home — auth-dependent, both pages direct-imported */}
       <Route path="/" element={<HomeRoute />} />
 
-      {/* Protected routes with shared Layout */}
       <Route element={<ProtectedLayout />}>
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/summary" element={<Summary />} />
@@ -144,7 +137,6 @@ const AppContent = () => (
         <Route path="/company" element={<CompanyManagement />} />
       </Route>
 
-      {/* MeetingRoom — protected, full-screen (no Layout) */}
       <Route
         path="/meeting/:roomId"
         element={
