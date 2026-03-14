@@ -1,4 +1,4 @@
-const AUTH_BASE_URL = "https://api.onmeet.cloud/auth";
+const AUTH_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/auth`;
 
 async function authFetch<T>(
   endpoint: string,

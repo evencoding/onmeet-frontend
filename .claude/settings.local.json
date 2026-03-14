@@ -19,7 +19,9 @@
       "Bash(git fetch:*)",
       "Bash(git log:*)",
       "Bash(python3:*)",
-      "Bash(npx vite build:*)"
+      "Bash(npx vite build:*)",
+      "Bash(pnpm list:*)",
+      "Bash(git rm:*)"
     ]
   }
 }

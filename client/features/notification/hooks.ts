@@ -183,7 +183,7 @@ export function useFcmSetup(userId: string | undefined) {
 
 // ── SSE Hook ──
 
-const SSE_URL = "https://api.onmeet.cloud/notification/v1/sse/subscribe";
+const SSE_URL = `${import.meta.env.VITE_API_BASE_URL}/notification/v1/sse/subscribe`;
 
 export function useNotificationSSE(
   userId: string | undefined,
