@@ -14,7 +14,7 @@ import {
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "@/features/auth/context";
 import { useNavigate, useLocation } from "react-router-dom";
-import { routePrefetchMap } from "@/app/App";
+import { routePrefetchMap } from "@/app/routePrefetchMap";
 import { useState } from "react";
 import AddTeamModal from "@/features/team/components/AddTeamModal";
 

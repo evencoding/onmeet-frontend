@@ -49,17 +49,6 @@ const EmployeeSignup = lazy(() => import("@/features/auth/pages/EmployeeSignup")
 const InviteMembers = lazy(() => import("@/features/auth/pages/InviteMembers"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
-// Route prefetch map — call on hover to preload chunks
-export const routePrefetchMap: Record<string, () => void> = {
-  "/": () => {},
-  "/schedule": () => { import("@/features/schedule/pages/Schedule"); },
-  "/summary": () => { import("@/features/dashboard/pages/Summary"); },
-  "/records": () => { import("@/features/dashboard/pages/Summary"); },
-  "/board": () => { import("@/features/team/pages/TeamBoard"); },
-  "/mypage": () => { import("@/features/settings/pages/MyPage"); },
-  "/company": () => { import("@/features/settings/pages/CompanyManagement"); },
-};
-
 const queryClient = new QueryClient();
 
 const PageLoader = () => (
