@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import AuthLayout from "@/shared/components/AuthLayout";
+import { useInviteMember } from "@/features/auth/hooks";
 
 interface InvitedEmail {
   id: string;
@@ -21,6 +22,7 @@ export default function InviteMembers() {
   const navigate = useNavigate();
   const location = useLocation();
   const companyId = (location.state as { companyId: string })?.companyId;
+  const inviteMemberMutation = useInviteMember();
 
   const [emails, setEmails] = useState<InvitedEmail[]>([]);
   const [currentEmail, setCurrentEmail] = useState("");
@@ -52,7 +54,7 @@ export default function InviteMembers() {
   };
 
   const copyInviteLink = (email: string) => {
-    const inviteLink = `${window.location.origin}/signup?company=${companyId ?? ""}`; // TODO: 실제 초대 토큰을 사용하도록 수정
+    const inviteLink = `${window.location.origin}/signup?company=${companyId ?? ""}`;
     navigator.clipboard.writeText(inviteLink);
     setCopiedId(email);
     setTimeout(() => setCopiedId(null), 2000);
@@ -67,11 +69,12 @@ export default function InviteMembers() {
         throw new Error("최소 1명 이상의 사원을 초대해야 합니다");
       }
 
-      console.log(
-        "Invites sent:",
-        emails.map((e) => e.email),
+      await Promise.all(
+        emails.map((e) =>
+          inviteMemberMutation.mutateAsync({ email: e.email, role: "USER" }),
+        ),
       );
-      navigate("/");
+      navigate("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "초대 실패");
     } finally {

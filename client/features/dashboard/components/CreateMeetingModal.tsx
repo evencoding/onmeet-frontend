@@ -1,5 +1,8 @@
 import { X, Calendar, Clock, Users, Settings } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/features/auth/context";
+import { useCreateRoom, useScheduleRoom } from "@/features/meeting/hooks";
 
 interface CreateMeetingModalProps {
   isOpen: boolean;
@@ -7,6 +10,12 @@ interface CreateMeetingModalProps {
 }
 
 export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingModalProps) {
+  const { user } = useAuth();
+  const userId = user ? String(user.id) : "";
+  const navigate = useNavigate();
+  const createRoomMutation = useCreateRoom();
+  const scheduleRoomMutation = useScheduleRoom();
+
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -22,9 +31,48 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Meeting created:", formData);
-    onClose();
+    if (!formData.title.trim()) return;
+
+    if (formData.date && formData.time) {
+      const scheduledAt = `${formData.date}T${formData.time}:00`;
+      scheduleRoomMutation.mutate(
+        {
+          userId,
+          data: {
+            title: formData.title,
+            description: formData.description || undefined,
+            scheduledAt,
+          },
+        },
+        {
+          onSuccess: () => {
+            setFormData({ title: "", date: "", time: "", description: "", invitees: "" });
+            onClose();
+          },
+        },
+      );
+    } else {
+      createRoomMutation.mutate(
+        {
+          userId,
+          data: {
+            title: formData.title,
+            description: formData.description || undefined,
+            type: "INSTANT",
+          },
+        },
+        {
+          onSuccess: (room) => {
+            setFormData({ title: "", date: "", time: "", description: "", invitees: "" });
+            onClose();
+            navigate(`/meeting/${room.id}`);
+          },
+        },
+      );
+    }
   };
+
+  const isPending = createRoomMutation.isPending || scheduleRoomMutation.isPending;
 
   if (!isOpen) return null;
 
@@ -53,6 +101,7 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
               value={formData.title}
               onChange={handleInputChange}
               placeholder="회의 제목을 입력하세요"
+              required
               className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-white light:focus:bg-purple-50 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 light:shadow-md light:shadow-purple-200/20 transition-all duration-200 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60"
             />
           </div>
@@ -61,7 +110,7 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
             <div className="space-y-2">
               <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
                 <Calendar className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
-                날짜
+                날짜 (선택)
               </label>
               <input
                 type="date"
@@ -75,7 +124,7 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
             <div className="space-y-2">
               <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
                 <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
-                시간
+                시간 (선택)
               </label>
               <input
                 type="time"
@@ -86,6 +135,12 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
               />
             </div>
           </div>
+
+          {!formData.date && !formData.time && (
+            <p className="text-xs dark:text-purple-400 light:text-purple-600">
+              날짜와 시간을 비워두면 즉시 회의가 생성됩니다.
+            </p>
+          )}
 
           <div className="space-y-2">
             <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
@@ -102,21 +157,6 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
-              <Users className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
-              초대 대상 (이메일)
-            </label>
-            <input
-              type="text"
-              name="invitees"
-              value={formData.invitees}
-              onChange={handleInputChange}
-              placeholder="이메일을 쉼표로 구분하여 입력하세요"
-              className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-white light:focus:bg-purple-50 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 light:shadow-md light:shadow-purple-200/20 transition-all duration-200 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/60"
-            />
-          </div>
-
           <div className="dark:border-t dark:border-purple-500/20 light:border-t-2 light:border-purple-300/50 pt-6" />
 
           <div className="flex gap-3 pt-2">
@@ -129,9 +169,14 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg shadow-purple-500/30 hover:shadow-xl light:shadow-purple-400/40 hover:scale-105 active:scale-95"
+              disabled={isPending}
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg shadow-purple-500/30 hover:shadow-xl light:shadow-purple-400/40 hover:scale-105 active:scale-95 disabled:opacity-50"
             >
-              회의 생성
+              {isPending
+                ? "생성 중..."
+                : formData.date && formData.time
+                  ? "회의 예약"
+                  : "즉시 회의 생성"}
             </button>
           </div>
         </form>
