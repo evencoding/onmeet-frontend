@@ -225,11 +225,14 @@ export default function Schedule() {
         </div>
 
         <div
-          className={`grid gap-6 transition-all duration-300 ${
-            isRightPanelOpen ? "grid-cols-1 xl:grid-cols-2" : "grid-cols-1"
-          }`}
+          className="grid"
+          style={{
+            gridTemplateColumns: isRightPanelOpen ? "1fr 1fr" : "1fr 0fr",
+            gap: isRightPanelOpen ? "1.5rem" : "0",
+            transition: "grid-template-columns 300ms ease-in-out, gap 300ms ease-in-out",
+          }}
         >
-          <div className="w-full flex flex-col gap-4">
+          <div className="min-w-0 flex flex-col gap-4">
             <CalendarView
               onSelectDate={setSelectedDate}
               meetings={allMeetings}
@@ -237,8 +240,11 @@ export default function Schedule() {
             />
           </div>
 
-          {isRightPanelOpen && (
-            <div className="w-full space-y-4">
+          <div
+            className="overflow-hidden transition-opacity duration-300"
+            style={{ opacity: isRightPanelOpen ? 1 : 0 }}
+          >
+            <div className="min-w-[320px] space-y-4">
               <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
                 <h2 className="text-xl font-bold dark:text-white/90 light:text-purple-950 mb-4">
                   {format(selectedDate, "MMMM dd, yyyy (EEEE)", { locale: ko })}
@@ -311,7 +317,7 @@ export default function Schedule() {
                 <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-4">
                   앞으로의 회의
                 </h3>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   {allMeetings.slice(0, 4).map((meeting) => (
                     <div
                       key={meeting.id}
@@ -331,7 +337,7 @@ export default function Schedule() {
                 </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
 
