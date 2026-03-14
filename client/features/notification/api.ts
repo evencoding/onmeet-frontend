@@ -1,3 +1,5 @@
+import { pageQs } from "@/shared/utils/api";
+
 const NOTI_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/notification`;
 
 async function notiFetch<T>(
