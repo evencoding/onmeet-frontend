@@ -1,32 +1,31 @@
-import { roomApi } from "@/shared/api";
-import { RoomParticipantResponseSchema } from "@/shared/schemas";
-import { z } from "zod";
+import { roomFetch } from "../api";
 import type { RoomParticipantResponse } from "./types";
 
 export function listWaitingRoom(roomId: number, userId: string) {
-  return roomApi<RoomParticipantResponse[]>(
+  return roomFetch<RoomParticipantResponse[]>(
     `/rooms/${roomId}/waiting`,
-    { userId, schema: z.array(RoomParticipantResponseSchema) },
+    userId,
   );
 }
 
 export function admitWaiting(roomId: number, targetUserId: number, userId: string) {
-  return roomApi<void>(
+  return roomFetch<void>(
     `/rooms/${roomId}/waiting/${targetUserId}/admit`,
-    { userId, method: "POST" },
+    userId,
+    { method: "POST" },
   );
 }
 
 export function rejectWaiting(roomId: number, targetUserId: number, userId: string) {
-  return roomApi<void>(
+  return roomFetch<void>(
     `/rooms/${roomId}/waiting/${targetUserId}/reject`,
-    { userId, method: "POST" },
+    userId,
+    { method: "POST" },
   );
 }
 
 export function admitAllWaiting(roomId: number, userId: string) {
-  return roomApi<void>(`/rooms/${roomId}/waiting/admit-all`, {
-    userId,
+  return roomFetch<void>(`/rooms/${roomId}/waiting/admit-all`, userId, {
     method: "POST",
   });
 }
