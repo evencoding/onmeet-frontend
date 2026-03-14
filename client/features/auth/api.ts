@@ -1,3 +1,5 @@
+import { pageQs } from "@/shared/utils/api";
+
 const AUTH_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/auth`;
 
 async function authFetch<T>(
@@ -331,13 +333,7 @@ export function cancelTeamRequest(teamId: number): Promise<void> {
 export function getAllEmployees(
   pageable: Pageable,
 ): Promise<PageResponse<UserResponseDto>> {
-  const params = new URLSearchParams();
-  if (pageable.page !== undefined) params.set("page", String(pageable.page));
-  if (pageable.size !== undefined) params.set("size", String(pageable.size));
-  if (pageable.sort) {
-    pageable.sort.forEach((s) => params.append("sort", s));
-  }
-  return authFetch(`/v1/manager/employees?${params}`);
+  return authFetch(`/v1/manager/employees${pageQs(pageable)}`);
 }
 
 export function deactivateUser(userId: number): Promise<UserResponseDto> {
