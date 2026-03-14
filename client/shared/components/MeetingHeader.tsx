@@ -13,7 +13,7 @@ import {
   useNotificationSSE,
   useFcmSetup,
 } from "@/features/notification/hooks";
-import type { NotificationType } from "@/features/notification/api";
+import { getUnreadTotal, type NotificationType } from "@/features/notification/api";
 
 function formatRelativeTime(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -67,7 +67,7 @@ export default function MeetingHeader() {
   useFcmSetup(userId || undefined);
 
   const notifications = notificationPage?.content ?? [];
-  const unreadCount = unreadData ? Object.values(unreadData)[0] ?? 0 : 0;
+  const unreadCount = unreadData ? getUnreadTotal(unreadData) : 0;
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 });
