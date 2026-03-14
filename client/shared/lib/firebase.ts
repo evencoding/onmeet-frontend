@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getMessaging, type Messaging } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
@@ -18,11 +19,15 @@ const isFirebaseConfigValid = () => {
 
 let app: any = null;
 let analytics: any = null;
+let messaging: Messaging | null = null;
 
 if (isFirebaseConfigValid()) {
   try {
     app = initializeApp(firebaseConfig);
     analytics = getAnalytics(app);
+    if ("serviceWorker" in navigator) {
+      messaging = getMessaging(app);
+    }
     console.log("Firebase initialized successfully");
   } catch (error) {
     console.error("Firebase initialization error:", error);
@@ -31,4 +36,4 @@ if (isFirebaseConfigValid()) {
   console.warn("Firebase configuration is incomplete. Some Firebase features may not work.");
 }
 
-export { app, analytics };
+export { app, analytics, messaging };
