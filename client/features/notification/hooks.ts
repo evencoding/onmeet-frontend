@@ -21,7 +21,8 @@ import {
 
 export const notiKeys = {
   all: ["notifications"] as const,
-  list: (pageable?: Pageable) => [...notiKeys.all, "list", pageable] as const,
+  lists: () => [...notiKeys.all, "list"] as const,
+  list: (pageable?: Pageable) => [...notiKeys.lists(), pageable] as const,
   unreadCount: () => [...notiKeys.all, "unread-count"] as const,
   settings: (userId: number) => [...notiKeys.all, "settings", userId] as const,
 };
@@ -33,6 +34,7 @@ export function useNotificationSettings(userId: number) {
     queryKey: notiKeys.settings(userId),
     queryFn: () => getNotificationSettings(userId),
     enabled: !!userId,
+    staleTime: 30_000,
   });
 }
 
@@ -41,6 +43,7 @@ export function useNotifications(userId: string, pageable?: Pageable) {
     queryKey: notiKeys.list(pageable),
     queryFn: () => getNotifications(userId, pageable),
     enabled: !!userId,
+    staleTime: 30_000,
   });
 }
 
@@ -86,7 +89,8 @@ export function useMarkAsRead() {
     mutationFn: (args: { notificationId: number; userId: string }) =>
       markAsRead(args.notificationId, args.userId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: notiKeys.all });
+      qc.invalidateQueries({ queryKey: notiKeys.lists() });
+      qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
     },
   });
 }
@@ -96,7 +100,8 @@ export function useMarkAllAsRead() {
   return useMutation({
     mutationFn: (args: { userId: string }) => markAllAsRead(args.userId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: notiKeys.all });
+      qc.invalidateQueries({ queryKey: notiKeys.lists() });
+      qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
     },
   });
 }
@@ -107,7 +112,8 @@ export function useDeleteNotification() {
     mutationFn: (args: { notificationId: number; userId: string }) =>
       deleteNotification(args.notificationId, args.userId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: notiKeys.all });
+      qc.invalidateQueries({ queryKey: notiKeys.lists() });
+      qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
     },
   });
 }
@@ -117,9 +123,62 @@ export function useDeleteAllNotifications() {
   return useMutation({
     mutationFn: (args: { userId: string }) => deleteAllNotifications(args.userId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: notiKeys.all });
+      qc.invalidateQueries({ queryKey: notiKeys.lists() });
+      qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
     },
   });
+}
+
+// ── FCM Hook ──
+
+const FCM_TOKEN_KEY = "onmeet_fcm_token";
+
+export function useFcmSetup(userId: string | undefined) {
+  const registerMutation = useRegisterFcmToken();
+  const unregisterMutation = useUnregisterFcmToken();
+  const tokenRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const { messaging } = await import("@/shared/lib/firebase");
+        if (!messaging || cancelled) return;
+
+        const { getToken } = await import("firebase/messaging");
+        const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
+        if (!vapidKey) return;
+
+        const token = await getToken(messaging, { vapidKey });
+        if (!token || cancelled) return;
+
+        tokenRef.current = token;
+        localStorage.setItem(FCM_TOKEN_KEY, token);
+
+        const deviceId = `${navigator.userAgent}-${userId}`;
+        registerMutation.mutate({
+          userId,
+          data: { token, deviceId, deviceType: "WEB" },
+        });
+      } catch {
+        // FCM not available (no service worker, permission denied, etc.)
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      const token = tokenRef.current ?? localStorage.getItem(FCM_TOKEN_KEY);
+      if (token && userId) {
+        unregisterMutation.mutate({ userId, token });
+        localStorage.removeItem(FCM_TOKEN_KEY);
+        tokenRef.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
 }
 
 // ── SSE Hook ──
@@ -175,7 +234,7 @@ export function useNotificationSSE(
                 const notification = JSON.parse(raw) as NotificationResponseDto;
                 onMessage?.(notification);
                 qc.invalidateQueries({ queryKey: notiKeys.unreadCount() });
-                qc.invalidateQueries({ queryKey: notiKeys.list() });
+                qc.invalidateQueries({ queryKey: notiKeys.lists() });
               } catch {
                 // ignore non-JSON keepalive messages
               }
@@ -185,7 +244,6 @@ export function useNotificationSSE(
       } catch (err) {
         if ((err as DOMException)?.name !== "AbortError") {
           setConnected(false);
-          // reconnect after delay
           setTimeout(connect, 5_000);
         }
       }

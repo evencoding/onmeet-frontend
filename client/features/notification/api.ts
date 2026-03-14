@@ -28,7 +28,14 @@ async function notiFetch<T>(
   }
 
   const text = await res.text();
-  return text ? JSON.parse(text) : ({} as T);
+  if (!text) return {} as T;
+
+  const json = JSON.parse(text);
+  if (json && typeof json === "object" && "success" in json) {
+    if (!json.success && json.error) throw json.error;
+    return json.data as T;
+  }
+  return json as T;
 }
 
 // ── Types ──
@@ -92,6 +99,7 @@ export interface NotificationResponseDto {
   dedupeKey: string;
   resourceId: string;
   actorUserId: number;
+  read: boolean;
 }
 
 export interface SortObject {
@@ -173,7 +181,7 @@ export function getNotifications(userId: string, pageable?: Pageable) {
 }
 
 export function getUnreadCount(userId: string) {
-  return notiFetch<{ count: number }>("/v1/notifications/unread/count", userId);
+  return notiFetch<Record<string, number>>("/v1/notifications/unread/count", userId);
 }
 
 export function markAsRead(notificationId: number, userId: string) {
@@ -185,7 +193,7 @@ export function markAsRead(notificationId: number, userId: string) {
 }
 
 export function markAllAsRead(userId: string) {
-  return notiFetch<void>("/v1/notifications/read/all", userId, {
+  return notiFetch<Record<string, number>>("/v1/notifications/read/all", userId, {
     method: "PATCH",
   });
 }
