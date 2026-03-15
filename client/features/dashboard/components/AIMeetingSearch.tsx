@@ -30,7 +30,7 @@ function getStatusStyle(status: string) {
 
 export default function AIMeetingSearch() {
   const { user } = useAuth();
-  const userId = user?.id ? String(user.id) : undefined;
+  const userId = user?.id ? String(user.id) : "";
   const { data: historyData } = useRoomHistory(userId);
   const [searchTerm, setSearchTerm] = useState("");
 
