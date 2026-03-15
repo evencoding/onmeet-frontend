@@ -12,7 +12,7 @@ import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function MyPage() {
   useDocumentTitle("설정 - OnMeet");
-  const { user, logout } = useAuth();
+  const { user, logout, isManager } = useAuth();
   const navigate = useNavigate();
   const { data: notiSettings } = useNotificationSettings(user?.id ?? 0);
   const updateSettingsMutation = useUpdateNotificationSettings();
@@ -110,6 +110,11 @@ export default function MyPage() {
       return;
     }
 
+    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])/.test(passwordForm.newPassword)) {
+      setPasswordError("비밀번호는 영문, 숫자, 특수문자(@$!%*#?&)를 포함해야 합니다.");
+      return;
+    }
+
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setPasswordError("새 비밀번호가 일치하지 않습니다.");
       return;
@@ -189,13 +194,15 @@ export default function MyPage() {
               );
             })}
           </div>
-          <button
-            onClick={() => navigate("/company")}
-            className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-lg font-medium hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all whitespace-nowrap"
-          >
-            <Building2 className="w-4 h-4" />
-            회사 관리
-          </button>
+          {isManager && (
+            <button
+              onClick={() => navigate("/company")}
+              className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-lg font-medium hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all whitespace-nowrap"
+            >
+              <Building2 className="w-4 h-4" />
+              회사 관리
+            </button>
+          )}
         </div>
 
         {activeTab === "profile" && (
