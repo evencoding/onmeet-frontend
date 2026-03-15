@@ -7,6 +7,7 @@ import {
   X,
   Volume2,
   FlipHorizontal,
+  Lock,
 } from "lucide-react";
 
 export interface DeviceSelection {
@@ -17,7 +18,8 @@ export interface DeviceSelection {
 
 interface MeetingPreparationModalProps {
   isOpen: boolean;
-  onStart: () => void;
+  isLocked?: boolean;
+  onStart: (password?: string) => void;
   onInitialState: {
     isMuted: boolean;
     isVideoOn: boolean;
@@ -33,6 +35,7 @@ interface MeetingPreparationModalProps {
 
 export default function MeetingPreparationModal({
   isOpen,
+  isLocked,
   onStart,
   onStateChange,
   onDeviceSelect,
@@ -50,6 +53,8 @@ export default function MeetingPreparationModal({
   const [selectedMicrophone, setSelectedMicrophone] = useState<string>("");
   const [selectedSpeaker, setSelectedSpeaker] = useState<string>("");
   const [previewStream, setPreviewStream] = useState<MediaStream | null>(null);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
   const [isMicTesting, setIsMicTesting] = useState(false);
   const [microphoneLevel, setMicrophoneLevel] = useState(0);
   const [micTestStream, setMicTestStream] = useState<MediaStream | null>(null);
@@ -166,6 +171,11 @@ export default function MeetingPreparationModal({
   };
 
   const handleStart = () => {
+    if (isLocked && !password.trim()) {
+      setPasswordError(true);
+      return;
+    }
+
     onStateChange.setIsMuted(isMuted);
     onStateChange.setIsVideoOn(isVideoOn);
     stopMicTest();
@@ -181,7 +191,7 @@ export default function MeetingPreparationModal({
       speakerId: selectedSpeaker,
     });
 
-    onStart();
+    onStart(password || undefined);
   };
 
   if (!isOpen) return null;
@@ -192,7 +202,7 @@ export default function MeetingPreparationModal({
         <div className="px-8 py-4 border-b border-purple-500/20 flex items-center justify-between flex-shrink-0">
           <h2 className="text-xl font-bold text-white">회의 준비</h2>
           <button
-            onClick={onStart}
+            onClick={() => onStart()}
             className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
           >
             <X className="w-6 h-6 text-white" />
@@ -231,6 +241,34 @@ export default function MeetingPreparationModal({
               )}
             </div>
           </div>
+
+          {isLocked && (
+            <div className="space-y-2 p-4 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
+              <div className="flex items-center gap-2">
+                <Lock className="w-4 h-4 text-yellow-400" />
+                <label className="font-semibold text-white text-sm">
+                  비밀번호가 필요한 회의입니다
+                </label>
+              </div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordError(false);
+                }}
+                placeholder="회의 비밀번호를 입력하세요"
+                className={`w-full px-3 py-2 bg-purple-500/20 border rounded-lg text-white text-sm focus:outline-none focus:border-purple-400 placeholder:text-white/40 ${
+                  passwordError
+                    ? "border-red-500"
+                    : "border-purple-500/30"
+                }`}
+              />
+              {passwordError && (
+                <p className="text-xs text-red-400">비밀번호를 입력해주세요</p>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-3">

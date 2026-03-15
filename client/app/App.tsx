@@ -87,6 +87,13 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function GuestRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return <PageLoader />;
+  if (isAuthenticated) return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
 const HomeRoute = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -107,22 +114,22 @@ const SentryRoutes = Sentry.withSentryRouting(Routes);
 const AppContent = () => (
   <BrowserRouter>
     <SentryRoutes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
       <Route
         path="/signup"
-        element={<Suspense fallback={<PageLoader />}><SignupFlow /></Suspense>}
+        element={<GuestRoute><Suspense fallback={<PageLoader />}><SignupFlow /></Suspense></GuestRoute>}
       />
       <Route
         path="/signup/company"
-        element={<Suspense fallback={<PageLoader />}><CompanySignup /></Suspense>}
+        element={<GuestRoute><Suspense fallback={<PageLoader />}><CompanySignup /></Suspense></GuestRoute>}
       />
       <Route
         path="/signup/employee"
-        element={<Suspense fallback={<PageLoader />}><EmployeeSignup /></Suspense>}
+        element={<GuestRoute><Suspense fallback={<PageLoader />}><EmployeeSignup /></Suspense></GuestRoute>}
       />
       <Route
         path="/signup/invite-members"
-        element={<Suspense fallback={<PageLoader />}><InviteMembers /></Suspense>}
+        element={<GuestRoute><Suspense fallback={<PageLoader />}><InviteMembers /></Suspense></GuestRoute>}
       />
 
       <Route path="/" element={<HomeRoute />} />

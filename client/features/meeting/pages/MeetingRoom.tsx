@@ -6,10 +6,11 @@ import { useShallow } from "zustand/react/shallow";
 import MeetingPreparationModal from "@/features/meeting/components/MeetingPreparationModal";
 import WaitingRoom from "@/features/meeting/components/WaitingRoom";
 import MeetingRoomContent from "@/features/meeting/components/MeetingRoomContent";
-import { useJoinRoom } from "@/features/meeting/hooks";
+import { useJoinRoom, useRoom } from "@/features/meeting/hooks";
 import { useAuth } from "@/features/auth/context";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useMeetingRoomStore, type DeviceSelection } from "../store";
+import { useWaitingRoomSSE } from "../hooks/useWaitingRoomSSE";
 
 const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "wss://livekit.onmeet.cloud";
 
@@ -19,7 +20,7 @@ export default function MeetingRoom() {
   const { roomId } = useParams<{ roomId: string }>();
   const { user } = useAuth();
 
-  const { phase, token, isHost, isMuted, isVideoOn, deviceSelection } = useMeetingRoomStore(
+  const { phase, token, isHost, isMuted, isVideoOn, deviceSelection, rejected } = useMeetingRoomStore(
     useShallow((s) => ({
       phase: s.phase,
       token: s.token,
@@ -27,9 +28,11 @@ export default function MeetingRoom() {
       isMuted: s.isMuted,
       isVideoOn: s.isVideoOn,
       deviceSelection: s.deviceSelection,
+      rejected: s.rejected,
     })),
   );
 
+  const { data: roomData } = useRoom(Number(roomId), String(user?.id ?? ""));
   const joinRoom = useJoinRoom();
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -40,16 +43,38 @@ export default function MeetingRoom() {
     [],
   );
 
-  const handleStartMeeting = useCallback(async () => {
+  // SSE callbacks
+  const handleSSEAdmitted = useCallback((sseToken: string, sseIsHost: boolean) => {
+    const s = useMeetingRoomStore.getState();
+    s.setToken(sseToken);
+    s.setIsHost(sseIsHost);
+    s.setPhase("connected");
+  }, []);
+
+  const handleSSERejected = useCallback(() => {
+    useMeetingRoomStore.getState().setRejected(true);
+  }, []);
+
+  // SSE connection — only active during waiting phase
+  const { disconnect: disconnectSSE } = useWaitingRoomSSE(
+    phase === "waiting" ? (roomId ?? null) : null,
+    phase === "waiting" ? String(user?.id ?? "") : undefined,
+    handleSSEAdmitted,
+    handleSSERejected,
+  );
+
+  const handleStartMeeting = useCallback(async (password?: string) => {
     if (!roomId || !user) return;
 
     const store = useMeetingRoomStore.getState();
     store.setPhase("joining");
+    store.setRejected(false);
 
     try {
       const res = await joinRoom.mutateAsync({
         roomId,
         userId: String(user.id),
+        data: password ? { password } : undefined,
         body: {
           displayName: user.name,
           audioEnabled: !store.isMuted,
@@ -58,10 +83,12 @@ export default function MeetingRoom() {
       });
 
       const s = useMeetingRoomStore.getState();
-      s.setIsHost(res.isHost);
+      s.setIsHost(res.isHost ?? false);
 
       if (res.waitingRoom) {
         s.setPhase("waiting");
+        // SSE will activate via the phase === "waiting" condition above.
+        // Fallback polling in case SSE fails.
         pollingRef.current = setInterval(async () => {
           try {
             const pollRes = await joinRoom.mutateAsync({
@@ -72,7 +99,7 @@ export default function MeetingRoom() {
               if (pollingRef.current) clearInterval(pollingRef.current);
               const latest = useMeetingRoomStore.getState();
               latest.setToken(pollRes.token);
-              latest.setIsHost(pollRes.isHost);
+              latest.setIsHost(pollRes.isHost ?? false);
               latest.setPhase("connected");
             }
           } catch {
@@ -91,8 +118,17 @@ export default function MeetingRoom() {
 
   const handleCancelWaiting = useCallback(() => {
     if (pollingRef.current) clearInterval(pollingRef.current);
-    useMeetingRoomStore.getState().setPhase("preparing");
-  }, []);
+    disconnectSSE();
+    const s = useMeetingRoomStore.getState();
+    s.setRejected(false);
+    s.setPhase("preparing");
+  }, [disconnectSSE]);
+
+  const handleBackToHome = useCallback(() => {
+    if (pollingRef.current) clearInterval(pollingRef.current);
+    disconnectSSE();
+    navigate("/");
+  }, [disconnectSSE, navigate]);
 
   useEffect(() => {
     return () => {
@@ -114,6 +150,7 @@ export default function MeetingRoom() {
       <div className="flex h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white items-center justify-center">
         <MeetingPreparationModal
           isOpen={true}
+          isLocked={roomData?.locked}
           onStart={handleStartMeeting}
           onInitialState={{ isMuted, isVideoOn }}
           onStateChange={{
@@ -140,7 +177,14 @@ export default function MeetingRoom() {
   }
 
   if (phase === "waiting") {
-    return <WaitingRoom onCancel={handleCancelWaiting} />;
+    return (
+      <WaitingRoom
+        onCancel={handleCancelWaiting}
+        rejected={rejected}
+        onBack={handleBackToHome}
+        roomTitle={roomData?.title}
+      />
+    );
   }
 
   if (phase === "disconnected") {
@@ -179,6 +223,10 @@ export default function MeetingRoom() {
       audio={audioOptions}
       video={videoOptions}
       onDisconnected={() => useMeetingRoomStore.getState().setPhase("disconnected")}
+      onError={(err) => {
+        console.error("LiveKit connection error:", err);
+        useMeetingRoomStore.getState().setPhase("disconnected");
+      }}
     >
       <MeetingRoomContent roomId={roomId} isHost={isHost} />
     </LiveKitRoom>
