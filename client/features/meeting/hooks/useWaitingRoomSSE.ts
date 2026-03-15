@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 
-const SSE_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || ""}/api/rooms`;
+const SSE_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || ""}/video/v1/rooms`;
 
 interface WaitingRoomEvent {
   type: "WAITING_ROOM_ADMITTED" | "WAITING_ROOM_REJECTED";
