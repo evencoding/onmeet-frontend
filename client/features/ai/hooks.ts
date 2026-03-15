@@ -4,7 +4,8 @@ import {
   regenerateMinutes,
   updateMinutes,
   getTranscript,
-  type UpdateMinutesRequest,
+  type MinutesPatchRequest,
+  type MinutesRegenerateRequest,
 } from "./api";
 
 export const aiKeys = {
@@ -31,10 +32,14 @@ export function useTranscript(roomId: number, userId: string) {
 export function useRegenerateMinutes() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (args: { roomId: number; userId: string }) =>
-      regenerateMinutes(args.roomId, args.userId),
+    mutationFn: (args: {
+      roomId: number;
+      userId: string;
+      data?: MinutesRegenerateRequest;
+    }) => regenerateMinutes(args.roomId, args.userId, args.data),
     onSuccess: (_data, vars) => {
       qc.invalidateQueries({ queryKey: aiKeys.minutes(vars.roomId) });
+      qc.invalidateQueries({ queryKey: aiKeys.transcript(vars.roomId) });
     },
   });
 }
@@ -45,7 +50,7 @@ export function useUpdateMinutes() {
     mutationFn: (args: {
       roomId: number;
       userId: string;
-      data: UpdateMinutesRequest;
+      data: MinutesPatchRequest;
     }) => updateMinutes(args.roomId, args.userId, args.data),
     onSuccess: (_data, vars) => {
       qc.invalidateQueries({ queryKey: aiKeys.minutes(vars.roomId) });

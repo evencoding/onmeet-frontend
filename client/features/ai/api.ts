@@ -36,30 +36,36 @@ async function aiFetch<T>(
 
 // ── Types ──
 
+export type MinutesStatus = "GENERATED" | "EDITED_BY_USER" | "REGENERATING" | "FAILED";
+
 export interface MinutesResponse {
+  id: number;
   roomId: number;
-  summary: string;
-  keyPoints: string[];
+  transcriptId: string;
+  transcriptS3Key: string;
+  summaryS3Key: string;
+  summaryJson: string;
+  userEditedSummaryJson: string | null;
+  status: MinutesStatus;
+  lastError: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface TranscriptSegment {
-  speaker: string;
-  content: string;
-  timestamp: string;
+export interface MinutesPatchRequest {
+  userEditedSummaryJson: string;
+}
+
+export interface MinutesRegenerateRequest {
+  language?: string;
+  style?: string;
+  model?: string;
 }
 
 export interface TranscriptResponse {
   roomId: number;
-  segments: TranscriptSegment[];
-  fullText: string;
+  transcript: string;
   createdAt: string;
-}
-
-export interface UpdateMinutesRequest {
-  summary: string;
-  keyPoints?: string[];
 }
 
 // ── API Functions ──
@@ -74,16 +80,18 @@ export function getMinutes(
 export function regenerateMinutes(
   roomId: number,
   userId: string,
+  data?: MinutesRegenerateRequest,
 ): Promise<MinutesResponse> {
   return aiFetch(`/v1/rooms/${roomId}/minutes/regenerate`, userId, {
     method: "POST",
+    body: data ? JSON.stringify(data) : undefined,
   });
 }
 
 export function updateMinutes(
   roomId: number,
   userId: string,
-  data: UpdateMinutesRequest,
+  data: MinutesPatchRequest,
 ): Promise<MinutesResponse> {
   return aiFetch(`/v1/rooms/${roomId}/minutes`, userId, {
     method: "PUT",
