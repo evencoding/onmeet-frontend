@@ -3,7 +3,7 @@ import "./global.css";
 import "@/shared/lib/firebase";
 
 import * as Sentry from "@sentry/react";
-import { Suspense, lazy } from "react";
+import React, { Suspense, lazy } from "react";
 import { Toaster } from "@/shared/ui/toaster";
 import { Toaster as Sonner } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
@@ -97,6 +97,12 @@ function AuthOnlyRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function ManagerRoute({ children }: { children: React.ReactNode }) {
+  const { isManager } = useAuth();
+  if (!isManager) return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
 function GuestRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
   if (isLoading) return <PageLoader />;
@@ -161,7 +167,7 @@ const AppContent = () => (
         <Route path="/board" element={<TeamBoard />} />
         <Route path="/team/:teamId" element={<Team />} />
         <Route path="/mypage" element={<MyPage />} />
-        <Route path="/company" element={<CompanyManagement />} />
+        <Route path="/company" element={<ManagerRoute><CompanyManagement /></ManagerRoute>} />
       </Route>
 
       <Route

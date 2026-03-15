@@ -132,6 +132,7 @@ export interface TeamInfoDto {
   id: number;
   name: string;
   color?: string;
+  status?: string;
 }
 
 export interface JobTitleResponse {
