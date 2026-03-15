@@ -13,6 +13,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   isPasswordReset: boolean;
+  isManager: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -44,6 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         isLoading: isMeLoading,
         isPasswordReset: !!user?.isPasswordReset,
+        isManager: !!user?.roles?.some((r) => r === "MANAGER" || r === "ADMIN"),
         login,
         logout,
       }}
