@@ -30,9 +30,11 @@ export interface ConnectionSlice {
   phase: Phase;
   token: string;
   isHost: boolean;
+  rejected: boolean;
   setPhase: (phase: Phase) => void;
   setToken: (token: string) => void;
   setIsHost: (isHost: boolean) => void;
+  setRejected: (v: boolean) => void;
 }
 
 export interface MediaSlice {
