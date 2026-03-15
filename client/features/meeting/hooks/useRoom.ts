@@ -40,7 +40,7 @@ export function useRoom(roomId: number, userId: string) {
   return useQuery({
     queryKey: roomKeys.detail(roomId),
     queryFn: () => getRoom(roomId, userId),
-    enabled: !!roomId && !!userId,
+    enabled: Number.isFinite(roomId) && roomId > 0 && !!userId,
     staleTime: 30_000,
   });
 }

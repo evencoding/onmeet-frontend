@@ -32,7 +32,12 @@ export default function MeetingRoom() {
     })),
   );
 
-  const { data: roomData } = useRoom(Number(roomId), String(user?.id ?? ""));
+  const roomIdNum = Number(roomId);
+  const userId = String(user?.id ?? "");
+  const { data: roomData } = useRoom(
+    Number.isFinite(roomIdNum) ? roomIdNum : 0,
+    userId,
+  );
   const joinRoom = useJoinRoom();
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -58,7 +63,7 @@ export default function MeetingRoom() {
   // SSE connection — only active during waiting phase
   const { disconnect: disconnectSSE } = useWaitingRoomSSE(
     phase === "waiting" ? (roomId ?? null) : null,
-    phase === "waiting" ? String(user?.id ?? "") : undefined,
+    phase === "waiting" ? userId : undefined,
     handleSSEAdmitted,
     handleSSERejected,
   );
@@ -75,8 +80,8 @@ export default function MeetingRoom() {
 
     try {
       const res = await joinRoom.mutateAsync({
-        roomId,
-        userId: String(user.id),
+        roomId: roomIdNum,
+        userId,
         data: password ? { password } : undefined,
       });
 
@@ -90,8 +95,8 @@ export default function MeetingRoom() {
         pollingRef.current = setInterval(async () => {
           try {
             const pollRes = await joinRoom.mutateAsync({
-              roomId,
-              userId: String(user.id),
+              roomId: roomIdNum,
+              userId,
             });
             if (!pollRes.waitingRoom) {
               if (pollingRef.current) clearInterval(pollingRef.current);
@@ -134,7 +139,7 @@ export default function MeetingRoom() {
     };
   }, []);
 
-  if (!roomId) {
+  if (!roomId || !Number.isFinite(roomIdNum)) {
     return (
       <div className="flex h-screen items-center justify-center bg-black text-white">
         <p>유효하지 않은 회의 링크입니다.</p>
