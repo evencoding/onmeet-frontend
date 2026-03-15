@@ -9,9 +9,10 @@ export default function SignupFlow() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get("token");
+  const email = searchParams.get("email");
 
   if (inviteToken) {
-    navigate(`/signup/employee?token=${inviteToken}`);
+    navigate(`/signup/employee?token=${inviteToken}${email ? `&email=${encodeURIComponent(email)}` : ""}`);
     return null;
   }
 

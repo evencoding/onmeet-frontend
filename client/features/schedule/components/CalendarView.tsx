@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import {
   format,
@@ -9,11 +8,13 @@ import {
   eachDayOfInterval,
   isSameMonth,
   isSameDay,
+  isToday,
   getDay,
   addDays,
   subDays,
 } from "date-fns";
 import { ko } from "date-fns/locale";
+import { useState } from "react";
 
 interface Meeting {
   id: string;
@@ -28,16 +29,29 @@ interface CalendarViewProps {
   onSelectDate?: (date: Date) => void;
   meetings?: Meeting[];
   onAddMeeting?: (date: Date) => void;
+  currentMonth?: Date;
+  onMonthChange?: (date: Date) => void;
 }
 
 export default function CalendarView({
   onSelectDate,
   meetings = [],
   onAddMeeting,
+  currentMonth,
+  onMonthChange,
 }: CalendarViewProps) {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [internalMonth, setInternalMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
+
+  const currentDate = currentMonth ?? internalMonth;
+  const setCurrentDate = (date: Date) => {
+    if (onMonthChange) {
+      onMonthChange(date);
+    } else {
+      setInternalMonth(date);
+    }
+  };
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -86,7 +100,7 @@ export default function CalendarView({
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-3 mb-3">
+      <div className="grid grid-cols-7 gap-1 mb-1">
         {weekDays.map((day) => (
           <div
             key={day}
@@ -97,11 +111,12 @@ export default function CalendarView({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-3">
+      <div className="grid grid-cols-7 gap-1">
         {paddedDays.map((date, idx) => {
           const isCurrentMonth = isSameMonth(date, currentDate);
           const isSelected = selectedDate && isSameDay(date, selectedDate);
           const isHovered = hoveredDate && isSameDay(date, hoveredDate);
+          const isTodayDate = isToday(date);
           const dateMeetings = getMeetingsForDate(date);
 
           return (
@@ -113,27 +128,31 @@ export default function CalendarView({
             >
               <button
                 onClick={() => handleSelectDate(date)}
-                className={`w-full p-4 rounded-lg border transition-all duration-200 min-h-28 flex flex-col items-start justify-start text-left ${
+                className={`w-full p-2 rounded-lg border transition-all duration-200 min-h-14 flex flex-col items-center justify-start ${
                   isSelected
                     ? "dark:bg-purple-600 light:bg-purple-600 text-white dark:border-purple-600 light:border-purple-600 shadow-lg dark:shadow-purple-500/30 light:shadow-purple-400/30"
-                    : isCurrentMonth
-                      ? "dark:bg-purple-500/20 dark:hover:bg-purple-500/30 dark:border-purple-500/20 light:bg-white light:hover:bg-purple-50 light:border-2 light:border-purple-300 light:hover:border-purple-400"
-                      : "dark:bg-purple-500/10 dark:border-purple-500/10 light:bg-purple-50/50 light:border-2 light:border-purple-200/50 dark:text-white/50 light:text-purple-600/50"
+                    : isTodayDate
+                      ? "dark:bg-purple-500/20 dark:hover:bg-purple-500/30 dark:border-purple-400 light:bg-white light:hover:bg-purple-50 light:border-2 light:border-purple-500 ring-2 ring-purple-500/50"
+                      : isCurrentMonth
+                        ? "dark:bg-purple-500/20 dark:hover:bg-purple-500/30 dark:border-purple-500/20 light:bg-white light:hover:bg-purple-50 light:border-2 light:border-purple-300 light:hover:border-purple-400"
+                        : "dark:bg-purple-500/10 dark:border-purple-500/10 light:bg-purple-50/50 light:border-2 light:border-purple-200/50 dark:text-white/50 light:text-purple-600/50"
                 }`}
               >
                 <span
-                  className={`text-xs font-semibold mb-1 ${
+                  className={`text-xs font-semibold ${
                     isSelected
                       ? "text-white"
-                      : "dark:text-white/90 light:text-purple-950"
+                      : isTodayDate
+                        ? "dark:text-purple-300 light:text-purple-700 font-bold"
+                        : "dark:text-white/90 light:text-purple-950"
                   }`}
                 >
                   {format(date, "d")}
                 </span>
-                <div className="w-full flex-1 flex flex-col gap-1.5">
-                  {dateMeetings.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {dateMeetings.slice(0, 3).map((meeting, idx) => (
+                <div className="flex-1 flex items-end justify-center pb-0.5">
+                  {dateMeetings.length > 0 && dateMeetings.length <= 3 && (
+                    <div className="flex gap-0.5">
+                      {dateMeetings.map((meeting) => (
                         <div
                           key={meeting.id}
                           className={`w-1.5 h-1.5 rounded-full ${
@@ -144,32 +163,18 @@ export default function CalendarView({
                           title={meeting.title}
                         />
                       ))}
-                      {dateMeetings.length > 3 && (
-                        <span
-                          className={`text-xs font-semibold ${
-                            isSelected
-                              ? "dark:text-white light:text-white"
-                              : "dark:text-purple-300 light:text-purple-700"
-                          }`}
-                          title={`${dateMeetings.length - 3}개 더보기`}
-                        >
-                          +{dateMeetings.length - 3}
-                        </span>
-                      )}
                     </div>
                   )}
-
-                  {dateMeetings.length > 0 && (
-                    <div
-                      className={`text-xs font-medium line-clamp-1 ${
+                  {dateMeetings.length > 3 && (
+                    <span
+                      className={`text-[10px] font-bold leading-none ${
                         isSelected
                           ? "dark:text-white light:text-white"
-                          : "dark:text-white/80 light:text-purple-800"
+                          : "dark:text-purple-300 light:text-purple-700"
                       }`}
-                      title={dateMeetings[0].title}
                     >
-                      {dateMeetings[0].title}
-                    </div>
+                      {dateMeetings.length}
+                    </span>
                   )}
                 </div>
               </button>

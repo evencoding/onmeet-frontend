@@ -54,7 +54,7 @@ export default function InviteMembers() {
   };
 
   const copyInviteLink = (email: string) => {
-    const inviteLink = `${window.location.origin}/signup?company=${companyId ?? ""}`;
+    const inviteLink = `${window.location.origin}/signup?email=${encodeURIComponent(email)}`;
     navigator.clipboard.writeText(inviteLink);
     setCopiedId(email);
     setTimeout(() => setCopiedId(null), 2000);
