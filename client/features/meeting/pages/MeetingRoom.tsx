@@ -9,6 +9,7 @@ import MeetingRoomContent from "@/features/meeting/components/MeetingRoomContent
 import { useJoinRoom, useRoom } from "@/features/meeting/hooks";
 import { useAuth } from "@/features/auth/context";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
+import { useToast } from "@/shared/hooks/use-toast";
 import { useMeetingRoomStore, type DeviceSelection } from "../store";
 import { useWaitingRoomSSE } from "../hooks/useWaitingRoomSSE";
 
@@ -34,6 +35,7 @@ export default function MeetingRoom() {
 
   const roomIdNum = Number(roomId);
   const userId = String(user?.id ?? "");
+  const { toast } = useToast();
   const { data: roomData } = useRoom(
     Number.isFinite(roomIdNum) ? roomIdNum : 0,
     userId,
@@ -48,8 +50,12 @@ export default function MeetingRoom() {
     [],
   );
 
-  // SSE callbacks
+  // SSE callbacks — clear polling on SSE success to prevent race condition
   const handleSSEAdmitted = useCallback((sseToken: string, sseIsHost: boolean) => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
     const s = useMeetingRoomStore.getState();
     s.setToken(sseToken);
     s.setIsHost(sseIsHost);
@@ -57,11 +63,15 @@ export default function MeetingRoom() {
   }, []);
 
   const handleSSERejected = useCallback(() => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
     useMeetingRoomStore.getState().setRejected(true);
   }, []);
 
   // SSE connection — only active during waiting phase
-  const { disconnect: disconnectSSE } = useWaitingRoomSSE(
+  const { connected: sseConnected, disconnect: disconnectSSE } = useWaitingRoomSSE(
     phase === "waiting" ? (roomId ?? null) : null,
     phase === "waiting" ? userId : undefined,
     handleSSEAdmitted,
@@ -94,15 +104,21 @@ export default function MeetingRoom() {
       if (res.waitingRoom) {
         s.setPhase("waiting");
         // SSE will activate via the phase === "waiting" condition above.
-        // Fallback polling in case SSE fails.
+        // Fallback polling — only runs when SSE is not connected.
         pollingRef.current = setInterval(async () => {
+          // Skip polling tick if SSE is actively connected
+          if (useMeetingRoomStore.getState().phase !== "waiting") return;
           try {
             const pollRes = await joinRoom.mutateAsync({
               roomId: roomIdNum,
               userId,
             });
             if (!pollRes.waitingRoom) {
-              if (pollingRef.current) clearInterval(pollingRef.current);
+              if (pollingRef.current) {
+                clearInterval(pollingRef.current);
+                pollingRef.current = null;
+              }
+              disconnectSSE();
               const latest = useMeetingRoomStore.getState();
               latest.setToken(pollRes.token);
               latest.setPhase("connected");
@@ -117,12 +133,19 @@ export default function MeetingRoom() {
       }
     } catch (err) {
       console.error("Failed to join room:", err);
+      const message = err && typeof err === "object" && "message" in err
+        ? (err as { message: string }).message
+        : "회의 입장에 실패했습니다";
+      toast({ title: "회의 입장 실패", description: message, variant: "destructive" });
       useMeetingRoomStore.getState().setPhase("preparing");
     }
-  }, [roomId, roomIdNum, user, userId, joinRoom]);
+  }, [roomId, roomIdNum, user, userId, joinRoom, disconnectSSE, toast]);
 
   const handleCancelWaiting = useCallback(() => {
-    if (pollingRef.current) clearInterval(pollingRef.current);
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
     disconnectSSE();
     const s = useMeetingRoomStore.getState();
     s.setRejected(false);
@@ -130,14 +153,20 @@ export default function MeetingRoom() {
   }, [disconnectSSE]);
 
   const handleBackToHome = useCallback(() => {
-    if (pollingRef.current) clearInterval(pollingRef.current);
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
     disconnectSSE();
     navigate("/");
   }, [disconnectSSE, navigate]);
 
   useEffect(() => {
     return () => {
-      if (pollingRef.current) clearInterval(pollingRef.current);
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
       useMeetingRoomStore.getState().reset();
     };
   }, []);
@@ -230,6 +259,7 @@ export default function MeetingRoom() {
       onDisconnected={() => useMeetingRoomStore.getState().setPhase("disconnected")}
       onError={(err) => {
         console.error("LiveKit connection error:", err);
+        toast({ title: "연결 오류", description: "회의 연결에 실패했습니다", variant: "destructive" });
         useMeetingRoomStore.getState().setPhase("disconnected");
       }}
     >

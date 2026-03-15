@@ -155,7 +155,9 @@ export default memo(function MeetingRoomContent({
   useEffect(() => {
     const speakerId = useMeetingRoomStore.getState().deviceSelection?.speakerId;
     if (speakerId) {
-      room.switchActiveDevice("audiooutput", speakerId).catch(() => {});
+      room.switchActiveDevice("audiooutput", speakerId).catch((err) => {
+        console.warn("Failed to switch audio output device:", err);
+      });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

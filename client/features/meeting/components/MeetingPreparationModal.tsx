@@ -43,6 +43,7 @@ export default function MeetingPreparationModal({
   const previewVideoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const micIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [isMuted, setIsMuted] = useState(onStateChange.isMuted);
   const [isVideoOn, setIsVideoOn] = useState(onStateChange.isVideoOn);
   const [isCameraFlipped, setIsCameraFlipped] = useState(false);
@@ -129,7 +130,8 @@ export default function MeetingPreparationModal({
       setMicTestStream(stream);
       setIsMicTesting(true);
 
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioCtx = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const audioContext = new AudioCtx();
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(stream);
 
@@ -144,11 +146,7 @@ export default function MeetingPreparationModal({
         setMicrophoneLevel(Math.min(100, (average / 255) * 150));
       };
 
-      const interval = setInterval(updateLevel, 50);
-
-      return () => {
-        clearInterval(interval);
-      };
+      micIntervalRef.current = setInterval(updateLevel, 50);
     } catch (err) {
       console.error("Error starting mic test:", err);
       setIsMicTesting(false);
@@ -156,6 +154,11 @@ export default function MeetingPreparationModal({
   };
 
   const stopMicTest = () => {
+    if (micIntervalRef.current) {
+      clearInterval(micIntervalRef.current);
+      micIntervalRef.current = null;
+    }
+
     setIsMicTesting(false);
     setMicrophoneLevel(0);
 

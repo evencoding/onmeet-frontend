@@ -1,5 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { initializeApp, type FirebaseApp } from "firebase/app";
+import { getAnalytics, type Analytics } from "firebase/analytics";
 import { getMessaging, isSupported, type Messaging } from "firebase/messaging";
 
 const firebaseConfig = {
@@ -17,8 +17,8 @@ const isFirebaseConfigValid = () => {
   return requiredFields.every((field) => firebaseConfig[field as keyof typeof firebaseConfig]);
 };
 
-let app: any = null;
-let analytics: any = null;
+let app: FirebaseApp | null = null;
+let analytics: Analytics | null = null;
 let messaging: Messaging | null = null;
 
 if (isFirebaseConfigValid()) {
