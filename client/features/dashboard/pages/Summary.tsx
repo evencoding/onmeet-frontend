@@ -144,8 +144,8 @@ export default function Summary() {
   const allMeetings: Meeting[] = useMemo(() => {
     const roomMap = new Map<number, MeetingRoomResponse>();
 
-    const historyContent = historyData?.content ?? [];
-    const scheduledContent = scheduledData?.content ?? [];
+    const historyContent = historyData ?? [];
+    const scheduledContent = scheduledData ?? [];
     const activeContent = activeData?.content ?? [];
 
     for (const room of historyContent) {

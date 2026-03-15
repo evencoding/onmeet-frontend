@@ -1,39 +1,35 @@
 import { roomFetch } from "../api";
-import { pageQs } from "@/shared/utils/api";
 import type {
   MeetingRoomResponse,
-  MeetingRoomDetailResponse,
   RoomStatsResponse,
   MonthlyStatsResponse,
   TimelineEntry,
-  Page,
-  Pageable,
 } from "./types";
 
 export function getRoomByCode(roomCode: string, userId: string) {
-  return roomFetch<MeetingRoomDetailResponse>(
+  return roomFetch<MeetingRoomResponse>(
     `/rooms/code/${encodeURIComponent(roomCode)}`,
     userId,
   );
 }
 
-export function searchRoomsByTag(tagName: string, userId: string, pageable?: Pageable) {
-  return roomFetch<Page<MeetingRoomResponse>>(
-    `/rooms/tags/${encodeURIComponent(tagName)}${pageQs(pageable)}`,
+export function searchRoomsByTag(tagName: string, userId: string) {
+  return roomFetch<MeetingRoomResponse[]>(
+    `/rooms/tags/${encodeURIComponent(tagName)}`,
     userId,
   );
 }
 
-export function listScheduledRooms(userId: string, pageable?: Pageable) {
-  return roomFetch<Page<MeetingRoomResponse>>(
-    `/rooms/scheduled${pageQs(pageable)}`,
+export function listScheduledRooms(userId: string) {
+  return roomFetch<MeetingRoomResponse[]>(
+    `/rooms/scheduled`,
     userId,
   );
 }
 
-export function listRoomHistory(userId: string, pageable?: Pageable) {
-  return roomFetch<Page<MeetingRoomResponse>>(
-    `/rooms/history${pageQs(pageable)}`,
+export function listRoomHistory(userId: string) {
+  return roomFetch<MeetingRoomResponse[]>(
+    `/rooms/history`,
     userId,
   );
 }
@@ -42,9 +38,9 @@ export function getMonthlyStats(userId: string) {
   return roomFetch<MonthlyStatsResponse[]>("/rooms/history/monthly", userId);
 }
 
-export function listFavoriteRooms(userId: string, pageable?: Pageable) {
-  return roomFetch<Page<MeetingRoomResponse>>(
-    `/rooms/favorites${pageQs(pageable)}`,
+export function listFavoriteRooms(userId: string) {
+  return roomFetch<MeetingRoomResponse[]>(
+    `/rooms/favorites`,
     userId,
   );
 }

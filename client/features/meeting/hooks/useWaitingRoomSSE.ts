@@ -47,7 +47,7 @@ export function useWaitingRoomSSE(
 
     (async () => {
       try {
-        const res = await fetch(`${SSE_BASE_URL}/${roomId}/waiting/sse`, {
+        const res = await fetch(`${SSE_BASE_URL}/${roomId}/waiting/sse/participant`, {
           credentials: "include",
           headers: { "X-User-Id": userId },
           signal: controller.signal,

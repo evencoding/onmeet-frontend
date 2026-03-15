@@ -70,20 +70,18 @@ export default function MeetingRoom() {
     store.setPhase("joining");
     store.setRejected(false);
 
+    // Derive isHost from room data
+    const derivedIsHost = roomData?.hostUserId === user.id;
+
     try {
       const res = await joinRoom.mutateAsync({
         roomId,
         userId: String(user.id),
         data: password ? { password } : undefined,
-        body: {
-          displayName: user.name,
-          audioEnabled: !store.isMuted,
-          videoEnabled: store.isVideoOn,
-        },
       });
 
       const s = useMeetingRoomStore.getState();
-      s.setIsHost(res.isHost ?? false);
+      s.setIsHost(derivedIsHost);
 
       if (res.waitingRoom) {
         s.setPhase("waiting");
@@ -99,7 +97,6 @@ export default function MeetingRoom() {
               if (pollingRef.current) clearInterval(pollingRef.current);
               const latest = useMeetingRoomStore.getState();
               latest.setToken(pollRes.token);
-              latest.setIsHost(pollRes.isHost ?? false);
               latest.setPhase("connected");
             }
           } catch {
@@ -114,7 +111,7 @@ export default function MeetingRoom() {
       console.error("Failed to join room:", err);
       useMeetingRoomStore.getState().setPhase("preparing");
     }
-  }, [roomId, user, joinRoom]);
+  }, [roomId, user, joinRoom, roomData]);
 
   const handleCancelWaiting = useCallback(() => {
     if (pollingRef.current) clearInterval(pollingRef.current);

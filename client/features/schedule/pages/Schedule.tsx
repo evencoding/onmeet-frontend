@@ -33,10 +33,10 @@ export default function Schedule() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [bookingModalDate, setBookingModalDate] = useState<Date | undefined>();
 
-  const { data: scheduledData, isLoading } = useScheduledRooms(userId, { size: 50 });
+  const { data: scheduledData, isLoading } = useScheduledRooms(userId);
 
   const allMeetings: CalendarMeeting[] = useMemo(() => {
-    const rooms: MeetingRoomResponse[] = scheduledData?.content ?? [];
+    const rooms: MeetingRoomResponse[] = scheduledData ?? [];
     return rooms.map((room) => {
       const scheduledDate = room.scheduledAt ? new Date(room.scheduledAt) : new Date(room.createdAt);
       return {
