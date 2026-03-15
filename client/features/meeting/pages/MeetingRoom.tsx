@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Loader } from "lucide-react";
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { LiveKitRoom } from "@livekit/components-react";
 import { useShallow } from "zustand/react/shallow";
 import MeetingPreparationModal from "@/features/meeting/components/MeetingPreparationModal";
@@ -41,7 +41,6 @@ export default function MeetingRoom() {
     userId,
   );
   const joinRoom = useJoinRoom();
-  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleDeviceSelect = useCallback(
     (devices: DeviceSelection | null) => {
@@ -50,12 +49,8 @@ export default function MeetingRoom() {
     [],
   );
 
-  // SSE callbacks — clear polling on SSE success to prevent race condition
+  // SSE callbacks
   const handleSSEAdmitted = useCallback((sseToken: string, sseIsHost: boolean) => {
-    if (pollingRef.current) {
-      clearInterval(pollingRef.current);
-      pollingRef.current = null;
-    }
     const s = useMeetingRoomStore.getState();
     s.setToken(sseToken);
     s.setIsHost(sseIsHost);
@@ -63,15 +58,11 @@ export default function MeetingRoom() {
   }, []);
 
   const handleSSERejected = useCallback(() => {
-    if (pollingRef.current) {
-      clearInterval(pollingRef.current);
-      pollingRef.current = null;
-    }
     useMeetingRoomStore.getState().setRejected(true);
   }, []);
 
   // SSE connection — only active during waiting phase
-  const { connected: sseConnected, disconnect: disconnectSSE } = useWaitingRoomSSE(
+  const { disconnect: disconnectSSE } = useWaitingRoomSSE(
     phase === "waiting" ? (roomId ?? null) : null,
     phase === "waiting" ? userId : undefined,
     handleSSEAdmitted,
@@ -104,29 +95,7 @@ export default function MeetingRoom() {
       if (res.waitingRoom) {
         s.setPhase("waiting");
         // SSE will activate via the phase === "waiting" condition above.
-        // Fallback polling — only runs when SSE is not connected.
-        pollingRef.current = setInterval(async () => {
-          // Skip polling tick if SSE is actively connected
-          if (useMeetingRoomStore.getState().phase !== "waiting") return;
-          try {
-            const pollRes = await joinRoom.mutateAsync({
-              roomId: roomIdNum,
-              userId,
-            });
-            if (!pollRes.waitingRoom) {
-              if (pollingRef.current) {
-                clearInterval(pollingRef.current);
-                pollingRef.current = null;
-              }
-              disconnectSSE();
-              const latest = useMeetingRoomStore.getState();
-              latest.setToken(pollRes.token);
-              latest.setPhase("connected");
-            }
-          } catch {
-            // polling error — ignore
-          }
-        }, 4000);
+        // SSE auto-reconnects on failure (5s interval), no polling needed.
       } else {
         s.setToken(res.token);
         s.setPhase("connected");
@@ -139,13 +108,9 @@ export default function MeetingRoom() {
       toast({ title: "회의 입장 실패", description: message, variant: "destructive" });
       useMeetingRoomStore.getState().setPhase("preparing");
     }
-  }, [roomId, roomIdNum, user, userId, joinRoom, disconnectSSE, toast]);
+  }, [roomId, roomIdNum, user, userId, joinRoom, toast]);
 
   const handleCancelWaiting = useCallback(() => {
-    if (pollingRef.current) {
-      clearInterval(pollingRef.current);
-      pollingRef.current = null;
-    }
     disconnectSSE();
     const s = useMeetingRoomStore.getState();
     s.setRejected(false);
@@ -153,20 +118,12 @@ export default function MeetingRoom() {
   }, [disconnectSSE]);
 
   const handleBackToHome = useCallback(() => {
-    if (pollingRef.current) {
-      clearInterval(pollingRef.current);
-      pollingRef.current = null;
-    }
     disconnectSSE();
     navigate("/");
   }, [disconnectSSE, navigate]);
 
   useEffect(() => {
     return () => {
-      if (pollingRef.current) {
-        clearInterval(pollingRef.current);
-        pollingRef.current = null;
-      }
       useMeetingRoomStore.getState().reset();
     };
   }, []);
