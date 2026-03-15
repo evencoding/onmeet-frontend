@@ -86,8 +86,8 @@ export function useWaitingRoomSSE(
                   onRejected();
                   return;
                 }
-              } catch {
-                // parse error — skip
+              } catch (err) {
+                console.warn("Waiting room SSE parse error:", err);
               }
             }
           }

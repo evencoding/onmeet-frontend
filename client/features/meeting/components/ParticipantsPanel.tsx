@@ -267,7 +267,7 @@ export default function ParticipantsPanel({
                   type="text"
                   value={messageInput}
                   onChange={(e) => setMessageInput(e.target.value)}
-                  onKeyPress={(e) => {
+                  onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       handleSendMessage();
                     }
