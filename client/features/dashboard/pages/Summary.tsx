@@ -269,7 +269,7 @@ export default function Summary() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "scheduled":
-        return "dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100/90 light:text-blue-900 light:border light:border-blue-300/60 light:shadow-sm light:shadow-blue-200/40";
+        return "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/90 light:text-purple-900 light:border light:border-purple-300/60 light:shadow-sm light:shadow-purple-200/40";
       case "in_progress":
         return "dark:bg-green-500/20 dark:text-green-300 light:bg-green-100/90 light:text-green-900 light:border light:border-green-300/60 light:shadow-sm light:shadow-green-200/40";
       case "completed":
@@ -359,7 +359,7 @@ export default function Summary() {
                 meeting.tags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100/80 light:text-blue-900 light:border light:border-blue-300/60 text-xs font-semibold rounded-full light:shadow-sm light:shadow-blue-200/30"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900 light:border light:border-purple-300/60 text-xs font-semibold rounded-full light:shadow-sm light:shadow-purple-200/30"
                   >
                     <Tag className="w-3 h-3" />
                     {tag}
@@ -779,7 +779,7 @@ export default function Summary() {
 
   return (
     <>
-      <div className="max-w-6xl space-y-6 light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-blue-50 light:rounded-3xl light:p-8">
+      <div className="max-w-6xl space-y-6 light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-pink-50 light:rounded-3xl light:p-8">
 
         {!expandedMeeting && (
           <div>
@@ -889,7 +889,7 @@ export default function Summary() {
                             회의록
                           </span>
                         )}
-                        <span className="dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100/90 light:text-blue-900 light:border light:border-blue-300/60 light:shadow-sm light:shadow-blue-200/40 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
+                        <span className="dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/90 light:text-purple-900 light:border light:border-purple-300/60 light:shadow-sm light:shadow-purple-200/40 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
                           <Mic className="w-3.5 h-3.5" />
                           음성녹음
                         </span>

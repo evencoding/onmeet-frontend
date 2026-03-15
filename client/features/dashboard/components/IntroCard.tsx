@@ -8,7 +8,7 @@ interface IntroCardProps {
 
 export default function IntroCard({ onCreateMeeting }: IntroCardProps) {
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-50/40 to-blue-50/20 dark:from-blue-950/30 dark:to-slate-900/50 border border-border/30 dark:border-border/20 shadow-card">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-brand-50/40 to-purple-50/20 dark:from-purple-950/30 dark:to-slate-900/50 border border-border/30 dark:border-border/20 shadow-card">
       {/* Content */}
       <div className="relative z-10 p-8 md:p-10">
         <div className="flex items-start justify-between mb-6">
