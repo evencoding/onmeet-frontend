@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -66,7 +66,7 @@ export default function EmployeeSignup() {
     return () => { cancelled = true; };
   }, [hasPrefilledParams, inviteEmailParam, inviteToken]);
 
-  const handleVerifySubmit = async (e: React.FormEvent) => {
+  const handleVerifySubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -97,7 +97,7 @@ export default function EmployeeSignup() {
     }
   };
 
-  const handleRegisterSubmit = async (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 

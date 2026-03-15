@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Lock, ArrowRight, KeyRound, AlertTriangle } from "lucide-react";
 import AuthLayout from "@/shared/components/AuthLayout";
@@ -18,7 +18,7 @@ export default function PasswordReset() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");

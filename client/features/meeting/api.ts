@@ -5,14 +5,18 @@ export async function roomFetch<T>(
   userId: string,
   options?: RequestInit,
 ): Promise<T> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...options?.headers as Record<string, string>,
+  };
+  if (userId) {
+    headers["X-User-Id"] = userId;
+  }
+
   const res = await fetch(`${ROOM_BASE_URL}${endpoint}`, {
     credentials: "include",
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      "X-User-Id": userId,
-      ...options?.headers,
-    },
+    headers,
   });
 
   if (!res.ok) {

@@ -217,8 +217,9 @@ export default function Sidebar({
                   <div
                     className={cn(
                       "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white",
-                      team.color ? `bg-[${team.color}]` : TEAM_COLORS[idx % TEAM_COLORS.length],
+                      !team.color && TEAM_COLORS[idx % TEAM_COLORS.length],
                     )}
+                    style={team.color ? { backgroundColor: team.color } : undefined}
                   >
                     {team.name.charAt(0).toUpperCase()}
                   </div>
