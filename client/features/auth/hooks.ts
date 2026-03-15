@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   login as loginApi,
@@ -122,9 +123,14 @@ export function useValidateInvitation(email: string, code: string) {
 // ── Admin Query Hooks ──
 
 export function useAllEmployees(pageable?: Pageable) {
+  const stablePageable = useMemo(
+    () => pageable,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pageable?.page, pageable?.size, pageable?.sort],
+  );
   return useQuery({
-    queryKey: AUTH_ADMIN_KEYS.employees(pageable),
-    queryFn: () => getAllEmployees(pageable ?? {}),
+    queryKey: AUTH_ADMIN_KEYS.employees(stablePageable),
+    queryFn: () => getAllEmployees(stablePageable ?? {}),
     staleTime: 30_000,
   });
 }

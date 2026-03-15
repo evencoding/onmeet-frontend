@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Lock, ArrowRight, KeyRound, AlertTriangle } from "lucide-react";
 import AuthLayout from "@/shared/components/AuthLayout";
@@ -9,6 +10,7 @@ import type { ErrorResponse } from "@/features/auth/api";
 
 export default function PasswordReset() {
   useDocumentTitle("비밀번호 변경 - OnMeet");
+  const navigate = useNavigate();
   const { user } = useAuth();
   const changePasswordMutation = useChangePasswordMutation();
 
@@ -48,6 +50,7 @@ export default function PasswordReset() {
           setOldPassword("");
           setNewPassword("");
           setNewPasswordConfirm("");
+          setTimeout(() => navigate("/", { replace: true }), 2000);
         },
         onError: (err: unknown) => {
           const apiError = err as ErrorResponse;
