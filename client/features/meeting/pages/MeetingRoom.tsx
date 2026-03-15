@@ -68,15 +68,19 @@ export default function MeetingRoom() {
     handleSSERejected,
   );
 
+  // Keep isHost in sync with roomData once loaded
+  useEffect(() => {
+    if (roomData && user) {
+      useMeetingRoomStore.getState().setIsHost(roomData.hostUserId === user.id);
+    }
+  }, [roomData, user]);
+
   const handleStartMeeting = useCallback(async (password?: string) => {
     if (!roomId || !user) return;
 
     const store = useMeetingRoomStore.getState();
     store.setPhase("joining");
     store.setRejected(false);
-
-    // Derive isHost from room data
-    const derivedIsHost = roomData?.hostUserId === user.id;
 
     try {
       const res = await joinRoom.mutateAsync({
@@ -86,7 +90,6 @@ export default function MeetingRoom() {
       });
 
       const s = useMeetingRoomStore.getState();
-      s.setIsHost(derivedIsHost);
 
       if (res.waitingRoom) {
         s.setPhase("waiting");
@@ -116,7 +119,7 @@ export default function MeetingRoom() {
       console.error("Failed to join room:", err);
       useMeetingRoomStore.getState().setPhase("preparing");
     }
-  }, [roomId, user, joinRoom, roomData]);
+  }, [roomId, roomIdNum, user, userId, joinRoom]);
 
   const handleCancelWaiting = useCallback(() => {
     if (pollingRef.current) clearInterval(pollingRef.current);

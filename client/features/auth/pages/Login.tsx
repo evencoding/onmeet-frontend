@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { motion } from "framer-motion";
@@ -23,7 +23,7 @@ export default function Login() {
   const [fpSuccess, setFpSuccess] = useState("");
   const findPasswordMutation = useFindPassword();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -48,7 +48,7 @@ export default function Login() {
     );
   };
 
-  const handleFindPassword = async (e: React.FormEvent) => {
+  const handleFindPassword = async (e: FormEvent) => {
     e.preventDefault();
     setFpError("");
     setFpSuccess("");
