@@ -32,7 +32,6 @@ export default function CompanyManagement() {
 
   // Invite state
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<"USER" | "MANAGER">("USER");
 
   // Team creation state
   const [showCreateTeam, setShowCreateTeam] = useState(false);
@@ -114,11 +113,10 @@ export default function CompanyManagement() {
   const handleInvite = () => {
     if (!inviteEmail.trim()) return;
     inviteMember.mutate(
-      { email: inviteEmail.trim(), role: inviteRole },
+      { emails: [inviteEmail.trim()] },
       {
         onSuccess: () => {
           setInviteEmail("");
-          setInviteRole("USER");
         },
       },
     );
@@ -252,14 +250,6 @@ export default function CompanyManagement() {
                     if (e.key === "Enter") handleInvite();
                   }}
                 />
-                <select
-                  value={inviteRole}
-                  onChange={(e) => setInviteRole(e.target.value as "USER" | "MANAGER")}
-                  className="px-3 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-white dark:text-white light:text-purple-900 text-sm focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                >
-                  <option value="USER">일반</option>
-                  <option value="MANAGER">매니저</option>
-                </select>
                 <button
                   onClick={handleInvite}
                   disabled={inviteMember.isPending || !inviteEmail.trim()}

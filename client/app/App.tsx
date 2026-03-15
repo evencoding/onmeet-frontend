@@ -45,6 +45,7 @@ const SignupFlow = lazy(() => import("@/features/auth/pages/SignupFlow"));
 const CompanySignup = lazy(() => import("@/features/auth/pages/CompanySignup"));
 const EmployeeSignup = lazy(() => import("@/features/auth/pages/EmployeeSignup"));
 const InviteMembers = lazy(() => import("@/features/auth/pages/InviteMembers"));
+const PasswordReset = lazy(() => import("@/features/auth/pages/PasswordReset"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -62,10 +63,11 @@ const ContentLoader = () => (
 );
 
 function ProtectedLayout() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, isPasswordReset } = useAuth();
 
   if (isLoading) return <PageLoader />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (isPasswordReset) return <Navigate to="/password-reset" replace />;
 
   return (
     <Layout>
@@ -79,11 +81,19 @@ function ProtectedLayout() {
 }
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, isPasswordReset } = useAuth();
 
   if (isLoading) return <PageLoader />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (isPasswordReset) return <Navigate to="/password-reset" replace />;
 
+  return <>{children}</>;
+}
+
+function AuthOnlyRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return <PageLoader />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
 
@@ -95,10 +105,11 @@ function GuestRoute({ children }: { children: React.ReactNode }) {
 }
 
 const HomeRoute = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, isPasswordReset } = useAuth();
 
   if (isLoading) return <PageLoader />;
   if (!isAuthenticated) return <Landing />;
+  if (isPasswordReset) return <Navigate to="/password-reset" replace />;
 
   return (
     <Layout>
@@ -130,6 +141,15 @@ const AppContent = () => (
       <Route
         path="/signup/invite-members"
         element={<GuestRoute><Suspense fallback={<PageLoader />}><InviteMembers /></Suspense></GuestRoute>}
+      />
+
+      <Route
+        path="/password-reset"
+        element={
+          <AuthOnlyRoute>
+            <Suspense fallback={<PageLoader />}><PasswordReset /></Suspense>
+          </AuthOnlyRoute>
+        }
       />
 
       <Route path="/" element={<HomeRoute />} />
