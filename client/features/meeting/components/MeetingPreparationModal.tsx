@@ -7,6 +7,7 @@ import {
   X,
   Volume2,
   FlipHorizontal,
+  Lock,
 } from "lucide-react";
 
 export interface DeviceSelection {
@@ -17,7 +18,8 @@ export interface DeviceSelection {
 
 interface MeetingPreparationModalProps {
   isOpen: boolean;
-  onStart: () => void;
+  isLocked?: boolean;
+  onStart: (password?: string) => void;
   onInitialState: {
     isMuted: boolean;
     isVideoOn: boolean;
@@ -33,6 +35,7 @@ interface MeetingPreparationModalProps {
 
 export default function MeetingPreparationModal({
   isOpen,
+  isLocked,
   onStart,
   onStateChange,
   onDeviceSelect,
@@ -40,6 +43,7 @@ export default function MeetingPreparationModal({
   const previewVideoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const micIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [isMuted, setIsMuted] = useState(onStateChange.isMuted);
   const [isVideoOn, setIsVideoOn] = useState(onStateChange.isVideoOn);
   const [isCameraFlipped, setIsCameraFlipped] = useState(false);
@@ -50,6 +54,8 @@ export default function MeetingPreparationModal({
   const [selectedMicrophone, setSelectedMicrophone] = useState<string>("");
   const [selectedSpeaker, setSelectedSpeaker] = useState<string>("");
   const [previewStream, setPreviewStream] = useState<MediaStream | null>(null);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
   const [isMicTesting, setIsMicTesting] = useState(false);
   const [microphoneLevel, setMicrophoneLevel] = useState(0);
   const [micTestStream, setMicTestStream] = useState<MediaStream | null>(null);
@@ -124,7 +130,8 @@ export default function MeetingPreparationModal({
       setMicTestStream(stream);
       setIsMicTesting(true);
 
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioCtx = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const audioContext = new AudioCtx();
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(stream);
 
@@ -139,11 +146,7 @@ export default function MeetingPreparationModal({
         setMicrophoneLevel(Math.min(100, (average / 255) * 150));
       };
 
-      const interval = setInterval(updateLevel, 50);
-
-      return () => {
-        clearInterval(interval);
-      };
+      micIntervalRef.current = setInterval(updateLevel, 50);
     } catch (err) {
       console.error("Error starting mic test:", err);
       setIsMicTesting(false);
@@ -151,6 +154,11 @@ export default function MeetingPreparationModal({
   };
 
   const stopMicTest = () => {
+    if (micIntervalRef.current) {
+      clearInterval(micIntervalRef.current);
+      micIntervalRef.current = null;
+    }
+
     setIsMicTesting(false);
     setMicrophoneLevel(0);
 
@@ -166,6 +174,11 @@ export default function MeetingPreparationModal({
   };
 
   const handleStart = () => {
+    if (isLocked && !password.trim()) {
+      setPasswordError(true);
+      return;
+    }
+
     onStateChange.setIsMuted(isMuted);
     onStateChange.setIsVideoOn(isVideoOn);
     stopMicTest();
@@ -181,7 +194,7 @@ export default function MeetingPreparationModal({
       speakerId: selectedSpeaker,
     });
 
-    onStart();
+    onStart(password || undefined);
   };
 
   if (!isOpen) return null;
@@ -192,7 +205,7 @@ export default function MeetingPreparationModal({
         <div className="px-8 py-4 border-b border-purple-500/20 flex items-center justify-between flex-shrink-0">
           <h2 className="text-xl font-bold text-white">회의 준비</h2>
           <button
-            onClick={onStart}
+            onClick={() => onStart()}
             className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
           >
             <X className="w-6 h-6 text-white" />
@@ -231,6 +244,34 @@ export default function MeetingPreparationModal({
               )}
             </div>
           </div>
+
+          {isLocked && (
+            <div className="space-y-2 p-4 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
+              <div className="flex items-center gap-2">
+                <Lock className="w-4 h-4 text-yellow-400" />
+                <label className="font-semibold text-white text-sm">
+                  비밀번호가 필요한 회의입니다
+                </label>
+              </div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordError(false);
+                }}
+                placeholder="회의 비밀번호를 입력하세요"
+                className={`w-full px-3 py-2 bg-purple-500/20 border rounded-lg text-white text-sm focus:outline-none focus:border-purple-400 placeholder:text-white/40 ${
+                  passwordError
+                    ? "border-red-500"
+                    : "border-purple-500/30"
+                }`}
+              />
+              {passwordError && (
+                <p className="text-xs text-red-400">비밀번호를 입력해주세요</p>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-3">

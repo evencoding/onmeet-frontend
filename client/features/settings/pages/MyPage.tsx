@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { User, Mail, Phone, Settings, Lock, Bell, Building2, Edit2, Save, X, AlertTriangle, Eye, EyeOff } from "lucide-react";
+import React, { useState } from "react";
+import { User, Mail, Phone, Settings, Lock, Bell, Building2, Edit2, Save, X, AlertTriangle, Eye, EyeOff, Plus, Check, Loader2, Users } from "lucide-react";
 import { useAuth } from "@/features/auth/context";
 import { useNavigate } from "react-router-dom";
-import { useUpdateProfile, useWithdraw, useChangePasswordMutation } from "@/features/auth/hooks";
+import { useUpdateProfile, useWithdraw, useChangePasswordMutation, useCreateTeam } from "@/features/auth/hooks";
 import {
   useNotificationSettings,
   useUpdateNotificationSettings,
@@ -12,13 +12,30 @@ import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function MyPage() {
   useDocumentTitle("설정 - OnMeet");
-  const { user, logout } = useAuth();
+  const { user, logout, isManager } = useAuth();
   const navigate = useNavigate();
   const { data: notiSettings } = useNotificationSettings(user?.id ?? 0);
   const updateSettingsMutation = useUpdateNotificationSettings();
   const updateProfileMutation = useUpdateProfile();
   const withdrawMutation = useWithdraw();
   const changePasswordMutation = useChangePasswordMutation();
+  const createTeamMutation = useCreateTeam();
+
+  const [showCreateTeam, setShowCreateTeam] = useState(false);
+  const [newTeamName, setNewTeamName] = useState("");
+
+  const handleCreateTeam = () => {
+    if (!newTeamName.trim()) return;
+    createTeamMutation.mutate(
+      { name: newTeamName.trim() },
+      {
+        onSuccess: () => {
+          setNewTeamName("");
+          setShowCreateTeam(false);
+        },
+      },
+    );
+  };
 
   const settingItems: { key: keyof NotificationSettingDto; label: string; description: string }[] = [
     { key: "pushEnabled", label: "푸시 알림", description: "전체 푸시 알림 활성화" },
@@ -60,7 +77,6 @@ export default function MyPage() {
     name: user?.name || "",
     email: user?.email || "",
     position: user?.jobTitle?.name || "",
-    team: user?.teams?.map((t) => t.name).join(", ") || "",
     avatar: "",
   });
 
@@ -107,6 +123,11 @@ export default function MyPage() {
 
     if (passwordForm.newPassword.length < 8) {
       setPasswordError("새 비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
+
+    if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])/.test(passwordForm.newPassword)) {
+      setPasswordError("비밀번호는 영문, 숫자, 특수문자(@$!%*#?&)를 포함해야 합니다.");
       return;
     }
 
@@ -189,13 +210,15 @@ export default function MyPage() {
               );
             })}
           </div>
-          <button
-            onClick={() => navigate("/company")}
-            className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-lg font-medium hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all whitespace-nowrap"
-          >
-            <Building2 className="w-4 h-4" />
-            회사 관리
-          </button>
+          {isManager && (
+            <button
+              onClick={() => navigate("/company")}
+              className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-lg font-medium hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all whitespace-nowrap"
+            >
+              <Building2 className="w-4 h-4" />
+              회사 관리
+            </button>
+          )}
         </div>
 
         {activeTab === "profile" && (
@@ -267,10 +290,72 @@ export default function MyPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                  <label className="flex items-center gap-2 text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2">
+                    <Users className="w-4 h-4" />
                     소속 팀
                   </label>
-                  <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.team || "-"}</p>
+                  {user?.teams && user.teams.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {user.teams.map((t) => (
+                        <span
+                          key={t.id}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 dark:bg-purple-500/20 light:bg-purple-100 dark:text-purple-300 light:text-purple-700 rounded-lg text-sm font-medium"
+                        >
+                          <div
+                            className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: t.color || "#a855f7" }}
+                          />
+                          {t.name}
+                          {t.status === "PENDING" && (
+                            <span className="text-xs dark:text-yellow-400 light:text-yellow-600">(승인 대기)</span>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  ) : !showCreateTeam ? (
+                    <div className="flex items-center gap-3">
+                      <p className="dark:text-white/40 light:text-purple-400 text-sm">소속된 팀이 없습니다.</p>
+                      <button
+                        onClick={() => setShowCreateTeam(true)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm dark:bg-purple-500/20 light:bg-purple-100 dark:text-purple-300 light:text-purple-600 rounded-lg font-medium hover:dark:bg-purple-500/30 hover:light:bg-purple-200 transition-all"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        팀 만들기
+                      </button>
+                    </div>
+                  ) : null}
+                  {showCreateTeam && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <input
+                        type="text"
+                        value={newTeamName}
+                        onChange={(e) => setNewTeamName(e.target.value)}
+                        placeholder="새 팀 이름"
+                        className="flex-1 px-4 py-2 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white dark:text-white light:text-purple-900 text-sm focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleCreateTeam();
+                        }}
+                      />
+                      <button
+                        onClick={handleCreateTeam}
+                        disabled={createTeamMutation.isPending || !newTeamName.trim()}
+                        className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl text-sm font-medium hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-50"
+                      >
+                        {createTeamMutation.isPending ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Check className="w-3.5 h-3.5" />
+                        )}
+                        생성
+                      </button>
+                      <button
+                        onClick={() => { setShowCreateTeam(false); setNewTeamName(""); }}
+                        className="flex items-center gap-1.5 px-3 py-2 dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700 rounded-xl text-sm font-medium hover:dark:bg-purple-500/30 hover:light:bg-purple-200 transition-all"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-4 border-t dark:border-purple-500/20 light:border-purple-300/40">

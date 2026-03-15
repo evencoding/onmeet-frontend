@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useMemo, memo } from "react";
+import { useEffect, useRef, useCallback, useMemo, useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Phone,
@@ -7,6 +7,7 @@ import {
   MicOff,
   VideoOff,
   X,
+  AlertTriangle,
 } from "lucide-react";
 import {
   useParticipants,
@@ -154,7 +155,9 @@ export default memo(function MeetingRoomContent({
   useEffect(() => {
     const speakerId = useMeetingRoomStore.getState().deviceSelection?.speakerId;
     if (speakerId) {
-      room.switchActiveDevice("audiooutput", speakerId).catch(() => {});
+      room.switchActiveDevice("audiooutput", speakerId).catch((err) => {
+        console.warn("Failed to switch audio output device:", err);
+      });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -192,6 +195,44 @@ export default memo(function MeetingRoomContent({
       room.off(RoomEvent.DataReceived, handleData);
     };
   }, [room]);
+
+  // Host departure detection
+  const [hostLeft, setHostLeft] = useState(false);
+  const [hostLeftCountdown, setHostLeftCountdown] = useState(5);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (isHost) return; // Host doesn't need to watch for themselves leaving
+
+    const handleParticipantDisconnected = (participant: RemoteParticipant) => {
+      if (participant.metadata === "host") {
+        setHostLeft(true);
+        setHostLeftCountdown(5);
+        countdownRef.current = setInterval(() => {
+          setHostLeftCountdown((prev) => {
+            if (prev <= 1) {
+              if (countdownRef.current) clearInterval(countdownRef.current);
+              room.disconnect();
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      }
+    };
+
+    room.on(RoomEvent.ParticipantDisconnected, handleParticipantDisconnected);
+    return () => {
+      room.off(RoomEvent.ParticipantDisconnected, handleParticipantDisconnected);
+      if (countdownRef.current) clearInterval(countdownRef.current);
+    };
+  }, [room, isHost]);
+
+  const handleHostLeftExit = useCallback(() => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    room.disconnect();
+    navigate("/");
+  }, [room, navigate]);
 
   const toggleFullscreen = useCallback(async () => {
     try {
@@ -342,6 +383,27 @@ export default memo(function MeetingRoomContent({
       <ConnectedAIRecordingModal isHost={isHost} />
       <ConnectedInviteModal roomId={roomId} participantIdentities={participantIdentities} />
       <ConnectedExitModal isHost={isHost} onConfirm={handleDisconnect} />
+
+      {/* Host departure modal */}
+      {hostLeft && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-purple-900/95 via-purple-950/95 to-black/95 rounded-2xl border border-red-500/30 w-full max-w-sm p-6 text-center space-y-4">
+            <AlertTriangle className="w-12 h-12 text-red-400 mx-auto" />
+            <h2 className="text-lg font-bold text-white">
+              호스트가 회의를 종료했습니다
+            </h2>
+            <p className="text-white/60 text-sm">
+              {hostLeftCountdown}초 후 자동으로 나갑니다...
+            </p>
+            <button
+              onClick={handleHostLeftExit}
+              className="w-full px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition-colors"
+            >
+              지금 나가기
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 });

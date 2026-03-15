@@ -54,7 +54,9 @@ export default function InviteMembers() {
   };
 
   const copyInviteLink = (email: string) => {
-    const inviteLink = `${window.location.origin}/signup?company=${companyId ?? ""}`;
+    const params = new URLSearchParams({ email });
+    if (companyId) params.set("company", companyId);
+    const inviteLink = `${window.location.origin}/signup/employee?${params.toString()}`;
     navigator.clipboard.writeText(inviteLink);
     setCopiedId(email);
     setTimeout(() => setCopiedId(null), 2000);
@@ -69,11 +71,9 @@ export default function InviteMembers() {
         throw new Error("최소 1명 이상의 사원을 초대해야 합니다");
       }
 
-      await Promise.all(
-        emails.map((e) =>
-          inviteMemberMutation.mutateAsync({ email: e.email, role: "USER" }),
-        ),
-      );
+      await inviteMemberMutation.mutateAsync({
+        emails: emails.map((e) => e.email),
+      });
       navigate("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "초대 실패");
@@ -131,7 +131,7 @@ export default function InviteMembers() {
             type="email"
             value={currentEmail}
             onChange={(e) => setCurrentEmail(e.target.value)}
-            onKeyPress={(e) => {
+            onKeyDown={(e) => {
               if (e.key === "Enter") {
                 addEmail();
               }

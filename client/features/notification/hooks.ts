@@ -156,7 +156,9 @@ export function useFcmSetup(userId: string | undefined) {
           userId,
           data: { token, deviceId, deviceType: "WEB" },
         });
-      } catch {}
+      } catch (err) {
+        console.warn("FCM setup failed:", err);
+      }
     })();
 
     return () => {
@@ -244,7 +246,9 @@ export function useNotificationSSE(
                 onMessage?.(notification);
                 qc.invalidateQueries({ queryKey: notiKeys.unreadCount(userId) });
                 qc.invalidateQueries({ queryKey: notiKeys.lists(userId) });
-              } catch {}
+              } catch (err) {
+                console.warn("SSE notification parse error:", err);
+              }
             }
           }
         }

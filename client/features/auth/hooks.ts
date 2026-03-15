@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   login as loginApi,
@@ -7,6 +8,7 @@ import {
   getMe,
   validateInvitation as validateInvitationApi,
   guestLogin as guestLoginApi,
+  findPassword as findPasswordApi,
   getAllEmployees,
   getJobTitles,
   updateProfile,
@@ -24,6 +26,7 @@ import {
   type CompanySignupRequest,
   type JoinRequest,
   type GuestLoginRequest,
+  type FindPasswordRequest,
   type UserResponseDto,
   type Pageable,
   type UserProfileUpdateRequest,
@@ -120,9 +123,14 @@ export function useValidateInvitation(email: string, code: string) {
 // ── Admin Query Hooks ──
 
 export function useAllEmployees(pageable?: Pageable) {
+  const stablePageable = useMemo(
+    () => pageable,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pageable?.page, pageable?.size, pageable?.sort],
+  );
   return useQuery({
-    queryKey: AUTH_ADMIN_KEYS.employees(pageable),
-    queryFn: () => getAllEmployees(pageable ?? {}),
+    queryKey: AUTH_ADMIN_KEYS.employees(stablePageable),
+    queryFn: () => getAllEmployees(stablePageable ?? {}),
     staleTime: 30_000,
   });
 }
@@ -155,8 +163,18 @@ export function useWithdraw() {
 }
 
 export function useChangePasswordMutation() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: ChangePasswordRequest) => changePassword(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
+    },
+  });
+}
+
+export function useFindPassword() {
+  return useMutation({
+    mutationFn: (data: FindPasswordRequest) => findPasswordApi(data),
   });
 }
 

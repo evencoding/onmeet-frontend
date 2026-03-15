@@ -11,3 +11,4 @@ export * from "./hooks/useChat";
 export { useMeetingMedia } from "./hooks/useMeetingMedia";
 export { useMeetingSTT } from "./hooks/useMeetingSTT";
 export type { STTChunk } from "./hooks/useMeetingSTT";
+export { useWaitingRoomSSE } from "./hooks/useWaitingRoomSSE";

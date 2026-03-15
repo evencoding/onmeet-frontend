@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Building2, Users, Shield, ArrowLeft, ChevronDown, Check, ChevronUp, Plus, Loader2, Mail, X } from "lucide-react";
+import { Building2, Users, Shield, ArrowLeft, ChevronDown, Check, ChevronUp, Plus, Loader2, Mail, X, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { Avatar, AvatarFallback } from "@/shared/ui/avatar";
@@ -20,6 +20,7 @@ interface DerivedTeam {
   id: number;
   name: string;
   color?: string;
+  status?: string;
   members: UserResponseDto[];
 }
 
@@ -32,7 +33,6 @@ export default function CompanyManagement() {
 
   // Invite state
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<"USER" | "MANAGER">("USER");
 
   // Team creation state
   const [showCreateTeam, setShowCreateTeam] = useState(false);
@@ -60,6 +60,7 @@ export default function CompanyManagement() {
             id: t.id,
             name: t.name,
             color: t.color,
+            status: t.status,
             members: [],
           });
         }
@@ -68,6 +69,9 @@ export default function CompanyManagement() {
     }
     return Array.from(teamMap.values());
   }, [employees]);
+
+  const pendingTeams = useMemo(() => derivedTeams.filter((t) => t.status === "PENDING"), [derivedTeams]);
+  const activeTeams = useMemo(() => derivedTeams.filter((t) => t.status !== "PENDING"), [derivedTeams]);
 
   // Count active managers
   const managerCount = employees.filter((e) => e.roles.includes("MANAGER")).length;
@@ -114,11 +118,10 @@ export default function CompanyManagement() {
   const handleInvite = () => {
     if (!inviteEmail.trim()) return;
     inviteMember.mutate(
-      { email: inviteEmail.trim(), role: inviteRole },
+      { emails: [inviteEmail.trim()] },
       {
         onSuccess: () => {
           setInviteEmail("");
-          setInviteRole("USER");
         },
       },
     );
@@ -252,14 +255,6 @@ export default function CompanyManagement() {
                     if (e.key === "Enter") handleInvite();
                   }}
                 />
-                <select
-                  value={inviteRole}
-                  onChange={(e) => setInviteRole(e.target.value as "USER" | "MANAGER")}
-                  className="px-3 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-white dark:text-white light:text-purple-900 text-sm focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-                >
-                  <option value="USER">일반</option>
-                  <option value="MANAGER">매니저</option>
-                </select>
                 <button
                   onClick={handleInvite}
                   disabled={inviteMember.isPending || !inviteEmail.trim()}
@@ -302,22 +297,29 @@ export default function CompanyManagement() {
                         </p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleToggleStatus(employee)}
-                      disabled={activateUser.isPending || deactivateUser.isPending}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 ${
-                        employee.status === "ACTIVE"
-                          ? "dark:bg-purple-600 light:bg-purple-600 text-white"
-                          : "dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700"
-                      }`}
-                    >
-                      {(activateUser.isPending || deactivateUser.isPending) ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
+                    {employee.id === user?.id ? (
+                      <span className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium dark:bg-purple-500/10 light:bg-purple-50 dark:text-white/40 light:text-purple-400 cursor-not-allowed" title="자기 자신의 계정은 비활성화할 수 없습니다">
                         <Shield className="w-4 h-4" />
-                      )}
-                      {employee.status === "ACTIVE" ? "활성" : "비활성"}
-                    </button>
+                        본인
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleToggleStatus(employee)}
+                        disabled={activateUser.isPending || deactivateUser.isPending}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 ${
+                          employee.status === "ACTIVE"
+                            ? "dark:bg-purple-600 light:bg-purple-600 text-white"
+                            : "dark:bg-purple-500/20 light:bg-purple-100 dark:text-white light:text-purple-700"
+                        }`}
+                      >
+                        {(activateUser.isPending || deactivateUser.isPending) ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Shield className="w-4 h-4" />
+                        )}
+                        {employee.status === "ACTIVE" ? "활성" : "비활성"}
+                      </button>
+                    )}
                   </div>
                 ))
               )}
@@ -329,6 +331,112 @@ export default function CompanyManagement() {
         {activeTab === "teams" && (
           <div className="space-y-6">
 
+            {/* Pending Teams Section */}
+            {pendingTeams.length > 0 && (
+              <div className="dark:bg-gradient-to-br dark:from-yellow-900/20 dark:via-black/80 dark:to-purple-900/30 light:bg-white dark:border dark:border-yellow-500/30 light:border light:border-yellow-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+                <div className="flex items-center gap-2 mb-6">
+                  <Clock className="w-5 h-5 dark:text-yellow-400 light:text-yellow-600" />
+                  <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
+                    승인 대기 팀
+                  </h2>
+                  <span className="px-2.5 py-0.5 text-xs dark:bg-yellow-500/20 dark:text-yellow-300 light:bg-yellow-100 light:text-yellow-700 rounded-full font-medium">
+                    {pendingTeams.length}건
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {pendingTeams.map((team) => (
+                    <div
+                      key={team.id}
+                      className="dark:bg-yellow-500/5 light:bg-yellow-50 rounded-xl border dark:border-yellow-500/20 light:border-yellow-300/50 overflow-hidden"
+                    >
+                      <div className="w-full flex items-center justify-between p-4">
+                        <button
+                          onClick={() => setExpandedTeam(expandedTeam === team.id ? null : team.id)}
+                          className="flex-1 flex items-center justify-between text-left"
+                        >
+                          <div className="flex items-center gap-3 flex-1">
+                            <div
+                              className="w-4 h-4 rounded-full flex-shrink-0"
+                              style={{ backgroundColor: team.color || "#a855f7" }}
+                            />
+                            <div>
+                              <p className="font-semibold dark:text-white light:text-purple-900">
+                                {team.name}
+                              </p>
+                              <p className="text-sm dark:text-white/60 light:text-purple-600">
+                                {team.members.length}명
+                              </p>
+                            </div>
+                          </div>
+                          {expandedTeam === team.id ? (
+                            <ChevronUp className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
+                          ) : (
+                            <ChevronDown className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
+                          )}
+                        </button>
+
+                        <div className="ml-4 flex gap-2">
+                          <button
+                            onClick={() => handleApproveTeam(team.id)}
+                            disabled={approveTeam.isPending}
+                            className="flex items-center gap-2 px-3 py-1.5 text-sm dark:bg-green-600/20 light:bg-green-100 dark:text-green-300 light:text-green-700 rounded-lg font-medium hover:dark:bg-green-600/30 hover:light:bg-green-200 transition-all disabled:opacity-50"
+                          >
+                            {approveTeam.isPending ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <Check className="w-3.5 h-3.5" />
+                            )}
+                            승인
+                          </button>
+                          <button
+                            onClick={() => handleRejectTeam(team.id)}
+                            disabled={rejectTeam.isPending}
+                            className="flex items-center gap-2 px-3 py-1.5 text-sm dark:bg-red-600/20 light:bg-red-100 dark:text-red-300 light:text-red-700 rounded-lg font-medium hover:dark:bg-red-600/30 hover:light:bg-red-200 transition-all disabled:opacity-50"
+                          >
+                            {rejectTeam.isPending ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <X className="w-3.5 h-3.5" />
+                            )}
+                            거절
+                          </button>
+                        </div>
+                      </div>
+
+                      {expandedTeam === team.id && (
+                        <div className="border-t dark:border-yellow-500/20 light:border-yellow-300/50 p-4">
+                          <div className="space-y-3">
+                            {team.members.map((member) => (
+                              <div
+                                key={member.id}
+                                className="flex items-center gap-3 p-3 dark:bg-purple-500/10 light:bg-purple-100/30 rounded-lg"
+                              >
+                                <Avatar className="w-8 h-8">
+                                  <AvatarFallback className="text-sm dark:bg-purple-600/30 light:bg-purple-200 dark:text-white light:text-purple-700 font-semibold">
+                                    {member.name.charAt(0)}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="font-medium dark:text-white light:text-purple-900">
+                                    {member.name}
+                                  </p>
+                                  <p className="text-xs dark:text-white/60 light:text-purple-600">
+                                    {member.jobTitle?.name ?? "-"} • {member.email}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Active Teams Section */}
             <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
@@ -385,13 +493,13 @@ export default function CompanyManagement() {
                 <div className="flex items-center justify-center py-12">
                   <Loader2 className="w-8 h-8 animate-spin dark:text-purple-400 light:text-purple-600" />
                 </div>
-              ) : derivedTeams.length === 0 ? (
+              ) : activeTeams.length === 0 ? (
                 <p className="text-center py-8 dark:text-white/50 light:text-purple-600/50">
                   등록된 팀이 없습니다.
                 </p>
               ) : (
                 <div className="space-y-3">
-                  {derivedTeams.map((team) => {
+                  {activeTeams.map((team) => {
                     const leader = findTeamLeader(team);
                     return (
                       <div
@@ -399,64 +507,33 @@ export default function CompanyManagement() {
                         className="dark:bg-purple-500/10 light:bg-purple-50 rounded-xl border dark:border-purple-500/30 light:border-purple-300/50 overflow-hidden"
                       >
 
-                        <div className="w-full flex items-center justify-between p-4 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50 transition-colors">
-                          <button
-                            onClick={() => setExpandedTeam(expandedTeam === team.id ? null : team.id)}
-                            className="flex-1 flex items-center justify-between text-left"
-                          >
-                            <div className="flex items-center gap-3 flex-1">
-                              <div
-                                className="w-4 h-4 rounded-full flex-shrink-0"
-                                style={{ backgroundColor: team.color || "#a855f7" }}
-                                title={team.color || "#a855f7"}
-                              />
-                              <div>
-                                <p className="font-semibold dark:text-white light:text-purple-900">
-                                  {team.name}
-                                </p>
-                                <p className="text-sm dark:text-white/60 light:text-purple-600">
-                                  팀 리더: {leader?.name ?? "미지정"} • {team.members.length}명
-                                </p>
-                              </div>
+                        <button
+                          onClick={() => setExpandedTeam(expandedTeam === team.id ? null : team.id)}
+                          className="w-full flex items-center justify-between p-4 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/50 transition-colors text-left"
+                        >
+                          <div className="flex items-center gap-3 flex-1">
+                            <div
+                              className="w-4 h-4 rounded-full flex-shrink-0"
+                              style={{ backgroundColor: team.color || "#a855f7" }}
+                            />
+                            <div>
+                              <p className="font-semibold dark:text-white light:text-purple-900">
+                                {team.name}
+                              </p>
+                              <p className="text-sm dark:text-white/60 light:text-purple-600">
+                                팀 리더: {leader?.name ?? "미지정"} • {team.members.length}명
+                              </p>
                             </div>
-                            {expandedTeam === team.id ? (
-                              <ChevronUp className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
-                            ) : (
-                              <ChevronDown className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
-                            )}
-                          </button>
-
-                          <div className="ml-4 flex gap-2">
-                            <button
-                              onClick={() => handleApproveTeam(team.id)}
-                              disabled={approveTeam.isPending}
-                              className="flex items-center gap-2 px-3 py-1.5 text-sm dark:bg-green-600/20 light:bg-green-100 dark:text-green-300 light:text-green-700 rounded-lg font-medium hover:dark:bg-green-600/30 hover:light:bg-green-200 transition-all disabled:opacity-50"
-                            >
-                              {approveTeam.isPending ? (
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              ) : (
-                                <Check className="w-3.5 h-3.5" />
-                              )}
-                              승인
-                            </button>
-                            <button
-                              onClick={() => handleRejectTeam(team.id)}
-                              disabled={rejectTeam.isPending}
-                              className="flex items-center gap-2 px-3 py-1.5 text-sm dark:bg-red-600/20 light:bg-red-100 dark:text-red-300 light:text-red-700 rounded-lg font-medium hover:dark:bg-red-600/30 hover:light:bg-red-200 transition-all disabled:opacity-50"
-                            >
-                              {rejectTeam.isPending ? (
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              ) : (
-                                <X className="w-3.5 h-3.5" />
-                              )}
-                              거절
-                            </button>
                           </div>
-                        </div>
+                          {expandedTeam === team.id ? (
+                            <ChevronUp className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
+                          ) : (
+                            <ChevronDown className="w-5 h-5 dark:text-white/70 light:text-purple-600" />
+                          )}
+                        </button>
 
                         {expandedTeam === team.id && (
                           <div className="border-t dark:border-purple-500/30 light:border-purple-300/50 p-4 space-y-4">
-
                             <div className="space-y-3">
                               {team.members.map((member) => {
                                 const isLeader = member.roles.includes("LEADER");

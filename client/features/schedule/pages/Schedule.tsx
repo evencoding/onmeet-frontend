@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import CalendarView from "@/features/schedule/components/CalendarView";
 import MeetingBookingModal from "@/features/schedule/components/MeetingBookingModal";
-import { Clock, MapPin, Users, ChevronLeft, ChevronRight } from "lucide-react";
-import { format, isSameDay } from "date-fns";
+import { Clock, MapPin, Users } from "lucide-react";
+import { format, isSameDay, startOfMonth } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useAuth } from "@/features/auth/context";
 import { useScheduledRooms } from "@/features/meeting/hooks";
@@ -29,14 +29,14 @@ export default function Schedule() {
   const userId = user ? String(user.id) : "";
 
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isRightPanelOpen, setIsRightPanelOpen] = useState(true);
+  const [currentMonth, setCurrentMonth] = useState(startOfMonth(new Date()));
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [bookingModalDate, setBookingModalDate] = useState<Date | undefined>();
 
-  const { data: scheduledData, isLoading } = useScheduledRooms(userId, { size: 50 });
+  const { data: scheduledData, isLoading } = useScheduledRooms(userId);
 
   const allMeetings: CalendarMeeting[] = useMemo(() => {
-    const rooms: MeetingRoomResponse[] = scheduledData?.content ?? [];
+    const rooms: MeetingRoomResponse[] = scheduledData ?? [];
     return rooms.map((room) => {
       const scheduledDate = room.scheduledAt ? new Date(room.scheduledAt) : new Date(room.createdAt);
       return {
@@ -58,6 +58,12 @@ export default function Schedule() {
     setIsBookingModalOpen(true);
   };
 
+  const handleGoToToday = () => {
+    const today = new Date();
+    setCurrentMonth(startOfMonth(today));
+    setSelectedDate(today);
+  };
+
   const selectedDateMeetings = allMeetings.filter((m) =>
     isSameDay(m.date, selectedDate),
   );
@@ -65,48 +71,31 @@ export default function Schedule() {
   return (
     <>
       <div className="w-full space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold dark:text-white/90 light:text-purple-950 mb-2">일정</h1>
-          <p className="dark:text-white/60 light:text-purple-700 mb-4">예정된 회의를 확인하세요</p>
+        <div className="flex items-center gap-3">
+          <div>
+            <h1 className="text-3xl font-bold dark:text-white/90 light:text-purple-950 mb-2">일정</h1>
+            <p className="dark:text-white/60 light:text-purple-700">예정된 회의를 확인하세요</p>
+          </div>
           <button
-            onClick={() => setIsRightPanelOpen(!isRightPanelOpen)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-colors text-sm font-medium"
-            title={isRightPanelOpen ? "상세보기 닫기" : "상세보기 열기"}
+            onClick={handleGoToToday}
+            className="ml-auto px-4 py-2 rounded-lg dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-700 dark:hover:bg-purple-500/30 light:hover:bg-purple-200 transition-colors text-sm font-medium"
           >
-            {isRightPanelOpen ? (
-              <>
-                <ChevronLeft className="w-4 h-4" />
-                <span>상세보기 닫기</span>
-              </>
-            ) : (
-              <>
-                <ChevronRight className="w-4 h-4" />
-                <span>상세보기 열기</span>
-              </>
-            )}
+            오늘
           </button>
         </div>
 
-        <div
-          className="grid"
-          style={{
-            gridTemplateColumns: isRightPanelOpen ? "1fr 1fr" : "1fr 0fr",
-            gap: isRightPanelOpen ? "1.5rem" : "0",
-            transition: "grid-template-columns 300ms ease-in-out, gap 300ms ease-in-out",
-          }}
-        >
+        <div className="grid grid-cols-[1fr_380px] gap-6">
           <div className="min-w-0 flex flex-col gap-4">
             <CalendarView
               onSelectDate={setSelectedDate}
               meetings={allMeetings}
               onAddMeeting={handleAddMeeting}
+              currentMonth={currentMonth}
+              onMonthChange={setCurrentMonth}
             />
           </div>
 
-          <div
-            className="overflow-hidden transition-opacity duration-300"
-            style={{ opacity: isRightPanelOpen ? 1 : 0 }}
-          >
+          <div>
             <div className="min-w-[320px] space-y-4">
               <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
                 <h2 className="text-xl font-bold dark:text-white/90 light:text-purple-950 mb-4">
@@ -170,34 +159,6 @@ export default function Schedule() {
                         >
                           회의 참여
                         </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-purple-50/50 light:via-white light:to-pink-100/30 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
-                <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-4">
-                  앞으로의 회의
-                </h3>
-                {allMeetings.length === 0 ? (
-                  <p className="text-sm dark:text-white/60 light:text-purple-700">예정된 회의가 없습니다</p>
-                ) : (
-                  <div className="grid grid-cols-2 gap-4">
-                    {allMeetings.slice(0, 4).map((meeting) => (
-                      <div
-                        key={meeting.id}
-                        className="dark:bg-purple-500/10 light:bg-white/70 rounded-xl p-3 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200/60 dark:hover:bg-purple-500/20 light:hover:shadow-md transition-all"
-                      >
-                        <p className="text-sm font-semibold dark:text-white/90 light:text-purple-950 truncate">
-                          {meeting.title}
-                        </p>
-                        <p className="text-xs dark:text-white/60 light:text-purple-700">
-                          {format(meeting.date, "M월 d일", { locale: ko })}
-                        </p>
-                        <p className="text-xs dark:text-purple-400 light:text-purple-600 font-medium">
-                          {meeting.time}
-                        </p>
                       </div>
                     ))}
                   </div>

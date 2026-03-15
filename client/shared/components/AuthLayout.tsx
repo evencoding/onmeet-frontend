@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 
 interface AuthLayoutProps {
   subtitle: string;
@@ -7,6 +8,7 @@ interface AuthLayoutProps {
   colorTheme?: "purple" | "blue";
   maxWidth?: string;
   showCard?: boolean;
+  onBack?: () => void;
 }
 
 const themes = {
@@ -44,6 +46,7 @@ export default function AuthLayout({
   colorTheme = "purple",
   maxWidth = "max-w-md",
   showCard = true,
+  onBack,
 }: AuthLayoutProps) {
   const t = themes[colorTheme];
 
@@ -69,6 +72,20 @@ export default function AuthLayout({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
+        {onBack && (
+          <motion.button
+            onClick={onBack}
+            className="flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors mb-4"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            whileHover={{ x: -3 }}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            뒤로가기
+          </motion.button>
+        )}
+
         <div className="text-center mb-6">
           <motion.div
             className={`inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br ${t.badge} text-white mb-3 relative overflow-hidden`}

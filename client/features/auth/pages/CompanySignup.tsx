@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -8,6 +8,7 @@ import {
   User,
   ArrowRight,
   Sparkles,
+  ArrowLeft,
 } from "lucide-react";
 import { useCompanySignup } from "@/features/auth/hooks";
 import type { ErrorResponse } from "@/features/auth/api";
@@ -24,7 +25,7 @@ export default function CompanySignup() {
   const companySignupMutation = useCompanySignup();
   const isLoading = companySignupMutation.isPending;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -62,7 +63,7 @@ export default function CompanySignup() {
   };
 
   return (
-    <AuthLayout subtitle="기업 회원가입" colorTheme="purple">
+    <AuthLayout subtitle="기업 회원가입" colorTheme="purple" onBack={() => navigate("/signup")}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

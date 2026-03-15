@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Building2, Users, ArrowRight } from "lucide-react";
+import { Building2, Users, ArrowRight, ArrowLeft } from "lucide-react";
 import AuthLayout from "@/shared/components/AuthLayout";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
@@ -9,9 +9,10 @@ export default function SignupFlow() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get("token");
+  const email = searchParams.get("email");
 
   if (inviteToken) {
-    navigate(`/signup/employee?token=${inviteToken}`);
+    navigate(`/signup/employee?token=${inviteToken}${email ? `&email=${encodeURIComponent(email)}` : ""}`);
     return null;
   }
 
@@ -38,6 +39,7 @@ export default function SignupFlow() {
       colorTheme="purple"
       maxWidth="max-w-4xl"
       showCard={false}
+      onBack={() => navigate("/")}
     >
 
       <motion.div

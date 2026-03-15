@@ -6,6 +6,7 @@ const initialState = {
   phase: "preparing" as const,
   token: "",
   isHost: false,
+  rejected: false,
 
   // Media
   isMuted: false,
@@ -43,6 +44,7 @@ export const useMeetingRoomStore = create<MeetingRoomStore>((set) => ({
   setPhase: (phase) => set({ phase }),
   setToken: (token) => set({ token }),
   setIsHost: (isHost) => set({ isHost }),
+  setRejected: (rejected) => set({ rejected }),
 
   // Media actions
   setIsMuted: (isMuted) => set({ isMuted }),
