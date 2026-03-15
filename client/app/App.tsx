@@ -3,7 +3,7 @@ import "./global.css";
 import "@/shared/lib/firebase";
 
 import * as Sentry from "@sentry/react";
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, Component, type ReactNode, type ErrorInfo } from "react";
 import { Toaster } from "@/shared/ui/toaster";
 import { Toaster as Sonner } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
@@ -49,6 +49,49 @@ const PasswordReset = lazy(() => import("@/features/auth/pages/PasswordReset"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 const queryClient = new QueryClient();
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
+  state: ErrorBoundaryState = { hasError: false, error: null };
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("ErrorBoundary caught:", error, info);
+    Sentry.captureException(error, { extra: { componentStack: info.componentStack } });
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-black">
+          <div className="text-center space-y-4 max-w-md px-6">
+            <h1 className="text-2xl font-bold text-white">문제가 발생했습니다</h1>
+            <p className="text-white/60 text-sm">
+              예상치 못한 오류가 발생했습니다. 페이지를 새로고침 해주세요.
+            </p>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false, error: null });
+                window.location.href = "/";
+              }}
+              className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors"
+            >
+              홈으로 돌아가기
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-black">
@@ -193,11 +236,13 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <TooltipProvider>
-        <AuthProvider>
-          <Toaster />
-          <Sonner />
-          <AppContent />
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <Toaster />
+            <Sonner />
+            <AppContent />
+          </AuthProvider>
+        </ErrorBoundary>
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>
