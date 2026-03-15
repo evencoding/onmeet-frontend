@@ -1,119 +1,65 @@
-import { Search, MoreVertical } from "lucide-react";
+import { Search } from "lucide-react";
+import { useState, useMemo } from "react";
+import { useAuth } from "@/features/auth/context";
+import { useRoomHistory } from "@/features/meeting/hooks";
+import type { MeetingRoomResponse } from "@/features/meeting/api/types";
 
-interface MeetingResult {
-  id: string;
-  title: string;
-  status: "active" | "pending" | "completed";
-  attendees: {
-    name: string;
-    avatar: string;
-  }[];
-  description?: string;
-  tag?: string;
+const AVATAR_COLORS = [
+  "from-purple-500 to-pink-500",
+  "from-blue-500 to-cyan-500",
+  "from-emerald-500 to-teal-500",
+  "from-amber-500 to-orange-500",
+];
+
+function getAvatarColor(index: number) {
+  return AVATAR_COLORS[index % AVATAR_COLORS.length];
+}
+
+function getStatusStyle(status: string) {
+  switch (status) {
+    case "ACTIVE":
+      return { className: "bg-emerald-100 text-emerald-700", label: "Active" };
+    case "SCHEDULED":
+      return { className: "bg-blue-100 text-blue-700", label: "Scheduled" };
+    case "ENDED":
+      return { className: "bg-gray-100 text-gray-600", label: "Ended" };
+    default:
+      return { className: "bg-gray-100 text-gray-700", label: status };
+  }
 }
 
 export default function AIMeetingSearch() {
-  const meetings: MeetingResult[] = [
-    {
-      id: "1",
-      title: "3D Designer",
-      status: "active",
-      tag: "ACTIVE",
-      attendees: [
-        {
-          name: "User 1",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
-        },
-      ],
-      description: "회의 내용을 요약하기",
-    },
-    {
-      id: "2",
-      title: "Chuyên Viên Kiến Thức ( Tester )",
-      status: "pending",
-      tag: "Closed",
-      attendees: [
-        {
-          name: "User 1",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
-        },
-        {
-          name: "User 2",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
-        },
-      ],
-      description: "• 테스트 사례 및 테스트 계획\n• 테스트 환경 및 도구\n• 버그 리포트 및 추적",
-    },
-    {
-      id: "3",
-      title: "AI Engineer",
-      status: "active",
-      tag: "Active",
-      attendees: [
-        {
-          name: "User 1",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
-        },
-        {
-          name: "User 2",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
-        },
-      ],
-      description: "AI 기술 및 머신러닝에 대한 토론. 우리는 대략적인 개념과 기술 세부 사항 등을 다루고 있습니다. 이것을 시청하세요 AI와 관련된 최신 대화",
-    },
-    {
-      id: "4",
-      title: "Front end",
-      status: "completed",
-      tag: "Active",
-      attendees: [
-        {
-          name: "User 1",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop",
-        },
-        {
-          name: "User 2",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop",
-        },
-      ],
-      description: "프론트 엔드 개발 관련 문제점 공유 및 개선 방안 논의. 현재 작업 중인 기능들과 향후 계획등을 다루고 있습니다",
-    },
-  ];
+  const { user } = useAuth();
+  const userId = user?.id ? String(user.id) : undefined;
+  const { data: historyData } = useRoomHistory(userId);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-emerald-100 text-emerald-700";
-      case "pending":
-        return "bg-red-100 text-red-700";
-      case "completed":
-        return "bg-purple-100 text-purple-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  };
+  const meetings: MeetingRoomResponse[] = historyData ?? [];
 
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case "active":
-        return "Active";
-      case "pending":
-        return "Closed";
-      case "completed":
-        return "Active";
-      default:
-        return status;
-    }
-  };
+  const filtered = useMemo(() => {
+    if (!searchTerm.trim()) return meetings.slice(0, 10);
+    const term = searchTerm.toLowerCase();
+    return meetings
+      .filter(
+        (m) =>
+          m.title.toLowerCase().includes(term) ||
+          m.description?.toLowerCase().includes(term),
+      )
+      .slice(0, 10);
+  }, [meetings, searchTerm]);
 
   return (
     <div className="w-80 border-l border-border/30 bg-white/40 backdrop-blur-md flex flex-col">
       <div className="px-6 py-5 border-b border-border/30">
-        <h2 className="text-sm font-semibold bg-gradient-to-r from-foreground to-text-sub bg-clip-text text-transparent mb-3">AI로 찾는 회의들</h2>
+        <h2 className="text-sm font-semibold bg-gradient-to-r from-foreground to-text-sub bg-clip-text text-transparent mb-3">
+          회의 검색
+        </h2>
         <div className="relative">
           <input
             type="text"
-            placeholder="Search"
+            placeholder="회의명으로 검색..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-3 py-2.5 text-sm border border-border/50 rounded-lg bg-white/50 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-brand-500 focus:border-brand-500 transition-all"
           />
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -121,47 +67,50 @@ export default function AIMeetingSearch() {
       </div>
 
       <div className="flex-1 overflow-y-auto divide-y divide-border/20">
-        {meetings.map((meeting) => (
-          <div
-            key={meeting.id}
-            className="px-4 py-5 hover:bg-white/30 transition-colors group"
-          >
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex-1">
-                <h3 className="text-sm font-medium text-foreground mb-1">
-                  {meeting.title}
-                </h3>
-                <span
-                  className={`inline-block text-xs font-medium px-2 py-1 rounded ${getStatusColor(
-                    meeting.status
-                  )}`}
-                >
-                  {getStatusLabel(meeting.status)}
-                </span>
+        {filtered.length > 0 ? (
+          filtered.map((meeting, idx) => {
+            const status = getStatusStyle(meeting.status);
+            return (
+              <div
+                key={meeting.id}
+                className="px-4 py-5 hover:bg-white/30 transition-colors group"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h3 className="text-sm font-medium text-foreground mb-1">
+                      {meeting.title}
+                    </h3>
+                    <span
+                      className={`inline-block text-xs font-medium px-2 py-1 rounded ${status.className}`}
+                    >
+                      {status.label}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 mb-2">
+                  <div
+                    className={`w-6 h-6 rounded-full bg-gradient-to-br ${getAvatarColor(idx)} flex items-center justify-center text-white text-xs font-bold`}
+                  >
+                    {meeting.title?.charAt(0)?.toUpperCase() || "?"}
+                  </div>
+                </div>
+
+                {meeting.description && (
+                  <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                    {meeting.description}
+                  </p>
+                )}
               </div>
-              <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-secondary rounded">
-                <MoreVertical className="w-4 h-4 text-muted-foreground" />
-              </button>
-            </div>
-
-            <div className="flex items-center gap-1 mb-2">
-              {meeting.attendees.map((attendee, idx) => (
-                <img
-                  key={idx}
-                  src={attendee.avatar}
-                  alt={attendee.name}
-                  className="w-6 h-6 rounded-full border border-border"
-                />
-              ))}
-            </div>
-
-            {meeting.description && (
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                {meeting.description}
-              </p>
-            )}
+            );
+          })
+        ) : (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-sm text-muted-foreground">
+              {searchTerm ? "검색 결과가 없습니다" : "회의 기록이 없습니다"}
+            </p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

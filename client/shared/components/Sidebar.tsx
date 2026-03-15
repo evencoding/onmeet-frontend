@@ -60,14 +60,12 @@ export default function Sidebar({
       id: "today",
       label: "오늘 회의",
       icon: <Calendar className="w-5 h-5" />,
-      badge: 2,
       route: "/",
     },
     {
       id: "summary",
       label: "회의 내역",
       icon: <FileText className="w-5 h-5" />,
-      badge: 8,
       route: "/summary",
     },
     {

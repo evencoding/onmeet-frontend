@@ -19,7 +19,7 @@ export default function Layout({
   showRecentPanel = false,
 }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedTeamId, setSelectedTeamId] = useState<string>("marketing");
+  const [selectedTeamId, setSelectedTeamId] = useState<string>("");
   const { theme } = useTheme();
 
   return (
