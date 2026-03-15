@@ -131,7 +131,7 @@ export default function InviteMembers() {
             type="email"
             value={currentEmail}
             onChange={(e) => setCurrentEmail(e.target.value)}
-            onKeyPress={(e) => {
+            onKeyDown={(e) => {
               if (e.key === "Enter") {
                 addEmail();
               }

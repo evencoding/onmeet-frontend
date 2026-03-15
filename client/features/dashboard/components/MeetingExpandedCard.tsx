@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import { X, Zap, Edit, Check, Copy, Tag } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import DOMPurify from "dompurify";
 import RichTextEditor from "./RichTextEditor";
 import AudioPlayer from "./AudioPlayer";
 import { useAuth } from "@/features/auth/context";
@@ -253,7 +254,7 @@ export default function MeetingExpandedCard({
                       <div
                         className="dark:text-white/80 light:text-purple-900 text-sm leading-relaxed space-y-3 prose dark:prose-invert prose-sm max-w-none"
                         dangerouslySetInnerHTML={{
-                          __html: editedContent[meeting.id] || fullText || summary || "",
+                          __html: DOMPurify.sanitize(editedContent[meeting.id] || fullText || summary || ""),
                         }}
                       />
                     </div>

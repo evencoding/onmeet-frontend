@@ -40,7 +40,9 @@ if (isFirebaseConfigValid()) {
           }
         }
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.warn("Firebase Messaging support check failed:", err);
+      });
   }
 } else {
   console.warn("Firebase configuration is incomplete. Some Firebase features may not work.");

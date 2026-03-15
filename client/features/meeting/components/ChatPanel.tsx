@@ -19,26 +19,32 @@ export default memo(function ChatPanel() {
       })),
     );
 
-  const handleSendMessage = useCallback(() => {
+  const handleSendMessage = useCallback(async () => {
     const { chatInput, addChatMessage, setChatInput } =
       useMeetingRoomStore.getState();
     if (!chatInput.trim()) return;
 
-    const data = JSON.stringify({ type: "chat", message: chatInput });
-    room.localParticipant.publishData(encoder.current.encode(data), {
-      reliable: true,
-    });
+    const message = chatInput;
+    setChatInput("");
+
+    try {
+      const data = JSON.stringify({ type: "chat", message });
+      await room.localParticipant.publishData(encoder.current.encode(data), {
+        reliable: true,
+      });
+    } catch (err) {
+      console.warn("Failed to send chat message:", err);
+    }
 
     addChatMessage({
       id: Date.now().toString(),
       sender: "You",
-      message: chatInput,
+      message,
       timestamp: new Date().toLocaleTimeString("ko-KR", {
         hour: "2-digit",
         minute: "2-digit",
       }),
     });
-    setChatInput("");
   }, [room]);
 
   const handleAddNote = useCallback(() => {
