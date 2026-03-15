@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { X, Check, Search, Copy, Link2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useToast } from "@/shared/hooks/use-toast";
+import { useAllEmployees } from "@/features/auth/hooks";
 
 interface TeamMember {
   id: string;
   name: string;
-  avatar: string;
   email: string;
 }
 
@@ -19,64 +19,28 @@ interface InviteParticipantModalProps {
   meetingId?: string;
 }
 
-const defaultTeamMembers: TeamMember[] = [
-  {
-    id: "1",
-    name: "Akbar Husain",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
-    email: "akbar@example.com",
-  },
-  {
-    id: "2",
-    name: "Ameesh Menon",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
-    email: "ameesh@example.com",
-  },
-  {
-    id: "3",
-    name: "Jonathan Sasi",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
-    email: "jonathan@example.com",
-  },
-  {
-    id: "4",
-    name: "Riska Thakur",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
-    email: "riska@example.com",
-  },
-  {
-    id: "5",
-    name: "Natalia",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
-    email: "natalia@example.com",
-  },
-  {
-    id: "6",
-    name: "Aila Thakur",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
-    email: "aila@example.com",
-  },
-  {
-    id: "7",
-    name: "김철수",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=48&h=48&fit=crop",
-    email: "kim@example.com",
-  },
-  {
-    id: "8",
-    name: "이영희",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=48&h=48&fit=crop",
-    email: "lee@example.com",
-  },
+const AVATAR_COLORS = [
+  "from-purple-500 to-pink-500",
+  "from-blue-500 to-cyan-500",
+  "from-emerald-500 to-teal-500",
+  "from-amber-500 to-orange-500",
+  "from-rose-500 to-red-500",
+  "from-violet-500 to-indigo-500",
 ];
+
+function getAvatarColor(id: string) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
+function InitialAvatar({ name, id, size = "w-10 h-10 text-sm" }: { name: string; id: string; size?: string }) {
+  return (
+    <div className={`${size} rounded-full bg-gradient-to-br ${getAvatarColor(id)} flex items-center justify-center text-white font-bold flex-shrink-0`}>
+      {name?.charAt(0)?.toUpperCase() || "?"}
+    </div>
+  );
+}
 
 const generateGuestLink = (meetingId?: string): string => {
   const id = meetingId || Math.random().toString(36).substring(2, 11);
@@ -88,7 +52,7 @@ export default function InviteParticipantModal({
   isOpen,
   onClose,
   onInvite,
-  teamMembers = defaultTeamMembers,
+  teamMembers: propMembers,
   alreadyInvited = [],
   meetingId,
 }: InviteParticipantModalProps) {
@@ -97,6 +61,18 @@ export default function InviteParticipantModal({
   const [activeTab, setActiveTab] = useState<"team" | "guest">("team");
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
+
+  const { data: employeesData } = useAllEmployees({ page: 0, size: 100 });
+
+  const teamMembers = useMemo(() => {
+    if (propMembers) return propMembers;
+    if (!employeesData?.content) return [];
+    return employeesData.content.map((emp) => ({
+      id: String(emp.id),
+      name: emp.name,
+      email: emp.email,
+    }));
+  }, [propMembers, employeesData]);
 
   const guestLink = generateGuestLink(meetingId);
 
@@ -217,11 +193,7 @@ export default function InviteParticipantModal({
                         : "hover:bg-purple-500/10 border border-transparent",
                     )}
                   >
-                    <img
-                      src={member.avatar}
-                      alt={member.name}
-                      className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                    />
+                    <InitialAvatar name={member.name} id={member.id} />
 
                     <div className="flex-1 text-left min-w-0">
                       <div className="text-sm font-semibold text-white/90">
@@ -248,7 +220,9 @@ export default function InviteParticipantModal({
                 ))
               ) : (
                 <div className="flex items-center justify-center py-8">
-                  <p className="text-sm text-white/50">검색 결과가 없습니다.</p>
+                  <p className="text-sm text-white/50">
+                    {teamMembers.length === 0 ? "등록된 사원이 없습니다." : "검색 결과가 없습니다."}
+                  </p>
                 </div>
               )}
             </div>
