@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useEmployeeSignup } from "@/features/auth/hooks";
 import { validateInvitation } from "@/features/auth/api";
-import type { ErrorResponse } from "@/features/auth/api";
+import { getErrorMessage } from "@/shared/utils/apiFetch";
 import AuthLayout from "@/shared/components/AuthLayout";
 
 export default function EmployeeSignup() {
@@ -55,8 +55,7 @@ export default function EmployeeSignup() {
         setStep("register");
       } catch (err) {
         if (cancelled) return;
-        const apiError = err as ErrorResponse;
-        setError(apiError.message || "초대 코드 검증에 실패했습니다");
+        setError(getErrorMessage(err, "초대 코드 검증에 실패했습니다"));
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -90,8 +89,7 @@ export default function EmployeeSignup() {
       setFormData((prev) => ({ ...prev, email: inviteEmail }));
       setStep("register");
     } catch (err) {
-      const apiError = err as ErrorResponse;
-      setError(apiError.message || "초대 코드 검증에 실패했습니다");
+      setError(getErrorMessage(err, "초대 코드 검증에 실패했습니다"));
     } finally {
       setIsLoading(false);
     }
@@ -129,8 +127,7 @@ export default function EmployeeSignup() {
       {
         onSuccess: () => navigate("/login"),
         onError: (err: unknown) => {
-          const apiError = err as ErrorResponse;
-          setError(apiError?.message || "가입에 실패했습니다");
+          setError(getErrorMessage(err, "가입에 실패했습니다"));
         },
       },
     );

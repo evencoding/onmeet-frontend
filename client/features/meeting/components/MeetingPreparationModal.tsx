@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import {
   Mic,
   MicOff,
@@ -9,6 +9,8 @@ import {
   FlipHorizontal,
   Lock,
 } from "lucide-react";
+import { useMeetingDevices } from "../hooks/useMeetingDevices";
+import { useMicTest } from "../hooks/useMicTest";
 
 export interface DeviceSelection {
   cameraId: string;
@@ -40,138 +42,33 @@ export default function MeetingPreparationModal({
   onStateChange,
   onDeviceSelect,
 }: MeetingPreparationModalProps) {
-  const previewVideoRef = useRef<HTMLVideoElement>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const micIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [isMuted, setIsMuted] = useState(onStateChange.isMuted);
   const [isVideoOn, setIsVideoOn] = useState(onStateChange.isVideoOn);
   const [isCameraFlipped, setIsCameraFlipped] = useState(false);
-  const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
-  const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([]);
-  const [speakers, setSpeakers] = useState<MediaDeviceInfo[]>([]);
-  const [selectedCamera, setSelectedCamera] = useState<string>("");
-  const [selectedMicrophone, setSelectedMicrophone] = useState<string>("");
-  const [selectedSpeaker, setSelectedSpeaker] = useState<string>("");
-  const [previewStream, setPreviewStream] = useState<MediaStream | null>(null);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
-  const [isMicTesting, setIsMicTesting] = useState(false);
-  const [microphoneLevel, setMicrophoneLevel] = useState(0);
-  const [micTestStream, setMicTestStream] = useState<MediaStream | null>(null);
 
-  useEffect(() => {
-    const getDevices = async () => {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        setCameras(devices.filter((d) => d.kind === "videoinput"));
-        setMicrophones(devices.filter((d) => d.kind === "audioinput"));
-        setSpeakers(devices.filter((d) => d.kind === "audiooutput"));
+  const {
+    cameras,
+    microphones,
+    speakers,
+    selectedCamera,
+    setSelectedCamera,
+    selectedMicrophone,
+    setSelectedMicrophone,
+    selectedSpeaker,
+    setSelectedSpeaker,
+    previewVideoRef,
+    previewStream,
+    stopPreview,
+  } = useMeetingDevices(isOpen, isVideoOn);
 
-        const defaultCamera = devices.find((d) => d.kind === "videoinput");
-        const defaultMic = devices.find((d) => d.kind === "audioinput");
-        const defaultSpeaker = devices.find((d) => d.kind === "audiooutput");
-
-        if (defaultCamera) setSelectedCamera(defaultCamera.deviceId);
-        if (defaultMic) setSelectedMicrophone(defaultMic.deviceId);
-        if (defaultSpeaker) setSelectedSpeaker(defaultSpeaker.deviceId);
-      } catch (err) {
-        console.error("Error getting devices:", err);
-      }
-    };
-
-    getDevices();
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen || !isVideoOn) {
-      return;
-    }
-
-    const startPreview = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: selectedCamera ? { deviceId: selectedCamera } : true,
-          audio: false,
-        });
-        setPreviewStream(stream);
-        if (previewVideoRef.current) {
-          previewVideoRef.current.srcObject = stream;
-        }
-      } catch (err) {
-        console.error("Error starting preview:", err);
-      }
-    };
-
-    if (isVideoOn) {
-      startPreview();
-    }
-
-    return () => {
-      if (previewStream) {
-        previewStream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [isOpen, isVideoOn, selectedCamera]);
-
-  useEffect(() => {
-    return () => {
-      stopMicTest();
-    };
-  }, [isOpen]);
-
-  const startMicTest = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: selectedMicrophone ? { deviceId: selectedMicrophone } : true,
-        video: false,
-      });
-
-      setMicTestStream(stream);
-      setIsMicTesting(true);
-
-      const AudioCtx = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      const audioContext = new AudioCtx();
-      const analyser = audioContext.createAnalyser();
-      const source = audioContext.createMediaStreamSource(stream);
-
-      source.connect(analyser);
-      audioContextRef.current = audioContext;
-      analyserRef.current = analyser;
-
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      const updateLevel = () => {
-        analyser.getByteFrequencyData(dataArray);
-        const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-        setMicrophoneLevel(Math.min(100, (average / 255) * 150));
-      };
-
-      micIntervalRef.current = setInterval(updateLevel, 50);
-    } catch (err) {
-      console.error("Error starting mic test:", err);
-      setIsMicTesting(false);
-    }
-  };
-
-  const stopMicTest = () => {
-    if (micIntervalRef.current) {
-      clearInterval(micIntervalRef.current);
-      micIntervalRef.current = null;
-    }
-
-    setIsMicTesting(false);
-    setMicrophoneLevel(0);
-
-    if (micTestStream) {
-      micTestStream.getTracks().forEach((track) => track.stop());
-      setMicTestStream(null);
-    }
-
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
-    }
-  };
+  const {
+    isMicTesting,
+    microphoneLevel,
+    startMicTest,
+    stopMicTest,
+  } = useMicTest(selectedMicrophone, isOpen);
 
   const handleStart = () => {
     if (isLocked && !password.trim()) {
@@ -185,8 +82,8 @@ export default function MeetingPreparationModal({
 
     if (previewStream) {
       previewStream.getTracks().forEach((track) => track.stop());
-      setPreviewStream(null);
     }
+    stopPreview();
 
     onDeviceSelect?.({
       cameraId: selectedCamera,

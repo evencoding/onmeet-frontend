@@ -10,44 +10,10 @@ export type RecordingType = "FULL_AUDIO" | "SEGMENT" | "FULL_VIDEO" | "PARTICIPA
 export type RecordingStatus = "RECORDING" | "PROCESSING" | "COMPLETED" | "FAILED";
 export type InvitationStatus = "PENDING" | "ACCEPTED" | "DECLINED" | "CANCELLED";
 
-// ── Pagination ──
+// ── Pagination (re-export from shared) ──
 
-export interface Pageable {
-  page?: number;
-  size?: number;
-  sort?: string[];
-}
-
-export interface SortObject {
-  direction: string;
-  nullHandling: string;
-  ascending: boolean;
-  property: string;
-  ignoreCase: boolean;
-}
-
-export interface PageableObject {
-  offset: number;
-  sort: SortObject[];
-  unpaged: boolean;
-  paged: boolean;
-  pageNumber: number;
-  pageSize: number;
-}
-
-export interface Page<T> {
-  totalPages: number;
-  totalElements: number;
-  size: number;
-  content: T[];
-  number: number;
-  sort: SortObject[];
-  numberOfElements: number;
-  pageable: PageableObject;
-  last: boolean;
-  first: boolean;
-  empty: boolean;
-}
+import type { Pageable, SortObject, PageableObject, Page } from "@/shared/utils/api";
+export type { Pageable, SortObject, PageableObject, Page };
 
 // ── Request Types ──
 

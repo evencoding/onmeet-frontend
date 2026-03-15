@@ -1,44 +1,10 @@
-import { pageQs } from "@/shared/utils/api";
+import { pageQs, type Pageable, type Page } from "@/shared/utils/api";
+export type { Pageable };
+import { createServiceFetch } from "@/shared/utils/apiFetch";
 
 const NOTI_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || ""}/notification`;
 
-async function notiFetch<T>(
-  endpoint: string,
-  userId?: string,
-  options?: RequestInit,
-): Promise<T> {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...((options?.headers as Record<string, string>) ?? {}),
-  };
-  if (userId) {
-    headers["X-User-Id"] = userId;
-  }
-
-  const res = await fetch(`${NOTI_BASE_URL}${endpoint}`, {
-    credentials: "include",
-    ...options,
-    headers,
-  });
-
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({
-      message: "요청에 실패했습니다",
-      status: res.status,
-    }));
-    throw error;
-  }
-
-  const text = await res.text();
-  if (!text) return {} as T;
-
-  const json = JSON.parse(text);
-  if (json && typeof json === "object" && "success" in json) {
-    if (!json.success && json.error) throw json.error;
-    return json.data as T;
-  }
-  return json as T;
-}
+const notiFetch = createServiceFetch(NOTI_BASE_URL);
 
 // ── Types ──
 
@@ -104,42 +70,7 @@ export interface NotificationResponseDto {
   read: boolean;
 }
 
-export interface SortObject {
-  direction: string;
-  nullHandling: string;
-  ascending: boolean;
-  property: string;
-  ignoreCase: boolean;
-}
-
-export interface PageableObject {
-  offset: number;
-  sort: SortObject[];
-  unpaged: boolean;
-  paged: boolean;
-  pageNumber: number;
-  pageSize: number;
-}
-
-export interface PageNotificationResponseDto {
-  totalPages: number;
-  totalElements: number;
-  size: number;
-  content: NotificationResponseDto[];
-  number: number;
-  sort: SortObject[];
-  numberOfElements: number;
-  pageable: PageableObject;
-  last: boolean;
-  first: boolean;
-  empty: boolean;
-}
-
-export interface Pageable {
-  page?: number;
-  size?: number;
-  sort?: string[];
-}
+export type PageNotificationResponseDto = Page<NotificationResponseDto>;
 
 export type UnreadCountResponse = Record<string, number>;
 
