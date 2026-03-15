@@ -8,6 +8,7 @@ import {
   User,
   ArrowRight,
   Sparkles,
+  ArrowLeft,
 } from "lucide-react";
 import { useCompanySignup } from "@/features/auth/hooks";
 import type { ErrorResponse } from "@/features/auth/api";
@@ -62,7 +63,7 @@ export default function CompanySignup() {
   };
 
   return (
-    <AuthLayout subtitle="기업 회원가입" colorTheme="purple">
+    <AuthLayout subtitle="기업 회원가입" colorTheme="purple" onBack={() => navigate("/signup")}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

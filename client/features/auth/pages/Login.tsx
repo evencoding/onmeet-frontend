@@ -92,7 +92,7 @@ export default function Login() {
 
   if (showFindPassword) {
     return (
-      <AuthLayout subtitle="회의에만 집중하세요, 기록은 AI가" colorTheme="purple">
+      <AuthLayout subtitle="회의에만 집중하세요, 기록은 AI가" colorTheme="purple" onBack={switchToLogin}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -179,7 +179,7 @@ export default function Login() {
   }
 
   return (
-    <AuthLayout subtitle="회의에만 집중하세요, 기록은 AI가" colorTheme="purple">
+    <AuthLayout subtitle="회의에만 집중하세요, 기록은 AI가" colorTheme="purple" onBack={() => navigate("/")}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

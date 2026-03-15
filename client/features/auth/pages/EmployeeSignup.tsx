@@ -138,7 +138,7 @@ export default function EmployeeSignup() {
 
   if (step === "verify") {
     return (
-      <AuthLayout subtitle="사원 회원가입" colorTheme="blue">
+      <AuthLayout subtitle="사원 회원가입" colorTheme="blue" onBack={() => navigate("/signup")}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -262,7 +262,7 @@ export default function EmployeeSignup() {
   }
 
   return (
-    <AuthLayout subtitle="사원 정보 입력" colorTheme="blue">
+    <AuthLayout subtitle="사원 정보 입력" colorTheme="blue" onBack={() => setStep("verify")}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

@@ -1,9 +1,7 @@
 import {
   Calendar,
   FileText,
-  ClipboardList,
   Clock,
-  LayoutGrid,
   Plus,
   MoreVertical,
   LogOut,
@@ -27,16 +25,16 @@ interface NavItem {
   route: string;
 }
 
-interface Team {
-  id: string;
-  name: string;
-  color?: string;
-  backgroundColor?: string;
-  textColor?: string;
-  description?: string;
-  icon?: string;
-  hasCheckmark?: boolean;
-}
+const TEAM_COLORS = [
+  "bg-blue-500",
+  "bg-cyan-500",
+  "bg-sky-500",
+  "bg-violet-500",
+  "bg-emerald-500",
+  "bg-amber-500",
+  "bg-rose-500",
+  "bg-teal-500",
+];
 
 interface SidebarProps {
   isCollapsed?: boolean;
@@ -51,8 +49,11 @@ export default function Sidebar({
 }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedTeamId, setSelectedTeamId] = useState<string>("marketing");
+  const { user } = useAuth();
+  const [selectedTeamId, setSelectedTeamId] = useState<string>("");
   const [isAddTeamModalOpen, setIsAddTeamModalOpen] = useState(false);
+
+  const userTeams = user?.teams ?? [];
 
   const navItems: NavItem[] = [
     {
@@ -84,23 +85,6 @@ export default function Sidebar({
     },
   ];
 
-  const teams: Team[] = [
-    {
-      id: "marketing",
-      name: "Marketing",
-      color: "bg-blue-100",
-    },
-    {
-      id: "product",
-      name: "Product",
-      color: "bg-cyan-100",
-    },
-    {
-      id: "design",
-      name: "Design",
-      color: "bg-sky-100",
-    },
-  ];
 
   return (
     <div
@@ -212,47 +196,46 @@ export default function Sidebar({
             <span className="text-xs font-semibold text-muted-foreground uppercase">
               Teams
             </span>
-            <button className="p-1 dark:hover:bg-slate-800 light:hover:bg-slate-100/50 rounded transition-colors">
-              <MoreVertical className="w-4 h-4 text-muted-foreground" />
-            </button>
           </div>
 
-          <div className="space-y-2 mb-3">
-            {teams.map((team) => (
-              <button
-                key={team.id}
-                onClick={() => {
-                  setSelectedTeamId(team.id);
-                  onTeamSelect?.(team.id);
-                  navigate(`/team/${team.id}`);
-                }}
-                className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group",
-                  selectedTeamId === team.id
-                    ? "dark:bg-brand-500/10 dark:text-brand-400 light:bg-brand-50/50 light:text-brand-700"
-                    : "dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-slate-800/50 light:text-muted-foreground light:hover:text-foreground light:hover:bg-slate-50",
-                )}
-                title={`${team.name} 팀 선택`}
-              >
-                <div
+          {userTeams.length > 0 ? (
+            <div className="space-y-2 mb-3">
+              {userTeams.map((team, idx) => (
+                <button
+                  key={team.id}
+                  onClick={() => {
+                    setSelectedTeamId(String(team.id));
+                    onTeamSelect?.(String(team.id));
+                    navigate(`/team/${team.id}`);
+                  }}
                   className={cn(
-                    "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white",
-                    team.id === "marketing"
-                      ? "bg-blue-500"
-                      : team.id === "product"
-                        ? "bg-cyan-500"
-                        : "bg-sky-500",
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group",
+                    selectedTeamId === String(team.id)
+                      ? "dark:bg-brand-500/10 dark:text-brand-400 light:bg-brand-50/50 light:text-brand-700"
+                      : "dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-slate-800/50 light:text-muted-foreground light:hover:text-foreground light:hover:bg-slate-50",
                   )}
+                  title={`${team.name} 팀 선택`}
                 >
-                  {team.id.charAt(0).toUpperCase()}
-                </div>
-                <span className="text-sm font-medium flex-1 text-left">
-                  {team.name}
-                </span>
-                <MoreVertical className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity dark:text-white/40 light:text-purple-600" />
-              </button>
-            ))}
-          </div>
+                  <div
+                    className={cn(
+                      "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white",
+                      team.color ? `bg-[${team.color}]` : TEAM_COLORS[idx % TEAM_COLORS.length],
+                    )}
+                  >
+                    {team.name.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="text-sm font-medium flex-1 text-left">
+                    {team.name}
+                  </span>
+                  {team.status === "PENDING" && (
+                    <span className="text-xs text-amber-500 font-medium">대기</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="px-4 text-xs text-muted-foreground mb-3">소속된 팀이 없습니다</p>
+          )}
 
           <button
             onClick={() => setIsAddTeamModalOpen(true)}
@@ -325,10 +308,26 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
 
   return (
     <div className="space-y-2">
-      {/* Company Information */}
-      <div className="w-full px-4 py-4 bg-brand-500 rounded-lg text-center">
-        <div className="text-base font-bold text-white">
-          {user.company?.name || "ONMEET"}
+      {/* User Info */}
+      <div className="flex items-center gap-3 px-3 py-3">
+        <div className="relative flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
+            {user.name?.charAt(0)?.toUpperCase() || "U"}
+          </div>
+          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-white dark:border-slate-900"></div>
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-semibold text-foreground truncate">
+            {user.name}
+          </div>
+          <div className="text-xs text-muted-foreground truncate">
+            {user.email}
+          </div>
+          {user.company?.name && (
+            <div className="text-xs text-muted-foreground/70 truncate">
+              {user.company.name}
+            </div>
+          )}
         </div>
       </div>
 
