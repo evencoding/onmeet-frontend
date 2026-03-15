@@ -9,6 +9,7 @@ import {
 } from "@/features/notification/hooks";
 import type { NotificationSettingDto } from "@/features/notification/api";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
+import { getErrorMessage } from "@/shared/utils/apiFetch";
 import ProfileTab from "@/features/settings/components/ProfileTab";
 import SettingsTab from "@/features/settings/components/SettingsTab";
 import DeleteAccountModal from "@/features/settings/components/DeleteAccountModal";
@@ -154,8 +155,7 @@ export default function MyPage() {
           }, 2000);
         },
         onError: (err: unknown) => {
-          const error = err as { message?: string };
-          setPasswordError(error.message || "비밀번호 변경에 실패했습니다.");
+          setPasswordError(getErrorMessage(err, "비밀번호 변경에 실패했습니다."));
         },
       },
     );
@@ -174,8 +174,7 @@ export default function MyPage() {
           navigate("/login");
         },
         onError: (err: unknown) => {
-          const error = err as { message?: string };
-          setDeleteError(error.message || "계정 삭제에 실패했습니다.");
+          setDeleteError(getErrorMessage(err, "계정 삭제에 실패했습니다."));
         },
       },
     );

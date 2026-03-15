@@ -1,4 +1,5 @@
 import { pageQs, type Pageable, type Page } from "@/shared/utils/api";
+export type { Pageable };
 import { createServiceFetch } from "@/shared/utils/apiFetch";
 
 const NOTI_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || ""}/notification`;

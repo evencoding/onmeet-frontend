@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import AuthLayout from "@/shared/components/AuthLayout";
 import { useInviteMember } from "@/features/auth/hooks";
+import { getErrorMessage } from "@/shared/utils/apiFetch";
 
 interface InvitedEmail {
   id: string;
@@ -76,7 +77,7 @@ export default function InviteMembers() {
       });
       navigate("/login");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "초대 실패");
+      setError(getErrorMessage(err, "초대 실패"));
     } finally {
       setIsLoading(false);
     }

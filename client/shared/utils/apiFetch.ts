@@ -6,6 +6,16 @@
  * auth / video / ai services.
  */
 
+// ── Error helpers ──
+
+export function getErrorMessage(err: unknown, fallback = "요청에 실패했습니다"): string {
+  if (err && typeof err === "object" && "message" in err) {
+    return (err as { message: string }).message || fallback;
+  }
+  if (err instanceof Error) return err.message;
+  return fallback;
+}
+
 // ── Response parsing ──
 
 export function parseResponseBody<T>(text: string): T {
