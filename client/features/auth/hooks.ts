@@ -7,6 +7,7 @@ import {
   getMe,
   validateInvitation as validateInvitationApi,
   guestLogin as guestLoginApi,
+  findPassword as findPasswordApi,
   getAllEmployees,
   getJobTitles,
   updateProfile,
@@ -24,6 +25,7 @@ import {
   type CompanySignupRequest,
   type JoinRequest,
   type GuestLoginRequest,
+  type FindPasswordRequest,
   type UserResponseDto,
   type Pageable,
   type UserProfileUpdateRequest,
@@ -155,8 +157,18 @@ export function useWithdraw() {
 }
 
 export function useChangePasswordMutation() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: ChangePasswordRequest) => changePassword(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
+    },
+  });
+}
+
+export function useFindPassword() {
+  return useMutation({
+    mutationFn: (data: FindPasswordRequest) => findPasswordApi(data),
   });
 }
 

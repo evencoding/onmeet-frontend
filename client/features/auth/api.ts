@@ -83,7 +83,7 @@ export interface ErrorResponse {
 export interface LoginRequest {
   email: string;
   password: string;
-  rememberMe?: boolean;
+  deviceToken?: string;
 }
 
 export interface LoginResponse {
@@ -151,6 +151,7 @@ export interface UserResponseDto {
   jobTitle?: JobTitleResponse;
   teams: TeamInfoDto[];
   profileImageId?: number;
+  isPasswordReset: boolean;
 }
 
 export interface ChangePasswordRequest {
@@ -183,8 +184,11 @@ export interface JobTitleRequest {
 }
 
 export interface InvitationRequest {
+  emails: string[];
+}
+
+export interface FindPasswordRequest {
   email: string;
-  role: "USER" | "ADMIN" | "MANAGER";
 }
 
 export interface TeamRejectRequest {
@@ -233,6 +237,13 @@ export function guestLogin(data: GuestLoginRequest): Promise<void> {
 export function logout(): Promise<void> {
   return authFetch("/v1/logout", {
     method: "POST",
+  });
+}
+
+export function findPassword(data: FindPasswordRequest): Promise<void> {
+  return authFetch("/v1/password/find", {
+    method: "POST",
+    body: JSON.stringify(data),
   });
 }
 

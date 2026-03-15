@@ -12,6 +12,7 @@ interface AuthContextType {
   user: UserResponseDto | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isPasswordReset: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -42,6 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user: user ?? null,
         isAuthenticated: !!user,
         isLoading: isMeLoading,
+        isPasswordReset: !!user?.isPasswordReset,
         login,
         logout,
       }}

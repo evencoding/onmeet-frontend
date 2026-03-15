@@ -69,11 +69,9 @@ export default function InviteMembers() {
         throw new Error("최소 1명 이상의 사원을 초대해야 합니다");
       }
 
-      await Promise.all(
-        emails.map((e) =>
-          inviteMemberMutation.mutateAsync({ email: e.email, role: "USER" }),
-        ),
-      );
+      await inviteMemberMutation.mutateAsync({
+        emails: emails.map((e) => e.email),
+      });
       navigate("/login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "초대 실패");
