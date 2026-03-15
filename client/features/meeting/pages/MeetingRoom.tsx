@@ -10,6 +10,7 @@ import { useJoinRoom, useRoom } from "@/features/meeting/hooks";
 import { useAuth } from "@/features/auth/context";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useToast } from "@/shared/hooks/use-toast";
+import { getErrorMessage } from "@/shared/utils/apiFetch";
 import { useMeetingRoomStore, type DeviceSelection } from "../store";
 import { useWaitingRoomSSE } from "../hooks/useWaitingRoomSSE";
 
@@ -102,10 +103,7 @@ export default function MeetingRoom() {
       }
     } catch (err) {
       console.error("Failed to join room:", err);
-      const message = err && typeof err === "object" && "message" in err
-        ? (err as { message: string }).message
-        : "회의 입장에 실패했습니다";
-      toast({ title: "회의 입장 실패", description: message, variant: "destructive" });
+      toast({ title: "회의 입장 실패", description: getErrorMessage(err, "회의 입장에 실패했습니다"), variant: "destructive" });
       useMeetingRoomStore.getState().setPhase("preparing");
     }
   }, [roomId, roomIdNum, user, userId, joinRoom, toast]);
