@@ -10,7 +10,6 @@ import {
   getRoomStats,
   getRoomTimeline,
 } from "../api/room-discovery";
-import type { Pageable } from "../api/types";
 
 export function useRoomByCode(roomCode: string, userId: string) {
   return useQuery({
@@ -20,27 +19,27 @@ export function useRoomByCode(roomCode: string, userId: string) {
   });
 }
 
-export function useRoomsByTag(tagName: string, userId: string, pageable?: Pageable) {
+export function useRoomsByTag(tagName: string, userId: string) {
   return useQuery({
     queryKey: roomKeys.searchByTag(tagName),
-    queryFn: () => searchRoomsByTag(tagName, userId, pageable),
+    queryFn: () => searchRoomsByTag(tagName, userId),
     enabled: !!tagName && !!userId,
   });
 }
 
-export function useScheduledRooms(userId: string, pageable?: Pageable) {
+export function useScheduledRooms(userId: string) {
   return useQuery({
     queryKey: roomKeys.scheduled(),
-    queryFn: () => listScheduledRooms(userId, pageable),
+    queryFn: () => listScheduledRooms(userId),
     enabled: !!userId,
     staleTime: 30_000,
   });
 }
 
-export function useRoomHistory(userId: string, pageable?: Pageable) {
+export function useRoomHistory(userId: string) {
   return useQuery({
     queryKey: roomKeys.history(),
-    queryFn: () => listRoomHistory(userId, pageable),
+    queryFn: () => listRoomHistory(userId),
     enabled: !!userId,
     staleTime: 30_000,
   });
@@ -55,10 +54,10 @@ export function useMonthlyStats(userId: string) {
   });
 }
 
-export function useFavoriteRooms(userId: string, pageable?: Pageable) {
+export function useFavoriteRooms(userId: string) {
   return useQuery({
     queryKey: roomKeys.favorites(),
-    queryFn: () => listFavoriteRooms(userId, pageable),
+    queryFn: () => listFavoriteRooms(userId),
     enabled: !!userId,
     staleTime: 30_000,
   });

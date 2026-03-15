@@ -28,9 +28,9 @@ export default function RecentMeetings() {
   const [searchQuery, setSearchQuery] = useState("");
   const { user } = useAuth();
   const userId = user ? String(user.id) : "";
-  const { data: historyData, isLoading } = useRoomHistory(userId, { size: 10 });
+  const { data: historyData, isLoading } = useRoomHistory(userId);
 
-  const meetings: MeetingRoomResponse[] = historyData?.content ?? [];
+  const meetings: MeetingRoomResponse[] = historyData ?? [];
 
   const filteredMeetings = meetings.filter(
     (meeting) =>

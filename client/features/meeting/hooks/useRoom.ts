@@ -85,9 +85,8 @@ export function useJoinRoom() {
       roomId: number | string;
       userId: string;
       data?: RoomJoinRequest;
-      body?: Record<string, unknown>;
     }) =>
-      joinRoom(Number(args.roomId), args.userId, args.data ?? (args.body as RoomJoinRequest)),
+      joinRoom(Number(args.roomId), args.userId, args.data),
   });
 }
 

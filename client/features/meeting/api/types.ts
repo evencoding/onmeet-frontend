@@ -164,8 +164,6 @@ export interface RoomJoinResponse {
   livekitUrl: string;
   roomName: string;
   waitingRoom: boolean;
-  participantName?: string;
-  isHost?: boolean;
 }
 
 export interface RoomStatsResponse {
@@ -237,6 +235,19 @@ export interface MonthlyStatsResponse {
   totalMeetings: number;
   totalDurationSeconds: number;
   totalParticipants: number;
+}
+
+export interface ChatTokenRequest {
+  roomId?: number;
+  roomCode?: string;
+  serviceIdentity: string;
+}
+
+export interface ChatTokenResponse {
+  token: string;
+  livekitUrl: string;
+  roomName: string;
+  roomId: number;
 }
 
 // ── List filter params ──
