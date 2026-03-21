@@ -2,13 +2,14 @@ import { roomFetch } from "../api";
 import type { Page } from "@/shared/utils/api";
 import type {
   MeetingRoomResponse,
+  MeetingRoomDetailResponse,
   RoomStatsResponse,
   MonthlyStatsResponse,
   TimelineEntry,
 } from "./types";
 
 export function getRoomByCode(roomCode: string, userId: string) {
-  return roomFetch<MeetingRoomResponse>(
+  return roomFetch<MeetingRoomDetailResponse>(
     `/rooms/code/${encodeURIComponent(roomCode)}`,
     userId,
   );

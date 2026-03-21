@@ -98,8 +98,12 @@ export default function CompanyManagement() {
   // Create team
   const handleCreateTeam = () => {
     if (!newTeamName.trim()) return;
+    const isManager = user?.roles?.includes("MANAGER") ?? false;
+    const teamPayload = isManager && user?.id
+      ? { name: newTeamName.trim(), memberIds: [user.id], leaderId: user.id }
+      : { name: newTeamName.trim() };
     createTeam.mutate(
-      { name: newTeamName.trim() },
+      teamPayload,
       {
         onSuccess: () => {
           setNewTeamName("");
