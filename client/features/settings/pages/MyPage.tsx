@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { User, Settings, Building2 } from "lucide-react";
 import { useAuth } from "@/features/auth/context";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import {
 } from "@/features/notification/hooks";
 import type { NotificationSettingDto } from "@/features/notification/api";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
+import { useProfileImage } from "@/shared/hooks/useProfileImage";
 import { getErrorMessage } from "@/shared/utils/apiFetch";
 import ProfileTab from "@/features/settings/components/ProfileTab";
 import SettingsTab from "@/features/settings/components/SettingsTab";
@@ -77,12 +78,19 @@ export default function MyPage() {
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const [profileImage, setProfileImage] = useState<File | undefined>();
+  const { data: profileImageUrl } = useProfileImage(user?.profileImageId);
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
     position: user?.jobTitle?.name || "",
-    avatar: "",
+    avatar: profileImageUrl || "",
   });
+
+  useEffect(() => {
+    if (profileImageUrl) {
+      setFormData((prev) => ({ ...prev, avatar: profileImageUrl }));
+    }
+  }, [profileImageUrl]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
