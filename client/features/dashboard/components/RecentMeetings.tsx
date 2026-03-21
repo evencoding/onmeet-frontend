@@ -30,7 +30,7 @@ export default function RecentMeetings() {
   const userId = user ? String(user.id) : "";
   const { data: historyData, isLoading } = useRoomHistory(userId);
 
-  const meetings: MeetingRoomResponse[] = historyData ?? [];
+  const meetings: MeetingRoomResponse[] = historyData?.content ?? [];
 
   const filteredMeetings = meetings.filter(
     (meeting) =>
