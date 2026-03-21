@@ -28,3 +28,8 @@ dist-ssr
 !.env.example
 .claude/
 .builder
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
