@@ -122,7 +122,7 @@ export interface TeamRejectRequest {
 
 export interface GuestInviteRequestDto {
   guestEmail: string;
-  roomId: string;
+  roomId: number;
   roomName: string;
 }
 

@@ -55,7 +55,7 @@ export function deleteJobTitle(id: number): Promise<void> {
   return authFetch(`/v1/manager/job-titles/${id}`, { method: "DELETE" });
 }
 
-export function inviteMember(data: InvitationRequest): Promise<number> {
+export function inviteMember(data: InvitationRequest): Promise<number[]> {
   return authFetch("/v1/manager/invite", {
     method: "POST",
     body: JSON.stringify(data),
