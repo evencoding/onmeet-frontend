@@ -13,6 +13,10 @@ interface EmployeesTabProps {
   invitePending: boolean;
   togglePending: boolean;
   managerCount: number;
+  inviteRole: string;
+  setInviteRole: (role: string) => void;
+  onInviteSingle: () => void;
+  inviteSinglePending: boolean;
 }
 
 export default function EmployeesTab({
@@ -26,6 +30,10 @@ export default function EmployeesTab({
   invitePending,
   togglePending,
   managerCount,
+  inviteRole,
+  setInviteRole,
+  onInviteSingle,
+  inviteSinglePending,
 }: EmployeesTabProps) {
   return (
     <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
@@ -40,30 +48,55 @@ export default function EmployeesTab({
         </div>
 
         {/* Invite Section */}
-        <div className="flex items-center gap-3 mb-4 p-4 dark:bg-purple-500/10 light:bg-purple-50 rounded-xl border dark:border-purple-500/30 light:border-purple-300/50">
-          <Mail className="w-5 h-5 dark:text-purple-400 light:text-purple-600 flex-shrink-0" />
-          <input
-            type="email"
-            value={inviteEmail}
-            onChange={(e) => setInviteEmail(e.target.value)}
-            placeholder="초대할 이메일 주소"
-            className="flex-1 px-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-white dark:text-white light:text-purple-900 text-sm focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") onInvite();
-            }}
-          />
-          <button
-            onClick={onInvite}
-            disabled={invitePending || !inviteEmail.trim()}
-            className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-lg font-medium hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all whitespace-nowrap disabled:opacity-50"
-          >
-            {invitePending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Mail className="w-4 h-4" />
-            )}
-            초대
-          </button>
+        <div className="flex flex-col gap-3 mb-4 p-4 dark:bg-purple-500/10 light:bg-purple-50 rounded-xl border dark:border-purple-500/30 light:border-purple-300/50">
+          <div className="flex items-center gap-3">
+            <Mail className="w-5 h-5 dark:text-purple-400 light:text-purple-600 flex-shrink-0" />
+            <input
+              type="email"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              placeholder="초대할 이메일 주소"
+              className="flex-1 px-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-white dark:text-white light:text-purple-900 text-sm focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") onInvite();
+              }}
+            />
+            <button
+              onClick={onInvite}
+              disabled={invitePending || !inviteEmail.trim()}
+              className="flex items-center gap-2 px-4 py-2 dark:bg-purple-600 light:bg-purple-600 text-white rounded-lg font-medium hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all whitespace-nowrap disabled:opacity-50"
+            >
+              {invitePending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Mail className="w-4 h-4" />
+              )}
+              초대
+            </button>
+          </div>
+          <div className="flex items-center gap-3 pl-9">
+            <select
+              value={inviteRole}
+              onChange={(e) => setInviteRole(e.target.value)}
+              className="px-3 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-white dark:text-white light:text-purple-900 text-sm focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/30 transition-all"
+            >
+              <option value="USER">USER</option>
+              <option value="ADMIN">ADMIN</option>
+              <option value="MANAGER">MANAGER</option>
+            </select>
+            <button
+              onClick={onInviteSingle}
+              disabled={inviteSinglePending || !inviteEmail.trim()}
+              className="flex items-center gap-2 px-4 py-2 dark:bg-purple-500/30 light:bg-purple-100 dark:text-purple-300 light:text-purple-700 rounded-lg font-medium hover:dark:bg-purple-500/50 hover:light:bg-purple-200 transition-all whitespace-nowrap disabled:opacity-50"
+            >
+              {inviteSinglePending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Shield className="w-4 h-4" />
+              )}
+              역할 지정 초대
+            </button>
+          </div>
         </div>
 
         {isLoading ? (

@@ -12,6 +12,8 @@ import {
   useAssignLeader,
   useCreateTeam,
   useInviteMember,
+  useInviteSingleMember,
+  useUpdateCompany,
 } from "@/features/auth/hooks";
 import type { UserResponseDto } from "@/features/auth/api";
 import CompanyInfoTab from "@/features/settings/components/CompanyInfoTab";
@@ -28,6 +30,7 @@ export default function CompanyManagement() {
 
   // Invite state
   const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState<"USER" | "ADMIN" | "MANAGER">("USER");
 
   // Team creation state
   const [showCreateTeam, setShowCreateTeam] = useState(false);
@@ -42,6 +45,8 @@ export default function CompanyManagement() {
   const assignLeader = useAssignLeader();
   const createTeam = useCreateTeam();
   const inviteMember = useInviteMember();
+  const inviteSingleMember = useInviteSingleMember();
+  const updateCompany = useUpdateCompany();
 
   const employees: UserResponseDto[] = employeesPage?.content ?? [];
 
@@ -126,6 +131,24 @@ export default function CompanyManagement() {
     );
   };
 
+  // Invite single member with role
+  const handleInviteSingle = () => {
+    if (!inviteEmail.trim()) return;
+    inviteSingleMember.mutate(
+      { email: inviteEmail.trim(), role: inviteRole },
+      {
+        onSuccess: () => {
+          setInviteEmail("");
+        },
+      },
+    );
+  };
+
+  // Update company info
+  const handleUpdateCompany = (name: string) => {
+    updateCompany.mutate({ name });
+  };
+
   // Find leader for a team (employee with LEADER role in that team context - heuristic: first MANAGER in team)
   const findTeamLeader = (team: DerivedTeam): UserResponseDto | undefined => {
     return team.members.find((m) => m.roles.includes("LEADER")) ?? undefined;
@@ -181,6 +204,8 @@ export default function CompanyManagement() {
             employeeCount={employeesPage?.totalElements}
             teamCount={derivedTeams.length}
             isLoading={isEmployeesLoading}
+            onUpdateCompany={handleUpdateCompany}
+            updatePending={updateCompany.isPending}
           />
         )}
 
@@ -197,6 +222,10 @@ export default function CompanyManagement() {
             invitePending={inviteMember.isPending}
             togglePending={activateUser.isPending || deactivateUser.isPending}
             managerCount={managerCount}
+            inviteRole={inviteRole}
+            setInviteRole={(role) => setInviteRole(role as "USER" | "ADMIN" | "MANAGER")}
+            onInviteSingle={handleInviteSingle}
+            inviteSinglePending={inviteSingleMember.isPending}
           />
         )}
 
