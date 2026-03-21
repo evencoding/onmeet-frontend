@@ -15,6 +15,8 @@ import {
   withdraw,
   changePassword,
   inviteMember,
+  inviteSingleMember,
+  updateCompany,
   approveTeam,
   rejectTeam,
   assignLeader,
@@ -35,6 +37,8 @@ import {
   type InvitationRequest,
   type TeamRejectRequest,
   type TeamRequest,
+  type SingleInvitationRequest,
+  type UpdateCompanyRequest,
 } from "@/features/auth/api";
 
 export const AUTH_QUERY_KEY = ["auth", "me"] as const;
@@ -184,6 +188,26 @@ export function useInviteMember() {
     mutationFn: (data: InvitationRequest) => inviteMember(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: AUTH_ADMIN_KEYS.employees() });
+    },
+  });
+}
+
+export function useInviteSingleMember() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: SingleInvitationRequest) => inviteSingleMember(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: AUTH_ADMIN_KEYS.employees() });
+    },
+  });
+}
+
+export function useUpdateCompany() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: UpdateCompanyRequest) => updateCompany(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
     },
   });
 }

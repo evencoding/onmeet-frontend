@@ -130,4 +130,19 @@ export interface RefreshRequest {
   refreshToken: string;
 }
 
+export interface SingleInvitationRequest {
+  email: string;
+  role: "USER" | "ADMIN" | "MANAGER";
+}
+
+export interface UpdateCompanyRequest {
+  name?: string;
+}
+
+export interface CompanyResponse {
+  id: number;
+  name: string;
+  status: string;
+}
+
 export type { Pageable, PageResponse } from "@/shared/utils/api";
