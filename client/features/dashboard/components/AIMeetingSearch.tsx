@@ -34,7 +34,7 @@ export default function AIMeetingSearch() {
   const { data: historyData } = useRoomHistory(userId);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const meetings: MeetingRoomResponse[] = historyData ?? [];
+  const meetings: MeetingRoomResponse[] = historyData?.content ?? [];
 
   const filtered = useMemo(() => {
     if (!searchTerm.trim()) return meetings.slice(0, 10);

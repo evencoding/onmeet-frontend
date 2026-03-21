@@ -36,7 +36,7 @@ export default function Schedule() {
   const { data: scheduledData, isLoading } = useScheduledRooms(userId);
 
   const allMeetings: CalendarMeeting[] = useMemo(() => {
-    const rooms: MeetingRoomResponse[] = scheduledData ?? [];
+    const rooms: MeetingRoomResponse[] = scheduledData?.content ?? [];
     return rooms.map((room) => {
       const scheduledDate = room.scheduledAt ? new Date(room.scheduledAt) : new Date(room.createdAt);
       return {
