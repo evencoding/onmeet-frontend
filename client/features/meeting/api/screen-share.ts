@@ -2,7 +2,7 @@ import { roomFetch } from "../api";
 import type { ScreenShareResponse } from "./types";
 
 export function startScreenShare(roomId: number, userId: string) {
-  return roomFetch<void>(`/rooms/${roomId}/screen-share/start`, userId, {
+  return roomFetch<ScreenShareResponse>(`/rooms/${roomId}/screen-share/start`, userId, {
     method: "POST",
   });
 }
