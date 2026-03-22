@@ -48,7 +48,10 @@ export default function CompanyManagement() {
   const inviteSingleMember = useInviteSingleMember();
   const updateCompany = useUpdateCompany();
 
-  const employees: UserResponseDto[] = employeesPage?.content ?? [];
+  const employees: UserResponseDto[] = useMemo(
+    () => employeesPage?.content ?? [],
+    [employeesPage?.content],
+  );
 
   // Derive teams from employees data
   const derivedTeams = useMemo<DerivedTeam[]>(() => {

@@ -1,4 +1,4 @@
-import { X, Clock, Users, Settings } from "lucide-react";
+import { X, Clock, Settings } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";

@@ -16,7 +16,7 @@ interface AudioPlayerProps {
 
 export default function AudioPlayer({
   recordingUrl,
-  meetingId,
+  meetingId: _meetingId,
   meetingTitle,
   rawTranscript,
   fullText,

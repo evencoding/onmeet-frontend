@@ -8,7 +8,6 @@ import {
   User,
   ArrowRight,
   Sparkles,
-  ArrowLeft,
 } from "lucide-react";
 import { useCompanySignup } from "@/features/auth/hooks";
 import type { ErrorResponse } from "@/features/auth/api";

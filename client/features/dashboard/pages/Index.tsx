@@ -1,6 +1,5 @@
 import IntroCard from "@/features/dashboard/components/IntroCard";
 import OngoingMeetings from "@/features/dashboard/components/OngoingMeetings";
-import RecentMeetings from "@/features/dashboard/components/RecentMeetings";
 import CreateMeetingModal from "@/features/dashboard/components/CreateMeetingModal";
 import { useState } from "react";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";

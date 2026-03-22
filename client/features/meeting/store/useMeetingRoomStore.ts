@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { MeetingRoomStore } from "./types";
-import { transition, logTransition, canTransition } from "./phaseMachine";
+import { transition, logTransition } from "./phaseMachine";
 
 const initialState = {
   // Connection

@@ -1,5 +1,5 @@
 import { MessageCircle, Send } from "lucide-react";
-import { memo, useState, useRef, useEffect } from "react";
+import { memo, useState, useRef, useEffect, useMemo } from "react";
 import { useAuth } from "@/features/auth/context";
 
 interface Participant {
@@ -59,7 +59,7 @@ export default memo(function ParticipantsPanel({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const previousParticipantsRef = useRef<Participant[]>([]);
 
-  const participants = propsParticipants ?? [];
+  const participants = useMemo(() => propsParticipants ?? [], [propsParticipants]);
   const displayCount = count ?? participants.length;
 
   const scrollToBottom = () => {
