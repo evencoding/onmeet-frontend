@@ -128,6 +128,7 @@ export default memo(function Sidebar({
               onClick={onToggleCollapse}
               className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title={isCollapsed ? "사이드바 확대" : "사이드바 축소"}
+              aria-label={isCollapsed ? "사이드바 확대" : "사이드바 축소"}
             >
               {isCollapsed ? (
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -315,6 +316,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
           onClick={logout}
           className="p-2 dark:hover:bg-slate-800 light:hover:bg-slate-100/50 rounded transition-colors"
           title="로그아웃"
+          aria-label="로그아웃"
         >
           <LogOut className="w-4 h-4 text-muted-foreground hover:text-foreground" />
         </button>
