@@ -41,16 +41,16 @@ export default function OngoingMeetings() {
       <div>
         <div className="flex items-center gap-3 mb-8">
           <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></div>
-          <h2 className="text-xs font-bold text-foreground uppercase tracking-widest">
+          <h2 className="text-xs font-bold dark:text-white/90 light:text-purple-950 uppercase tracking-widest">
             진행 중인 회의
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {[1, 2].map((i) => (
-            <div key={i} className="dark:bg-slate-800/40 light:bg-white rounded-xl p-5 animate-pulse">
-              <div className="h-5 dark:bg-slate-700 light:bg-purple-100 rounded w-3/4 mb-3" />
-              <div className="h-4 dark:bg-slate-700 light:bg-purple-100 rounded w-1/2 mb-2" />
-              <div className="h-4 dark:bg-slate-700 light:bg-purple-100 rounded w-2/3" />
+            <div key={i} className="dark:bg-purple-900/30 light:bg-white dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/60 rounded-2xl p-5 animate-pulse">
+              <div className="h-5 dark:bg-purple-500/20 light:bg-purple-100 rounded w-3/4 mb-3" />
+              <div className="h-4 dark:bg-purple-500/15 light:bg-purple-100 rounded w-1/2 mb-2" />
+              <div className="h-4 dark:bg-purple-500/15 light:bg-purple-100 rounded w-2/3" />
             </div>
           ))}
         </div>
@@ -63,11 +63,11 @@ export default function OngoingMeetings() {
       <div>
         <div className="flex items-center gap-3 mb-8">
           <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></div>
-          <h2 className="text-xs font-bold text-foreground uppercase tracking-widest">
+          <h2 className="text-xs font-bold dark:text-white/90 light:text-purple-950 uppercase tracking-widest">
             진행 중인 회의
           </h2>
         </div>
-        <div className="text-center py-12 dark:bg-slate-800/20 light:bg-purple-50/50 rounded-xl">
+        <div className="text-center py-12 dark:bg-purple-500/10 dark:border dark:border-purple-500/20 light:bg-purple-50/80 light:border-2 light:border-purple-300/50 rounded-2xl">
           <p className="dark:text-white/60 light:text-purple-700 mb-1 font-medium">현재 진행 중인 회의가 없습니다</p>
           <p className="text-xs dark:text-white/40 light:text-purple-600">새 회의를 생성해보세요</p>
         </div>
@@ -79,7 +79,7 @@ export default function OngoingMeetings() {
     <div>
       <div className="flex items-center gap-3 mb-8">
         <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></div>
-        <h2 className="text-xs font-bold text-foreground uppercase tracking-widest">
+        <h2 className="text-xs font-bold dark:text-white/90 light:text-purple-950 uppercase tracking-widest">
           진행 중인 회의
         </h2>
       </div>
@@ -88,26 +88,26 @@ export default function OngoingMeetings() {
         {meetings.map((meeting) => (
           <div
             key={meeting.id}
-            className="dark:bg-slate-800/40 light:bg-white dark:border dark:border-border/20 light:border light:border-border/40 rounded-xl overflow-hidden transition-all duration-300 dark:hover:shadow-hover light:hover:shadow-hover hover:-translate-y-0.5 group dark:backdrop-blur-sm"
+            className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/40 dark:to-pink-900/20 light:bg-white dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/60 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-md light:hover:shadow-purple-300/30 light:hover:border-purple-400/60 hover:-translate-y-0.5 group dark:backdrop-blur-md"
           >
             <div
               className={`h-1 ${
                 meeting.displayStatus === "ongoing"
                   ? "bg-red-500"
-                  : "bg-brand-500"
+                  : "bg-gradient-to-r from-purple-500 to-pink-500"
               }`}
             />
 
             <div className="p-5 space-y-4">
               <div className="space-y-2">
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-lg font-bold text-foreground flex-1 leading-tight">
+                  <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 flex-1 leading-tight">
                     {meeting.title}
                   </h3>
                 </div>
 
                 {meeting.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">
+                  <p className="text-sm dark:text-white/60 light:text-purple-700 line-clamp-2">
                     {meeting.description}
                   </p>
                 )}
@@ -115,25 +115,25 @@ export default function OngoingMeetings() {
 
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-brand-500 flex-shrink-0" />
+                  <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-600 flex-shrink-0" />
                   <div>
-                    <p className="text-xs text-muted-foreground">시작</p>
-                    <p className="font-medium text-foreground">
+                    <p className="text-xs dark:text-white/50 light:text-purple-600">시작</p>
+                    <p className="font-medium dark:text-white/90 light:text-purple-900">
                       {formatTime(meeting.startedAt || meeting.scheduledAt)}
                     </p>
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">상태</p>
-                  <p className={`font-medium ${meeting.displayStatus === "ongoing" ? "text-red-500" : "text-brand-500"}`}>
+                  <p className="text-xs dark:text-white/50 light:text-purple-600">상태</p>
+                  <p className={`font-medium ${meeting.displayStatus === "ongoing" ? "text-red-500" : "dark:text-purple-400 light:text-purple-600"}`}>
                     {meeting.displayStatus === "ongoing" ? "진행 중" : "예정"}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                <span className="text-xs text-muted-foreground">
+                <Users className="w-4 h-4 dark:text-white/50 light:text-purple-600 flex-shrink-0" />
+                <span className="text-xs dark:text-white/50 light:text-purple-600">
                   최대 {meeting.maxParticipants}명
                 </span>
               </div>
@@ -141,10 +141,10 @@ export default function OngoingMeetings() {
               <button
                 onClick={() => handleJoinMeeting(meeting)}
                 disabled={meeting.displayStatus === "upcoming"}
-                className={`w-full px-4 py-2.5 font-semibold rounded-lg text-sm transition-all duration-200 ${
+                className={`w-full px-4 py-2.5 font-semibold rounded-xl text-sm transition-all duration-300 ${
                   meeting.displayStatus === "ongoing"
-                    ? "bg-red-500 text-white hover:bg-red-600 dark:shadow-lg dark:shadow-red-500/30 light:shadow-md light:shadow-red-400/30 hover:scale-105 active:scale-95"
-                    : "dark:bg-slate-800/50 dark:text-muted-foreground light:bg-slate-100 light:text-muted-foreground cursor-not-allowed"
+                    ? "bg-gradient-to-r from-red-500 to-pink-500 text-white hover:from-red-600 hover:to-pink-600 shadow-lg shadow-red-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-95"
+                    : "dark:bg-purple-500/20 dark:text-white/60 light:bg-purple-100 light:text-purple-700 cursor-not-allowed"
                 }`}
               >
                 {meeting.displayStatus === "ongoing"

@@ -52,7 +52,7 @@ export default function CompanySignup() {
       },
       {
         onSuccess: () => {
-          navigate("/signup/invite-members");
+          navigate("/login", { state: { fromCompanySignup: true } });
         },
         onError: (err: unknown) => {
           const apiError = err as ErrorResponse;

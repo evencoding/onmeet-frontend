@@ -19,7 +19,7 @@ export default function Index() {
 
   return (
     <>
-      <div className="space-y-10 max-w-4xl">
+      <div className="space-y-10">
         <IntroCard onCreateMeeting={handleCreateMeeting} />
         <OngoingMeetings />
       </div>

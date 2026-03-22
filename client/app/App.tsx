@@ -188,8 +188,12 @@ const AppContent = () => (
         element={<GuestRoute><Suspense fallback={<PageLoader />}><EmployeeSignup /></Suspense></GuestRoute>}
       />
       <Route
-        path="/signup/invite-members"
-        element={<GuestRoute><Suspense fallback={<PageLoader />}><InviteMembers /></Suspense></GuestRoute>}
+        path="/invite-members"
+        element={
+          <AuthOnlyRoute>
+            <Suspense fallback={<PageLoader />}><InviteMembers /></Suspense>
+          </AuthOnlyRoute>
+        }
       />
 
       <Route

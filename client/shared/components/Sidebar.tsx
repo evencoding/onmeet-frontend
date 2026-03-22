@@ -109,7 +109,7 @@ export default memo(function Sidebar({
               <img
                 src="/icons/brand-logo-transparent.png"
                 alt="ONMEET"
-                className="h-8 w-auto"
+                className="h-8 w-auto dark:brightness-0 dark:invert"
               />
             </button>
           )}
@@ -122,7 +122,7 @@ export default memo(function Sidebar({
               <img
                 src="/icons/brand-icon-transparent.png"
                 alt="ONMEET"
-                className="w-8 h-8"
+                className="w-8 h-8 dark:brightness-0 dark:invert"
               />
             </button>
           )}
