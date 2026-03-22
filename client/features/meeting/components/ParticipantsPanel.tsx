@@ -1,5 +1,5 @@
 import { MessageCircle, Send } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { memo, useState, useRef, useEffect } from "react";
 import { useAuth } from "@/features/auth/context";
 
 interface Participant {
@@ -46,7 +46,7 @@ function InitialAvatar({ name, id, size = "w-10 h-10 text-sm" }: { name: string;
   );
 }
 
-export default function ParticipantsPanel({
+export default memo(function ParticipantsPanel({
   count,
   participants: propsParticipants,
 }: ParticipantsPanelProps) {
@@ -288,4 +288,4 @@ export default function ParticipantsPanel({
       </div>
     </div>
   );
-}
+});
