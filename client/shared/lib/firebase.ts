@@ -34,7 +34,7 @@ if (isFirebaseConfigValid()) {
       .then((supported) => {
         if (supported) {
           try {
-            messaging = getMessaging(app);
+            messaging = getMessaging(app!);
           } catch (error) {
             console.warn("Firebase Messaging init failed:", error);
           }
