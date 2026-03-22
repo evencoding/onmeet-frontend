@@ -101,17 +101,11 @@ export default function Landing() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white flex items-center justify-center font-bold text-lg relative overflow-hidden">
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0"
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <span className="relative">O</span>
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              ONMEET
-            </span>
+            <img
+              src="/icons/brand-logo-transparent.png"
+              alt="ONMEET"
+              className="h-10 w-auto"
+            />
           </motion.div>
 
           <motion.div
