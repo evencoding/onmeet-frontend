@@ -128,6 +128,34 @@ client/
 
 ---
 
+## 테스트
+
+Vitest + React Testing Library 기반의 단위/통합 테스트를 운영합니다.
+
+```bash
+pnpm test                 # 전체 테스트 실행
+pnpm test:watch           # 감시 모드
+pnpm test:e2e             # Playwright E2E 테스트
+```
+
+| 분류 | 테스트 파일 수 | 테스트 케이스 수 |
+|------|:---:|:---:|
+| Shared Utils | 2 | 23 |
+| Shared Hooks | 6 | 42 |
+| Auth (Context + API) | 5 | 49 |
+| Meeting (Store + API + Keys) | 6 | 98 |
+| Notification | 2 | 13 |
+| AI (Hooks + API) | 2 | 9 |
+| App (라우팅) | 1 | 6 |
+| UI Utils | 1 | 5 |
+| **합계** | **25** | **253** |
+
+커버리지 범위: 전체 API 레이어 (Auth/Meeting/AI/Notification), 커스텀 훅(throttle, SSE, 반응형), Zustand 상태 관리, React Query 키 팩토리, Toast 리듀서, 라우트 가드
+
+> 상세 테스트 문서: [`docs/test.md`](docs/test.md)
+
+---
+
 ## 실행 방법
 
 ```bash
@@ -136,6 +164,7 @@ cp .env.example .env      # 환경변수 설정
 
 pnpm dev                  # 개발 서버 (http://localhost:8080)
 pnpm typecheck            # 타입 체크
+pnpm test                 # 테스트 실행
 pnpm build                # 프로덕션 빌드
 pnpm analyze              # 번들 분석 리포트
 pnpm deploy               # 배포 (Cloudflare Pages)

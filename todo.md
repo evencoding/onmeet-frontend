@@ -377,7 +377,7 @@ MeetingPreparationModal (435L → 332L)
 - [ ] CI 파이프라인 구축 (lint + typecheck + test on PR)
 - [ ] Husky + lint-staged로 커밋 전 자동 포맷팅/린트
 - [x] ~~Open Graph / Twitter Card 메타 태그 추가~~ (완료)
-- [ ] 컴포넌트 테스트 기반 마련 (Vitest + React Testing Library + MSW)
+- [x] ~~컴포넌트 테스트 기반 마련 (Vitest + React Testing Library)~~ (완료)
 
 ### P2 — 중기 (3~4주)
 
@@ -389,7 +389,7 @@ MeetingPreparationModal (435L → 332L)
 
 ### P3 — 장기
 
-- [ ] E2E 테스트 (Playwright)
+- [x] ~~E2E 테스트 (Playwright)~~ (완료)
 - [ ] i18n 지원 (react-i18next)
 - [x] ~~CSP 헤더 설정~~ (완료)
 - [x] ~~Structured Data (JSON-LD) SEO~~ (완료)
