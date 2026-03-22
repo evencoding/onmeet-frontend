@@ -1,6 +1,7 @@
 import "./global.css";
 
 import "@/shared/lib/firebase";
+import "@/shared/i18n";
 
 import * as Sentry from "@sentry/react";
 import React, { Suspense, lazy, Component, type ReactNode, type ErrorInfo } from "react";

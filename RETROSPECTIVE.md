@@ -261,19 +261,6 @@ HttpOnly 쿠키 기반 인증을 선택한 이유는 단순하다: XSS 공격으
 
 또한 "처음부터 완벽하게" 설계하는 것은 불가능하다는 것을 받아들이게 되었다. auth/api.ts가 471줄까지 불어난 다음에야 분리의 필요성을 체감했고, STT 데이터로 리렌더 폭풍을 맞은 다음에야 useRef 버퍼링의 가치를 이해했다. 문제를 직접 겪어야 해결책의 의미를 진짜로 알게 된다.
 
-### 아직 풀지 못한 숙제
-
-- [x] ~~Zod 기반 런타임 타입 검증 도입~~ (완료 — `shared/lib/schemas.ts`, `validateResponse()` 유틸, `getMe` API에 적용)
-- [x] ~~브랜드 타입으로 ID 혼동 방지~~ (완료 — `shared/types/brand.ts`, UserId/RoomId/TeamId 등 6종 정의)
-- [x] ~~State Machine 도입~~ (완료 — XState 없이 경량 FSM으로 `phaseMachine.ts` 구현, store `setPhase`에 전이 가드 적용)
-- [ ] 대용량 파일 다운로드 File System Access API 완성
-- [x] ~~Adapter 레이어 도입으로 API ↔ UI 변환 정리~~ (완료 — `shared/adapters/meeting.ts`, Summary/Schedule 페이지에 적용)
-- [x] ~~Hybrid Storage (주기적 Snapshot) 구현~~ (완료 — `useSSEStream`에 `snapshotIntervalMs` 옵션 추가, STT 훅에 1분 주기 적용)
-- [ ] CI 파이프라인 구축 (lint + typecheck + test on PR)
-- [ ] i18n 다국어 지원
-
-이 숙제들이 "해야 하는 것"이 아니라 "해보고 싶은 것"이라는 점이 중요하다. 지금 동작하는 코드를 억지로 바꾸는 것이 아니라, 문제가 생겼을 때 꺼내 쓸 수 있도록 미리 공부해두는 것이다.
-
 ---
 
 *마지막 업데이트: 2026년 3월*

@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Play, Download, ChevronDown, Music, FileCode, BookOpen } from "lucide-react";
+import { downloadTextFile } from "@/shared/utils/download";
 
 interface AudioPlayerProps {
   recordingUrl: string | null;
@@ -207,13 +208,7 @@ export default function AudioPlayer({
               <button
                 onClick={() => {
                   if (rawTranscript) {
-                    const blob = new Blob([rawTranscript], { type: "text/plain" });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = `${meetingTitle}-raw-transcript.txt`;
-                    a.click();
-                    URL.revokeObjectURL(url);
+                    downloadTextFile(rawTranscript, `${meetingTitle}-raw-transcript.txt`);
                   }
                   setShowDownloadMenu(false);
                 }}
@@ -226,13 +221,7 @@ export default function AudioPlayer({
                 onClick={() => {
                   const fullContent = fullText || summary || "";
                   if (fullContent) {
-                    const blob = new Blob([fullContent], { type: "text/plain" });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = `${meetingTitle}-minutes.txt`;
-                    a.click();
-                    URL.revokeObjectURL(url);
+                    downloadTextFile(fullContent, `${meetingTitle}-minutes.txt`);
                   }
                   setShowDownloadMenu(false);
                 }}

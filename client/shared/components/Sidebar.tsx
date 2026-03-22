@@ -14,6 +14,7 @@ import { useAuth } from "@/features/auth/context";
 import { useNavigate, useLocation } from "react-router-dom";
 import { routePrefetchMap } from "@/app/routePrefetchMap";
 import { memo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import AddTeamModal from "@/features/team/components/AddTeamModal";
 import { useProfileImage } from "@/shared/hooks/useProfileImage";
 
@@ -54,31 +55,32 @@ export default memo(function Sidebar({
   const [selectedTeamId, setSelectedTeamId] = useState<string>("");
   const [isAddTeamModalOpen, setIsAddTeamModalOpen] = useState(false);
 
+  const { t } = useTranslation();
   const userTeams = user?.teams ?? [];
 
   const navItems: NavItem[] = [
     {
       id: "today",
-      label: "오늘 회의",
+      label: t("nav.todayMeeting"),
       icon: <Calendar className="w-5 h-5" />,
       route: "/",
     },
     {
       id: "summary",
-      label: "회의 내역",
+      label: t("nav.meetingHistory"),
       icon: <FileText className="w-5 h-5" />,
       route: "/summary",
     },
     {
       id: "schedule",
-      label: "회의 일정",
+      label: t("nav.schedule"),
       icon: <Clock className="w-5 h-5" />,
       hasMenu: false,
       route: "/schedule",
     },
     {
       id: "mypage",
-      label: "설정",
+      label: t("nav.settings"),
       icon: <User className="w-5 h-5" />,
       route: "/mypage",
     },
@@ -197,7 +199,7 @@ export default memo(function Sidebar({
         <div className="px-3 py-4 dark:border-t dark:border-border/20 dark:bg-slate-900/30 light:border-t light:border-border/20 light:bg-slate-50/30">
           <div className="flex items-center justify-between px-4 mb-3">
             <span className="text-xs font-semibold text-muted-foreground uppercase">
-              Teams
+              {t("nav.teams")}
             </span>
           </div>
 
@@ -238,7 +240,7 @@ export default memo(function Sidebar({
               ))}
             </div>
           ) : (
-            <p className="px-4 text-xs text-muted-foreground mb-3">소속된 팀이 없습니다</p>
+            <p className="px-4 text-xs text-muted-foreground mb-3">{t("nav.noTeam")}</p>
           )}
 
           <button
@@ -246,7 +248,7 @@ export default memo(function Sidebar({
             className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground dark:hover:bg-slate-800/50 light:hover:bg-slate-50 rounded-lg transition-colors"
           >
             <Plus className="w-5 h-5" />
-            <span className="text-sm font-medium">팀 추가</span>
+            <span className="text-sm font-medium">{t("nav.addTeam")}</span>
           </button>
         </div>
       )}
