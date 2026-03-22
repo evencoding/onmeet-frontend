@@ -267,8 +267,8 @@ HttpOnly 쿠키 기반 인증을 선택한 이유는 단순하다: XSS 공격으
 - [x] ~~브랜드 타입으로 ID 혼동 방지~~ (완료 — `shared/types/brand.ts`, UserId/RoomId/TeamId 등 6종 정의)
 - [x] ~~State Machine 도입~~ (완료 — XState 없이 경량 FSM으로 `phaseMachine.ts` 구현, store `setPhase`에 전이 가드 적용)
 - [ ] 대용량 파일 다운로드 File System Access API 완성
-- [ ] Adapter 레이어 도입으로 API ↔ UI 변환 정리
-- [ ] Hybrid Storage (주기적 Snapshot) 구현
+- [x] ~~Adapter 레이어 도입으로 API ↔ UI 변환 정리~~ (완료 — `shared/adapters/meeting.ts`, Summary/Schedule 페이지에 적용)
+- [x] ~~Hybrid Storage (주기적 Snapshot) 구현~~ (완료 — `useSSEStream`에 `snapshotIntervalMs` 옵션 추가, STT 훅에 1분 주기 적용)
 - [ ] CI 파이프라인 구축 (lint + typecheck + test on PR)
 - [ ] i18n 다국어 지원
 

@@ -17,6 +17,14 @@ export interface UseSSEStreamOptions<T> {
   reconnectMs?: number;
   /** TanStack Query key(s) to invalidate when stream ends */
   invalidateOnEnd?: QueryKey[];
+  /**
+   * Hybrid Storage: 주기적 Snapshot 동기화 간격 (ms).
+   * 스트림이 살아있는 동안 이 간격으로 invalidateOnEnd 키를 무효화하여
+   * 서버 데이터와 주기적으로 동기화한다.
+   * 스트림 중간에 연결이 끊겨도 데이터 유실을 최소화한다.
+   * 0 = 비활성 (기본값)
+   */
+  snapshotIntervalMs?: number;
 }
 
 export interface UseSSEStreamReturn<T> {
@@ -39,6 +47,7 @@ export function useSSEStream<T>(
     flushBoundary,
     reconnectMs = 3000,
     invalidateOnEnd,
+    snapshotIntervalMs = 0,
   } = options;
 
   const queryClient = useQueryClient();
@@ -52,6 +61,7 @@ export function useSSEStream<T>(
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const esRef = useRef<EventSource | null>(null);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const snapshotTimerRef = useRef<ReturnType<typeof setInterval>>();
 
   const flushBuffer = useCallback(() => {
     if (bufferRef.current.length === 0) return;
@@ -64,6 +74,7 @@ export function useSSEStream<T>(
   const close = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
     if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
+    if (snapshotTimerRef.current) clearInterval(snapshotTimerRef.current);
     if (esRef.current) {
       esRef.current.close();
       esRef.current = null;
@@ -86,7 +97,19 @@ export function useSSEStream<T>(
       const es = new EventSource(url);
       esRef.current = es;
 
-      es.onopen = () => setConnected(true);
+      es.onopen = () => {
+        setConnected(true);
+
+        // Hybrid Storage: 주기적 Snapshot 동기화
+        if (snapshotIntervalMs > 0 && invalidateOnEnd && invalidateOnEnd.length > 0) {
+          if (snapshotTimerRef.current) clearInterval(snapshotTimerRef.current);
+          snapshotTimerRef.current = setInterval(() => {
+            invalidateOnEnd.forEach((key) => {
+              queryClient.invalidateQueries({ queryKey: key });
+            });
+          }, snapshotIntervalMs);
+        }
+      };
 
       es.addEventListener(eventName, (e) => {
         try {

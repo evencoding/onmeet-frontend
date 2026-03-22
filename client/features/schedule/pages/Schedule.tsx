@@ -9,18 +9,7 @@ import { ko } from "date-fns/locale";
 import { useAuth } from "@/features/auth/context";
 import { useScheduledRooms } from "@/features/meeting/hooks";
 import type { MeetingRoomResponse } from "@/features/meeting/api";
-
-interface CalendarMeeting {
-  id: string;
-  title: string;
-  date: Date;
-  time: string;
-  duration: string;
-  location: string;
-  participants: number;
-  description: string;
-  attendees: { name: string; avatar: string }[];
-}
+import { toCalendarMeetingViewModel, type CalendarMeetingViewModel } from "@/shared/adapters/meeting";
 
 export default function Schedule() {
   useDocumentTitle("회의 일정 - OnMeet");
@@ -35,22 +24,9 @@ export default function Schedule() {
 
   const { data: scheduledData, isLoading } = useScheduledRooms(userId);
 
-  const allMeetings: CalendarMeeting[] = useMemo(() => {
+  const allMeetings: CalendarMeetingViewModel[] = useMemo(() => {
     const rooms: MeetingRoomResponse[] = scheduledData?.content ?? [];
-    return rooms.map((room) => {
-      const scheduledDate = room.scheduledAt ? new Date(room.scheduledAt) : new Date(room.createdAt);
-      return {
-        id: String(room.id),
-        title: room.title,
-        date: scheduledDate,
-        time: format(scheduledDate, "h:mm a"),
-        duration: room.durationSeconds ? `${Math.round(room.durationSeconds / 60)}분` : "-",
-        location: "온라인",
-        participants: room.maxParticipants,
-        description: room.description || "",
-        attendees: [],
-      };
-    });
+    return rooms.map(toCalendarMeetingViewModel);
   }, [scheduledData]);
 
   const handleAddMeeting = (date: Date) => {

@@ -35,5 +35,6 @@ export function useMeetingSTT(
     flushBoundary: "\n",
     reconnectMs: 3000,
     invalidateOnEnd: [roomKeys.stt(numericRoomId)],
+    snapshotIntervalMs: 60_000, // 1분마다 서버와 동기화
   });
 }
