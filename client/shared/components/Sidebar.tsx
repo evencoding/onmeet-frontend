@@ -28,10 +28,10 @@ interface NavItem {
 }
 
 const TEAM_COLORS = [
-  "bg-blue-500",
-  "bg-cyan-500",
-  "bg-sky-500",
+  "bg-purple-500",
+  "bg-pink-500",
   "bg-violet-500",
+  "bg-fuchsia-500",
   "bg-emerald-500",
   "bg-amber-500",
   "bg-rose-500",
@@ -90,14 +90,14 @@ export default memo(function Sidebar({
   return (
     <div
       className={cn(
-        "flex flex-col h-screen transition-all duration-300 dark:bg-slate-900 dark:border-r dark:border-border/20 light:bg-white light:border-r light:border-border/40",
+        "flex flex-col h-screen transition-all duration-300 dark:bg-purple-950/80 dark:border-r dark:border-purple-500/20 light:bg-white light:border-r light:border-purple-200/60 dark:backdrop-blur-md",
         isCollapsed ? "w-20" : "w-72",
       )}
     >
       {/* Header */}
       <div
         className={cn(
-          "flex flex-col items-center justify-between dark:border-b dark:border-border/20 dark:bg-slate-900/50 light:border-b light:border-border/20 light:bg-white",
+          "flex flex-col items-center justify-between dark:border-b dark:border-purple-500/20 light:border-b light:border-purple-200/40",
           isCollapsed ? "px-2 py-4" : "px-6 py-5",
         )}
       >
@@ -131,21 +131,21 @@ export default memo(function Sidebar({
           {onToggleCollapse && (
             <button
               onClick={onToggleCollapse}
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              className="p-2 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 rounded-lg transition-colors"
               title={isCollapsed ? "사이드바 확대" : "사이드바 축소"}
               aria-label={isCollapsed ? "사이드바 확대" : "사이드바 축소"}
             >
               {isCollapsed ? (
-                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                <ChevronRight className="w-5 h-5 dark:text-white/50 light:text-purple-600" />
               ) : (
-                <ChevronLeft className="w-5 h-5 text-muted-foreground" />
+                <ChevronLeft className="w-5 h-5 dark:text-white/50 light:text-purple-600" />
               )}
             </button>
           )}
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-2 py-4 space-y-2">
+      <div className="flex-1 overflow-y-auto px-2 py-4 space-y-1">
         {navItems.map((item) => {
           const isActive = location.pathname === item.route;
           return (
@@ -154,20 +154,20 @@ export default memo(function Sidebar({
                 onMouseEnter={() => routePrefetchMap[item.route]?.()}
                 onClick={() => navigate(item.route)}
                 className={cn(
-                  "w-full flex items-center rounded-lg transition-all duration-200 group",
+                  "w-full flex items-center rounded-xl transition-all duration-200 group",
                   isCollapsed
                     ? "justify-center p-3"
                     : "justify-between px-4 py-3",
                   isActive
-                    ? "dark:bg-brand-500/10 dark:text-brand-400 light:bg-brand-50/50 light:text-brand-700"
-                    : "dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-slate-800/50 light:text-muted-foreground light:hover:text-foreground light:hover:bg-slate-50",
+                    ? "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900 light:shadow-sm light:shadow-purple-200/30"
+                    : "dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-purple-500/10 light:text-purple-700 light:hover:text-purple-900 light:hover:bg-purple-50",
                 )}
               >
                 <div className="flex items-center gap-3">
                   <div
                     className={cn(
                       "flex-shrink-0",
-                      isActive ? "text-primary" : "text-muted-foreground",
+                      isActive ? "dark:text-purple-400 light:text-purple-700" : "dark:text-white/50 light:text-purple-600",
                     )}
                   >
                     {item.icon}
@@ -179,7 +179,7 @@ export default memo(function Sidebar({
                 {!isCollapsed && (
                   <div className="flex items-center gap-2">
                     {item.badge && (
-                      <span className="bg-primary text-primary-foreground text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center">
+                      <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center">
                         {item.badge}
                       </span>
                     )}
@@ -196,15 +196,15 @@ export default memo(function Sidebar({
 
       {/* Teams Section */}
       {!isCollapsed && (
-        <div className="px-3 py-4 dark:border-t dark:border-border/20 dark:bg-slate-900/30 light:border-t light:border-border/20 light:bg-slate-50/30">
+        <div className="px-3 py-4 dark:border-t dark:border-purple-500/20 light:border-t light:border-purple-200/40">
           <div className="flex items-center justify-between px-4 mb-3">
-            <span className="text-xs font-semibold text-muted-foreground uppercase">
+            <span className="text-xs font-semibold dark:text-white/40 light:text-purple-600 uppercase tracking-wider">
               {t("nav.teams")}
             </span>
           </div>
 
           {userTeams.length > 0 ? (
-            <div className="space-y-2 mb-3">
+            <div className="space-y-1 mb-3">
               {userTeams.map((team, idx) => (
                 <button
                   key={team.id}
@@ -214,16 +214,16 @@ export default memo(function Sidebar({
                     navigate(`/team/${team.id}`);
                   }}
                   className={cn(
-                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group",
+                    "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group",
                     selectedTeamId === String(team.id)
-                      ? "dark:bg-brand-500/10 dark:text-brand-400 light:bg-brand-50/50 light:text-brand-700"
-                      : "dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-slate-800/50 light:text-muted-foreground light:hover:text-foreground light:hover:bg-slate-50",
+                      ? "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900"
+                      : "dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-purple-500/10 light:text-purple-700 light:hover:text-purple-900 light:hover:bg-purple-50",
                   )}
                   title={`${team.name} 팀 선택`}
                 >
                   <div
                     className={cn(
-                      "w-6 h-6 rounded-lg flex items-center justify-center text-sm font-semibold text-white",
+                      "w-6 h-6 rounded-lg flex items-center justify-center text-xs font-semibold text-white",
                       !team.color && TEAM_COLORS[idx % TEAM_COLORS.length],
                     )}
                     style={team.color ? { backgroundColor: team.color } : undefined}
@@ -234,18 +234,18 @@ export default memo(function Sidebar({
                     {team.name}
                   </span>
                   {team.status === "PENDING" && (
-                    <span className="text-xs text-amber-500 font-medium">대기</span>
+                    <span className="text-xs text-amber-400 font-medium">대기</span>
                   )}
                 </button>
               ))}
             </div>
           ) : (
-            <p className="px-4 text-xs text-muted-foreground mb-3">{t("nav.noTeam")}</p>
+            <p className="px-4 text-xs dark:text-white/40 light:text-purple-600 mb-3">{t("nav.noTeam")}</p>
           )}
 
           <button
             onClick={() => setIsAddTeamModalOpen(true)}
-            className="w-full flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-foreground dark:hover:bg-slate-800/50 light:hover:bg-slate-50 rounded-lg transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 dark:text-white/50 dark:hover:text-white/80 dark:hover:bg-purple-500/10 light:text-purple-600 light:hover:text-purple-900 light:hover:bg-purple-50 rounded-xl transition-colors"
           >
             <Plus className="w-5 h-5" />
             <span className="text-sm font-medium">{t("nav.addTeam")}</span>
@@ -261,7 +261,7 @@ export default memo(function Sidebar({
       {/* User Profile */}
       <div
         className={cn(
-          "dark:border-t dark:border-border/20 dark:bg-slate-900/30 light:border-t light:border-border/20 light:bg-slate-50/30",
+          "dark:border-t dark:border-purple-500/20 light:border-t light:border-purple-200/40",
           isCollapsed ? "px-2 py-4" : "px-3 py-4",
         )}
       >
@@ -298,7 +298,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
       <button
         onClick={() => navigate("/login")}
         className={cn(
-          "bg-brand-500 text-white text-sm font-semibold rounded-lg hover:bg-brand-600 transition-all duration-200",
+          "om-btn-primary text-sm",
           isCollapsed
             ? "w-10 h-10 p-2 flex items-center justify-center"
             : "w-full px-4 py-3",
@@ -319,11 +319,11 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
         </div>
         <button
           onClick={logout}
-          className="p-2 dark:hover:bg-slate-800 light:hover:bg-slate-100/50 rounded transition-colors"
+          className="p-2 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 rounded-lg transition-colors"
           title="로그아웃"
           aria-label="로그아웃"
         >
-          <LogOut className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+          <LogOut className="w-4 h-4 dark:text-white/50 light:text-purple-600 hover:text-foreground" />
         </button>
       </div>
     );
@@ -331,31 +331,29 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
 
   return (
     <div className="space-y-2">
-      {/* User Info */}
       <div className="flex items-center gap-3 px-3 py-3">
         <div className="relative flex-shrink-0">
           <ProfileAvatar name={user.name} profileImageUrl={profileImageUrl} />
-          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-white dark:border-slate-900"></div>
+          <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 border-2 dark:border-purple-950 light:border-white"></div>
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-semibold text-foreground truncate">
+          <div className="text-sm font-semibold dark:text-white/90 light:text-purple-950 truncate">
             {user.name}
           </div>
-          <div className="text-xs text-muted-foreground truncate">
+          <div className="text-xs dark:text-white/50 light:text-purple-600 truncate">
             {user.email}
           </div>
           {user.company?.name && (
-            <div className="text-xs text-muted-foreground/70 truncate">
+            <div className="text-xs dark:text-white/40 light:text-purple-500 truncate">
               {user.company.name}
             </div>
           )}
         </div>
       </div>
 
-      {/* Logout Button */}
       <button
         onClick={logout}
-        className="w-full flex items-center justify-center gap-2 px-4 py-2 dark:border dark:border-border/30 dark:bg-slate-800/50 dark:text-muted-foreground dark:hover:bg-slate-800 light:border light:border-border/40 light:bg-slate-50 light:text-foreground light:hover:bg-slate-100 text-sm font-medium rounded-lg transition-all duration-200"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-white/70 dark:hover:bg-purple-500/20 light:border-2 light:border-purple-300/50 light:bg-purple-50 light:text-purple-700 light:hover:bg-purple-100 text-sm font-medium rounded-xl transition-all duration-200"
       >
         <LogOut className="w-4 h-4" />
         로그아웃
