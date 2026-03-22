@@ -96,6 +96,7 @@ export default function ProfileTab({
               <img
                 src={formData.avatar}
                 alt={formData.name}
+                loading="lazy"
                 className="w-24 h-24 rounded-full object-cover border-4 dark:border-purple-500/30 light:border-purple-300/50"
               />
             ) : (
@@ -270,6 +271,7 @@ export default function ProfileTab({
                           setShowPasswords((prev) => ({ ...prev, [field.key]: !prev[field.key] }))
                         }
                         className="absolute right-3 top-1/2 -translate-y-1/2 dark:text-white/40 light:text-purple-400 hover:dark:text-white/70 hover:light:text-purple-600 transition-all"
+                        aria-label={showPasswords[field.key] ? "비밀번호 숨기기" : "비밀번호 표시"}
                       >
                         {showPasswords[field.key] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
