@@ -15,7 +15,7 @@ describe("roomKeys (query key factory)", () => {
   });
 
   it("list includes params", () => {
-    const params = { status: "ACTIVE" };
+    const params = { status: "ACTIVE" as const };
     expect(roomKeys.list(params)).toEqual(["rooms", "list", params]);
   });
 

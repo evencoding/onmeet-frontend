@@ -8,95 +8,15 @@ import MeetingExpandedCard from "@/features/dashboard/components/MeetingExpanded
 import { useAuth } from "@/features/auth/context";
 import { useRooms } from "@/features/meeting/hooks/useRoom";
 import { useRoomHistory, useScheduledRooms } from "@/features/meeting/hooks/useRoomDiscovery";
-import type { MeetingRoomResponse } from "@/features/meeting/api/types";
+import {
+  toMeetingViewModel,
+  mergeAndDedup,
+  getStatusLabel,
+  getStatusColor,
+  type MeetingViewModel,
+} from "@/shared/adapters/meeting";
 
-interface Meeting {
-  id: string;
-  title: string;
-  date: Date;
-  time: string;
-  duration: string;
-  participants: number;
-  description: string;
-  status: "scheduled" | "in_progress" | "completed";
-  team?: string;
-  hasTranscript?: boolean;
-  tags?: string[];
-}
-
-function mapStatus(status: MeetingRoomResponse["status"]): Meeting["status"] {
-  switch (status) {
-    case "WAITING":
-      return "scheduled";
-    case "ACTIVE":
-      return "in_progress";
-    case "ENDED":
-    case "CANCELLED":
-    default:
-      return "completed";
-  }
-}
-
-function formatDuration(seconds: number): string {
-  if (!seconds || seconds <= 0) return "0분";
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  if (hours > 0 && minutes > 0) return `${hours}시간 ${minutes}분`;
-  if (hours > 0) return `${hours}시간`;
-  return `${minutes}분`;
-}
-
-function formatTime(dateStr: string): string {
-  if (!dateStr) return "";
-  try {
-    return format(new Date(dateStr), "h:mm a");
-  } catch {
-    return "";
-  }
-}
-
-function mapMeetingRoomToMeeting(room: MeetingRoomResponse): Meeting {
-  const dateObj = room.scheduledAt
-    ? new Date(room.scheduledAt)
-    : room.startedAt
-      ? new Date(room.startedAt)
-      : new Date(room.createdAt);
-
-  return {
-    id: String(room.id),
-    title: room.title || "제목 없음",
-    date: dateObj,
-    time: formatTime(room.scheduledAt || room.startedAt || room.createdAt),
-    duration: formatDuration(room.durationSeconds),
-    participants: room.maxParticipants,
-    description: room.description || "",
-    status: mapStatus(room.status),
-    hasTranscript: room.status === "ENDED",
-    tags: [],
-  };
-}
-
-function getStatusLabel(status: string) {
-  switch (status) {
-    case "scheduled": return "예정된 회의";
-    case "in_progress": return "진행중";
-    case "completed": return "완료된 회의";
-    default: return status;
-  }
-}
-
-function getStatusColor(status: string) {
-  switch (status) {
-    case "scheduled":
-      return "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/90 light:text-purple-900 light:border light:border-purple-300/60 light:shadow-sm light:shadow-purple-200/40";
-    case "in_progress":
-      return "dark:bg-green-500/20 dark:text-green-300 light:bg-green-100/90 light:text-green-900 light:border light:border-green-300/60 light:shadow-sm light:shadow-green-200/40";
-    case "completed":
-      return "dark:bg-gray-500/20 dark:text-gray-300 light:bg-gray-100/90 light:text-gray-900 light:border light:border-gray-300/60 light:shadow-sm light:shadow-gray-200/40";
-    default:
-      return "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/90 light:text-purple-900 light:border light:border-purple-300/60 light:shadow-sm light:shadow-purple-200/40";
-  }
-}
+type Meeting = MeetingViewModel;
 
 function LoadingSkeleton() {
   return (
@@ -137,13 +57,12 @@ export default function Summary() {
   const isLoading = isHistoryLoading || isScheduledLoading || isActiveLoading;
 
   const allMeetings: Meeting[] = useMemo(() => {
-    const roomMap = new Map<number, MeetingRoomResponse>();
-
-    for (const room of historyData?.content ?? []) roomMap.set(room.id, room);
-    for (const room of scheduledData?.content ?? []) if (!roomMap.has(room.id)) roomMap.set(room.id, room);
-    for (const room of activeData?.content ?? []) if (!roomMap.has(room.id)) roomMap.set(room.id, room);
-
-    return Array.from(roomMap.values()).map(mapMeetingRoomToMeeting);
+    const rooms = mergeAndDedup(
+      historyData?.content,
+      scheduledData?.content,
+      activeData?.content,
+    );
+    return rooms.map(toMeetingViewModel);
   }, [historyData, scheduledData, activeData]);
 
   const filteredMeetings = useMemo(() => allMeetings.filter((meeting) => {

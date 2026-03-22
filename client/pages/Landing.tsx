@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useRef, useEffect, useState } from "react";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Video,
   Brain,
@@ -19,39 +18,10 @@ export default function Landing() {
   useDocumentTitle("OnMeet");
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const springScroll = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    mass: 1,
-  });
-
   const parallaxY = useTransform(scrollYProgress, [0, 1], [0, 300]);
   const parallaxY2 = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.5], [1, 0.5, 0]);
   const scaleHero = useTransform(scrollYProgress, [0, 0.3], [1, 0.8]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2, delayChildren: 0.3 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: "easeOut" },
-    },
-  };
 
   const features = [
     {
@@ -104,7 +74,7 @@ export default function Landing() {
             <img
               src="/icons/brand-logo-transparent.png"
               alt="ONMEET"
-              className="h-10 w-auto"
+              className="h-10 w-auto dark:brightness-0 dark:invert"
             />
           </motion.div>
 

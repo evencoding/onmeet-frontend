@@ -2,13 +2,16 @@ import { useState } from "react";
 import { X, ChevronRight, Check } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { toast } from "@/shared/hooks/use-toast";
+import { getErrorMessage } from "@/shared/utils/apiFetch";
+import DatePickerCalendar from "@/shared/components/DatePickerCalendar";
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
-import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
+import { Avatar, AvatarFallback } from "@/shared/ui/avatar";
 import { useAuth } from "@/features/auth/context";
 import { useAllEmployees } from "@/features/auth/hooks";
 import { useScheduleRoom, useBulkInviteToRoom } from "@/features/meeting/hooks";
@@ -105,8 +108,8 @@ export default function MeetingBookingModal({
       setSearchQuery("");
       setStep("team");
       onClose();
-    } catch {
-      // Error handled by mutation
+    } catch (err) {
+      toast({ title: "회의 예약 실패", description: getErrorMessage(err, "회의 예약에 실패했습니다"), variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -247,11 +250,10 @@ export default function MeetingBookingModal({
                 <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-2 block">
                   날짜 <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="date"
-                  value={format(meetingDate, "yyyy-MM-dd")}
-                  onChange={(e) => setMeetingDate(new Date(e.target.value))}
-                  className="w-full px-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white light:text-purple-900"
+                <DatePickerCalendar
+                  value={meetingDate}
+                  onChange={(date) => setMeetingDate(date)}
+                  placeholder="날짜를 선택하세요"
                 />
               </div>
 

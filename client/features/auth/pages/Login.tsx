@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { motion } from "framer-motion";
 import { useLogin, useFindPassword } from "@/features/auth/hooks";
@@ -13,6 +13,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromCompanySignup = (location.state as { fromCompanySignup?: boolean })?.fromCompanySignup;
   const loginMutation = useLogin();
   const isLoading = loginMutation.isPending;
 
@@ -39,7 +41,7 @@ export default function Login() {
     loginMutation.mutate(
       { email, password },
       {
-        onSuccess: () => navigate("/"),
+        onSuccess: () => navigate(fromCompanySignup ? "/invite-members" : "/"),
         onError: (err: unknown) => {
           const apiError = err as ErrorResponse;
           setError(apiError?.message || "로그인에 실패했습니다");

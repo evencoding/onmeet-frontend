@@ -62,6 +62,7 @@ export function useMeetingDevices(isOpen: boolean, isVideoOn: boolean) {
         previewStream.getTracks().forEach((track) => track.stop());
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, isVideoOn, selectedCamera]);
 
   const stopPreview = () => {

@@ -42,10 +42,11 @@ export default memo(function ParticipantTile({
   const isMicMuted = !micTrack?.publication?.isSubscribed || micTrack.publication.isMuted;
 
   useEffect(() => {
-    if (videoRef.current && cameraTrack?.publication?.track) {
-      cameraTrack.publication.track.attach(videoRef.current);
+    const videoEl = videoRef.current;
+    if (videoEl && cameraTrack?.publication?.track) {
+      cameraTrack.publication.track.attach(videoEl);
       return () => {
-        cameraTrack.publication?.track?.detach(videoRef.current!);
+        cameraTrack.publication?.track?.detach(videoEl);
       };
     }
   }, [cameraTrack?.publication?.track]);

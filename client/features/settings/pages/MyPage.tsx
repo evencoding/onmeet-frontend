@@ -188,11 +188,6 @@ export default function MyPage() {
     );
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
-
   return (
     <>
       <div className="max-w-4xl space-y-6">

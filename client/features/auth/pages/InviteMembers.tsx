@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import AuthLayout from "@/shared/components/AuthLayout";
 import { useInviteMember } from "@/features/auth/hooks";
+import { useAuth } from "@/features/auth/context";
 import { getErrorMessage } from "@/shared/utils/apiFetch";
 
 interface InvitedEmail {
@@ -21,8 +22,8 @@ interface InvitedEmail {
 
 export default function InviteMembers() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const companyId = (location.state as { companyId: string })?.companyId;
+  const { user } = useAuth();
+  const companyId = user?.company?.id ? String(user.company.id) : undefined;
   const inviteMemberMutation = useInviteMember();
 
   const [emails, setEmails] = useState<InvitedEmail[]>([]);
@@ -75,7 +76,7 @@ export default function InviteMembers() {
       await inviteMemberMutation.mutateAsync({
         emails: emails.map((e) => e.email),
       });
-      navigate("/login");
+      navigate("/");
     } catch (err) {
       setError(getErrorMessage(err, "초대 실패"));
     } finally {
@@ -84,7 +85,7 @@ export default function InviteMembers() {
   };
 
   const handleSkip = () => {
-    navigate("/login");
+    navigate("/");
   };
 
   return (

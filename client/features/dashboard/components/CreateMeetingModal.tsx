@@ -1,8 +1,12 @@
-import { X, Calendar, Clock, Users, Settings } from "lucide-react";
+import { X, Clock, Settings } from "lucide-react";
 import { useState } from "react";
+import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/context";
 import { useCreateRoom, useScheduleRoom } from "@/features/meeting/hooks";
+import { toast } from "@/shared/hooks/use-toast";
+import { getErrorMessage } from "@/shared/utils/apiFetch";
+import DatePickerCalendar from "@/shared/components/DatePickerCalendar";
 
 interface CreateMeetingModalProps {
   isOpen: boolean;
@@ -18,7 +22,7 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
 
   const [formData, setFormData] = useState({
     title: "",
-    date: "",
+    date: null as Date | null,
     time: "",
     description: "",
     invitees: "",
@@ -34,7 +38,7 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
     if (!formData.title.trim()) return;
 
     if (formData.date && formData.time) {
-      const scheduledAt = `${formData.date}T${formData.time}:00`;
+      const scheduledAt = `${format(formData.date, "yyyy-MM-dd")}T${formData.time}:00`;
       scheduleRoomMutation.mutate(
         {
           userId,
@@ -46,8 +50,11 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
         },
         {
           onSuccess: () => {
-            setFormData({ title: "", date: "", time: "", description: "", invitees: "" });
+            setFormData({ title: "", date: null, time: "", description: "", invitees: "" });
             onClose();
+          },
+          onError: (err) => {
+            toast({ title: "회의 예약 실패", description: getErrorMessage(err, "회의 예약에 실패했습니다"), variant: "destructive" });
           },
         },
       );
@@ -63,9 +70,12 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
         },
         {
           onSuccess: (room) => {
-            setFormData({ title: "", date: "", time: "", description: "", invitees: "" });
+            setFormData({ title: "", date: null, time: "", description: "", invitees: "" });
             onClose();
             navigate(`/meeting/${room.id}`);
+          },
+          onError: (err) => {
+            toast({ title: "회의 생성 실패", description: getErrorMessage(err, "회의 생성에 실패했습니다"), variant: "destructive" });
           },
         },
       );
@@ -108,16 +118,13 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
-                <Calendar className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
+              <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900">
                 날짜 (선택)
               </label>
-              <input
-                type="date"
-                name="date"
+              <DatePickerCalendar
                 value={formData.date}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 dark:focus:bg-purple-500/20 light:bg-white light:focus:bg-purple-50 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 light:shadow-md light:shadow-purple-200/20 transition-all duration-200 dark:text-white light:text-purple-900"
+                onChange={(date) => setFormData((prev) => ({ ...prev, date }))}
+                placeholder="날짜를 선택하세요"
               />
             </div>
 

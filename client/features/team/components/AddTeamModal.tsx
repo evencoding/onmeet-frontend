@@ -56,7 +56,10 @@ export default function AddTeamModal({
   const { data: employeesData } = useAllEmployees({ size: 100 });
   const createTeamMutation = useCreateTeam();
 
-  const allEmployees: UserResponseDto[] = employeesData?.content ?? [];
+  const allEmployees: UserResponseDto[] = useMemo(
+    () => employeesData?.content ?? [],
+    [employeesData?.content],
+  );
 
   useEffect(() => {
     const autoTextColor = getOptimalTextColor(selectedBgColor);

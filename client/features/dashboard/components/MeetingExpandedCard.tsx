@@ -9,6 +9,8 @@ import { useAuth } from "@/features/auth/context";
 import { useMinutes, useTranscript, useUpdateMinutes, useRegenerateMinutes } from "@/features/ai/hooks";
 import type { MinutesStatus } from "@/features/ai/api";
 import { useRecordings, useRecordingDownloadUrl } from "@/features/meeting/hooks/useRecording";
+import { toast } from "@/shared/hooks/use-toast";
+import { getErrorMessage } from "@/shared/utils/apiFetch";
 
 interface Meeting {
   id: string;
@@ -108,16 +110,33 @@ export default function MeetingExpandedCard({
   const handleSave = useCallback((meetingId: string) => {
     const content = editedContent[meetingId];
     if (!content) return;
-    updateMinutesMutation.mutate({
-      roomId: Number(meetingId),
-      userId,
-      data: { userEditedSummaryJson: JSON.stringify({ ...parsed, summary: content }) },
-    });
+    updateMinutesMutation.mutate(
+      {
+        roomId: Number(meetingId),
+        userId,
+        data: { userEditedSummaryJson: JSON.stringify({ ...parsed, summary: content }) },
+      },
+      {
+        onSuccess: () => {
+          toast({ title: "회의록이 저장되었습니다" });
+        },
+        onError: (err) => {
+          toast({ title: "회의록 저장 실패", description: getErrorMessage(err, "회의록 저장에 실패했습니다"), variant: "destructive" });
+        },
+      },
+    );
     setEditingMeetingId(null);
   }, [updateMinutesMutation, userId, editedContent, parsed]);
 
   const handleRegenerate = useCallback(() => {
-    regenerateMutation.mutate({ roomId, userId });
+    regenerateMutation.mutate(
+      { roomId, userId },
+      {
+        onError: (err) => {
+          toast({ title: "회의록 재생성 실패", description: getErrorMessage(err, "회의록 재생성에 실패했습니다"), variant: "destructive" });
+        },
+      },
+    );
   }, [regenerateMutation, roomId, userId]);
 
   const handleDownload = useCallback((recordingId: number) => {
@@ -198,18 +217,7 @@ export default function MeetingExpandedCard({
           </div>
         </div>
 
-        {isMinutesLoading || isTranscriptLoading ? (
-          <div className="space-y-4 animate-pulse">
-            <div className="h-6 dark:bg-purple-500/20 light:bg-purple-200/60 rounded w-1/3" />
-            <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6">
-              <div className="space-y-2">
-                <div className="h-4 dark:bg-purple-500/15 light:bg-purple-100/60 rounded w-full" />
-                <div className="h-4 dark:bg-purple-500/15 light:bg-purple-100/60 rounded w-5/6" />
-                <div className="h-4 dark:bg-purple-500/15 light:bg-purple-100/60 rounded w-3/4" />
-              </div>
-            </div>
-          </div>
-        ) : minutesData ? (
+        {minutesData ? (
           <div className="space-y-4">
             {/* Minutes Status + Regenerate */}
             <div className="flex items-center justify-between">
@@ -339,6 +347,11 @@ export default function MeetingExpandedCard({
                 </div>
               )}
             </div>
+          </div>
+        ) : !isMinutesLoading && !isTranscriptLoading ? (
+          <div className="text-center py-8">
+            <p className="dark:text-white/50 light:text-purple-600 text-sm">회의록이 없습니다</p>
+            <p className="dark:text-white/30 light:text-purple-500 text-xs mt-1">회의가 완료되면 AI가 자동으로 회의록을 생성합니다</p>
           </div>
         ) : null}
 

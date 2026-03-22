@@ -26,7 +26,10 @@ describe("useMeetingRoomStore", () => {
 
   // ── Setters ──
 
-  it("setPhase updates phase", () => {
+  it("setPhase updates phase via valid transitions", () => {
+    // preparing → joining → connected (유효한 전이 순서)
+    getState().setPhase("joining");
+    expect(getState().phase).toBe("joining");
     getState().setPhase("connected");
     expect(getState().phase).toBe("connected");
   });

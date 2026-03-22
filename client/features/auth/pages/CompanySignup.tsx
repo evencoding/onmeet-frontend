@@ -8,7 +8,6 @@ import {
   User,
   ArrowRight,
   Sparkles,
-  ArrowLeft,
 } from "lucide-react";
 import { useCompanySignup } from "@/features/auth/hooks";
 import type { ErrorResponse } from "@/features/auth/api";
@@ -52,7 +51,7 @@ export default function CompanySignup() {
       },
       {
         onSuccess: () => {
-          navigate("/signup/invite-members");
+          navigate("/login", { state: { fromCompanySignup: true } });
         },
         onError: (err: unknown) => {
           const apiError = err as ErrorResponse;

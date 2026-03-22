@@ -3,6 +3,7 @@ import { Send, X, FileText } from "lucide-react";
 import { useRoomContext } from "@livekit/components-react";
 import { useShallow } from "zustand/react/shallow";
 import { useMeetingRoomStore } from "../store";
+import { toast } from "@/shared/hooks/use-toast";
 
 export default memo(function ChatPanel() {
   const room = useRoomContext();
@@ -34,6 +35,7 @@ export default memo(function ChatPanel() {
       });
     } catch (err) {
       console.warn("Failed to send chat message:", err);
+      toast({ title: "메시지 전송 실패", description: "메시지를 전송하지 못했습니다", variant: "destructive" });
     }
 
     addChatMessage({

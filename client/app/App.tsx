@@ -1,6 +1,7 @@
 import "./global.css";
 
 import "@/shared/lib/firebase";
+import "@/shared/i18n";
 
 import * as Sentry from "@sentry/react";
 import React, { Suspense, lazy, Component, type ReactNode, type ErrorInfo } from "react";
@@ -188,8 +189,12 @@ const AppContent = () => (
         element={<GuestRoute><Suspense fallback={<PageLoader />}><EmployeeSignup /></Suspense></GuestRoute>}
       />
       <Route
-        path="/signup/invite-members"
-        element={<GuestRoute><Suspense fallback={<PageLoader />}><InviteMembers /></Suspense></GuestRoute>}
+        path="/invite-members"
+        element={
+          <AuthOnlyRoute>
+            <Suspense fallback={<PageLoader />}><InviteMembers /></Suspense>
+          </AuthOnlyRoute>
+        }
       />
 
       <Route

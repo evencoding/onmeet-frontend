@@ -1,11 +1,11 @@
-import { defineConfig } from "vite";
+import { defineConfig, type UserConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { VitePWA } from "vite-plugin-pwa";
 import { visualizer } from "rollup-plugin-visualizer";
 import { cloudflare } from "@cloudflare/vite-plugin";
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode }): UserConfig => ({
   server: {
     host: "::",
     port: 8080,
@@ -53,7 +53,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    cloudflare(),
+    cloudflare() as any,
     VitePWA({
       registerType: "autoUpdate",
       workbox: {

@@ -36,7 +36,10 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
   const { data: employeesData, isLoading: isEmployeesLoading } = useAllEmployees({ size: 100 });
   const { data: roomsData, isLoading: isRoomsLoading } = useRooms(userId);
 
-  const allEmployees: UserResponseDto[] = employeesData?.content ?? [];
+  const allEmployees: UserResponseDto[] = useMemo(
+    () => employeesData?.content ?? [],
+    [employeesData?.content],
+  );
 
   const teamMembers = useMemo(
     () => allEmployees.filter((emp) => emp.teams.some((t) => String(t.id) === teamId)),

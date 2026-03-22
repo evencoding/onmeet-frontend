@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 export function useMicTest(selectedMicrophone: string, isOpen: boolean) {
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -6,9 +6,9 @@ export function useMicTest(selectedMicrophone: string, isOpen: boolean) {
   const micIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [isMicTesting, setIsMicTesting] = useState(false);
   const [microphoneLevel, setMicrophoneLevel] = useState(0);
-  const [micTestStream, setMicTestStream] = useState<MediaStream | null>(null);
+  const [_micTestStream, setMicTestStream] = useState<MediaStream | null>(null);
 
-  const stopMicTest = () => {
+  const stopMicTest = useCallback(() => {
     if (micIntervalRef.current) {
       clearInterval(micIntervalRef.current);
       micIntervalRef.current = null;
@@ -17,16 +17,18 @@ export function useMicTest(selectedMicrophone: string, isOpen: boolean) {
     setIsMicTesting(false);
     setMicrophoneLevel(0);
 
-    if (micTestStream) {
-      micTestStream.getTracks().forEach((track) => track.stop());
-      setMicTestStream(null);
-    }
+    setMicTestStream((prev) => {
+      if (prev) {
+        prev.getTracks().forEach((track) => track.stop());
+      }
+      return null;
+    });
 
     if (audioContextRef.current) {
       audioContextRef.current.close();
       audioContextRef.current = null;
     }
-  };
+  }, []);
 
   const startMicTest = async () => {
     try {
@@ -65,7 +67,7 @@ export function useMicTest(selectedMicrophone: string, isOpen: boolean) {
     return () => {
       stopMicTest();
     };
-  }, [isOpen]);
+  }, [isOpen, stopMicTest]);
 
   return {
     isMicTesting,
