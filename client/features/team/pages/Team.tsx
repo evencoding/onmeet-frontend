@@ -1,32 +1,25 @@
 import { useParams } from "react-router-dom";
-import Layout from "@/shared/components/Layout";
 import TeamDetail from "@/features/team/components/TeamDetail";
-
-const teamNames: Record<string, string> = {
-  marketing: "Marketing",
-  product: "Product",
-  design: "Design",
-};
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
+import { useAuth } from "@/features/auth/context";
 
 export default function Team() {
+  useDocumentTitle("팀 - OnMeet");
   const { teamId } = useParams<{ teamId: string }>();
+  const { user } = useAuth();
 
-  if (!teamId || !teamNames[teamId]) {
+  const team = user?.teams.find((t) => String(t.id) === teamId);
+
+  if (!teamId || !team) {
     return (
-      <Layout>
-        <div className="text-center py-12">
-          <h1 className="text-2xl font-bold text-foreground mb-2">
-            팀을 찾을 수 없습니다
-          </h1>
-          <p className="text-text-sub">존재하지 않는 팀입니다.</p>
-        </div>
-      </Layout>
+      <div className="text-center py-12">
+        <h1 className="text-2xl font-bold text-foreground mb-2">
+          팀을 찾을 수 없습니다
+        </h1>
+        <p className="text-text-sub">존재하지 않는 팀입니다.</p>
+      </div>
     );
   }
 
-  return (
-    <Layout>
-      <TeamDetail teamId={teamId} teamName={teamNames[teamId]} />
-    </Layout>
-  );
+  return <TeamDetail teamId={teamId} teamName={team.name} />;
 }

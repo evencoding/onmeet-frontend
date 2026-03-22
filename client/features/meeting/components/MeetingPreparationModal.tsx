@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import {
   Mic,
   MicOff,
@@ -7,7 +7,10 @@ import {
   X,
   Volume2,
   FlipHorizontal,
+  Lock,
 } from "lucide-react";
+import { useMeetingDevices } from "../hooks/useMeetingDevices";
+import { useMicTest } from "../hooks/useMicTest";
 
 export interface DeviceSelection {
   cameraId: string;
@@ -17,7 +20,8 @@ export interface DeviceSelection {
 
 interface MeetingPreparationModalProps {
   isOpen: boolean;
-  onStart: () => void;
+  isLocked?: boolean;
+  onStart: (password?: string) => void;
   onInitialState: {
     isMuted: boolean;
     isVideoOn: boolean;
@@ -33,147 +37,53 @@ interface MeetingPreparationModalProps {
 
 export default function MeetingPreparationModal({
   isOpen,
+  isLocked,
   onStart,
   onStateChange,
   onDeviceSelect,
 }: MeetingPreparationModalProps) {
-  const previewVideoRef = useRef<HTMLVideoElement>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
   const [isMuted, setIsMuted] = useState(onStateChange.isMuted);
   const [isVideoOn, setIsVideoOn] = useState(onStateChange.isVideoOn);
   const [isCameraFlipped, setIsCameraFlipped] = useState(false);
-  const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
-  const [microphones, setMicrophones] = useState<MediaDeviceInfo[]>([]);
-  const [speakers, setSpeakers] = useState<MediaDeviceInfo[]>([]);
-  const [selectedCamera, setSelectedCamera] = useState<string>("");
-  const [selectedMicrophone, setSelectedMicrophone] = useState<string>("");
-  const [selectedSpeaker, setSelectedSpeaker] = useState<string>("");
-  const [previewStream, setPreviewStream] = useState<MediaStream | null>(null);
-  const [isMicTesting, setIsMicTesting] = useState(false);
-  const [microphoneLevel, setMicrophoneLevel] = useState(0);
-  const [micTestStream, setMicTestStream] = useState<MediaStream | null>(null);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
 
-  useEffect(() => {
-    const getDevices = async () => {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        setCameras(devices.filter((d) => d.kind === "videoinput"));
-        setMicrophones(devices.filter((d) => d.kind === "audioinput"));
-        setSpeakers(devices.filter((d) => d.kind === "audiooutput"));
+  const {
+    cameras,
+    microphones,
+    speakers,
+    selectedCamera,
+    setSelectedCamera,
+    selectedMicrophone,
+    setSelectedMicrophone,
+    selectedSpeaker,
+    setSelectedSpeaker,
+    previewVideoRef,
+    previewStream,
+    stopPreview,
+  } = useMeetingDevices(isOpen, isVideoOn);
 
-        const defaultCamera = devices.find((d) => d.kind === "videoinput");
-        const defaultMic = devices.find((d) => d.kind === "audioinput");
-        const defaultSpeaker = devices.find((d) => d.kind === "audiooutput");
+  const {
+    isMicTesting,
+    microphoneLevel,
+    startMicTest,
+    stopMicTest,
+  } = useMicTest(selectedMicrophone, isOpen);
 
-        if (defaultCamera) setSelectedCamera(defaultCamera.deviceId);
-        if (defaultMic) setSelectedMicrophone(defaultMic.deviceId);
-        if (defaultSpeaker) setSelectedSpeaker(defaultSpeaker.deviceId);
-      } catch (err) {
-        console.error("Error getting devices:", err);
-      }
-    };
-
-    getDevices();
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen || !isVideoOn) {
+  const handleStart = () => {
+    if (isLocked && !password.trim()) {
+      setPasswordError(true);
       return;
     }
 
-    const startPreview = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: selectedCamera ? { deviceId: selectedCamera } : true,
-          audio: false,
-        });
-        setPreviewStream(stream);
-        if (previewVideoRef.current) {
-          previewVideoRef.current.srcObject = stream;
-        }
-      } catch (err) {
-        console.error("Error starting preview:", err);
-      }
-    };
-
-    if (isVideoOn) {
-      startPreview();
-    }
-
-    return () => {
-      if (previewStream) {
-        previewStream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [isOpen, isVideoOn, selectedCamera]);
-
-  useEffect(() => {
-    return () => {
-      stopMicTest();
-    };
-  }, [isOpen]);
-
-  const startMicTest = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: selectedMicrophone ? { deviceId: selectedMicrophone } : true,
-        video: false,
-      });
-
-      setMicTestStream(stream);
-      setIsMicTesting(true);
-
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const analyser = audioContext.createAnalyser();
-      const source = audioContext.createMediaStreamSource(stream);
-
-      source.connect(analyser);
-      audioContextRef.current = audioContext;
-      analyserRef.current = analyser;
-
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-      const updateLevel = () => {
-        analyser.getByteFrequencyData(dataArray);
-        const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-        setMicrophoneLevel(Math.min(100, (average / 255) * 150));
-      };
-
-      const interval = setInterval(updateLevel, 50);
-
-      return () => {
-        clearInterval(interval);
-      };
-    } catch (err) {
-      console.error("Error starting mic test:", err);
-      setIsMicTesting(false);
-    }
-  };
-
-  const stopMicTest = () => {
-    setIsMicTesting(false);
-    setMicrophoneLevel(0);
-
-    if (micTestStream) {
-      micTestStream.getTracks().forEach((track) => track.stop());
-      setMicTestStream(null);
-    }
-
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
-    }
-  };
-
-  const handleStart = () => {
     onStateChange.setIsMuted(isMuted);
     onStateChange.setIsVideoOn(isVideoOn);
     stopMicTest();
 
     if (previewStream) {
       previewStream.getTracks().forEach((track) => track.stop());
-      setPreviewStream(null);
     }
+    stopPreview();
 
     onDeviceSelect?.({
       cameraId: selectedCamera,
@@ -181,7 +91,7 @@ export default function MeetingPreparationModal({
       speakerId: selectedSpeaker,
     });
 
-    onStart();
+    onStart(password || undefined);
   };
 
   if (!isOpen) return null;
@@ -192,7 +102,7 @@ export default function MeetingPreparationModal({
         <div className="px-8 py-4 border-b border-purple-500/20 flex items-center justify-between flex-shrink-0">
           <h2 className="text-xl font-bold text-white">회의 준비</h2>
           <button
-            onClick={onStart}
+            onClick={() => onStart()}
             className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
           >
             <X className="w-6 h-6 text-white" />
@@ -231,6 +141,34 @@ export default function MeetingPreparationModal({
               )}
             </div>
           </div>
+
+          {isLocked && (
+            <div className="space-y-2 p-4 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
+              <div className="flex items-center gap-2">
+                <Lock className="w-4 h-4 text-yellow-400" />
+                <label className="font-semibold text-white text-sm">
+                  비밀번호가 필요한 회의입니다
+                </label>
+              </div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordError(false);
+                }}
+                placeholder="회의 비밀번호를 입력하세요"
+                className={`w-full px-3 py-2 bg-purple-500/20 border rounded-lg text-white text-sm focus:outline-none focus:border-purple-400 placeholder:text-white/40 ${
+                  passwordError
+                    ? "border-red-500"
+                    : "border-purple-500/30"
+                }`}
+              />
+              {passwordError && (
+                <p className="text-xs text-red-400">비밀번호를 입력해주세요</p>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-3">

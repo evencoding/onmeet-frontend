@@ -15,10 +15,12 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: "#E8F4FF",
-          500: "#2E7FE4",
-          600: "#2472D1",
-          700: "#1A5FBC",
+          50: "#FAF5FF",
+          100: "#F3E8FF",
+          400: "#C084FC",
+          500: "#9333EA",
+          600: "#7E22CE",
+          700: "#6B21A8",
         },
         bg: {
           DEFAULT: "#F9FBFC",

@@ -1,20 +1,8 @@
-import { roomApi } from "@/shared/api";
-import type { FetchOptions } from "@/shared/api";
+import { createServiceFetch } from "@/shared/utils/apiFetch";
 
-/**
- * Backward-compatible roomFetch wrapper around the shared roomApi.
- * Sub-API modules import this; the `userId` param becomes the X-User-Id header.
- */
-export async function roomFetch<T>(
-  endpoint: string,
-  userId: string,
-  options?: RequestInit,
-): Promise<T> {
-  return roomApi<T>(endpoint, {
-    ...options,
-    userId,
-  } as FetchOptions);
-}
+const ROOM_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || ""}/video/v1`;
+
+export const roomFetch = createServiceFetch(ROOM_BASE_URL);
 
 export * from "./api/types";
 export * from "./api/room";

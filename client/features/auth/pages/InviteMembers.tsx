@@ -11,6 +11,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import AuthLayout from "@/shared/components/AuthLayout";
+import { useInviteMember } from "@/features/auth/hooks";
+import { getErrorMessage } from "@/shared/utils/apiFetch";
 
 interface InvitedEmail {
   id: string;
@@ -21,6 +23,7 @@ export default function InviteMembers() {
   const navigate = useNavigate();
   const location = useLocation();
   const companyId = (location.state as { companyId: string })?.companyId;
+  const inviteMemberMutation = useInviteMember();
 
   const [emails, setEmails] = useState<InvitedEmail[]>([]);
   const [currentEmail, setCurrentEmail] = useState("");
@@ -52,7 +55,9 @@ export default function InviteMembers() {
   };
 
   const copyInviteLink = (email: string) => {
-    const inviteLink = `${window.location.origin}/signup?token=${actualInviteToken}`; // TODO: 실제 초대 토큰을 사용하도록 수정
+    const params = new URLSearchParams({ email });
+    if (companyId) params.set("company", companyId);
+    const inviteLink = `${window.location.origin}/signup/employee?${params.toString()}`;
     navigator.clipboard.writeText(inviteLink);
     setCopiedId(email);
     setTimeout(() => setCopiedId(null), 2000);
@@ -67,20 +72,19 @@ export default function InviteMembers() {
         throw new Error("최소 1명 이상의 사원을 초대해야 합니다");
       }
 
-      console.log(
-        "Invites sent:",
-        emails.map((e) => e.email),
-      );
-      navigate("/");
+      await inviteMemberMutation.mutateAsync({
+        emails: emails.map((e) => e.email),
+      });
+      navigate("/login");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "초대 실패");
+      setError(getErrorMessage(err, "초대 실패"));
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleSkip = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   return (
@@ -128,7 +132,7 @@ export default function InviteMembers() {
             type="email"
             value={currentEmail}
             onChange={(e) => setCurrentEmail(e.target.value)}
-            onKeyPress={(e) => {
+            onKeyDown={(e) => {
               if (e.key === "Enter") {
                 addEmail();
               }

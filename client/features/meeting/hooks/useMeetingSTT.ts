@@ -24,7 +24,7 @@ export function useMeetingSTT(
   const numericRoomId = Number(roomId);
 
   const url = useMemo(
-    () => (enabled ? `${VITE_API_BASE}/api/rooms/${roomId}/stt/stream` : null),
+    () => (enabled ? `${VITE_API_BASE}/video/v1/rooms/${roomId}/stt/stream` : null),
     [enabled, roomId],
   );
 

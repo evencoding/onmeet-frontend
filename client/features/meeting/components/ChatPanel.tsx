@@ -19,26 +19,32 @@ export default memo(function ChatPanel() {
       })),
     );
 
-  const handleSendMessage = useCallback(() => {
+  const handleSendMessage = useCallback(async () => {
     const { chatInput, addChatMessage, setChatInput } =
       useMeetingRoomStore.getState();
     if (!chatInput.trim()) return;
 
-    const data = JSON.stringify({ type: "chat", message: chatInput });
-    room.localParticipant.publishData(encoder.current.encode(data), {
-      reliable: true,
-    });
+    const message = chatInput;
+    setChatInput("");
+
+    try {
+      const data = JSON.stringify({ type: "chat", message });
+      await room.localParticipant.publishData(encoder.current.encode(data), {
+        reliable: true,
+      });
+    } catch (err) {
+      console.warn("Failed to send chat message:", err);
+    }
 
     addChatMessage({
       id: Date.now().toString(),
       sender: "You",
-      message: chatInput,
+      message,
       timestamp: new Date().toLocaleTimeString("ko-KR", {
         hour: "2-digit",
         minute: "2-digit",
       }),
     });
-    setChatInput("");
   }, [room]);
 
   const handleAddNote = useCallback(() => {
@@ -67,6 +73,7 @@ export default memo(function ChatPanel() {
         <h3 className="font-semibold">채팅</h3>
         <button
           onClick={() => useMeetingRoomStore.getState().toggleChat()}
+          aria-label="채팅 닫기"
           className="p-1 hover:bg-purple-500/20 rounded transition-colors"
         >
           <X className="w-5 h-5" />
@@ -135,6 +142,7 @@ export default memo(function ChatPanel() {
           onClick={handleSendMessage}
           className="p-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
           title="메시지 전송"
+          aria-label="메시지 전송"
         >
           <Send className="w-4 h-4" />
         </button>
@@ -145,6 +153,7 @@ export default memo(function ChatPanel() {
           }}
           className="p-2 bg-purple-500/30 hover:bg-purple-500/50 rounded-lg transition-colors"
           title="노트 추가"
+          aria-label="노트 추가"
         >
           <FileText className="w-4 h-4" />
         </button>

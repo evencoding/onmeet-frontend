@@ -40,7 +40,7 @@ export function useRoom(roomId: number, userId: string) {
   return useQuery({
     queryKey: roomKeys.detail(roomId),
     queryFn: () => getRoom(roomId, userId),
-    enabled: !!roomId && !!userId,
+    enabled: Number.isFinite(roomId) && roomId > 0 && !!userId,
     staleTime: 30_000,
   });
 }
@@ -85,9 +85,8 @@ export function useJoinRoom() {
       roomId: number | string;
       userId: string;
       data?: RoomJoinRequest;
-      body?: Record<string, unknown>;
     }) =>
-      joinRoom(Number(args.roomId), args.userId, args.data ?? (args.body as RoomJoinRequest)),
+      joinRoom(Number(args.roomId), args.userId, args.data),
   });
 }
 

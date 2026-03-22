@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -12,20 +12,19 @@ import {
 } from "lucide-react";
 import { useEmployeeSignup } from "@/features/auth/hooks";
 import { validateInvitation } from "@/features/auth/api";
-import type { ErrorResponse } from "@/features/auth/api";
+import { getErrorMessage } from "@/shared/utils/apiFetch";
 import AuthLayout from "@/shared/components/AuthLayout";
 
 export default function EmployeeSignup() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const inviteToken = searchParams.get("token") || "";
+  const inviteEmailParam = searchParams.get("email") || "";
 
-  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteEmail, setInviteEmail] = useState(inviteEmailParam);
   const [inviteCode, setInviteCode] = useState(inviteToken);
   const [companyName, setCompanyName] = useState("");
-  const [step, setStep] = useState<"verify" | "register">(
-    inviteToken ? "register" : "verify",
-  );
+  const [step, setStep] = useState<"verify" | "register">("verify");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -38,7 +37,35 @@ export default function EmployeeSignup() {
 
   const employeeSignupMutation = useEmployeeSignup();
 
-  const handleVerifySubmit = async (e: React.FormEvent) => {
+  const hasPrefilledParams = !!(inviteToken && inviteEmailParam);
+
+  useEffect(() => {
+    if (!hasPrefilledParams) return;
+
+    let cancelled = false;
+
+    const autoValidate = async () => {
+      setIsLoading(true);
+      setError("");
+      try {
+        const invitation = await validateInvitation(inviteEmailParam, inviteToken);
+        if (cancelled) return;
+        setCompanyName(invitation.companyName);
+        setFormData((prev) => ({ ...prev, email: inviteEmailParam }));
+        setStep("register");
+      } catch (err) {
+        if (cancelled) return;
+        setError(getErrorMessage(err, "초대 코드 검증에 실패했습니다"));
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    };
+
+    autoValidate();
+    return () => { cancelled = true; };
+  }, [hasPrefilledParams, inviteEmailParam, inviteToken]);
+
+  const handleVerifySubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -62,14 +89,13 @@ export default function EmployeeSignup() {
       setFormData((prev) => ({ ...prev, email: inviteEmail }));
       setStep("register");
     } catch (err) {
-      const apiError = err as ErrorResponse;
-      setError(apiError.message || "초대 코드 검증에 실패했습니다");
+      setError(getErrorMessage(err, "초대 코드 검증에 실패했습니다"));
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRegisterSubmit = async (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -101,8 +127,7 @@ export default function EmployeeSignup() {
       {
         onSuccess: () => navigate("/login"),
         onError: (err: unknown) => {
-          const apiError = err as ErrorResponse;
-          setError(apiError?.message || "가입에 실패했습니다");
+          setError(getErrorMessage(err, "가입에 실패했습니다"));
         },
       },
     );
@@ -110,7 +135,7 @@ export default function EmployeeSignup() {
 
   if (step === "verify") {
     return (
-      <AuthLayout subtitle="사원 회원가입" colorTheme="blue">
+      <AuthLayout subtitle="사원 회원가입" colorTheme="blue" onBack={() => navigate("/signup")}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -152,7 +177,8 @@ export default function EmployeeSignup() {
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
               placeholder="your@company.com"
-              className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+              disabled={hasPrefilledParams}
+              className={`w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40 ${hasPrefilledParams ? "cursor-not-allowed opacity-60" : ""}`}
             />
             <p className="text-xs text-white/50">
               회사에서 초대한 이메일을 입력해주세요
@@ -174,9 +200,20 @@ export default function EmployeeSignup() {
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
               placeholder="INV-123456"
-              className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+              disabled={hasPrefilledParams}
+              className={`w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40 ${hasPrefilledParams ? "cursor-not-allowed opacity-60" : ""}`}
             />
           </motion.div>
+
+          {hasPrefilledParams && isLoading && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-2"
+            >
+              <p className="text-sm text-blue-300">자동 검증 중...</p>
+            </motion.div>
+          )}
 
           <motion.button
             type="submit"
@@ -222,7 +259,7 @@ export default function EmployeeSignup() {
   }
 
   return (
-    <AuthLayout subtitle="사원 정보 입력" colorTheme="blue">
+    <AuthLayout subtitle="사원 정보 입력" colorTheme="blue" onBack={() => setStep("verify")}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

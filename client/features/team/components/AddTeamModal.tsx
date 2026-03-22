@@ -1,42 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { X, Search, Copy, Check } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
+import { Avatar, AvatarFallback } from "@/shared/ui/avatar";
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
-
-interface Employee {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  department?: string;
-}
-
-interface TeamMember extends Employee {}
+import { useAllEmployees, useCreateTeam } from "@/features/auth/hooks";
+import type { UserResponseDto } from "@/features/auth/api";
 
 interface AddTeamModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onTeamAdded?: (team: {
-    name: string;
-    description: string;
-    backgroundColor: string;
-    textColor: string;
-    members: TeamMember[];
-  }) => void;
 }
-
-const colorPalette = [
-  "#FF6B6B", "#FFC93C", "#FF7E79", "#FFA630",
-  "#A8E6CF", "#FFD3B6", "#FFAAA5", "#AA96DA",
-  "#FCBAD3", "#A8D8EA", "#AA96DA", "#B28DFF",
-  "#D291BC", "#F8B500", "#C6B1FF", "#6BCB77",
-];
 
 function getLuminance(hex: string): number {
   const rgb = parseInt(hex.replace("#", ""), 16);
@@ -59,104 +37,43 @@ function getOptimalTextColor(bgColor: string): string {
   return luminance > 0.5 ? "#000000" : "#FFFFFF";
 }
 
-const mockEmployees: Employee[] = [
-  {
-    id: "1",
-    name: "김철수",
-    email: "kim@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
-    department: "마케팅",
-  },
-  {
-    id: "2",
-    name: "이영희",
-    email: "lee@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
-    department: "마케팅",
-  },
-  {
-    id: "3",
-    name: "박민준",
-    email: "park@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
-    department: "마케팅",
-  },
-  {
-    id: "4",
-    name: "정준호",
-    email: "jung@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
-    department: "제품",
-  },
-  {
-    id: "5",
-    name: "최수진",
-    email: "choi@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
-    department: "제품",
-  },
-  {
-    id: "6",
-    name: "임상현",
-    email: "lim@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
-    department: "디자인",
-  },
-  {
-    id: "7",
-    name: "한지은",
-    email: "han@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop",
-    department: "디자인",
-  },
-  {
-    id: "8",
-    name: "유혜정",
-    email: "yu@example.com",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop",
-    department: "디자인",
-  },
-];
-
 export default function AddTeamModal({
   isOpen,
   onClose,
-  onTeamAdded,
 }: AddTeamModalProps) {
   const defaultColor = "#A855F7";
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedBgColor, setSelectedBgColor] = useState(defaultColor);
   const [selectedTextColor, setSelectedTextColor] = useState(
-    getOptimalTextColor(defaultColor)
+    getOptimalTextColor(defaultColor),
   );
   const [customColor, setCustomColor] = useState("");
   const [copiedHex, setCopiedHex] = useState(false);
-  const [selectedMembers, setSelectedMembers] = useState<TeamMember[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<UserResponseDto[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { data: employeesData } = useAllEmployees({ size: 100 });
+  const createTeamMutation = useCreateTeam();
+
+  const allEmployees: UserResponseDto[] = employeesData?.content ?? [];
 
   useEffect(() => {
     const autoTextColor = getOptimalTextColor(selectedBgColor);
     setSelectedTextColor(autoTextColor);
   }, [selectedBgColor]);
 
-  const filteredEmployees = mockEmployees.filter(
-    (emp) =>
-      emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      emp.department?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredEmployees = useMemo(
+    () =>
+      allEmployees.filter(
+        (emp) =>
+          emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          emp.email.toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
+    [allEmployees, searchQuery],
   );
 
-  const handleToggleMember = (employee: Employee) => {
+  const handleToggleMember = (employee: UserResponseDto) => {
     const isSelected = selectedMembers.some((m) => m.id === employee.id);
     if (isSelected) {
       setSelectedMembers(selectedMembers.filter((m) => m.id !== employee.id));
@@ -165,13 +82,13 @@ export default function AddTeamModal({
     }
     setTimeout(() => {
       const searchInput = document.querySelector(
-        'input[placeholder="이름, 이메일, 부서로 검색"]'
+        'input[placeholder="이름, 이메일로 검색"]',
       ) as HTMLInputElement;
       if (searchInput) searchInput.focus();
     }, 0);
   };
 
-  const handleRemoveMember = (id: string) => {
+  const handleRemoveMember = (id: number) => {
     setSelectedMembers(selectedMembers.filter((member) => member.id !== id));
   };
 
@@ -194,7 +111,7 @@ export default function AddTeamModal({
     setTimeout(() => setCopiedHex(false), 2000);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!teamName.trim()) {
@@ -202,35 +119,24 @@ export default function AddTeamModal({
       return;
     }
 
-    setIsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      onTeamAdded?.({
-        name: teamName,
-        description,
-        backgroundColor: selectedBgColor,
-        textColor: selectedTextColor,
-        members: selectedMembers,
-      });
-
-      setTeamName("");
-      setDescription("");
-      setSelectedBgColor(defaultColor);
-      setSelectedTextColor(getOptimalTextColor(defaultColor));
-      setCustomColor("");
-      setSelectedMembers([]);
-      setSearchQuery("");
-      onClose();
-    } catch (error) {
-      console.error("Failed to create team:", error);
-      alert("팀 생성 요청에 실패했습니다");
-    } finally {
-      setIsLoading(false);
-    }
+    createTeamMutation.mutate(
+      {
+        name: teamName.trim(),
+        description: description.trim() || undefined,
+        color: selectedBgColor,
+        memberIds: selectedMembers.length > 0 ? selectedMembers.map((m) => m.id) : undefined,
+        leaderId: selectedMembers.length > 0 ? selectedMembers[0].id : undefined,
+      },
+      {
+        onSuccess: () => {
+          resetForm();
+          onClose();
+        },
+      },
+    );
   };
 
-  const handleClose = () => {
+  const resetForm = () => {
     setTeamName("");
     setDescription("");
     setSelectedBgColor(defaultColor);
@@ -238,6 +144,10 @@ export default function AddTeamModal({
     setCustomColor("");
     setSelectedMembers([]);
     setSearchQuery("");
+  };
+
+  const handleClose = () => {
+    resetForm();
     onClose();
   };
 
@@ -269,7 +179,7 @@ export default function AddTeamModal({
               onChange={(e) => setTeamName(e.target.value)}
               placeholder="예: 마케팅 팀"
               className="w-full px-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
-              disabled={isLoading}
+              disabled={createTeamMutation.isPending}
               autoFocus
             />
           </div>
@@ -284,7 +194,7 @@ export default function AddTeamModal({
               placeholder="팀의 목적과 역할을 설명해주세요"
               className="w-full px-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
               rows={3}
-              disabled={isLoading}
+              disabled={createTeamMutation.isPending}
             />
           </div>
 
@@ -301,7 +211,7 @@ export default function AddTeamModal({
                   setSelectedBgColor(e.target.value);
                   setCustomColor("");
                 }}
-                disabled={isLoading}
+                disabled={createTeamMutation.isPending}
                 className="w-14 h-12 rounded-lg cursor-pointer border-2 dark:border-purple-500/30 light:border-purple-300/50 transition-transform hover:scale-105"
                 title="색상 선택"
               />
@@ -320,13 +230,13 @@ export default function AddTeamModal({
                   }}
                   placeholder="#000000"
                   maxLength={7}
-                  disabled={isLoading}
+                  disabled={createTeamMutation.isPending}
                   className="flex-1 px-3 py-2 text-sm border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50 font-mono uppercase"
                 />
                 <button
                   type="button"
                   onClick={handleCopyColor}
-                  disabled={isLoading}
+                  disabled={createTeamMutation.isPending}
                   className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors dark:text-white/70 light:text-purple-600"
                   title="색상 코드 복사"
                 >
@@ -375,7 +285,6 @@ export default function AddTeamModal({
                     className="flex items-center gap-1 px-2 py-1 dark:bg-purple-600/40 light:bg-purple-200/60 rounded-full border dark:border-purple-500/50 light:border-purple-300/50 text-xs bg-compact"
                   >
                     <Avatar className="w-4 h-4">
-                      <AvatarImage src={member.avatar} alt={member.name} />
                       <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <span className="dark:text-white/90 light:text-purple-900 font-medium whitespace-nowrap">
@@ -384,7 +293,7 @@ export default function AddTeamModal({
                     <button
                       type="button"
                       onClick={() => handleRemoveMember(member.id)}
-                      disabled={isLoading}
+                      disabled={createTeamMutation.isPending}
                       className="p-0 dark:text-white/60 dark:hover:text-red-400 light:text-purple-600 light:hover:text-red-600 hover:dark:bg-red-500/20 hover:light:bg-red-100/50 rounded-full transition-colors flex-shrink-0"
                       title="제거"
                     >
@@ -397,9 +306,9 @@ export default function AddTeamModal({
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={selectedMembers.length === 0 ? "이름, 이메일, 부서로 검색" : "검색..."}
+                  placeholder={selectedMembers.length === 0 ? "이름, 이메일로 검색" : "검색..."}
                   className="flex-1 min-w-0 py-0 border-0 dark:bg-transparent light:bg-transparent focus:outline-none focus:ring-0 text-sm dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
-                  disabled={isLoading}
+                  disabled={createTeamMutation.isPending}
                 />
               </div>
             </div>
@@ -412,14 +321,14 @@ export default function AddTeamModal({
               ) : (
                 filteredEmployees.map((employee) => {
                   const isSelected = selectedMembers.some(
-                    (m) => m.id === employee.id
+                    (m) => m.id === employee.id,
                   );
                   return (
                     <button
                       key={employee.id}
                       type="button"
                       onClick={() => handleToggleMember(employee)}
-                      disabled={isLoading}
+                      disabled={createTeamMutation.isPending}
                       className={`w-full flex items-center gap-3 p-3 dark:border-b dark:border-purple-500/20 light:border-b light:border-purple-300/30 transition-colors ${
                         isSelected
                           ? "dark:bg-purple-600/30 light:bg-purple-100/50"
@@ -431,13 +340,9 @@ export default function AddTeamModal({
                         checked={isSelected}
                         onChange={() => {}}
                         className="cursor-pointer"
-                        disabled={isLoading}
+                        disabled={createTeamMutation.isPending}
                       />
                       <Avatar className="w-8 h-8">
-                        <AvatarImage
-                          src={employee.avatar}
-                          alt={employee.name}
-                        />
                         <AvatarFallback>
                           {employee.name.charAt(0)}
                         </AvatarFallback>
@@ -447,7 +352,7 @@ export default function AddTeamModal({
                           {employee.name}
                         </p>
                         <p className="text-xs dark:text-white/50 light:text-purple-600">
-                          {employee.department} · {employee.email}
+                          {employee.jobTitle?.name ?? "-"} · {employee.email}
                         </p>
                       </div>
                     </button>
@@ -468,17 +373,17 @@ export default function AddTeamModal({
               type="button"
               variant="outline"
               onClick={handleClose}
-              disabled={isLoading}
+              disabled={createTeamMutation.isPending}
               className="flex-1 dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-white/90 dark:hover:bg-purple-500/20 light:border-purple-300/50 light:bg-purple-100/50 light:text-purple-700 light:hover:bg-purple-100"
             >
               취소
             </Button>
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={createTeamMutation.isPending}
               className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
             >
-              {isLoading ? "요청 중..." : "팀 생성 요청"}
+              {createTeamMutation.isPending ? "요청 중..." : "팀 생성 요청"}
             </Button>
           </div>
         </form>

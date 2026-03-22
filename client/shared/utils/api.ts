@@ -1,12 +1,10 @@
-// ── Request ──
+// ── Shared Pagination Types ──
 
 export interface Pageable {
   page?: number;
   size?: number;
   sort?: string[];
 }
-
-// ── Spring Boot Page response internals ──
 
 export interface SortObject {
   direction: string;
@@ -25,8 +23,6 @@ export interface PageableObject {
   pageSize: number;
 }
 
-// ── Full Spring Boot Page<T> ──
-
 export interface Page<T> {
   totalPages: number;
   totalElements: number;
@@ -41,8 +37,6 @@ export interface Page<T> {
   empty: boolean;
 }
 
-// ── Simplified PageResponse (used by auth) ──
-
 export interface PageResponse<T = unknown> {
   content: T[];
   pageNumber: number;
@@ -52,9 +46,9 @@ export interface PageResponse<T = unknown> {
   last: boolean;
 }
 
-// ── Utility ──
+// ── Query String Helper ──
 
-export function pageableToParams(pageable?: Pageable): string {
+export function pageQs(pageable?: Pageable): string {
   if (!pageable) return "";
   const qs = new URLSearchParams();
   if (pageable.page !== undefined) qs.set("page", String(pageable.page));

@@ -1,11 +1,12 @@
-import Layout from "@/shared/components/Layout";
 import IntroCard from "@/features/dashboard/components/IntroCard";
 import OngoingMeetings from "@/features/dashboard/components/OngoingMeetings";
 import RecentMeetings from "@/features/dashboard/components/RecentMeetings";
 import CreateMeetingModal from "@/features/dashboard/components/CreateMeetingModal";
 import { useState } from "react";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function Index() {
+  useDocumentTitle("오늘 회의 - OnMeet");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleCreateMeeting = () => {
@@ -17,7 +18,7 @@ export default function Index() {
   };
 
   return (
-    <Layout showRecentPanel={false}>
+    <>
       <div className="space-y-10 max-w-4xl">
         <IntroCard onCreateMeeting={handleCreateMeeting} />
         <OngoingMeetings />
@@ -27,6 +28,6 @@ export default function Index() {
         isOpen={isCreateModalOpen}
         onClose={handleCloseModal}
       />
-    </Layout>
+    </>
   );
 }

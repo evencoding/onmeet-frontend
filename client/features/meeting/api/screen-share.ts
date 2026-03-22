@@ -1,18 +1,14 @@
-import { roomApi } from "@/shared/api";
-import { ScreenShareResponseSchema } from "@/shared/schemas";
-import { z } from "zod";
+import { roomFetch } from "../api";
 import type { ScreenShareResponse } from "./types";
 
 export function startScreenShare(roomId: number, userId: string) {
-  return roomApi<void>(`/rooms/${roomId}/screen-share/start`, {
-    userId,
+  return roomFetch<ScreenShareResponse>(`/rooms/${roomId}/screen-share/start`, userId, {
     method: "POST",
   });
 }
 
 export function stopScreenShare(roomId: number, userId: string) {
-  return roomApi<void>(`/rooms/${roomId}/screen-share/stop`, {
-    userId,
+  return roomFetch<void>(`/rooms/${roomId}/screen-share/stop`, userId, {
     method: "POST",
   });
 }
@@ -23,15 +19,16 @@ export function forceStopScreenShare(
   targetUserId: number,
 ) {
   const qs = new URLSearchParams({ targetUserId: String(targetUserId) });
-  return roomApi<void>(
+  return roomFetch<void>(
     `/rooms/${roomId}/screen-share/force-stop?${qs}`,
-    { userId, method: "POST" },
+    userId,
+    { method: "POST" },
   );
 }
 
 export function listActiveScreenShares(roomId: number, userId: string) {
-  return roomApi<ScreenShareResponse[]>(
+  return roomFetch<ScreenShareResponse[]>(
     `/rooms/${roomId}/screen-share/active`,
-    { userId, schema: z.array(ScreenShareResponseSchema) },
+    userId,
   );
 }
