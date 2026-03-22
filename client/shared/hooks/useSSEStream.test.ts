@@ -48,7 +48,7 @@ class MockEventSource {
 
   simulateEnd() {
     const handlers = this.listeners["end"] || [];
-    handlers.forEach((h) => h(new Event("end")));
+    handlers.forEach((h) => h(new MessageEvent("end")));
   }
 
   simulateError() {
