@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { MeetingRoomStore } from "./types";
+import { transition, logTransition, canTransition } from "./phaseMachine";
 
 const initialState = {
   // Connection
@@ -40,8 +41,13 @@ const initialState = {
 export const useMeetingRoomStore = create<MeetingRoomStore>((set) => ({
   ...initialState,
 
-  // Connection actions
-  setPhase: (phase) => set({ phase }),
+  // Connection actions (with state machine guard)
+  setPhase: (next) =>
+    set((s) => {
+      const result = transition(s.phase, next);
+      logTransition(s.phase, next, result === next);
+      return { phase: result };
+    }),
   setToken: (token) => set({ token }),
   setIsHost: (isHost) => set({ isHost }),
   setRejected: (rejected) => set({ rejected }),

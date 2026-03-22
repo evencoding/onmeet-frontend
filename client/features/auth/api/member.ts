@@ -7,9 +7,12 @@ import type {
   TeamRequest,
   JobTitleResponse,
 } from "./types";
+import { validateResponse } from "@/shared/lib/schemas";
+import { UserResponseSchema } from "@/shared/lib/schemas";
 
-export function getMe(): Promise<UserResponseDto> {
-  return authFetch("/v1/member/me");
+export async function getMe(): Promise<UserResponseDto> {
+  const data = await authFetch<UserResponseDto>("/v1/member/me");
+  return validateResponse(UserResponseSchema, data, "getMe");
 }
 
 export function updateProfile(

@@ -1,4 +1,5 @@
 export { useMeetingRoomStore } from "./useMeetingRoomStore";
+export { canTransition, transition } from "./phaseMachine";
 export type {
   Phase,
   ViewMode,
