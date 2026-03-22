@@ -103,24 +103,27 @@ export default memo(function Sidebar({
           {!isCollapsed && (
             <button
               onClick={() => navigate("/")}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              className="flex items-center hover:opacity-80 transition-opacity"
               title="메인 화면으로 이동"
             >
-              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
-                O
-              </div>
-              <span className="font-bold text-lg tracking-tight text-foreground">
-                ONMEET
-              </span>
+              <img
+                src="/icons/brand-logo-transparent.png"
+                alt="ONMEET"
+                className="h-8 w-auto"
+              />
             </button>
           )}
           {isCollapsed && (
             <button
               onClick={() => navigate("/")}
-              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold hover:opacity-80 transition-opacity"
+              className="hover:opacity-80 transition-opacity"
               title="메인 화면으로 이동"
             >
-              O
+              <img
+                src="/icons/brand-icon-transparent.png"
+                alt="ONMEET"
+                className="w-8 h-8"
+              />
             </button>
           )}
           {onToggleCollapse && (
