@@ -31,7 +31,7 @@ pnpm test:e2e          # Playwright E2E 테스트
 
 ## 테스트 현황 요약
 
-**17개 파일, 147개 테스트 케이스** — 전체 통과
+**25개 파일, 253개 테스트 케이스** — 전체 통과
 
 ---
 
@@ -127,6 +127,29 @@ React Query 훅 팩토리 테스트 (QueryClient 래퍼)
 - **`buildFormData()`** — JSON Blob 첨부, profileImage 첨부/미첨부, 복합 데이터 직렬화
 - **`authFetch()`** — credentials + Content-Type 설정, FormData Content-Type 스킵, 비정상 응답 에러 throw, 401 자동 토큰 갱신 + 재시도
 
+#### `client/features/auth/api/auth.test.ts` — 10 tests
+인증 함수 테스트 (authFetch mock)
+
+- `login`, `guestLogin`, `logout`, `findPassword`, `refreshToken` — URL/method/body 검증
+- `signupCompany`, `registerEmployee` — buildFormData 연동 검증
+- `validateInvitation` — 쿼리 파라미터 인코딩
+- `inviteGuest`, `joinMeetingAsGuest` — URL 구성
+
+#### `client/features/auth/api/member.test.ts` — 11 tests
+회원 API 함수 테스트
+
+- `getMe`, `updateProfile`, `withdraw`, `changePassword`, `deleteMyProfileImage`
+- `getMemberInfo`, `getJobTitles`, `createTeam`, `delegateLeader`, `dissolveTeam`, `cancelTeamRequest`
+
+#### `client/features/auth/api/manager.test.ts` — 13 tests
+관리자 API 함수 테스트
+
+- `getAllEmployees` — 페이지네이션 쿼리 스트링 검증
+- `deactivateUser`, `activateUser`, `resetProfileImage`
+- `createJobTitle`, `updateJobTitle`, `deleteJobTitle`
+- `inviteMember`, `inviteSingleMember`, `updateCompany`
+- `approveTeam`, `rejectTeam` (optional body), `assignLeader`
+
 ### 4. Meeting
 
 #### `client/features/meeting/store/useMeetingRoomStore.test.ts` — 12 tests (기존)
@@ -148,6 +171,40 @@ React Query 키 팩토리 테스트
 - 대기실/녹화/초대/화면공유/STT: `waiting`, `recordings`, `recordingStatus`, `invitations`, `activeScreenShares`, `stt`, `sttTranscript`
 - 월별 통계: `monthlyStats`
 - 키 계층 구조: detail 키가 all 키를 prefix로 포함, sub-resource가 detail을 prefix로 포함
+
+#### `client/features/meeting/api/room.test.ts` — 22 tests
+Room API 함수 테스트 (roomFetch mock)
+
+- **`listRooms()`** — 파라미터 없이/page/size/status/type/accessScope/hostUserId/sort 쿼리 스트링 생성 (toQueryString 로직 포함)
+- `createRoom`, `getRoom`, `updateRoom`, `deleteRoom` — URL/method/body 검증
+- `joinRoom`, `leaveRoom`, `startRoom`, `endRoom` — POST 동작
+- `lockRoom` (optional body), `unlockRoom`, `regenerateRoomCode`
+- `addTag`, `removeTag` (URL 인코딩), `addFavorite`, `removeFavorite`
+
+#### `client/features/meeting/api/room-discovery.test.ts` — 8 tests
+Room Discovery API 함수 테스트
+
+- `getRoomByCode` (URL 인코딩), `searchRoomsByTag` (URL 인코딩)
+- `listScheduledRooms`, `listRoomHistory`, `getMonthlyStats`, `listFavoriteRooms`
+- `getRoomStats`, `getRoomTimeline`
+
+#### `client/features/meeting/api/participant.test.ts` — 10 tests
+참가자 API 함수 테스트
+
+- `listParticipants`, `listParticipantHistory` (페이지네이션 유무)
+- `muteParticipant`, `unmuteParticipant`, `kickParticipant`, `updateParticipantRole`
+- `muteAll`, `unmuteAll`, `disableVideoAll`
+
+#### `client/features/meeting/api/remaining.test.ts` — 28 tests
+나머지 Meeting API 함수 테스트 (7개 모듈 통합)
+
+- **waiting-room** (4): `listWaitingRoom`, `admitWaiting`, `rejectWaiting`, `admitAllWaiting`
+- **invitation** (6): `inviteToRoom`, `bulkInviteToRoom`, `cancelInvitation`, `listInvitations`, `acceptInvitation`, `declineInvitation`
+- **recording** (6): `startRecording`, `stopRecording`, `getRecordingStatus`, `listRecordings`, `getRecordingDownloadUrl`, `deleteRecording`
+- **screen-share** (4): `startScreenShare`, `stopScreenShare`, `forceStopScreenShare` (targetUserId 쿼리), `listActiveScreenShares`
+- **chat** (2): `sendChatMessage`, `getChatToken`
+- **room-schedule** (4): `scheduleRoom`, `updateSchedule` (scheduledAt 쿼리), `cancelSchedule`, `sendReminder`
+- **room-settings** (2): `getRoomSettings`, `updateRoomSettings`
 
 ### 5. Notification
 

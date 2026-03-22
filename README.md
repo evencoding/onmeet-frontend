@@ -142,15 +142,15 @@ pnpm test:e2e             # Playwright E2E 테스트
 |------|:---:|:---:|
 | Shared Utils | 2 | 23 |
 | Shared Hooks | 6 | 42 |
-| Auth | 2 | 15 |
-| Meeting | 2 | 38 |
+| Auth (Context + API) | 5 | 49 |
+| Meeting (Store + API + Keys) | 6 | 98 |
 | Notification | 2 | 13 |
-| AI | 1 | 5 |
+| AI (Hooks + API) | 2 | 9 |
 | App (라우팅) | 1 | 6 |
 | UI Utils | 1 | 5 |
-| **합계** | **17** | **147** |
+| **합계** | **25** | **253** |
 
-커버리지 범위: API 유틸리티, 순수 함수, 커스텀 훅(throttle, SSE, 반응형), Zustand 상태 관리, React Query 키 팩토리, Toast 리듀서, 라우트 가드
+커버리지 범위: 전체 API 레이어 (Auth/Meeting/AI/Notification), 커스텀 훅(throttle, SSE, 반응형), Zustand 상태 관리, React Query 키 팩토리, Toast 리듀서, 라우트 가드
 
 > 상세 테스트 문서: [`docs/test.md`](docs/test.md)
 
