@@ -10,7 +10,8 @@
 6. [보안](#6-보안)
 7. [스트림 기반 파일 처리](#7-스트림-기반-파일-처리)
 8. [디자인 패턴](#8-디자인-패턴)
-9. [개선 로드맵](#9-개선-로드맵)
+9. [리팩토링 이력](#9-리팩토링-이력)
+10. [개선 로드맵](#10-개선-로드맵)
 
 ---
 
@@ -212,6 +213,28 @@ const prefetchMap = {
 };
 ```
 
+### React.memo 최적화
+
+리렌더 빈도가 높은 회의 컴포넌트에 `React.memo` 적용:
+
+- `ParticipantTile` — 참가자 수만큼 렌더되는 타일
+- `VideoGrid` — 비디오 그리드 레이아웃
+- `MeetingToolbar` — 회의 도구 모음
+- `ChatPanel` — 채팅 패널
+- `ParticipantsPanel` — 참여자 목록
+- `Sidebar` — 전역 네비게이션
+
+### 프로덕션 빌드 최적화
+
+```typescript
+// vite.config.ts
+esbuild: {
+  drop: mode === "production" ? ["console", "debugger"] : [],
+}
+```
+
+프로덕션 빌드에서 `console.*`과 `debugger` 문을 자동 제거하여 번들 크기 감소 및 정보 노출 방지.
+
 ### optimizeDeps
 
 Vite의 사전 번들링 대상에 자주 사용하는 라이브러리를 명시하여 콜드 스타트 시간 단축:
@@ -248,6 +271,10 @@ server: {
 
 - `getErrorMessage(err, fallback)` 유틸로 4가지 에러 패턴을 단일 함수로 통합
 - API 에러 객체, Error 인스턴스, unknown 타입 모두 안전하게 메시지 추출
+
+### 404 에러 모니터링
+
+- `NotFound` 페이지에서 `Sentry.captureMessage()`로 잘못된 경로 접근을 자동 추적
 
 ---
 
@@ -309,14 +336,41 @@ MeetingPreparationModal (435L → 332L)
 
 ---
 
-## 9. 개선 로드맵
+## 9. 리팩토링 이력
+
+### HIGH 우선순위 (완료)
+
+- [x] **Fetch wrapper 통합**: 4개 서비스의 중복 fetch 로직 → `createServiceFetch` 팩토리 패턴
+- [x] **auth/api.ts 분리**: 471줄 단일 파일 → `types.ts`, `auth-fetch.ts`, `auth.ts`, `member.ts`, `manager.ts` (5개 모듈)
+- [x] **대형 컴포넌트 분리**: CompanyManagement(597L→225L), MyPage(596L→213L), MeetingPreparationModal(435L→332L)
+
+### MEDIUM 우선순위 (완료)
+
+- [x] **페이지네이션 타입 중복 제거**: 4곳에 분산된 `Pageable`, `Page<T>` 등 → `shared/utils/api.ts` 통합
+- [x] **에러 타입 가드**: `getErrorMessage(err, fallback)` 유틸 추가, 4개 파일 6곳 적용
+
+### 추가 리팩토링 (완료)
+
+- [x] **React.StrictMode 적용**: `main.tsx`에서 개발 모드 부작용 조기 발견
+- [x] **React.memo 적용**: ParticipantTile, ParticipantsPanel, Sidebar (VideoGrid, MeetingToolbar, ChatPanel은 기적용)
+- [x] **프로덕션 console 제거**: `esbuild.drop: ["console", "debugger"]` 설정
+- [x] **NotFound → Sentry**: `console.error` → `Sentry.captureMessage` 교체
+- [x] **ESLint 강화**: `no-unused-vars: warn`, `no-console: warn` 활성화
+- [x] **.env.example 생성**: 시크릿 없는 환경변수 템플릿
+
+---
+
+## 10. 개선 로드맵
 
 ### P0 — 즉시 적용
 
+- [x] ~~React.StrictMode 적용~~ (완료)
+- [x] ~~.env.example 파일 생성~~ (완료)
+- [x] ~~React.memo 적용~~ (완료)
+- [x] ~~프로덕션 console 자동 제거~~ (완료)
+- [x] ~~ESLint 규칙 강화~~ (완료)
 - [ ] TypeScript strict 모드 점진적 활성화 (`strictNullChecks` → `strict: true`)
-- [ ] `React.StrictMode` 적용 (개발 모드에서 부작용 조기 발견)
 - [ ] favicon.ico 최적화 (1.3MB → <100KB)
-- [ ] `.env.example` 파일 생성
 
 ### P1 — 단기 (1~2주)
 
@@ -324,8 +378,6 @@ MeetingPreparationModal (435L → 332L)
 - [ ] Husky + lint-staged로 커밋 전 자동 포맷팅/린트
 - [ ] Open Graph / Twitter Card 메타 태그 추가
 - [ ] 컴포넌트 테스트 기반 마련 (Vitest + React Testing Library + MSW)
-- [ ] `React.memo` 적용 (ParticipantTile, Sidebar 등 리렌더 빈도 높은 컴포넌트)
-- [ ] `no-console` ESLint 규칙 활성화, console.log 정리
 
 ### P2 — 중기 (3~4주)
 
