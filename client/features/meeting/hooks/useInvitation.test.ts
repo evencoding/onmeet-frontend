@@ -44,7 +44,7 @@ beforeEach(() => {
 
 describe("useInvitations", () => {
   it("fetches invitations when roomId and userId are provided", async () => {
-    const mockData = [{ id: 1, email: "user@test.com" }];
+    const mockData = [{ id: 1, email: "user@test.com" }] as any;
     vi.mocked(listInvitations).mockResolvedValue(mockData);
 
     const { result } = renderHook(() => useInvitations(1, "user-1"), {
@@ -78,7 +78,7 @@ describe("useInvitations", () => {
 
 describe("useInviteToRoom", () => {
   it("calls inviteToRoom and invalidates invitations cache on success", async () => {
-    const mockResponse = { id: 1, status: "PENDING" };
+    const mockResponse = { id: 1, status: "PENDING" } as any;
     vi.mocked(inviteToRoom).mockResolvedValue(mockResponse);
 
     const { result } = renderHook(() => useInviteToRoom(), {
@@ -102,7 +102,7 @@ describe("useInviteToRoom", () => {
 
 describe("useBulkInviteToRoom", () => {
   it("calls bulkInviteToRoom with correct arguments", async () => {
-    const mockResponse = [{ id: 1 }, { id: 2 }];
+    const mockResponse = [{ id: 1 }, { id: 2 }] as any;
     vi.mocked(bulkInviteToRoom).mockResolvedValue(mockResponse);
 
     const { result } = renderHook(() => useBulkInviteToRoom(), {

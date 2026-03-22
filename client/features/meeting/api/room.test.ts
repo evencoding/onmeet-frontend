@@ -52,13 +52,13 @@ describe("room API", () => {
     });
 
     it("includes type filter", async () => {
-      await listRooms(uid, { type: "PUBLIC" });
+      await listRooms(uid, { type: "PUBLIC" as any });
       const url = mockRoomFetch.mock.calls[0][0] as string;
       expect(url).toContain("type=PUBLIC");
     });
 
     it("includes accessScope filter", async () => {
-      await listRooms(uid, { accessScope: "COMPANY" });
+      await listRooms(uid, { accessScope: "COMPANY" as any });
       const url = mockRoomFetch.mock.calls[0][0] as string;
       expect(url).toContain("accessScope=COMPANY");
     });
