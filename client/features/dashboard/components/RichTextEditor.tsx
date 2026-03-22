@@ -13,7 +13,7 @@ interface RichTextEditorProps {
   className?: string;
 }
 
-export default function RichTextEditor({ value, onChange, placeholder = "내용을 입력하세요...", className = "" }: RichTextEditorProps) {
+export default function RichTextEditor({ value, onChange, placeholder: _placeholder = "내용을 입력하세요...", className = "" }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({

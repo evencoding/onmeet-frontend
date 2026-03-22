@@ -6,7 +6,7 @@ export function useMicTest(selectedMicrophone: string, isOpen: boolean) {
   const micIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [isMicTesting, setIsMicTesting] = useState(false);
   const [microphoneLevel, setMicrophoneLevel] = useState(0);
-  const [micTestStream, setMicTestStream] = useState<MediaStream | null>(null);
+  const [_micTestStream, setMicTestStream] = useState<MediaStream | null>(null);
 
   const stopMicTest = useCallback(() => {
     if (micIntervalRef.current) {

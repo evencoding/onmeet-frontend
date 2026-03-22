@@ -110,7 +110,7 @@ export default function InviteParticipantModal({
         description: "게스트 링크가 클립보드에 복사되었습니다",
       });
       setTimeout(() => setCopied(false), 2000);
-    } catch (_err) {
+    } catch {
       toast({
         title: "복사 실패",
         description: "링크 복사에 실패했습니다",

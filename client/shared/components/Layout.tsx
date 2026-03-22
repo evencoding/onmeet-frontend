@@ -2,8 +2,6 @@ import Sidebar from "./Sidebar";
 import MeetingHeader from "./MeetingHeader";
 import AIMeetingSearch from "@/features/dashboard/components/AIMeetingSearch";
 import RecentMeetings from "@/features/dashboard/components/RecentMeetings";
-import ThemeToggle from "./ThemeToggle";
-import { Menu } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "@/shared/contexts/ThemeContext";
 
@@ -19,7 +17,7 @@ export default function Layout({
   showRecentPanel = false,
 }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedTeamId, setSelectedTeamId] = useState<string>("");
+  const [_selectedTeamId, setSelectedTeamId] = useState<string>("");
   const { theme } = useTheme();
 
   return (

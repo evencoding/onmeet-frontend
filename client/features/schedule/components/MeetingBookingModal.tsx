@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/ui/alert-dialog";
-import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
+import { Avatar, AvatarFallback } from "@/shared/ui/avatar";
 import { useAuth } from "@/features/auth/context";
 import { useAllEmployees } from "@/features/auth/hooks";
 import { useScheduleRoom, useBulkInviteToRoom } from "@/features/meeting/hooks";
