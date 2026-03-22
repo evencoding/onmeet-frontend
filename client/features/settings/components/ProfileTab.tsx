@@ -92,11 +92,18 @@ export default function ProfileTab({
 
         <div className="flex flex-col items-center gap-3 flex-shrink-0">
           <div className="relative">
-            <img
-              src={formData.avatar}
-              alt={formData.name}
-              className="w-24 h-24 rounded-full object-cover border-4 dark:border-purple-500/30 light:border-purple-300/50"
-            />
+            {formData.avatar ? (
+              <img
+                src={formData.avatar}
+                alt={formData.name}
+                loading="lazy"
+                className="w-24 h-24 rounded-full object-cover border-4 dark:border-purple-500/30 light:border-purple-300/50"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-2xl border-4 dark:border-purple-500/30 light:border-purple-300/50">
+                {formData.name?.charAt(0)?.toUpperCase() || "U"}
+              </div>
+            )}
             {editMode && (
               <label className="absolute bottom-0 right-0 p-1.5 dark:bg-purple-600 light:bg-purple-600 text-white rounded-full cursor-pointer hover:dark:bg-purple-700 hover:light:bg-purple-700 transition-all">
                 <Edit2 className="w-3 h-3" />
@@ -264,6 +271,7 @@ export default function ProfileTab({
                           setShowPasswords((prev) => ({ ...prev, [field.key]: !prev[field.key] }))
                         }
                         className="absolute right-3 top-1/2 -translate-y-1/2 dark:text-white/40 light:text-purple-400 hover:dark:text-white/70 hover:light:text-purple-600 transition-all"
+                        aria-label={showPasswords[field.key] ? "비밀번호 숨기기" : "비밀번호 표시"}
                       >
                         {showPasswords[field.key] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Track } from "livekit-client";
 import { useParticipantTracks } from "@livekit/components-react";
 import type { Participant } from "livekit-client";
@@ -19,7 +19,7 @@ function getInitials(name: string): string {
     .slice(0, 2);
 }
 
-export default function ParticipantTile({
+export default memo(function ParticipantTile({
   participant,
   isSpeaking,
   className = "",
@@ -102,4 +102,4 @@ export default function ParticipantTile({
       </div>
     </div>
   );
-}
+});

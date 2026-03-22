@@ -71,6 +71,7 @@ export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
           <TooltipTrigger asChild>
             <button
               onClick={toggleMic}
+              aria-label={isMuted ? "음성 켜기" : "음성 끄기"}
               className={`p-4 rounded-full transition-all duration-200 ${
                 isMuted
                   ? "bg-red-600 text-white hover:bg-red-700"
@@ -93,6 +94,7 @@ export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
           <TooltipTrigger asChild>
             <button
               onClick={toggleCamera}
+              aria-label={isVideoOn ? "카메라 끄기" : "카메라 켜기"}
               className={`p-4 rounded-full transition-all duration-200 ${
                 !isVideoOn
                   ? "bg-red-600 text-white hover:bg-red-700"
@@ -115,6 +117,7 @@ export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
           <TooltipTrigger asChild>
             <button
               onClick={() => useMeetingRoomStore.getState().setIsAIRecordingRequestModalOpen(true)}
+              aria-label={isHost ? "AI 회의록 관리" : "AI 회의록 요청"}
               className={`p-4 rounded-full transition-all duration-200 flex items-center gap-2 ${
                 isAIRecording
                   ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
@@ -136,6 +139,7 @@ export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
                 const { viewMode, setViewMode } = useMeetingRoomStore.getState();
                 setViewMode(viewMode === "gallery" ? "speaker" : "gallery");
               }}
+              aria-label="화면 전환"
               className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
             >
               <Users className="w-6 h-6" />
@@ -148,6 +152,7 @@ export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
           <TooltipTrigger asChild>
             <button
               onClick={handleScreenshot}
+              aria-label="스크린샷 촬영"
               className="p-4 bg-purple-500/30 text-white hover:bg-purple-500/50 rounded-full transition-all duration-200"
             >
               <Camera className="w-6 h-6" />
@@ -160,6 +165,7 @@ export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
           <TooltipTrigger asChild>
             <button
               onClick={toggleScreenShare}
+              aria-label={isScreenSharing ? "화면 공유 중지" : "화면 공유"}
               className={`p-4 rounded-full transition-all duration-200 ${
                 isScreenSharing
                   ? "bg-green-600 text-white hover:bg-green-700"
@@ -178,6 +184,7 @@ export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
           <TooltipTrigger asChild>
             <button
               onClick={() => useMeetingRoomStore.getState().toggleChat()}
+              aria-label="채팅"
               className={`p-4 rounded-full transition-all duration-200 ${
                 showChat
                   ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -194,6 +201,7 @@ export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
           <TooltipTrigger asChild>
             <button
               onClick={() => useMeetingRoomStore.getState().toggleParticipants()}
+              aria-label="참여자"
               className={`p-4 rounded-full transition-all duration-200 ${
                 showParticipants
                   ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -210,6 +218,7 @@ export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
           <TooltipTrigger asChild>
             <button
               onClick={() => useMeetingRoomStore.getState().setShowExitModal(true)}
+              aria-label="회의 나가기"
               className="p-4 bg-red-600 text-white rounded-full hover:bg-red-700 transition-all duration-200 ml-auto"
             >
               <Phone className="w-6 h-6" />

@@ -93,7 +93,7 @@ export default function Landing() {
         </div>
       </div>
 
-      <nav className="fixed top-0 w-full z-50 dark:bg-black/30 light:bg-white/70 backdrop-blur-xl border-b dark:border-purple-500/20 light:border-purple-200/50">
+      <nav aria-label="메인 네비게이션" className="fixed top-0 w-full z-50 dark:bg-black/30 light:bg-white/70 backdrop-blur-xl border-b dark:border-purple-500/20 light:border-purple-200/50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <motion.div
             className="flex items-center gap-3"
@@ -232,6 +232,7 @@ export default function Landing() {
             <motion.img
               src="https://images.pexels.com/photos/4226261/pexels-photo-4226261.jpeg?w=1200&h=600&fit=crop"
               alt="Video conference meeting"
+              loading="lazy"
               className="w-full h-auto object-cover"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}

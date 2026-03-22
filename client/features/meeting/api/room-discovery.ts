@@ -1,34 +1,36 @@
 import { roomFetch } from "../api";
+import type { Page } from "@/shared/utils/api";
 import type {
   MeetingRoomResponse,
+  MeetingRoomDetailResponse,
   RoomStatsResponse,
   MonthlyStatsResponse,
   TimelineEntry,
 } from "./types";
 
 export function getRoomByCode(roomCode: string, userId: string) {
-  return roomFetch<MeetingRoomResponse>(
+  return roomFetch<MeetingRoomDetailResponse>(
     `/rooms/code/${encodeURIComponent(roomCode)}`,
     userId,
   );
 }
 
 export function searchRoomsByTag(tagName: string, userId: string) {
-  return roomFetch<MeetingRoomResponse[]>(
+  return roomFetch<Page<MeetingRoomResponse>>(
     `/rooms/tags/${encodeURIComponent(tagName)}`,
     userId,
   );
 }
 
 export function listScheduledRooms(userId: string) {
-  return roomFetch<MeetingRoomResponse[]>(
+  return roomFetch<Page<MeetingRoomResponse>>(
     `/rooms/scheduled`,
     userId,
   );
 }
 
 export function listRoomHistory(userId: string) {
-  return roomFetch<MeetingRoomResponse[]>(
+  return roomFetch<Page<MeetingRoomResponse>>(
     `/rooms/history`,
     userId,
   );
@@ -39,7 +41,7 @@ export function getMonthlyStats(userId: string) {
 }
 
 export function listFavoriteRooms(userId: string) {
-  return roomFetch<MeetingRoomResponse[]>(
+  return roomFetch<Page<MeetingRoomResponse>>(
     `/rooms/favorites`,
     userId,
   );

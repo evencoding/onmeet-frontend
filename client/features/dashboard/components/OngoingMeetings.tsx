@@ -15,7 +15,7 @@ export default function OngoingMeetings() {
   const isLoading = isActiveLoading || isScheduledLoading;
 
   const activeRooms: MeetingRoomResponse[] = activeRoomsData?.content ?? [];
-  const scheduledRooms: MeetingRoomResponse[] = scheduledRoomsData ?? [];
+  const scheduledRooms: MeetingRoomResponse[] = scheduledRoomsData?.content ?? [];
 
   const meetings = [
     ...activeRooms.map((r) => ({ ...r, displayStatus: "ongoing" as const })),

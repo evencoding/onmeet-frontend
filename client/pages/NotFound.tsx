@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom";
+import * as Sentry from "@sentry/react";
 import { useEffect } from "react";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
@@ -7,10 +8,7 @@ const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname,
-    );
+    Sentry.captureMessage(`404: ${location.pathname}`, "warning");
   }, [location.pathname]);
 
   return (

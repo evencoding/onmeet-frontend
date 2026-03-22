@@ -120,7 +120,13 @@ export default function AddTeamModal({
     }
 
     createTeamMutation.mutate(
-      { name: teamName.trim() },
+      {
+        name: teamName.trim(),
+        description: description.trim() || undefined,
+        color: selectedBgColor,
+        memberIds: selectedMembers.length > 0 ? selectedMembers.map((m) => m.id) : undefined,
+        leaderId: selectedMembers.length > 0 ? selectedMembers[0].id : undefined,
+      },
       {
         onSuccess: () => {
           resetForm();

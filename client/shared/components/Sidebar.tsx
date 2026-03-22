@@ -13,8 +13,9 @@ import { cn } from "@/shared/lib/utils";
 import { useAuth } from "@/features/auth/context";
 import { useNavigate, useLocation } from "react-router-dom";
 import { routePrefetchMap } from "@/app/routePrefetchMap";
-import { useState } from "react";
+import { memo, useState } from "react";
 import AddTeamModal from "@/features/team/components/AddTeamModal";
+import { useProfileImage } from "@/shared/hooks/useProfileImage";
 
 interface NavItem {
   id: string;
@@ -42,7 +43,7 @@ interface SidebarProps {
   onTeamSelect?: (teamId: string) => void;
 }
 
-export default function Sidebar({
+export default memo(function Sidebar({
   isCollapsed = false,
   onToggleCollapse,
   onTeamSelect,
@@ -127,6 +128,7 @@ export default function Sidebar({
               onClick={onToggleCollapse}
               className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title={isCollapsed ? "사이드바 확대" : "사이드바 축소"}
+              aria-label={isCollapsed ? "사이드바 확대" : "사이드바 축소"}
             >
               {isCollapsed ? (
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -262,10 +264,28 @@ export default function Sidebar({
       </div>
     </div>
   );
+});
+
+function ProfileAvatar({ name, profileImageUrl, size = "w-10 h-10" }: { name: string; profileImageUrl?: string | null; size?: string }) {
+  if (profileImageUrl) {
+    return (
+      <img
+        src={profileImageUrl}
+        alt={name}
+        className={`${size} rounded-full object-cover`}
+      />
+    );
+  }
+  return (
+    <div className={`${size} rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm`}>
+      {name?.charAt(0)?.toUpperCase() || "U"}
+    </div>
+  );
 }
 
 function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
   const { user, logout } = useAuth();
+  const { data: profileImageUrl } = useProfileImage(user?.profileImageId);
   const navigate = useNavigate();
 
   if (!user) {
@@ -289,15 +309,14 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
     return (
       <div className="w-full space-y-2 flex flex-col items-center">
         <div title={user.name} className="relative">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
-            {user.name?.charAt(0)?.toUpperCase() || "U"}
-          </div>
+          <ProfileAvatar name={user.name} profileImageUrl={profileImageUrl} />
           <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 border border-white"></div>
         </div>
         <button
           onClick={logout}
           className="p-2 dark:hover:bg-slate-800 light:hover:bg-slate-100/50 rounded transition-colors"
           title="로그아웃"
+          aria-label="로그아웃"
         >
           <LogOut className="w-4 h-4 text-muted-foreground hover:text-foreground" />
         </button>
@@ -310,9 +329,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
       {/* User Info */}
       <div className="flex items-center gap-3 px-3 py-3">
         <div className="relative flex-shrink-0">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
-            {user.name?.charAt(0)?.toUpperCase() || "U"}
-          </div>
+          <ProfileAvatar name={user.name} profileImageUrl={profileImageUrl} />
           <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-white dark:border-slate-900"></div>
         </div>
         <div className="flex-1 min-w-0">
