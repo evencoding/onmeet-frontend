@@ -45,6 +45,10 @@ export default defineConfig(({ mode }) => ({
       },
     },
     chunkSizeWarningLimit: 600,
+    minify: "esbuild",
+  },
+  esbuild: {
+    drop: mode === "production" ? ["console", "debugger"] : [],
   },
   plugins: [react(), cloudflare()],
   resolve: {

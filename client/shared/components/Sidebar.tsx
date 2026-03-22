@@ -13,7 +13,7 @@ import { cn } from "@/shared/lib/utils";
 import { useAuth } from "@/features/auth/context";
 import { useNavigate, useLocation } from "react-router-dom";
 import { routePrefetchMap } from "@/app/routePrefetchMap";
-import { useState } from "react";
+import { memo, useState } from "react";
 import AddTeamModal from "@/features/team/components/AddTeamModal";
 import { useProfileImage } from "@/shared/hooks/useProfileImage";
 
@@ -43,7 +43,7 @@ interface SidebarProps {
   onTeamSelect?: (teamId: string) => void;
 }
 
-export default function Sidebar({
+export default memo(function Sidebar({
   isCollapsed = false,
   onToggleCollapse,
   onTeamSelect,
@@ -263,7 +263,7 @@ export default function Sidebar({
       </div>
     </div>
   );
-}
+});
 
 function ProfileAvatar({ name, profileImageUrl, size = "w-10 h-10" }: { name: string; profileImageUrl?: string | null; size?: string }) {
   if (profileImageUrl) {
