@@ -58,6 +58,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        navigateFallback: "/index.html",
+        navigateFallbackDenylist: [/^\/api/, /^\/auth/, /^\/notification/, /^\/video/],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\.onmeet\.cloud\/.*/i,

@@ -369,7 +369,7 @@ MeetingPreparationModal (435L → 332L)
 - [x] ~~React.memo 적용~~ (완료)
 - [x] ~~프로덕션 console 자동 제거~~ (완료)
 - [x] ~~ESLint 규칙 강화~~ (완료)
-- [ ] TypeScript strict 모드 점진적 활성화 (`strictNullChecks` → `strict: true`)
+- [x] ~~TypeScript strict 모드 점진적 활성화 (`strictNullChecks` → `strict: true`)~~ (완료)
 - [x] ~~favicon.ico 최적화 (1.3MB → <100KB)~~ (완료)
 
 ### P1 — 단기 (1~2주)
@@ -383,13 +383,13 @@ MeetingPreparationModal (435L → 332L)
 
 - [x] ~~접근성(a11y) 개선: aria-label, 키보드 네비게이션, 포커스 관리~~ (aria-label 완료)
 - [x] ~~이미지 최적화 (WebP 변환, `loading="lazy"`, srcset 반응형)~~ (lazy loading 완료)
-- [ ] PWA (Service Worker) 오프라인 지원
-- [ ] 번들 분석기 도입 (`rollup-plugin-visualizer`)
-- [ ] SSE 데이터 → 상태 Throttling 최적화 (useRef 버퍼 + 주기적 상태 반영)
+- [x] ~~PWA (Service Worker) 오프라인 지원~~ (완료)
+- [x] ~~번들 분석기 도입 (`rollup-plugin-visualizer`)~~ (완료)
+- [x] ~~SSE 데이터 → 상태 Throttling 최적화 (useRef 버퍼 + 주기적 상태 반영)~~ (완료)
 
 ### P3 — 장기
 
 - [ ] E2E 테스트 (Playwright)
 - [ ] i18n 지원 (react-i18next)
-- [ ] CSP 헤더 설정
+- [x] ~~CSP 헤더 설정~~ (완료)
 - [x] ~~Structured Data (JSON-LD) SEO~~ (완료)
