@@ -214,7 +214,6 @@ export function useNotificationSSE(
       try {
         const res = await fetch(SSE_URL, {
           credentials: "include",
-          headers: { "X-User-Id": userId },
           signal: controller.signal,
         });
 

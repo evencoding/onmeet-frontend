@@ -111,7 +111,7 @@ describe("createServiceFetch", () => {
     vi.restoreAllMocks();
   });
 
-  it("prepends baseUrl and injects X-User-Id header", async () => {
+  it("prepends baseUrl and sets Content-Type header", async () => {
     const body = JSON.stringify({ success: true, data: "ok" });
     vi.stubGlobal(
       "fetch",
@@ -128,7 +128,6 @@ describe("createServiceFetch", () => {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        "X-User-Id": "user-123",
       },
     });
   });
@@ -155,6 +154,6 @@ describe("createServiceFetch", () => {
     const callHeaders = (fetch as ReturnType<typeof vi.fn>).mock.calls[0][1]
       .headers;
     expect(callHeaders).not.toHaveProperty("Content-Type");
-    expect(callHeaders["X-User-Id"]).toBe("user-456");
+    expect(callHeaders).not.toHaveProperty("X-User-Id");
   });
 });
