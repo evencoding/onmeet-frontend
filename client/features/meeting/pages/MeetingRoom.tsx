@@ -218,7 +218,7 @@ export default function MeetingRoom() {
         useMeetingRoomStore.getState().setPhase("disconnected");
       }}
     >
-      <MeetingRoomContent roomId={roomId} isHost={isHost} />
+      <MeetingRoomContent roomId={roomId} isHost={isHost} userId={userId} />
     </LiveKitRoom>
   );
 }
