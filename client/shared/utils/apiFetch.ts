@@ -53,18 +53,18 @@ export async function apiFetch<T>(
 
 // ── Service fetch factory ──
 // Creates a typed fetch function scoped to a service base URL.
-// Automatically sets Content-Type (skipped for FormData) and X-User-Id.
+// Automatically sets Content-Type (skipped for FormData).
+// Note: X-User-Id is injected by the gateway after JWT validation, not by the client.
 
 export function createServiceFetch(baseUrl: string) {
   return async function serviceFetch<T>(
     endpoint: string,
-    userId: string,
+    _userId: string,
     options?: RequestInit,
   ): Promise<T> {
     const isFormData = options?.body instanceof FormData;
     const headers: Record<string, string> = {
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
-      ...(userId ? { "X-User-Id": userId } : {}),
       ...(options?.headers as Record<string, string>),
     };
 

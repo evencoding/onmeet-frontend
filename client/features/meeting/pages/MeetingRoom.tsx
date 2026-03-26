@@ -14,7 +14,7 @@ import { getErrorMessage } from "@/shared/utils/apiFetch";
 import { useMeetingRoomStore, type DeviceSelection } from "../store";
 import { useWaitingRoomSSE } from "../hooks/useWaitingRoomSSE";
 
-const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "wss://livekit.onmeet.cloud";
+const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "wss://rtc.onmeet.cloud";
 
 export default function MeetingRoom() {
   useDocumentTitle("회의 - OnMeet");
@@ -218,7 +218,7 @@ export default function MeetingRoom() {
         useMeetingRoomStore.getState().setPhase("disconnected");
       }}
     >
-      <MeetingRoomContent roomId={roomId} isHost={isHost} />
+      <MeetingRoomContent roomId={roomId} isHost={isHost} userId={userId} />
     </LiveKitRoom>
   );
 }

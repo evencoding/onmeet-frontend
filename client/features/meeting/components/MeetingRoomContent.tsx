@@ -16,6 +16,7 @@ import {
 import { RoomEvent, type RemoteParticipant } from "livekit-client";
 import { useShallow } from "zustand/react/shallow";
 import { useMeetingRoomStore } from "../store";
+import { endRoom, leaveRoom } from "../api/room";
 import AIRecordingRequestModal from "./AIRecordingRequestModal";
 import InviteParticipantModal from "./InviteParticipantModal";
 import ExitMeetingModal from "./ExitMeetingModal";
@@ -131,11 +132,13 @@ function ConnectedExitModal({
 interface MeetingRoomContentProps {
   roomId: string;
   isHost: boolean;
+  userId: string;
 }
 
 export default memo(function MeetingRoomContent({
   roomId,
   isHost,
+  userId,
 }: MeetingRoomContentProps) {
   const navigate = useNavigate();
   const room = useRoomContext();
@@ -212,6 +215,7 @@ export default memo(function MeetingRoomContent({
           setHostLeftCountdown((prev) => {
             if (prev <= 1) {
               if (countdownRef.current) clearInterval(countdownRef.current);
+              leaveRoom(Number(roomId), userId).catch(() => {});
               room.disconnect();
               return 0;
             }
@@ -228,11 +232,16 @@ export default memo(function MeetingRoomContent({
     };
   }, [room, isHost]);
 
-  const handleHostLeftExit = useCallback(() => {
+  const handleHostLeftExit = useCallback(async () => {
     if (countdownRef.current) clearInterval(countdownRef.current);
+    try {
+      await leaveRoom(Number(roomId), userId);
+    } catch (err) {
+      console.error("Failed to leave room:", err);
+    }
     room.disconnect();
     navigate("/");
-  }, [room, navigate]);
+  }, [room, navigate, roomId, userId]);
 
   const toggleFullscreen = useCallback(async () => {
     try {
@@ -249,10 +258,20 @@ export default memo(function MeetingRoomContent({
     }
   }, []);
 
-  const handleDisconnect = useCallback(() => {
+  const handleDisconnect = useCallback(async () => {
+    const roomIdNum = Number(roomId);
+    try {
+      if (isHost) {
+        await endRoom(roomIdNum, userId);
+      } else {
+        await leaveRoom(roomIdNum, userId);
+      }
+    } catch (err) {
+      console.error("Failed to end/leave room:", err);
+    }
     room.disconnect();
     navigate("/");
-  }, [room, navigate]);
+  }, [room, navigate, roomId, isHost, userId]);
 
   // PIP mode
   if (isPIPMode) {
