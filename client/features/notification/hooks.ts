@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getNotificationSettings,
@@ -180,99 +180,44 @@ export function useNotificationSSE(
   onMessage?: (notification: NotificationResponseDto) => void,
 ) {
   const qc = useQueryClient();
-  const abortRef = useRef<AbortController | null>(null);
-  const reconnectRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const disposedRef = useRef(false);
+  const onMessageRef = useRef(onMessage);
+  onMessageRef.current = onMessage;
+  const esRef = useRef<EventSource | null>(null);
   const [connected, setConnected] = useState(false);
 
-  const clearReconnect = useCallback(() => {
-    if (reconnectRef.current !== null) {
-      clearTimeout(reconnectRef.current);
-      reconnectRef.current = null;
-    }
-  }, []);
-
-  const scheduleReconnect = useCallback(
-    (fn: () => void) => {
-      clearReconnect();
-      if (!disposedRef.current) {
-        reconnectRef.current = setTimeout(fn, 5_000);
-      }
-    },
-    [clearReconnect],
-  );
-
-  const connect = useCallback(() => {
-    if (!userId || disposedRef.current) return;
-
-    abortRef.current?.abort();
-    clearReconnect();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
-    (async () => {
-      try {
-        const res = await fetch(SSE_URL, {
-          credentials: "include",
-          signal: controller.signal,
-        });
-
-        if (!res.ok || !res.body) {
-          setConnected(false);
-          scheduleReconnect(connect);
-          return;
-        }
-
-        setConnected(true);
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
-
-          for (const line of lines) {
-            if (line.startsWith("data:")) {
-              const raw = line.slice(5).trim();
-              if (!raw) continue;
-              try {
-                const notification = JSON.parse(raw) as NotificationResponseDto;
-                onMessage?.(notification);
-                qc.invalidateQueries({ queryKey: notiKeys.unreadCount(userId) });
-                qc.invalidateQueries({ queryKey: notiKeys.lists(userId) });
-              } catch (err) {
-                console.warn("SSE notification parse error:", err);
-              }
-            }
-          }
-        }
-
-        setConnected(false);
-        scheduleReconnect(connect);
-      } catch (err) {
-        if ((err as DOMException)?.name !== "AbortError") {
-          setConnected(false);
-          scheduleReconnect(connect);
-        }
-      }
-    })();
-  }, [userId, onMessage, qc, clearReconnect, scheduleReconnect]);
-
   useEffect(() => {
-    disposedRef.current = false;
-    connect();
+    if (!userId) return;
+
+    const es = new EventSource(SSE_URL, { withCredentials: true });
+    esRef.current = es;
+
+    es.onopen = () => {
+      setConnected(true);
+    };
+
+    // Backend sends named "notification" events via SseEmitter.event().name("notification")
+    es.addEventListener("notification", (event: MessageEvent) => {
+      try {
+        const notification = JSON.parse(event.data) as NotificationResponseDto;
+        onMessageRef.current?.(notification);
+        qc.invalidateQueries({ queryKey: notiKeys.unreadCount(userId) });
+        qc.invalidateQueries({ queryKey: notiKeys.lists(userId) });
+      } catch (err) {
+        console.warn("SSE notification parse error:", err);
+      }
+    });
+
+    es.onerror = () => {
+      setConnected(false);
+      // EventSource auto-reconnects on error
+    };
+
     return () => {
-      disposedRef.current = true;
-      clearReconnect();
-      abortRef.current?.abort();
+      es.close();
+      esRef.current = null;
       setConnected(false);
     };
-  }, [connect, clearReconnect]);
+  }, [userId, qc]);
 
   return { connected };
 }

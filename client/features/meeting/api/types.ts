@@ -130,6 +130,7 @@ export interface RoomJoinResponse {
   livekitUrl: string;
   roomName: string;
   waitingRoom: boolean;
+  warnings?: string[];
 }
 
 export interface RoomStatsResponse {

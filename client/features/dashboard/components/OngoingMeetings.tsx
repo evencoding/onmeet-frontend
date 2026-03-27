@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Clock, Users, Pencil, Trash2 } from "lucide-react";
+import { Clock, Users, Pencil, Trash2, Lock, Copy, Globe, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { useAuth } from "@/features/auth/context";
@@ -156,6 +156,43 @@ export default function OngoingMeetings() {
                       {meeting.description}
                     </p>
                   )}
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {meeting.type === "SCHEDULED" && (
+                      <span className="px-2 py-0.5 rounded text-xs font-semibold dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-800">
+                        예약
+                      </span>
+                    )}
+                    {meeting.accessScope === "TEAM" && (
+                      <span className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold dark:bg-cyan-500/20 dark:text-cyan-300 light:bg-cyan-100 light:text-cyan-800">
+                        <Shield className="w-3 h-3" />팀
+                      </span>
+                    )}
+                    {meeting.accessScope === "ALL" && (
+                      <span className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-800">
+                        <Globe className="w-3 h-3" />공개
+                      </span>
+                    )}
+                    {meeting.locked && (
+                      <span className="flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold dark:bg-amber-500/20 dark:text-amber-300 light:bg-amber-100 light:text-amber-800">
+                        <Lock className="w-3 h-3" />잠금
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 text-xs dark:text-white/50 light:text-purple-600">
+                  <code
+                    className="px-2 py-1 rounded dark:bg-purple-500/20 light:bg-purple-100 font-mono cursor-pointer hover:dark:bg-purple-500/30 hover:light:bg-purple-200 transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigator.clipboard.writeText(meeting.roomCode);
+                      toast({ title: "회의 코드가 복사되었습니다" });
+                    }}
+                    title="클릭하여 복사"
+                  >
+                    <Copy className="w-3 h-3 inline mr-1" />{meeting.roomCode}
+                  </code>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 text-sm">

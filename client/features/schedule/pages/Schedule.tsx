@@ -4,7 +4,7 @@ import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import CalendarView from "@/features/schedule/components/CalendarView";
 import MeetingBookingModal from "@/features/schedule/components/MeetingBookingModal";
 import MeetingEditModal from "@/features/schedule/components/MeetingEditModal";
-import { Clock, MapPin, Users, Pencil, Trash2 } from "lucide-react";
+import { Clock, MapPin, Users, Pencil, Trash2, Lock, Copy } from "lucide-react";
 import { format, isSameDay, startOfMonth } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useAuth } from "@/features/auth/context";
@@ -127,9 +127,16 @@ export default function Schedule() {
                           className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/60 rounded-2xl p-5 dark:hover:bg-purple-500/20 light:hover:shadow-lg light:hover:border-purple-400/70 transition-all duration-300"
                         >
                           <div className="flex items-start justify-between gap-2 mb-3">
-                            <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 flex-1">
-                              {meeting.title}
-                            </h3>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950">
+                                  {meeting.title}
+                                </h3>
+                                {meeting.locked && (
+                                  <Lock className="w-4 h-4 dark:text-amber-400 light:text-amber-600 flex-shrink-0" title="잠금된 회의" />
+                                )}
+                              </div>
+                            </div>
                             {isHost && meeting.roomStatus === "WAITING" && (
                               <div className="flex items-center gap-1 flex-shrink-0">
                                 <button
@@ -167,6 +174,17 @@ export default function Schedule() {
                               <Users className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
                               <span>최대 {meeting.participants}명</span>
                             </div>
+
+                            <code
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-mono dark:bg-purple-500/15 dark:text-white/50 light:bg-purple-100 light:text-purple-600 cursor-pointer hover:dark:bg-purple-500/25 hover:light:bg-purple-200 transition-colors"
+                              onClick={() => {
+                                navigator.clipboard.writeText(meeting.roomCode);
+                                toast({ title: "회의 코드가 복사되었습니다" });
+                              }}
+                              title="클릭하여 복사"
+                            >
+                              <Copy className="w-3 h-3" />{meeting.roomCode}
+                            </code>
                           </div>
 
                           <p className="text-sm dark:text-white/60 light:text-purple-700 mb-4">
