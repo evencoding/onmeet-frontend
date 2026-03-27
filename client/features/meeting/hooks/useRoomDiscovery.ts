@@ -3,6 +3,7 @@ import { roomKeys } from "../query-keys";
 import {
   getRoomByCode,
   searchRoomsByTag,
+  listMyRooms,
   listScheduledRooms,
   listRoomHistory,
   getMonthlyStats,
@@ -24,6 +25,15 @@ export function useRoomsByTag(tagName: string, userId: string) {
     queryKey: roomKeys.searchByTag(tagName),
     queryFn: () => searchRoomsByTag(tagName, userId),
     enabled: !!tagName && !!userId,
+  });
+}
+
+export function useMyRooms(userId: string, status?: string) {
+  return useQuery({
+    queryKey: [...roomKeys.lists(), "my", status],
+    queryFn: () => listMyRooms(userId, status),
+    enabled: !!userId,
+    staleTime: 30_000,
   });
 }
 

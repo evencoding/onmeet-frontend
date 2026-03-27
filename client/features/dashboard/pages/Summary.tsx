@@ -6,8 +6,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import MeetingExpandedCard from "@/features/dashboard/components/MeetingExpandedCard";
 import { useAuth } from "@/features/auth/context";
-import { useRooms } from "@/features/meeting/hooks/useRoom";
-import { useRoomHistory, useScheduledRooms } from "@/features/meeting/hooks/useRoomDiscovery";
+import { useMyRooms, useRoomHistory, useScheduledRooms } from "@/features/meeting/hooks/useRoomDiscovery";
 import {
   toMeetingViewModel,
   mergeAndDedup,
@@ -54,7 +53,7 @@ export default function Summary() {
 
   const { data: historyData, isLoading: isHistoryLoading } = useRoomHistory(userId);
   const { data: scheduledData, isLoading: isScheduledLoading } = useScheduledRooms(userId);
-  const { data: activeData, isLoading: isActiveLoading } = useRooms(userId, { status: "ACTIVE", hostUserId: user?.id });
+  const { data: activeData, isLoading: isActiveLoading } = useMyRooms(userId, "ACTIVE");
 
   const isLoading = isHistoryLoading || isScheduledLoading || isActiveLoading;
 
@@ -70,7 +69,7 @@ export default function Summary() {
     const rooms = mergeAndDedup(
       historyData?.content,
       scheduledData?.content,
-      activeData?.content,
+      activeData,
     );
     return rooms.map((r) => toMeetingViewModel(r, teamMap));
   }, [historyData, scheduledData, activeData, teamMap]);
