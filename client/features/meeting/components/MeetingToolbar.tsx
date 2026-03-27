@@ -42,24 +42,47 @@ export default memo(function MeetingToolbar({ isHost }: MeetingToolbarProps) {
     );
 
   const handleScreenshot = useCallback(async () => {
-    const videoEl = document.querySelector("video");
-    if (videoEl && canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d");
-      if (ctx) {
-        canvasRef.current.width = videoEl.videoWidth;
-        canvasRef.current.height = videoEl.videoHeight;
-        ctx.drawImage(videoEl, 0, 0);
-        canvasRef.current.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `screenshot-${Date.now()}.png`;
-            a.click();
-            URL.revokeObjectURL(url);
-          }
-        });
+    try {
+      // html2canvas 없이 네이티브 API로 회의 전체 화면 캡처
+      const meetingArea = document.querySelector("[data-meeting-capture]") as HTMLElement;
+      if (!meetingArea) return;
+
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      // 모든 video 엘리먼트를 canvas에 합성
+      const rect = meetingArea.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      ctx.fillStyle = "#0f0a1e";
+      ctx.fillRect(0, 0, rect.width, rect.height);
+
+      // 화면의 모든 video 태그를 순회하며 그리기
+      const videos = meetingArea.querySelectorAll("video");
+      for (const videoEl of videos) {
+        if (videoEl.videoWidth === 0) continue;
+        const vRect = videoEl.getBoundingClientRect();
+        const x = vRect.left - rect.left;
+        const y = vRect.top - rect.top;
+        ctx.drawImage(videoEl, x, y, vRect.width, vRect.height);
       }
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `meeting-screenshot-${Date.now()}.png`;
+          a.click();
+          URL.revokeObjectURL(url);
+        }
+      });
+    } catch (err) {
+      console.error("Screenshot failed:", err);
     }
   }, []);
 

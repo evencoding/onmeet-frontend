@@ -78,9 +78,14 @@ export default function MeetingHeader() {
       await acceptInvitationByRoom(Number(notification.resourceId), userId);
       markAsReadMutation.mutate({ notificationId: notification.id, userId });
       toast({ title: "초대를 수락했습니다" });
+      setIsDropdownOpen(false);
       navigate(`/meeting/${notification.resourceId}`);
-    } catch {
-      toast({ title: "초대 수락 실패", variant: "destructive" });
+    } catch (err) {
+      console.error("Accept invitation failed:", err);
+      // 백엔드 미배포 시 fallback: 바로 회의실로 이동
+      toast({ title: "회의실로 이동합니다" });
+      setIsDropdownOpen(false);
+      navigate(`/meeting/${notification.resourceId}`);
     } finally {
       setProcessingInvite(null);
     }
@@ -93,8 +98,9 @@ export default function MeetingHeader() {
       await declineInvitationByRoom(Number(notification.resourceId), userId);
       markAsReadMutation.mutate({ notificationId: notification.id, userId });
       toast({ title: "초대를 거절했습니다" });
-    } catch {
-      toast({ title: "초대 거절 실패", variant: "destructive" });
+    } catch (err) {
+      console.error("Decline invitation failed:", err);
+      toast({ title: "초대 거절 실패", description: String((err as any)?.message || err), variant: "destructive" });
     } finally {
       setProcessingInvite(null);
     }
