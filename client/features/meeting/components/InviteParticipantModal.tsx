@@ -62,7 +62,7 @@ export default function InviteParticipantModal({
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
-  const { data: employeesData } = useAllEmployees({ page: 0, size: 100 });
+  const { data: employeesData } = useAllEmployees({ page: 0, size: 100 }, isOpen);
 
   const teamMembers = useMemo(() => {
     if (propMembers) return propMembers;
