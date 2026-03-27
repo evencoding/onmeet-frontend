@@ -63,7 +63,7 @@ export default function MeetingRoom() {
   }, []);
 
   // SSE connection — only active during waiting phase
-  const { disconnect: disconnectSSE } = useWaitingRoomSSE(
+  const { disconnect: disconnectSSE, connected: sseConnected } = useWaitingRoomSSE(
     phase === "waiting" ? (roomId ?? null) : null,
     phase === "waiting" ? userId : undefined,
     handleSSEAdmitted,
@@ -179,6 +179,7 @@ export default function MeetingRoom() {
         rejected={rejected}
         onBack={handleBackToHome}
         roomTitle={roomData?.title}
+        sseConnected={sseConnected}
       />
     );
   }

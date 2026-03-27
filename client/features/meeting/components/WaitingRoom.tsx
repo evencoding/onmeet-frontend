@@ -1,13 +1,24 @@
-import { Loader, X, XCircle, Home } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Loader, X, XCircle, Home, WifiOff } from "lucide-react";
 
 interface WaitingRoomProps {
   onCancel: () => void;
   rejected?: boolean;
   onBack?: () => void;
   roomTitle?: string;
+  sseConnected?: boolean;
 }
 
-export default function WaitingRoom({ onCancel, rejected, onBack, roomTitle }: WaitingRoomProps) {
+export default function WaitingRoom({ onCancel, rejected, onBack, roomTitle, sseConnected }: WaitingRoomProps) {
+  const [waitSeconds, setWaitSeconds] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => setWaitSeconds((s) => s + 1), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const waitMinutes = Math.floor(waitSeconds / 60);
+  const waitSecs = waitSeconds % 60;
   if (rejected) {
     return (
       <div className="fixed inset-0 bg-gradient-to-br from-purple-950 via-black to-purple-900 z-50 flex items-center justify-center">
@@ -55,17 +66,32 @@ export default function WaitingRoom({ onCancel, rejected, onBack, roomTitle }: W
             호스트가 입장을 승인하면 자동으로 회의에 참여합니다.
           </p>
           <p className="text-white/40 text-xs">
-            잠시만 기다려주세요...
+            대기 시간: {waitMinutes > 0 ? `${waitMinutes}분 ` : ""}{waitSecs}초
           </p>
+          {sseConnected === false && (
+            <div className="flex items-center justify-center gap-2 text-amber-400 text-xs mt-2">
+              <WifiOff className="w-3.5 h-3.5" />
+              연결이 불안정합니다. 재연결 시도 중...
+            </div>
+          )}
         </div>
 
-        <button
-          onClick={onCancel}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-purple-500/30 hover:bg-purple-500/50 text-white rounded-lg text-sm font-semibold transition-colors"
-        >
-          <X className="w-4 h-4" />
-          취소
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onCancel}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-purple-500/30 hover:bg-purple-500/50 text-white rounded-lg text-sm font-semibold transition-colors"
+          >
+            <X className="w-4 h-4" />
+            취소
+          </button>
+          <button
+            onClick={onBack ?? onCancel}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-purple-900/50 hover:bg-purple-900/70 text-white/70 rounded-lg text-sm font-medium transition-colors"
+          >
+            <Home className="w-4 h-4" />
+            홈으로
+          </button>
+        </div>
       </div>
     </div>
   );
