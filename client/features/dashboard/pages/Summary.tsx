@@ -1,4 +1,4 @@
-import { Clock, Search, FileText, Mic, Zap, Play } from "lucide-react";
+import { Clock, Search, FileText, Mic, Zap, Play, Lock, Copy, Globe, Shield, Timer } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,9 @@ import {
   getStatusLabel,
   getStatusColor,
   type MeetingViewModel,
+  type TeamNameMap,
 } from "@/shared/adapters/meeting";
+import { toast } from "@/shared/hooks/use-toast";
 
 type Meeting = MeetingViewModel;
 
@@ -52,9 +54,17 @@ export default function Summary() {
 
   const { data: historyData, isLoading: isHistoryLoading } = useRoomHistory(userId);
   const { data: scheduledData, isLoading: isScheduledLoading } = useScheduledRooms(userId);
-  const { data: activeData, isLoading: isActiveLoading } = useRooms(userId, { status: "ACTIVE" });
+  const { data: activeData, isLoading: isActiveLoading } = useRooms(userId, { status: "ACTIVE", hostUserId: user?.id });
 
   const isLoading = isHistoryLoading || isScheduledLoading || isActiveLoading;
+
+  const teamMap: TeamNameMap = useMemo(() => {
+    const map = new Map<number, string>();
+    if (user?.teams) {
+      for (const t of user.teams) map.set(t.id, t.name);
+    }
+    return map;
+  }, [user?.teams]);
 
   const allMeetings: Meeting[] = useMemo(() => {
     const rooms = mergeAndDedup(
@@ -62,8 +72,8 @@ export default function Summary() {
       scheduledData?.content,
       activeData?.content,
     );
-    return rooms.map(toMeetingViewModel);
-  }, [historyData, scheduledData, activeData]);
+    return rooms.map((r) => toMeetingViewModel(r, teamMap));
+  }, [historyData, scheduledData, activeData, teamMap]);
 
   const filteredMeetings = useMemo(() => allMeetings.filter((meeting) => {
     const matchesSearch =
@@ -191,14 +201,56 @@ export default function Summary() {
                           )}
                         </div>
 
-                        <span className={`inline-block px-2.5 py-1.5 rounded-lg text-xs font-bold ${getStatusColor(meeting.status)}`}>
-                          {getStatusLabel(meeting.status)}
-                        </span>
-
-                        <div className="flex items-center gap-2 text-sm dark:text-white/60 light:text-purple-900/80 font-medium">
-                          <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-700" />
-                          {format(meeting.date, "MMM dd", { locale: ko })} {meeting.time}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`inline-block px-2.5 py-1.5 rounded-lg text-xs font-bold ${getStatusColor(meeting.status)}`}>
+                            {getStatusLabel(meeting.status)}
+                          </span>
+                          {meeting.type === "SCHEDULED" && (
+                            <span className="px-2 py-1 rounded text-xs font-semibold dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-800">
+                              예약
+                            </span>
+                          )}
+                          {meeting.locked && (
+                            <span className="flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold dark:bg-amber-500/20 dark:text-amber-300 light:bg-amber-100 light:text-amber-800">
+                              <Lock className="w-3 h-3" />잠금
+                            </span>
+                          )}
+                          {meeting.accessScope === "TEAM" && (
+                            <span className="flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold dark:bg-cyan-500/20 dark:text-cyan-300 light:bg-cyan-100 light:text-cyan-800">
+                              <Shield className="w-3 h-3" />팀
+                            </span>
+                          )}
+                          {meeting.accessScope === "ALL" && (
+                            <span className="flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-800">
+                              <Globe className="w-3 h-3" />공개
+                            </span>
+                          )}
                         </div>
+
+                        <div className="flex items-center gap-4 text-sm dark:text-white/60 light:text-purple-900/80 font-medium">
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="w-4 h-4 dark:text-purple-400 light:text-purple-700" />
+                            {format(meeting.date, "MMM dd", { locale: ko })} {meeting.time}
+                          </div>
+                          {meeting.duration && meeting.duration !== "0분" && (
+                            <div className="flex items-center gap-1.5">
+                              <Timer className="w-4 h-4 dark:text-purple-400 light:text-purple-700" />
+                              {meeting.duration}
+                            </div>
+                          )}
+                        </div>
+
+                        <code
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-mono dark:bg-purple-500/15 dark:text-white/50 light:bg-purple-100 light:text-purple-600 cursor-pointer hover:dark:bg-purple-500/25 hover:light:bg-purple-200 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigator.clipboard.writeText(meeting.roomCode);
+                            toast({ title: "회의 코드가 복사되었습니다" });
+                          }}
+                          title="클릭하여 복사"
+                        >
+                          <Copy className="w-3 h-3" />{meeting.roomCode}
+                        </code>
                       </div>
 
                       {meeting.description && (

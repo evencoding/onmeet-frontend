@@ -142,10 +142,10 @@ export default function EmployeeSignup() {
           transition={{ delay: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-0">
-            <h2 className="text-lg font-bold text-white">계정 인증</h2>
-            <Sparkles className="w-4 h-4 text-blue-400" />
+            <h2 className="text-lg font-bold dark:text-white light:text-purple-950">계정 인증</h2>
+            <Sparkles className="w-4 h-4 dark:text-blue-400 light:text-blue-600" />
           </div>
-          <p className="text-white/60 text-xs mb-4">
+          <p className="dark:text-white/60 light:text-purple-600 text-xs mb-4">
             회사 이메일을 입력해주세요
           </p>
         </motion.div>
@@ -154,9 +154,9 @@ export default function EmployeeSignup() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg backdrop-blur-sm"
+            className="mb-4 p-4 dark:bg-red-500/20 dark:border dark:border-red-500/50 light:bg-red-50 light:border-2 light:border-red-200 rounded-lg backdrop-blur-sm"
           >
-            <p className="text-sm text-red-300 font-medium">{error}</p>
+            <p className="text-sm dark:text-red-300 light:text-red-600 font-medium">{error}</p>
           </motion.div>
         )}
 
@@ -168,8 +168,8 @@ export default function EmployeeSignup() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
-              <Mail className="w-3 h-3 text-blue-400" />
+            <label className="text-xs font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+              <Mail className="w-3 h-3 dark:text-blue-400 light:text-blue-600" />
               회사 이메일
             </label>
             <input
@@ -178,9 +178,9 @@ export default function EmployeeSignup() {
               onChange={(e) => setInviteEmail(e.target.value)}
               placeholder="your@company.com"
               disabled={hasPrefilledParams}
-              className={`w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40 ${hasPrefilledParams ? "cursor-not-allowed opacity-60" : ""}`}
+              className={`w-full px-4 py-3 rounded-xl transition-all duration-200 dark:border dark:border-blue-500/30 dark:bg-white/5 dark:backdrop-blur-sm dark:focus:bg-white/10 dark:focus:border-blue-500/60 dark:focus:ring-2 dark:focus:ring-blue-500/30 dark:text-white dark:placeholder-white/40 light:border-2 light:border-blue-200/70 light:bg-blue-50/30 light:focus:bg-white light:focus:border-blue-400 light:focus:ring-2 light:focus:ring-blue-300/40 light:text-purple-950 light:placeholder-blue-400/60 ${hasPrefilledParams ? "cursor-not-allowed opacity-60" : ""}`}
             />
-            <p className="text-xs text-white/50">
+            <p className="text-xs dark:text-white/50 light:text-purple-500">
               회사에서 초대한 이메일을 입력해주세요
             </p>
           </motion.div>
@@ -191,8 +191,8 @@ export default function EmployeeSignup() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.55 }}
           >
-            <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
-              <Lock className="w-3 h-3 text-blue-400" />
+            <label className="text-xs font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+              <Lock className="w-3 h-3 dark:text-blue-400 light:text-blue-600" />
               초대 코드
             </label>
             <input
@@ -201,7 +201,7 @@ export default function EmployeeSignup() {
               onChange={(e) => setInviteCode(e.target.value)}
               placeholder="INV-123456"
               disabled={hasPrefilledParams}
-              className={`w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40 ${hasPrefilledParams ? "cursor-not-allowed opacity-60" : ""}`}
+              className={`w-full px-4 py-3 rounded-xl transition-all duration-200 dark:border dark:border-blue-500/30 dark:bg-white/5 dark:backdrop-blur-sm dark:focus:bg-white/10 dark:focus:border-blue-500/60 dark:focus:ring-2 dark:focus:ring-blue-500/30 dark:text-white dark:placeholder-white/40 light:border-2 light:border-blue-200/70 light:bg-blue-50/30 light:focus:bg-white light:focus:border-blue-400 light:focus:ring-2 light:focus:ring-blue-300/40 light:text-purple-950 light:placeholder-blue-400/60 ${hasPrefilledParams ? "cursor-not-allowed opacity-60" : ""}`}
             />
           </motion.div>
 
@@ -211,7 +211,7 @@ export default function EmployeeSignup() {
               animate={{ opacity: 1 }}
               className="text-center py-2"
             >
-              <p className="text-sm text-blue-300">자동 검증 중...</p>
+              <p className="text-sm dark:text-blue-300 light:text-blue-600">자동 검증 중...</p>
             </motion.div>
           )}
 
@@ -236,20 +236,20 @@ export default function EmployeeSignup() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7 }}
         >
-          <div className="flex-1 h-px bg-blue-500/20"></div>
-          <span className="text-xs text-white/40">또는</span>
-          <div className="flex-1 h-px bg-blue-500/20"></div>
+          <div className="flex-1 h-px dark:bg-blue-500/20 light:bg-blue-200"></div>
+          <span className="text-xs dark:text-white/40 light:text-purple-400">또는</span>
+          <div className="flex-1 h-px dark:bg-blue-500/20 light:bg-blue-200"></div>
         </motion.div>
 
         <motion.p
-          className="text-center text-xs text-white/70"
+          className="text-center text-xs dark:text-white/70 light:text-purple-700"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
         >
           <Link
             to="/signup"
-            className="text-blue-300 font-semibold hover:text-purple-300 transition-colors"
+            className="dark:text-blue-300 light:text-blue-600 font-semibold hover:text-purple-300 transition-colors"
           >
             뒤로가기
           </Link>
@@ -265,17 +265,17 @@ export default function EmployeeSignup() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
-        <h2 className="text-lg font-bold text-white mb-0">{companyName}</h2>
-        <p className="text-white/60 text-xs mb-4">사원 정보를 입력해주세요</p>
+        <h2 className="text-lg font-bold dark:text-white light:text-purple-950 mb-0">{companyName}</h2>
+        <p className="dark:text-white/60 light:text-purple-600 text-xs mb-4">사원 정보를 입력해주세요</p>
       </motion.div>
 
       {error && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg backdrop-blur-sm"
+          className="mb-4 p-4 dark:bg-red-500/20 dark:border dark:border-red-500/50 light:bg-red-50 light:border-2 light:border-red-200 rounded-lg backdrop-blur-sm"
         >
-          <p className="text-sm text-red-300 font-medium">{error}</p>
+          <p className="text-sm dark:text-red-300 light:text-red-600 font-medium">{error}</p>
         </motion.div>
       )}
 
@@ -287,8 +287,8 @@ export default function EmployeeSignup() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
-            <User className="w-3 h-3 text-blue-400" />
+          <label className="text-xs font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+            <User className="w-3 h-3 dark:text-blue-400 light:text-blue-600" />
             이름
           </label>
           <input
@@ -298,7 +298,7 @@ export default function EmployeeSignup() {
               setFormData({ ...formData, name: e.target.value })
             }
             placeholder="홍길동"
-            className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+            className="w-full px-4 py-3 rounded-xl transition-all duration-200 dark:border dark:border-blue-500/30 dark:bg-white/5 dark:backdrop-blur-sm dark:focus:bg-white/10 dark:focus:border-blue-500/60 dark:focus:ring-2 dark:focus:ring-blue-500/30 dark:text-white dark:placeholder-white/40 light:border-2 light:border-blue-200/70 light:bg-blue-50/30 light:focus:bg-white light:focus:border-blue-400 light:focus:ring-2 light:focus:ring-blue-300/40 light:text-purple-950 light:placeholder-blue-400/60"
           />
         </motion.div>
 
@@ -308,15 +308,15 @@ export default function EmployeeSignup() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.55 }}
         >
-          <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
-            <Mail className="w-3 h-3 text-blue-400" />
+          <label className="text-xs font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+            <Mail className="w-3 h-3 dark:text-blue-400 light:text-blue-600" />
             이메일
           </label>
           <input
             type="email"
             value={formData.email}
             disabled
-            className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 text-white/70 cursor-not-allowed opacity-60 text-sm"
+            className="w-full px-4 py-3 rounded-xl transition-all duration-200 dark:border dark:border-blue-500/30 dark:bg-white/5 dark:text-white/70 light:border-2 light:border-blue-200/70 light:bg-blue-50/30 light:text-purple-700 cursor-not-allowed opacity-60 text-sm"
           />
         </motion.div>
 
@@ -326,8 +326,8 @@ export default function EmployeeSignup() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
-            <Building2 className="w-3 h-3 text-blue-400" />
+          <label className="text-xs font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+            <Building2 className="w-3 h-3 dark:text-blue-400 light:text-blue-600" />
             직원번호 (선택)
           </label>
           <input
@@ -337,7 +337,7 @@ export default function EmployeeSignup() {
               setFormData({ ...formData, memberNum: e.target.value })
             }
             placeholder="EMP-001"
-            className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+            className="w-full px-4 py-3 rounded-xl transition-all duration-200 dark:border dark:border-blue-500/30 dark:bg-white/5 dark:backdrop-blur-sm dark:focus:bg-white/10 dark:focus:border-blue-500/60 dark:focus:ring-2 dark:focus:ring-blue-500/30 dark:text-white dark:placeholder-white/40 light:border-2 light:border-blue-200/70 light:bg-blue-50/30 light:focus:bg-white light:focus:border-blue-400 light:focus:ring-2 light:focus:ring-blue-300/40 light:text-purple-950 light:placeholder-blue-400/60"
           />
         </motion.div>
 
@@ -347,8 +347,8 @@ export default function EmployeeSignup() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
-            <Lock className="w-3 h-3 text-blue-400" />
+          <label className="text-xs font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+            <Lock className="w-3 h-3 dark:text-blue-400 light:text-blue-600" />
             비밀번호
           </label>
           <input
@@ -358,7 +358,7 @@ export default function EmployeeSignup() {
               setFormData({ ...formData, password: e.target.value })
             }
             placeholder="••••••••"
-            className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+            className="w-full px-4 py-3 rounded-xl transition-all duration-200 dark:border dark:border-blue-500/30 dark:bg-white/5 dark:backdrop-blur-sm dark:focus:bg-white/10 dark:focus:border-blue-500/60 dark:focus:ring-2 dark:focus:ring-blue-500/30 dark:text-white dark:placeholder-white/40 light:border-2 light:border-blue-200/70 light:bg-blue-50/30 light:focus:bg-white light:focus:border-blue-400 light:focus:ring-2 light:focus:ring-blue-300/40 light:text-purple-950 light:placeholder-blue-400/60"
           />
         </motion.div>
 
@@ -368,8 +368,8 @@ export default function EmployeeSignup() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.75 }}
         >
-          <label className="text-xs font-semibold text-white/90 flex items-center gap-2">
-            <Lock className="w-3 h-3 text-blue-400" />
+          <label className="text-xs font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+            <Lock className="w-3 h-3 dark:text-blue-400 light:text-blue-600" />
             비밀번호 확인
           </label>
           <input
@@ -382,7 +382,7 @@ export default function EmployeeSignup() {
               })
             }
             placeholder="••••••••"
-            className="w-full px-3 py-2 border border-blue-500/30 rounded-lg bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 text-sm text-white placeholder-white/40"
+            className="w-full px-4 py-3 rounded-xl transition-all duration-200 dark:border dark:border-blue-500/30 dark:bg-white/5 dark:backdrop-blur-sm dark:focus:bg-white/10 dark:focus:border-blue-500/60 dark:focus:ring-2 dark:focus:ring-blue-500/30 dark:text-white dark:placeholder-white/40 light:border-2 light:border-blue-200/70 light:bg-blue-50/30 light:focus:bg-white light:focus:border-blue-400 light:focus:ring-2 light:focus:ring-blue-300/40 light:text-purple-950 light:placeholder-blue-400/60"
           />
         </motion.div>
 
@@ -409,13 +409,13 @@ export default function EmployeeSignup() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
       >
-        <div className="flex-1 h-px bg-blue-500/20"></div>
-        <span className="text-xs text-white/40">또는</span>
-        <div className="flex-1 h-px bg-blue-500/20"></div>
+        <div className="flex-1 h-px dark:bg-blue-500/20 light:bg-blue-200"></div>
+        <span className="text-xs dark:text-white/40 light:text-purple-400">또는</span>
+        <div className="flex-1 h-px dark:bg-blue-500/20 light:bg-blue-200"></div>
       </motion.div>
 
       <motion.p
-        className="text-center text-xs text-white/70"
+        className="text-center text-xs dark:text-white/70 light:text-purple-700"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
@@ -423,7 +423,7 @@ export default function EmployeeSignup() {
         <button
           type="button"
           onClick={() => setStep("verify")}
-          className="text-blue-300 font-semibold hover:text-purple-300 transition-colors flex items-center justify-center gap-1 mx-auto"
+          className="dark:text-blue-300 light:text-blue-600 font-semibold hover:text-purple-300 transition-colors flex items-center justify-center gap-1 mx-auto"
         >
           <ArrowLeft className="w-3 h-3" /> 이전 단계로
         </button>

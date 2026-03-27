@@ -8,12 +8,19 @@ const aiFetch = createServiceFetch(AI_BASE_URL);
 
 export type MinutesStatus = "GENERATED" | "EDITED_BY_USER" | "REGENERATING" | "FAILED";
 
+export interface SummaryResult {
+  description: string | null;
+  keywords: string[] | null;
+  decisions: string[] | null;
+  actionItems: string[] | null;
+}
+
 export interface MinutesResponse {
   id: number;
   roomId: number;
   transcriptId: string;
-  transcriptS3Key: string;
   summaryS3Key: string;
+  summary: SummaryResult | null;
   summaryJson: string;
   userEditedSummaryJson: string | null;
   status: MinutesStatus;

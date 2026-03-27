@@ -3,16 +3,18 @@ import { useEffect, useRef, useCallback, useState } from "react";
 const SSE_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || ""}/video/v1/rooms`;
 
 interface WaitingRoomEvent {
-  type: "WAITING_ROOM_ADMITTED" | "WAITING_ROOM_REJECTED";
+  type: "ADMITTED" | "REJECTED" | "CONNECT";
+  roomId?: number;
+  userId?: number;
   token?: string;
   livekitUrl?: string;
-  isHost?: boolean;
+  roomName?: string;
 }
 
 export function useWaitingRoomSSE(
   roomId: string | null,
   userId: string | undefined,
-  onAdmitted: (token: string, isHost: boolean) => void,
+  onAdmitted: (token: string) => void,
   onRejected: () => void,
 ) {
   const abortRef = useRef<AbortController | null>(null);
@@ -49,7 +51,6 @@ export function useWaitingRoomSSE(
       try {
         const res = await fetch(`${SSE_BASE_URL}/${roomId}/waiting/sse/participant`, {
           credentials: "include",
-          headers: { "X-User-Id": userId },
           signal: controller.signal,
         });
 
@@ -78,11 +79,11 @@ export function useWaitingRoomSSE(
               if (!raw) continue;
               try {
                 const event = JSON.parse(raw) as WaitingRoomEvent;
-                if (event.type === "WAITING_ROOM_ADMITTED" && event.token) {
-                  onAdmitted(event.token, event.isHost ?? false);
+                if (event.type === "ADMITTED" && event.token) {
+                  onAdmitted(event.token);
                   return;
                 }
-                if (event.type === "WAITING_ROOM_REJECTED") {
+                if (event.type === "REJECTED") {
                   onRejected();
                   return;
                 }

@@ -100,10 +100,10 @@ export default function InviteMembers() {
         transition={{ delay: 0.4 }}
       >
         <div className="flex items-center gap-2 mb-1">
-          <h2 className="text-2xl font-bold text-white">팀 멤버 초대</h2>
-          <Sparkles className="w-5 h-5 text-purple-400" />
+          <h2 className="text-2xl font-bold dark:text-white light:text-purple-950">팀 멤버 초대</h2>
+          <Sparkles className="w-5 h-5 dark:text-purple-400 light:text-purple-600" />
         </div>
-        <p className="text-white/60 mb-6">
+        <p className="dark:text-white/60 light:text-purple-600 mb-6">
           팀에 참여할 사원들의 이메일을 입력해주세요
         </p>
       </motion.div>
@@ -112,9 +112,9 @@ export default function InviteMembers() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg backdrop-blur-sm"
+          className="mb-4 p-4 dark:bg-red-500/20 dark:border dark:border-red-500/50 light:bg-red-50 light:border-2 light:border-red-200 rounded-lg backdrop-blur-sm"
         >
-          <p className="text-sm text-red-300 font-medium">{error}</p>
+          <p className="text-sm dark:text-red-300 light:text-red-600 font-medium">{error}</p>
         </motion.div>
       )}
 
@@ -124,8 +124,8 @@ export default function InviteMembers() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.5 }}
       >
-        <label className="text-sm font-semibold text-white/90 flex items-center gap-2">
-          <Mail className="w-4 h-4 text-purple-400" />
+        <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+          <Mail className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
           이메일 주소
         </label>
         <div className="flex gap-2">
@@ -139,11 +139,11 @@ export default function InviteMembers() {
               }
             }}
             placeholder="employee@company.com"
-            className="flex-1 px-4 py-3 border border-purple-500/30 rounded-xl bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-purple-500/60 focus:ring-2 focus:ring-purple-500/30 transition-all duration-200 text-white placeholder-white/40"
+            className="flex-1 w-full px-4 py-3 rounded-xl transition-all duration-200 dark:border dark:border-purple-500/30 dark:bg-white/5 dark:backdrop-blur-sm dark:focus:bg-white/10 dark:focus:border-purple-500/60 dark:focus:ring-2 dark:focus:ring-purple-500/30 dark:text-white dark:placeholder-white/40 light:border-2 light:border-purple-200/70 light:bg-purple-50/50 light:focus:bg-white light:focus:border-purple-400 light:focus:ring-2 light:focus:ring-purple-300/40 light:text-purple-950 light:placeholder-purple-400/60"
           />
           <button
             onClick={addEmail}
-            className="px-4 py-3 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 font-semibold rounded-xl transition-colors flex items-center gap-2 border border-purple-500/30"
+            className="px-4 py-3 dark:bg-purple-500/10 light:bg-purple-100/50 hover:bg-purple-500/30 dark:text-purple-300 light:text-purple-600 font-semibold rounded-xl transition-colors flex items-center gap-2 dark:border-purple-500/30 light:border-purple-200/70 border"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">추가</span>
@@ -157,36 +157,36 @@ export default function InviteMembers() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <h3 className="text-sm font-semibold text-white/90 mb-3">
+          <h3 className="text-sm font-semibold dark:text-white/90 light:text-purple-900 mb-3">
             초대된 사원들 ({emails.length}명)
           </h3>
           <div className="space-y-2">
             {emails.map((emailObj) => (
               <div
                 key={emailObj.id}
-                className="flex items-center justify-between p-3 bg-white/5 border border-purple-500/20 rounded-xl backdrop-blur-sm"
+                className="flex items-center justify-between p-3 dark:bg-white/5 light:bg-purple-50/50 border dark:border-purple-500/20 light:border-purple-200/50 rounded-xl backdrop-blur-sm"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <Mail className="w-4 h-4 text-purple-400 flex-shrink-0" />
-                  <span className="text-sm font-medium text-white truncate">
+                  <Mail className="w-4 h-4 dark:text-purple-400 light:text-purple-600 flex-shrink-0" />
+                  <span className="text-sm font-medium dark:text-white light:text-purple-950 truncate">
                     {emailObj.email}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
                     onClick={() => copyInviteLink(emailObj.email)}
-                    className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                    className="p-2 hover:bg-white/10 rounded-lg transition-colors dark:text-white/60 light:text-purple-600 hover:text-white"
                     title="초대 링크 복사"
                   >
                     {copiedId === emailObj.email ? (
-                      <Check className="w-4 h-4 text-green-400" />
+                      <Check className="w-4 h-4 dark:text-green-400 light:text-green-600" />
                     ) : (
                       <Copy className="w-4 h-4" />
                     )}
                   </button>
                   <button
                     onClick={() => removeEmail(emailObj.id)}
-                    className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-white/60 hover:text-red-400"
+                    className="p-2 hover:bg-red-500/20 rounded-lg transition-colors dark:text-white/60 light:text-purple-600 hover:text-red-400"
                     title="제거"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -199,12 +199,12 @@ export default function InviteMembers() {
       )}
 
       <motion.div
-        className="mb-6 p-4 bg-purple-500/10 border border-purple-500/30 rounded-xl"
+        className="mb-6 p-4 dark:bg-purple-500/10 light:bg-purple-100/50 border dark:border-purple-500/30 light:border-purple-200/70 rounded-xl"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
       >
-        <p className="text-sm text-purple-200 leading-relaxed">
+        <p className="text-sm dark:text-purple-200 light:text-purple-500 leading-relaxed">
           <strong>초대 방법:</strong> 각 사원의 이메일을 추가한 후 "링크
           복사"를 눌러 초대 링크를 복사하고 공유하세요. 사원들은 초대 링크를
           통해 회원가입 할 수 있습니다.
@@ -214,7 +214,7 @@ export default function InviteMembers() {
       <div className="flex gap-3">
         <motion.button
           onClick={handleSkip}
-          className="flex-1 px-6 py-3 border border-purple-500/30 bg-white/5 text-white text-sm font-semibold rounded-xl hover:bg-white/10 hover:border-purple-500/60 transition-all duration-200"
+          className="flex-1 px-6 py-3 border dark:border-purple-500/30 light:border-purple-200/70 dark:bg-white/5 light:bg-purple-50/50 dark:text-white light:text-purple-950 text-sm font-semibold rounded-xl hover:bg-white/10 dark:hover:border-purple-500/60 light:hover:border-purple-300 transition-all duration-200"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           initial={{ opacity: 0, y: 10 }}
@@ -226,7 +226,7 @@ export default function InviteMembers() {
         <motion.button
           onClick={handleSendInvites}
           disabled={isLoading || emails.length === 0}
-          className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 dark:text-white light:text-purple-950 text-sm font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           initial={{ opacity: 0, y: 10 }}

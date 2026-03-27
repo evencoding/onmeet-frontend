@@ -12,127 +12,122 @@
    * A different format will require also updating the theme in tailwind.config.ts.
   */
   :root {
-    --background: 210 18% 12%;
-    --foreground: 220 12% 92%;
+    --background: 270 20% 8%;
+    --foreground: 270 10% 92%;
 
-    --card: 210 18% 16%;
-    --card-foreground: 220 12% 88%;
+    --card: 270 20% 12%;
+    --card-foreground: 270 10% 88%;
 
-    --popover: 210 18% 16%;
-    --popover-foreground: 220 12% 88%;
+    --popover: 270 20% 12%;
+    --popover-foreground: 270 10% 88%;
 
-    --primary: 210 88% 50%;
+    --primary: 270 84% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 20% 24%;
-    --secondary-foreground: 210 88% 50%;
+    --secondary: 270 20% 20%;
+    --secondary-foreground: 270 84% 56%;
 
-    --muted: 210 20% 35%;
-    --muted-foreground: 220 12% 60%;
+    --muted: 270 15% 30%;
+    --muted-foreground: 270 10% 60%;
 
-    --accent: 210 88% 50%;
+    --accent: 270 84% 56%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 220 12% 92%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 210 20% 24%;
-    --input: 210 18% 18%;
-    --ring: 210 88% 50%;
+    --border: 270 20% 20%;
+    --input: 270 18% 15%;
+    --ring: 270 84% 56%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 210 18% 12%;
-
-    --sidebar-foreground: 220 12% 88%;
-
-    --sidebar-primary: 210 88% 50%;
-
+    --sidebar-background: 270 20% 8%;
+    --sidebar-foreground: 270 10% 88%;
+    --sidebar-primary: 270 84% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-
-    --sidebar-accent: 210 20% 24%;
-
-    --sidebar-accent-foreground: 210 88% 50%;
-
-    --sidebar-border: 210 20% 24%;
-
-    --sidebar-ring: 210 88% 50%;
+    --sidebar-accent: 270 30% 18%;
+    --sidebar-accent-foreground: 270 84% 70%;
+    --sidebar-border: 270 20% 16%;
+    --sidebar-ring: 270 84% 56%;
   }
 
   .dark {
-    --background: 210 18% 12%;
-    --foreground: 220 12% 92%;
+    --background: 270 20% 8%;
+    --foreground: 270 10% 92%;
 
-    --card: 210 18% 16%;
-    --card-foreground: 220 12% 88%;
+    --card: 270 20% 12%;
+    --card-foreground: 270 10% 88%;
 
-    --popover: 210 18% 16%;
-    --popover-foreground: 220 12% 88%;
+    --popover: 270 20% 12%;
+    --popover-foreground: 270 10% 88%;
 
-    --primary: 210 88% 50%;
+    --primary: 270 84% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 20% 24%;
-    --secondary-foreground: 210 88% 50%;
+    --secondary: 270 20% 20%;
+    --secondary-foreground: 270 84% 56%;
 
-    --muted: 210 20% 35%;
-    --muted-foreground: 220 12% 60%;
+    --muted: 270 15% 30%;
+    --muted-foreground: 270 10% 60%;
 
-    --accent: 210 88% 50%;
+    --accent: 270 84% 56%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 220 12% 92%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 210 20% 24%;
-    --input: 210 18% 18%;
-    --ring: 210 88% 50%;
-    --sidebar-background: 210 18% 12%;
-    --sidebar-foreground: 220 12% 88%;
-    --sidebar-primary: 210 88% 50%;
+    --border: 270 20% 20%;
+    --input: 270 18% 15%;
+    --ring: 270 84% 56%;
+
+    --sidebar-background: 270 20% 8%;
+    --sidebar-foreground: 270 10% 88%;
+    --sidebar-primary: 270 84% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 20% 24%;
-    --sidebar-accent-foreground: 210 88% 50%;
-    --sidebar-border: 210 20% 24%;
-    --sidebar-ring: 210 88% 50%;
+    --sidebar-accent: 270 30% 18%;
+    --sidebar-accent-foreground: 270 84% 70%;
+    --sidebar-border: 270 20% 16%;
+    --sidebar-ring: 270 84% 56%;
   }
 
   .light {
-    --background: 210 20% 97%;
-    --foreground: 210 20% 22%;
+    --background: 270 30% 98%;
+    --foreground: 270 30% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 20% 22%;
+    --card-foreground: 270 30% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 20% 22%;
+    --popover-foreground: 270 30% 15%;
 
-    --primary: 210 88% 50%;
+    --primary: 270 84% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 30% 90%;
-    --secondary-foreground: 210 88% 50%;
+    --secondary: 270 30% 92%;
+    --secondary-foreground: 270 84% 56%;
 
-    --muted: 210 15% 70%;
-    --muted-foreground: 210 15% 40%;
+    --muted: 270 15% 75%;
+    --muted-foreground: 270 20% 40%;
 
-    --accent: 210 88% 50%;
+    --accent: 270 84% 56%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 20% 90%;
-    --input: 210 15% 96%;
-    --ring: 210 88% 50%;
-    --sidebar-background: 210 20% 97%;
-    --sidebar-foreground: 210 20% 22%;
-    --sidebar-primary: 210 88% 50%;
+    --border: 270 30% 90%;
+    --input: 270 20% 96%;
+    --ring: 270 84% 56%;
+
+    --sidebar-background: 270 30% 98%;
+    --sidebar-foreground: 270 30% 15%;
+    --sidebar-primary: 270 84% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 25% 90%;
-    --sidebar-accent-foreground: 210 88% 50%;
-    --sidebar-border: 210 20% 90%;
-    --sidebar-ring: 210 88% 50%;
+    --sidebar-accent: 270 30% 94%;
+    --sidebar-accent-foreground: 270 84% 50%;
+    --sidebar-border: 270 30% 90%;
+    --sidebar-ring: 270 84% 56%;
   }
 }
 
@@ -146,12 +141,12 @@
   }
 
   body.dark {
-    background: linear-gradient(135deg, hsl(210, 18%, 12%) 0%, hsl(210, 18%, 14%) 50%, hsl(210, 18%, 12%) 100%);
+    background: linear-gradient(135deg, hsl(270, 20%, 8%) 0%, hsl(280, 18%, 10%) 50%, hsl(270, 20%, 8%) 100%);
     background-attachment: fixed;
   }
 
   body.light {
-    background: linear-gradient(135deg, hsl(210, 20%, 97%) 0%, hsl(210, 18%, 98%) 50%, hsl(210, 20%, 97%) 100%);
+    background: linear-gradient(135deg, hsl(270, 30%, 98%) 0%, hsl(280, 25%, 97%) 50%, hsl(270, 30%, 98%) 100%);
     background-attachment: fixed;
   }
 
@@ -185,6 +180,37 @@
     overflow-x: auto;
     white-space: pre;
   }
+}
+
+/* ── Design Token Utility Classes ── */
+
+/* 그래디언트 버튼 — Primary CTA */
+.om-btn-primary {
+  @apply bg-gradient-to-r from-purple-600 to-pink-600
+         hover:from-purple-700 hover:to-pink-700
+         text-white font-semibold rounded-xl
+         shadow-lg shadow-purple-500/30
+         hover:shadow-xl
+         transition-all duration-300
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* 그래디언트 텍스트 */
+.om-gradient-text {
+  @apply bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent;
+}
+
+/* 텍스트 색상 (CSS 변수 기반 — dark/light 자동 대응) */
+.om-text-primary {
+  color: hsl(var(--foreground));
+}
+
+.om-text-secondary {
+  color: hsl(var(--muted-foreground));
+}
+
+.om-text-muted {
+  color: hsl(var(--muted-foreground) / 0.7);
 }
 
 @keyframes blob {

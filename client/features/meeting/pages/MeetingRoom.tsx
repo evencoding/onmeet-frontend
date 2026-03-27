@@ -14,7 +14,7 @@ import { getErrorMessage } from "@/shared/utils/apiFetch";
 import { useMeetingRoomStore, type DeviceSelection } from "../store";
 import { useWaitingRoomSSE } from "../hooks/useWaitingRoomSSE";
 
-const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "wss://livekit.onmeet.cloud";
+const LIVEKIT_URL = import.meta.env.VITE_LIVEKIT_URL || "wss://rtc.onmeet.cloud";
 
 export default function MeetingRoom() {
   useDocumentTitle("회의 - OnMeet");
@@ -51,10 +51,10 @@ export default function MeetingRoom() {
   );
 
   // SSE callbacks
-  const handleSSEAdmitted = useCallback((sseToken: string, sseIsHost: boolean) => {
+  const handleSSEAdmitted = useCallback((sseToken: string) => {
     const s = useMeetingRoomStore.getState();
     s.setToken(sseToken);
-    s.setIsHost(sseIsHost);
+    // isHost is already synced from roomData via the useEffect below
     s.setPhase("connected");
   }, []);
 
@@ -90,6 +90,13 @@ export default function MeetingRoom() {
         userId,
         data: password ? { password } : undefined,
       });
+
+      // 자동 퇴장 / 일정 충돌 등 경고 표시
+      if (res.warnings && res.warnings.length > 0) {
+        for (const warning of res.warnings) {
+          toast({ title: "알림", description: warning, variant: "default" });
+        }
+      }
 
       const s = useMeetingRoomStore.getState();
 
@@ -218,7 +225,7 @@ export default function MeetingRoom() {
         useMeetingRoomStore.getState().setPhase("disconnected");
       }}
     >
-      <MeetingRoomContent roomId={roomId} isHost={isHost} />
+      <MeetingRoomContent roomId={roomId} isHost={isHost} userId={userId} />
     </LiveKitRoom>
   );
 }

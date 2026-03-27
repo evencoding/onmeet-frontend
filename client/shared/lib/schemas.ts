@@ -90,18 +90,26 @@ export const RoomJoinResponseSchema = z.object({
   livekitUrl: z.string(),
   roomName: z.string(),
   waitingRoom: z.boolean(),
+  warnings: z.array(z.string()).optional(),
 });
 
 // ── AI Schemas ──
 
 const MinutesStatusSchema = z.enum(["GENERATED", "EDITED_BY_USER", "REGENERATING", "FAILED"]);
 
+const SummaryResultSchema = z.object({
+  description: z.string().nullable(),
+  keywords: z.array(z.string()).nullable(),
+  decisions: z.array(z.string()).nullable(),
+  actionItems: z.array(z.string()).nullable(),
+});
+
 export const MinutesResponseSchema = z.object({
   id: z.number(),
   roomId: z.number(),
   transcriptId: z.string(),
-  transcriptS3Key: z.string(),
   summaryS3Key: z.string(),
+  summary: SummaryResultSchema.nullable(),
   summaryJson: z.string(),
   userEditedSummaryJson: z.string().nullable(),
   status: MinutesStatusSchema,
@@ -111,10 +119,8 @@ export const MinutesResponseSchema = z.object({
 });
 
 export const TranscriptResponseSchema = z.object({
-  id: z.string(),
   roomId: z.number(),
   transcript: z.string(),
-  s3Key: z.string(),
   createdAt: z.string(),
 });
 

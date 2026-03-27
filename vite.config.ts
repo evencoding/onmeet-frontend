@@ -49,7 +49,8 @@ export default defineConfig(({ mode }): UserConfig => ({
     minify: "esbuild",
   },
   esbuild: {
-    drop: mode === "production" ? ["console", "debugger"] : [],
+    drop: mode === "production" ? ["debugger"] : [],
+    pure: mode === "production" ? ["console.debug"] : [],
   },
   plugins: [
     react(),

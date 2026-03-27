@@ -12,7 +12,7 @@
 
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import type { MeetingRoomResponse, RoomStatus } from "@/features/meeting/api/types";
+import type { MeetingRoomResponse, RoomStatus, RoomType, AccessScope } from "@/features/meeting/api/types";
 
 // ── UI 모델 ──
 
@@ -20,6 +20,7 @@ export type MeetingDisplayStatus = "scheduled" | "in_progress" | "completed";
 
 export interface MeetingViewModel {
   id: string;
+  roomCode: string;
   title: string;
   date: Date;
   time: string;
@@ -27,13 +28,19 @@ export interface MeetingViewModel {
   participants: number;
   description: string;
   status: MeetingDisplayStatus;
+  type: RoomType;
+  accessScope: AccessScope;
+  locked: boolean;
   team?: string;
   hasTranscript: boolean;
   tags: string[];
+  startedAt?: string;
+  endedAt?: string;
 }
 
 export interface CalendarMeetingViewModel {
   id: string;
+  roomCode: string;
   title: string;
   date: Date;
   time: string;
@@ -42,6 +49,11 @@ export interface CalendarMeetingViewModel {
   participants: number;
   description: string;
   attendees: { name: string; avatar: string }[];
+  hostUserId: number;
+  roomStatus: RoomStatus;
+  scheduledAt: string;
+  locked: boolean;
+  accessScope: AccessScope;
 }
 
 // ── 포맷터 (공통) ──
@@ -137,8 +149,11 @@ export const roomStatusConfig: Record<string, { label: string; className: string
 
 // ── Adapter 함수 ──
 
+/** 팀 ID → 팀 이름 매핑. user.teams 배열에서 생성 가능 */
+export type TeamNameMap = Map<number, string>;
+
 /** API → 대시보드/회의 목록용 ViewModel */
-export function toMeetingViewModel(room: MeetingRoomResponse): MeetingViewModel {
+export function toMeetingViewModel(room: MeetingRoomResponse, teamMap?: TeamNameMap): MeetingViewModel {
   const dateObj = room.scheduledAt
     ? new Date(room.scheduledAt)
     : room.startedAt
@@ -147,6 +162,7 @@ export function toMeetingViewModel(room: MeetingRoomResponse): MeetingViewModel 
 
   return {
     id: String(room.id),
+    roomCode: room.roomCode,
     title: room.title || "제목 없음",
     date: dateObj,
     time: formatMeetingTime(room.scheduledAt || room.startedAt || room.createdAt),
@@ -154,8 +170,14 @@ export function toMeetingViewModel(room: MeetingRoomResponse): MeetingViewModel 
     participants: room.maxParticipants,
     description: room.description || "",
     status: toDisplayStatus(room.status),
+    type: room.type,
+    accessScope: room.accessScope,
+    locked: room.locked,
+    team: room.teamId && teamMap ? teamMap.get(room.teamId) : undefined,
     hasTranscript: room.status === "ENDED",
     tags: [],
+    startedAt: room.startedAt,
+    endedAt: room.endedAt,
   };
 }
 
@@ -167,6 +189,7 @@ export function toCalendarMeetingViewModel(room: MeetingRoomResponse): CalendarM
 
   return {
     id: String(room.id),
+    roomCode: room.roomCode,
     title: room.title,
     date: scheduledDate,
     time: format(scheduledDate, "h:mm a"),
@@ -177,6 +200,11 @@ export function toCalendarMeetingViewModel(room: MeetingRoomResponse): CalendarM
     participants: room.maxParticipants,
     description: room.description || "",
     attendees: [],
+    hostUserId: room.hostUserId,
+    roomStatus: room.status,
+    scheduledAt: room.scheduledAt || room.createdAt,
+    locked: room.locked,
+    accessScope: room.accessScope,
   };
 }
 
