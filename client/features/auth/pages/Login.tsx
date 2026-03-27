@@ -92,6 +92,9 @@ export default function Login() {
     setFpSuccess("");
   };
 
+  const inputClass =
+    "w-full px-4 py-3 rounded-xl transition-all duration-200 dark:border dark:border-purple-500/30 dark:bg-white/5 dark:backdrop-blur-sm dark:focus:bg-white/10 dark:focus:border-purple-500/60 dark:focus:ring-2 dark:focus:ring-purple-500/30 dark:text-white dark:placeholder-white/40 light:border-2 light:border-purple-200/70 light:bg-purple-50/50 light:focus:bg-white light:focus:border-purple-400 light:focus:ring-2 light:focus:ring-purple-300/40 light:text-purple-950 light:placeholder-purple-400/60";
+
   if (showFindPassword) {
     return (
       <AuthLayout subtitle="회의에만 집중하세요, 기록은 AI가" colorTheme="purple" onBack={switchToLogin}>
@@ -101,19 +104,19 @@ export default function Login() {
           transition={{ delay: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-2xl font-bold text-white">비밀번호 찾기</h2>
-            <KeyRound className="w-5 h-5 text-purple-400" />
+            <h2 className="text-2xl font-bold dark:text-white light:text-purple-950">비밀번호 찾기</h2>
+            <KeyRound className="w-5 h-5 dark:text-purple-400 light:text-purple-600" />
           </div>
-          <p className="text-white/60 mb-6">가입한 이메일로 임시 비밀번호를 전송합니다</p>
+          <p className="dark:text-white/60 light:text-purple-600 mb-6">가입한 이메일로 임시 비밀번호를 전송합니다</p>
         </motion.div>
 
         {fpError && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg backdrop-blur-sm"
+            className="mb-4 p-4 rounded-lg backdrop-blur-sm dark:bg-red-500/20 dark:border dark:border-red-500/50 light:bg-red-50 light:border-2 light:border-red-200"
           >
-            <p className="text-sm text-red-300 font-medium">{fpError}</p>
+            <p className="text-sm font-medium dark:text-red-300 light:text-red-600">{fpError}</p>
           </motion.div>
         )}
 
@@ -121,9 +124,9 @@ export default function Login() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4 p-4 bg-green-500/20 border border-green-500/50 rounded-lg backdrop-blur-sm"
+            className="mb-4 p-4 rounded-lg backdrop-blur-sm dark:bg-green-500/20 dark:border dark:border-green-500/50 light:bg-green-50 light:border-2 light:border-green-200"
           >
-            <p className="text-sm text-green-300 font-medium">{fpSuccess}</p>
+            <p className="text-sm font-medium dark:text-green-300 light:text-green-700">{fpSuccess}</p>
           </motion.div>
         )}
 
@@ -134,8 +137,8 @@ export default function Login() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <label className="text-sm font-semibold text-white/90 flex items-center gap-2">
-              <Mail className="w-4 h-4 text-purple-400" />
+            <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+              <Mail className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
               이메일
             </label>
             <input
@@ -143,7 +146,7 @@ export default function Login() {
               value={fpEmail}
               onChange={(e) => setFpEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full px-4 py-3 border border-purple-500/30 rounded-xl bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-purple-500/60 focus:ring-2 focus:ring-purple-500/30 transition-all duration-200 text-white placeholder-white/40"
+              className={inputClass}
             />
           </motion.div>
 
@@ -170,7 +173,7 @@ export default function Login() {
         >
           <button
             onClick={switchToLogin}
-            className="flex items-center gap-2 text-sm text-purple-300 font-semibold hover:text-pink-300 transition-colors mx-auto"
+            className="flex items-center gap-2 text-sm font-semibold transition-colors mx-auto dark:text-purple-300 dark:hover:text-pink-300 light:text-purple-600 light:hover:text-purple-800"
           >
             <ArrowLeft className="w-4 h-4" />
             로그인으로 돌아가기
@@ -188,19 +191,19 @@ export default function Login() {
         transition={{ delay: 0.4 }}
       >
         <div className="flex items-center gap-2 mb-1">
-          <h2 className="text-2xl font-bold text-white">로그인</h2>
-          <Sparkles className="w-5 h-5 text-purple-400" />
+          <h2 className="text-2xl font-bold dark:text-white light:text-purple-950">로그인</h2>
+          <Sparkles className="w-5 h-5 dark:text-purple-400 light:text-purple-600" />
         </div>
-        <p className="text-white/60 mb-6">계정으로 로그인하세요</p>
+        <p className="dark:text-white/60 light:text-purple-600 mb-6">계정으로 로그인하세요</p>
       </motion.div>
 
       {error && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg backdrop-blur-sm"
+          className="mb-4 p-4 rounded-lg backdrop-blur-sm dark:bg-red-500/20 dark:border dark:border-red-500/50 light:bg-red-50 light:border-2 light:border-red-200"
         >
-          <p className="text-sm text-red-300 font-medium">{error}</p>
+          <p className="text-sm font-medium dark:text-red-300 light:text-red-600">{error}</p>
         </motion.div>
       )}
 
@@ -212,8 +215,8 @@ export default function Login() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <label className="text-sm font-semibold text-white/90 flex items-center gap-2">
-            <Mail className="w-4 h-4 text-purple-400" />
+          <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+            <Mail className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
             이메일
           </label>
           <input
@@ -221,7 +224,7 @@ export default function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your@email.com"
-            className="w-full px-4 py-3 border border-purple-500/30 rounded-xl bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-purple-500/60 focus:ring-2 focus:ring-purple-500/30 transition-all duration-200 text-white placeholder-white/40"
+            className={inputClass}
           />
         </motion.div>
 
@@ -231,8 +234,8 @@ export default function Login() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <label className="text-sm font-semibold text-white/90 flex items-center gap-2">
-            <Lock className="w-4 h-4 text-purple-400" />
+          <label className="text-sm font-semibold dark:text-white/90 light:text-purple-900 flex items-center gap-2">
+            <Lock className="w-4 h-4 dark:text-purple-400 light:text-purple-600" />
             비밀번호
           </label>
           <input
@@ -240,7 +243,7 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full px-4 py-3 border border-purple-500/30 rounded-xl bg-white/5 backdrop-blur-sm focus:bg-white/10 focus:border-purple-500/60 focus:ring-2 focus:ring-purple-500/30 transition-all duration-200 text-white placeholder-white/40"
+            className={inputClass}
           />
         </motion.div>
 
@@ -265,9 +268,9 @@ export default function Login() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
       >
-        <div className="flex-1 h-px bg-purple-500/20"></div>
-        <span className="text-xs text-white/40">또는</span>
-        <div className="flex-1 h-px bg-purple-500/20"></div>
+        <div className="flex-1 h-px dark:bg-purple-500/20 light:bg-purple-200"></div>
+        <span className="text-xs dark:text-white/40 light:text-purple-400">또는</span>
+        <div className="flex-1 h-px dark:bg-purple-500/20 light:bg-purple-200"></div>
       </motion.div>
 
       <motion.div
@@ -276,19 +279,19 @@ export default function Login() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
       >
-        <p className="text-sm text-white/70">
+        <p className="text-sm dark:text-white/70 light:text-purple-700">
           계정이 없으신가요?{" "}
           <Link
             to="/signup"
-            className="text-purple-300 font-semibold hover:text-pink-300 transition-colors"
+            className="font-semibold transition-colors dark:text-purple-300 dark:hover:text-pink-300 light:text-purple-600 light:hover:text-purple-800"
           >
             가입하기
           </Link>
         </p>
-        <p className="text-sm text-white/70">
+        <p className="text-sm dark:text-white/70 light:text-purple-700">
           <button
             onClick={switchToFindPassword}
-            className="text-purple-300 font-semibold hover:text-pink-300 transition-colors"
+            className="font-semibold transition-colors dark:text-purple-300 dark:hover:text-pink-300 light:text-purple-600 light:hover:text-purple-800"
           >
             비밀번호 찾기
           </button>

@@ -76,14 +76,29 @@ export default function MeetingBookingModal({
   };
 
   const handleBookMeeting = async () => {
-    if (!selectedTeamId || !meetingTitle.trim()) {
+    if (!selectedTeamId) {
+      toast({ title: "팀을 선택해주세요", variant: "destructive" });
+      setStep("team");
+      return;
+    }
+    if (!meetingTitle.trim()) {
+      toast({ title: "회의 제목을 입력해주세요", variant: "destructive" });
+      setStep("team");
+      return;
+    }
+
+    const scheduledAt = `${format(meetingDate, "yyyy-MM-dd")}T${meetingTime}:00`;
+    const scheduledDate = new Date(scheduledAt);
+    if (scheduledDate <= new Date()) {
+      toast({ title: "예약 시간은 현재 시간 이후여야 합니다", variant: "destructive" });
+      setStep("date");
       return;
     }
 
     setIsLoading(true);
+    let room;
     try {
-      const scheduledAt = `${format(meetingDate, "yyyy-MM-dd")}T${meetingTime}:00`;
-      const room = await scheduleRoomMutation.mutateAsync({
+      room = await scheduleRoomMutation.mutateAsync({
         userId,
         data: {
           title: meetingTitle,
@@ -91,8 +106,20 @@ export default function MeetingBookingModal({
           teamId: selectedTeamId,
         },
       });
+    } catch (err) {
+      const errorObj = err as { status?: number };
+      if (errorObj.status === 409) {
+        toast({ title: "해당 시간대에 이미 예약된 회의가 있습니다", description: "다른 시간을 선택해주세요", variant: "destructive" });
+        setStep("date");
+      } else {
+        toast({ title: "회의 예약 실패", description: getErrorMessage(err, "회의 예약에 실패했습니다"), variant: "destructive" });
+      }
+      setIsLoading(false);
+      return;
+    }
 
-      if (selectedParticipants.length > 0) {
+    if (selectedParticipants.length > 0) {
+      try {
         await bulkInviteMutation.mutateAsync({
           roomId: room.id,
           userId,
@@ -100,19 +127,18 @@ export default function MeetingBookingModal({
             inviteeUserIds: selectedParticipants.map((p) => p.id),
           },
         });
+      } catch (err) {
+        toast({ title: "회의는 생성되었지만 참여자 초대에 실패했습니다", description: getErrorMessage(err, "일정에서 다시 초대해주세요"), variant: "destructive" });
       }
-
-      setMeetingTitle("");
-      setSelectedTeamId(null);
-      setSelectedParticipants([]);
-      setSearchQuery("");
-      setStep("team");
-      onClose();
-    } catch (err) {
-      toast({ title: "회의 예약 실패", description: getErrorMessage(err, "회의 예약에 실패했습니다"), variant: "destructive" });
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
+    setMeetingTitle("");
+    setSelectedTeamId(null);
+    setSelectedParticipants([]);
+    setSearchQuery("");
+    setStep("team");
+    onClose();
   };
 
   const handleClose = () => {

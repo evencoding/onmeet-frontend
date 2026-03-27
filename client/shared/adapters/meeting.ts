@@ -42,6 +42,9 @@ export interface CalendarMeetingViewModel {
   participants: number;
   description: string;
   attendees: { name: string; avatar: string }[];
+  hostUserId: number;
+  roomStatus: RoomStatus;
+  scheduledAt: string;
 }
 
 // ── 포맷터 (공통) ──
@@ -177,6 +180,9 @@ export function toCalendarMeetingViewModel(room: MeetingRoomResponse): CalendarM
     participants: room.maxParticipants,
     description: room.description || "",
     attendees: [],
+    hostUserId: room.hostUserId,
+    roomStatus: room.status,
+    scheduledAt: room.scheduledAt || room.createdAt,
   };
 }
 

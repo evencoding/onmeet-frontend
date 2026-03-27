@@ -6,7 +6,7 @@ import { cn } from "@/shared/lib/utils";
 import { useAuth } from "@/features/auth/context";
 import { useRooms } from "@/features/meeting/hooks";
 import type { MeetingRoomResponse } from "@/features/meeting/api";
-import CreateMeetingModal from "@/features/dashboard/components/CreateMeetingModal";
+import MeetingBookingModal from "@/features/schedule/components/MeetingBookingModal";
 
 const teamColorPalette = [
   "bg-purple-500",
@@ -279,10 +279,12 @@ export default function TeamBoard() {
         )}
       </div>
 
-      <CreateMeetingModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />
+      {isCreateModalOpen && (
+        <MeetingBookingModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+        />
+      )}
     </>
   );
 }

@@ -57,9 +57,9 @@ export default function SignupFlow() {
           className="group relative"
         >
 
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-gradient-to-br dark:from-purple-500/20 dark:to-pink-500/20 light:from-purple-300/20 light:to-pink-300/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
 
-          <div className="relative bg-gradient-to-br from-purple-900/40 via-purple-900/20 to-black/60 border border-purple-500/30 rounded-xl p-5 backdrop-blur-xl hover:border-purple-500/60 transition-all duration-300 h-full overflow-hidden">
+          <div className="relative bg-gradient-to-br dark:from-purple-900/40 dark:via-purple-900/20 dark:to-black/60 light:bg-white/80 light:border-2 light:border-purple-200/70 light:shadow-lg light:shadow-purple-200/20 border dark:border-purple-500/30 light:border-purple-200/70 rounded-xl p-5 backdrop-blur-xl hover:border-purple-500/60 transition-all duration-300 h-full overflow-hidden">
 
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
 
@@ -70,13 +70,13 @@ export default function SignupFlow() {
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 transition={{ type: "spring", stiffness: 400 }}
               >
-                <Building2 className="w-6 h-6 text-white" />
+                <Building2 className="w-6 h-6 dark:text-white light:text-purple-950" />
               </motion.div>
 
-              <h2 className="text-lg font-bold text-white mb-2 text-left">
+              <h2 className="text-lg font-bold dark:text-white light:text-purple-950 mb-2 text-left">
                 기업 회원가입
               </h2>
-              <p className="text-white/70 text-xs text-left mb-3 leading-relaxed">
+              <p className="dark:text-white/70 light:text-purple-700 text-xs text-left mb-3 leading-relaxed">
                 새로운 팀을 만들고
                 <br />
                 사원들을 초대하세요
@@ -87,7 +87,7 @@ export default function SignupFlow() {
                   (feature, idx) => (
                     <motion.div
                       key={idx}
-                      className="flex items-center gap-2 text-white/80 text-xs"
+                      className="flex items-center gap-2 dark:text-white/80 light:text-purple-800 text-xs"
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.4, delay: idx * 0.1 }}
@@ -100,12 +100,12 @@ export default function SignupFlow() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-purple-500/20">
-                <span className="text-xs font-semibold text-purple-300">
+              <div className="flex items-center justify-between pt-3 border-t dark:border-purple-500/20 light:border-purple-200/50">
+                <span className="text-xs font-semibold dark:text-purple-300 light:text-purple-600">
                   시작하기
                 </span>
                 <motion.div
-                  className="text-purple-300"
+                  className="dark:text-purple-300 light:text-purple-600"
                   animate={{ x: [0, 5, 0] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
@@ -126,7 +126,7 @@ export default function SignupFlow() {
 
           <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-blue-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-0 group-hover:opacity-100" />
 
-          <div className="relative bg-gradient-to-br from-pink-900/40 via-blue-900/20 to-black/60 border border-pink-500/30 rounded-xl p-5 backdrop-blur-xl hover:border-pink-500/60 transition-all duration-300 h-full overflow-hidden">
+          <div className="relative bg-gradient-to-br dark:from-pink-900/40 dark:via-blue-900/20 dark:to-black/60 light:bg-white/80 light:border-2 light:border-purple-200/70 light:shadow-lg light:shadow-purple-200/20 border dark:border-pink-500/30 light:border-pink-200/70 rounded-xl p-5 backdrop-blur-xl hover:border-pink-500/60 transition-all duration-300 h-full overflow-hidden">
 
             <div className="absolute inset-0 bg-gradient-to-br from-pink-500/0 to-blue-500/0 group-hover:from-pink-500/10 group-hover:to-blue-500/10 transition-all duration-300" />
 
@@ -137,13 +137,13 @@ export default function SignupFlow() {
                 whileHover={{ scale: 1.1, rotate: -5 }}
                 transition={{ type: "spring", stiffness: 400 }}
               >
-                <Users className="w-6 h-6 text-white" />
+                <Users className="w-6 h-6 dark:text-white light:text-purple-950" />
               </motion.div>
 
-              <h2 className="text-lg font-bold text-white mb-2 text-left">
+              <h2 className="text-lg font-bold dark:text-white light:text-purple-950 mb-2 text-left">
                 사원 회원가입
               </h2>
-              <p className="text-white/70 text-xs text-left mb-3 leading-relaxed">
+              <p className="dark:text-white/70 light:text-purple-700 text-xs text-left mb-3 leading-relaxed">
                 초대받은 사원으로
                 <br />
                 팀에 참여하세요
@@ -154,7 +154,7 @@ export default function SignupFlow() {
                   (feature, idx) => (
                     <motion.div
                       key={idx}
-                      className="flex items-center gap-2 text-white/80 text-xs"
+                      className="flex items-center gap-2 dark:text-white/80 light:text-purple-800 text-xs"
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.4, delay: idx * 0.1 }}
@@ -167,12 +167,12 @@ export default function SignupFlow() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-pink-500/20">
-                <span className="text-xs font-semibold text-pink-300">
+              <div className="flex items-center justify-between pt-3 border-t dark:border-pink-500/20 light:border-pink-200/50">
+                <span className="text-xs font-semibold dark:text-pink-300 light:text-purple-800">
                   계속하기
                 </span>
                 <motion.div
-                  className="text-pink-300"
+                  className="dark:text-pink-300 light:text-purple-800"
                   animate={{ x: [0, 5, 0] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
@@ -185,7 +185,7 @@ export default function SignupFlow() {
       </motion.div>
 
       <motion.p
-        className="text-center text-xs text-white/60"
+        className="text-center text-xs dark:text-white/60 light:text-purple-600"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
@@ -193,7 +193,7 @@ export default function SignupFlow() {
         이미 계정이 있으신가요?{" "}
         <motion.button
           onClick={() => navigate("/login")}
-          className="text-purple-300 font-semibold hover:text-pink-300 transition-colors"
+          className="dark:text-purple-300 light:text-purple-600 font-semibold hover:text-pink-300 transition-colors"
           whileHover={{ scale: 1.05 }}
         >
           로그인하기

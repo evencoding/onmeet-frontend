@@ -33,9 +33,10 @@ export default function Layout({
 
       {/* Light mode — soft purple background */}
       {theme === "light" && (
-        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 -right-80 w-96 h-96 bg-purple-200/20 rounded-full filter blur-3xl opacity-40 animate-blob"></div>
-          <div className="absolute -bottom-40 -left-60 w-96 h-96 bg-pink-100/20 rounded-full filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-50/60 via-white to-pink-50/40 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 -right-40 w-[500px] h-[500px] bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+          <div className="absolute -bottom-20 -left-40 w-[450px] h-[450px] bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-blob animation-delay-2000"></div>
+          <div className="absolute top-1/3 left-1/2 w-[400px] h-[400px] bg-violet-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
         </div>
       )}
 

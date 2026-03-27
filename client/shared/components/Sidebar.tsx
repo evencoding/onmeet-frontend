@@ -90,7 +90,7 @@ export default memo(function Sidebar({
   return (
     <div
       className={cn(
-        "flex flex-col h-screen transition-all duration-300 dark:bg-purple-950/80 dark:border-r dark:border-purple-500/20 light:bg-white light:border-r light:border-purple-200/60 dark:backdrop-blur-md",
+        "flex flex-col h-screen transition-all duration-300 dark:bg-purple-950/80 dark:border-r dark:border-purple-500/20 dark:backdrop-blur-md light:bg-gradient-to-b light:from-white light:via-purple-50/40 light:to-pink-50/30 light:border-r light:border-purple-200/60 light:shadow-lg light:shadow-purple-100/40",
         isCollapsed ? "w-20" : "w-72",
       )}
     >
@@ -159,8 +159,8 @@ export default memo(function Sidebar({
                     ? "justify-center p-3"
                     : "justify-between px-4 py-3",
                   isActive
-                    ? "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900 light:shadow-sm light:shadow-purple-200/30"
-                    : "dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-purple-500/10 light:text-purple-700 light:hover:text-purple-900 light:hover:bg-purple-50",
+                    ? "dark:bg-purple-500/20 dark:text-purple-300 light:bg-gradient-to-r light:from-purple-100/80 light:to-pink-50/40 light:text-purple-900 light:shadow-sm light:shadow-purple-200/30 light:border light:border-purple-200/50"
+                    : "dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-purple-500/10 light:text-purple-700 light:hover:text-purple-900 light:hover:bg-purple-50/80",
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -253,10 +253,12 @@ export default memo(function Sidebar({
         </div>
       )}
 
-      <AddTeamModal
-        isOpen={isAddTeamModalOpen}
-        onClose={() => setIsAddTeamModalOpen(false)}
-      />
+      {isAddTeamModalOpen && (
+        <AddTeamModal
+          isOpen={isAddTeamModalOpen}
+          onClose={() => setIsAddTeamModalOpen(false)}
+        />
+      )}
 
       {/* User Profile */}
       <div
@@ -353,7 +355,7 @@ function UserProfile({ isCollapsed = false }: { isCollapsed?: boolean }) {
 
       <button
         onClick={logout}
-        className="w-full flex items-center justify-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-white/70 dark:hover:bg-purple-500/20 light:border-2 light:border-purple-300/50 light:bg-purple-50 light:text-purple-700 light:hover:bg-purple-100 text-sm font-medium rounded-xl transition-all duration-200"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2 dark:border dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-white/70 dark:hover:bg-purple-500/20 light:border-2 light:border-purple-300/50 light:bg-gradient-to-r light:from-purple-50 light:to-pink-50/50 light:text-purple-700 light:hover:from-purple-100 light:hover:to-pink-100/50 light:shadow-sm light:shadow-purple-200/20 text-sm font-medium rounded-xl transition-all duration-200"
       >
         <LogOut className="w-4 h-4" />
         로그아웃
