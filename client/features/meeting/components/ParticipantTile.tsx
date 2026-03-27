@@ -25,6 +25,7 @@ export default memo(function ParticipantTile({
   className = "",
 }: ParticipantTileProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const tracks = useParticipantTracks(
     [Track.Source.Camera, Track.Source.Microphone],
@@ -41,6 +42,7 @@ export default memo(function ParticipantTile({
   const isCameraEnabled = cameraTrack?.publication?.isSubscribed && !cameraTrack.publication.isMuted;
   const isMicMuted = !micTrack?.publication?.isSubscribed || micTrack.publication.isMuted;
 
+  // 비디오 트랙 attach
   useEffect(() => {
     const videoEl = videoRef.current;
     if (videoEl && cameraTrack?.publication?.track) {
@@ -50,6 +52,17 @@ export default memo(function ParticipantTile({
       };
     }
   }, [cameraTrack?.publication?.track]);
+
+  // 오디오 트랙 attach — 로컬 참가자가 아닌 경우에만 (자기 소리 에코 방지)
+  useEffect(() => {
+    const audioEl = audioRef.current;
+    if (audioEl && micTrack?.publication?.track && !participant.isLocal) {
+      micTrack.publication.track.attach(audioEl);
+      return () => {
+        micTrack.publication?.track?.detach(audioEl);
+      };
+    }
+  }, [micTrack?.publication?.track, participant.isLocal]);
 
   const speaking = isSpeaking ?? participant.isSpeaking;
 
@@ -61,6 +74,10 @@ export default memo(function ParticipantTile({
           : "border-purple-500/20"
       } ${className}`}
     >
+      {/* 원격 참가자 오디오 출력 */}
+      {!participant.isLocal && (
+        <audio ref={audioRef} autoPlay playsInline />
+      )}
       <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-black flex items-center justify-center relative">
         {isCameraEnabled ? (
           <video

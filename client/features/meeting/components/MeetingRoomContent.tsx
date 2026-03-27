@@ -355,7 +355,7 @@ export default memo(function MeetingRoomContent({
         </div>
 
         {/* Video area */}
-        <div className="flex-1 overflow-hidden p-4">
+        <div className="flex-1 overflow-hidden p-4" data-meeting-capture>
           <VideoGrid />
         </div>
 
