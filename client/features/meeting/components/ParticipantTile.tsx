@@ -27,38 +27,29 @@ export default memo(function ParticipantTile({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const tracks = useParticipantTracks(
-    [Track.Source.Camera, Track.Source.Microphone, Track.Source.ScreenShare],
+    [Track.Source.Camera, Track.Source.Microphone],
     participant.identity,
   );
 
   const cameraTrack = tracks.find(
     (t) => t.source === Track.Source.Camera,
   );
-  const screenTrack = tracks.find(
-    (t) => t.source === Track.Source.ScreenShare,
-  );
   const micTrack = tracks.find(
     (t) => t.source === Track.Source.Microphone,
   );
 
-  // 화면 공유가 있으면 화면 공유를 우선 표시
-  const activeVideoTrack = screenTrack?.publication?.isSubscribed && !screenTrack.publication.isMuted
-    ? screenTrack
-    : cameraTrack;
-
-  const isCameraEnabled = activeVideoTrack?.publication?.isSubscribed && !activeVideoTrack.publication.isMuted;
+  const isCameraEnabled = cameraTrack?.publication?.isSubscribed && !cameraTrack.publication.isMuted;
   const isMicMuted = !micTrack?.publication?.isSubscribed || micTrack.publication.isMuted;
-  const isScreenShare = activeVideoTrack === screenTrack && screenTrack != null;
 
   useEffect(() => {
     const videoEl = videoRef.current;
-    if (videoEl && activeVideoTrack?.publication?.track) {
-      activeVideoTrack.publication.track.attach(videoEl);
+    if (videoEl && cameraTrack?.publication?.track) {
+      cameraTrack.publication.track.attach(videoEl);
       return () => {
-        activeVideoTrack.publication?.track?.detach(videoEl);
+        cameraTrack.publication?.track?.detach(videoEl);
       };
     }
-  }, [activeVideoTrack?.publication?.track]);
+  }, [cameraTrack?.publication?.track]);
 
   const speaking = isSpeaking ?? participant.isSpeaking;
 
@@ -104,12 +95,7 @@ export default memo(function ParticipantTile({
           </div>
         </div>
 
-        {isScreenShare && (
-          <div className="absolute top-2 right-2 bg-green-600 px-2 py-1 rounded-full text-xs font-semibold text-white">
-            화면 공유
-          </div>
-        )}
-        {!isScreenShare && participant.metadata === "host" && (
+        {participant.metadata === "host" && (
           <div className="absolute top-2 right-2 bg-blue-600 px-2 py-1 rounded-full text-xs font-semibold text-white">
             Host
           </div>
