@@ -1,7 +1,8 @@
-import { MoreVertical, Bell, X, CheckCheck, Trash2 } from "lucide-react";
+import { MoreVertical, Bell, X, CheckCheck, Trash2, Check, XCircle } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/context";
 import {
   useNotifications,
@@ -13,7 +14,9 @@ import {
   useNotificationSSE,
   useFcmSetup,
 } from "@/features/notification/hooks";
-import { getUnreadTotal, type NotificationType } from "@/features/notification/api";
+import { getUnreadTotal, type NotificationType, type NotificationResponseDto } from "@/features/notification/api";
+import { acceptInvitationByRoom, declineInvitationByRoom } from "@/features/meeting/api/invitation";
+import { toast } from "@/shared/hooks/use-toast";
 
 function formatRelativeTime(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -56,6 +59,7 @@ function getNotificationColor(type: NotificationType) {
 export default function MeetingHeader() {
   const { user } = useAuth();
   const userId = user ? String(user.id) : "";
+  const navigate = useNavigate();
 
   const { data: notificationPage } = useNotifications(userId, { page: 0, size: 20 });
   const { data: unreadData } = useUnreadCount(userId);
@@ -65,6 +69,36 @@ export default function MeetingHeader() {
   const deleteAllMutation = useDeleteAllNotifications();
   const { connected: sseConnected } = useNotificationSSE(userId || undefined);
   useFcmSetup(userId || undefined);
+  const [processingInvite, setProcessingInvite] = useState<number | null>(null);
+
+  const handleAcceptInvitation = useCallback(async (notification: NotificationResponseDto) => {
+    if (!userId || !notification.resourceId) return;
+    setProcessingInvite(notification.id);
+    try {
+      await acceptInvitationByRoom(Number(notification.resourceId), userId);
+      markAsReadMutation.mutate({ notificationId: notification.id, userId });
+      toast({ title: "초대를 수락했습니다" });
+      navigate(`/meeting/${notification.resourceId}`);
+    } catch {
+      toast({ title: "초대 수락 실패", variant: "destructive" });
+    } finally {
+      setProcessingInvite(null);
+    }
+  }, [userId, markAsReadMutation, navigate]);
+
+  const handleDeclineInvitation = useCallback(async (notification: NotificationResponseDto) => {
+    if (!userId || !notification.resourceId) return;
+    setProcessingInvite(notification.id);
+    try {
+      await declineInvitationByRoom(Number(notification.resourceId), userId);
+      markAsReadMutation.mutate({ notificationId: notification.id, userId });
+      toast({ title: "초대를 거절했습니다" });
+    } catch {
+      toast({ title: "초대 거절 실패", variant: "destructive" });
+    } finally {
+      setProcessingInvite(null);
+    }
+  }, [userId, markAsReadMutation]);
 
   const notifications = notificationPage?.content ?? [];
   const unreadCount = unreadData ? getUnreadTotal(unreadData) : 0;
@@ -245,8 +279,30 @@ export default function MeetingHeader() {
                             {formatRelativeTime(notification.createdAt)}
                           </p>
                         </button>
+
+                        {notification.type === "MEETING_INVITATION" && !notification.read && (
+                          <div className="flex items-center gap-1.5 ml-2 flex-shrink-0">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleAcceptInvitation(notification); }}
+                              disabled={processingInvite === notification.id}
+                              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg dark:bg-green-500/20 dark:text-green-300 dark:hover:bg-green-500/30 light:bg-green-100 light:text-green-700 light:hover:bg-green-200 transition-colors disabled:opacity-50"
+                              title="초대 수락"
+                            >
+                              <Check className="w-3.5 h-3.5" />수락
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDeclineInvitation(notification); }}
+                              disabled={processingInvite === notification.id}
+                              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg dark:bg-red-500/20 dark:text-red-300 dark:hover:bg-red-500/30 light:bg-red-100 light:text-red-700 light:hover:bg-red-200 transition-colors disabled:opacity-50"
+                              title="초대 거절"
+                            >
+                              <XCircle className="w-3.5 h-3.5" />거절
+                            </button>
+                          </div>
+                        )}
+
                         <div className="flex items-start gap-2 ml-2">
-                          {!notification.read && (
+                          {!notification.read && notification.type !== "MEETING_INVITATION" && (
                             <div className="w-2 h-2 bg-brand-500 rounded-full mt-1 flex-shrink-0"></div>
                           )}
                           <button
