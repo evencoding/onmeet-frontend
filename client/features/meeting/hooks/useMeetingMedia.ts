@@ -23,19 +23,33 @@ export function useMeetingMedia() {
   const toggleMic = useCallback(async () => {
     const store = useMeetingRoomStore.getState();
     const next = !store.isMuted;
-    store.setIsMuted(next);
-    await localParticipant.setMicrophoneEnabled(!next);
+    try {
+      await localParticipant.setMicrophoneEnabled(!next);
+      store.setIsMuted(next);
+    } catch (err) {
+      console.error("Failed to toggle mic:", err);
+      // 스토어 상태 복원 안 함 — 원래 상태 유지
+    }
   }, [localParticipant]);
 
   const toggleCamera = useCallback(async () => {
     const store = useMeetingRoomStore.getState();
     const next = !store.isVideoOn;
-    store.setIsVideoOn(next);
-    await localParticipant.setCameraEnabled(next);
+    try {
+      await localParticipant.setCameraEnabled(next);
+      store.setIsVideoOn(next);
+    } catch (err) {
+      console.error("Failed to toggle camera:", err);
+      // SDK 실패 시 스토어 업데이트 안 함 → UI가 실제 상태와 일치
+    }
   }, [localParticipant]);
 
   const toggleScreenShare = useCallback(async () => {
-    await localParticipant.setScreenShareEnabled(!isScreenSharing);
+    try {
+      await localParticipant.setScreenShareEnabled(!isScreenSharing);
+    } catch (err) {
+      console.error("Failed to toggle screen share:", err);
+    }
   }, [isScreenSharing, localParticipant]);
 
   return {

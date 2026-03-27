@@ -127,7 +127,9 @@ export default function MeetingBookingModal({
             inviteeUserIds: selectedParticipants.map((p) => p.id),
           },
         });
+        toast({ title: `${selectedParticipants.length}명에게 초대를 보냈습니다` });
       } catch (err) {
+        console.error("Bulk invite failed:", err);
         toast({ title: "회의는 생성되었지만 참여자 초대에 실패했습니다", description: getErrorMessage(err, "일정에서 다시 초대해주세요"), variant: "destructive" });
       }
     }
