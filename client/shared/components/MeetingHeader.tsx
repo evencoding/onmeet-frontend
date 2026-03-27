@@ -63,7 +63,7 @@ export default function MeetingHeader() {
   const markAllAsReadMutation = useMarkAllAsRead();
   const deleteMutation = useDeleteNotification();
   const deleteAllMutation = useDeleteAllNotifications();
-  useNotificationSSE(userId || undefined);
+  const { connected: sseConnected } = useNotificationSSE(userId || undefined);
   useFcmSetup(userId || undefined);
 
   const notifications = notificationPage?.content ?? [];
@@ -173,6 +173,10 @@ export default function MeetingHeader() {
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
             )}
+            <span
+              className={`absolute bottom-1 right-1 w-2 h-2 rounded-full ${sseConnected ? "bg-green-400" : "bg-red-400"}`}
+              title={sseConnected ? "실시간 알림 연결됨" : "실시간 알림 연결 끊김"}
+            />
           </button>
 
           {isDropdownOpen &&

@@ -183,37 +183,71 @@ export function useNotificationSSE(
   const onMessageRef = useRef(onMessage);
   onMessageRef.current = onMessage;
   const esRef = useRef<EventSource | null>(null);
+  const reconnectRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
+    const uid = userId; // narrow to string for closures
+    let disposed = false;
 
-    const es = new EventSource(SSE_URL, { withCredentials: true });
-    esRef.current = es;
+    function connect() {
+      if (disposed) return;
 
-    es.onopen = () => {
-      setConnected(true);
-    };
+      const es = new EventSource(SSE_URL, { withCredentials: true });
+      esRef.current = es;
 
-    // Backend sends named "notification" events via SseEmitter.event().name("notification")
-    es.addEventListener("notification", (event: MessageEvent) => {
-      try {
-        const notification = JSON.parse(event.data) as NotificationResponseDto;
-        onMessageRef.current?.(notification);
-        qc.invalidateQueries({ queryKey: notiKeys.unreadCount(userId) });
-        qc.invalidateQueries({ queryKey: notiKeys.lists(userId) });
-      } catch (err) {
-        console.warn("SSE notification parse error:", err);
-      }
-    });
+      es.onopen = () => {
+        console.debug("[SSE] Notification stream connected");
+        setConnected(true);
+      };
 
-    es.onerror = () => {
-      setConnected(false);
-      // EventSource auto-reconnects on error
-    };
+      // Backend sends: event name "connect" for initial, "notification" for real events, "heartbeat" for keep-alive
+      es.addEventListener("notification", (event: MessageEvent) => {
+        try {
+          const notification = JSON.parse(event.data) as NotificationResponseDto;
+          onMessageRef.current?.(notification);
+          qc.invalidateQueries({ queryKey: notiKeys.unreadCount(uid) });
+          qc.invalidateQueries({ queryKey: notiKeys.lists(uid) });
+        } catch (err) {
+          console.warn("[SSE] notification parse error:", err);
+        }
+      });
+
+      // Also listen for unnamed messages (data-only events without event: field)
+      es.onmessage = (event: MessageEvent) => {
+        if (!event.data) return;
+        try {
+          const notification = JSON.parse(event.data) as NotificationResponseDto;
+          if (notification.id && notification.type) {
+            onMessageRef.current?.(notification);
+            qc.invalidateQueries({ queryKey: notiKeys.unreadCount(uid) });
+            qc.invalidateQueries({ queryKey: notiKeys.lists(uid) });
+          }
+        } catch {
+          // non-JSON data (heartbeat, connect message) — ignore
+        }
+      };
+
+      es.onerror = () => {
+        setConnected(false);
+        // EventSource auto-reconnects for network errors, but if readyState is CLOSED
+        // (e.g., server returned non-200), we need manual reconnect
+        if (es.readyState === EventSource.CLOSED && !disposed) {
+          console.debug("[SSE] Connection closed, reconnecting in 5s...");
+          esRef.current = null;
+          es.close();
+          reconnectRef.current = setTimeout(connect, 5_000);
+        }
+      };
+    }
+
+    connect();
 
     return () => {
-      es.close();
+      disposed = true;
+      if (reconnectRef.current) clearTimeout(reconnectRef.current);
+      esRef.current?.close();
       esRef.current = null;
       setConnected(false);
     };

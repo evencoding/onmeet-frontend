@@ -149,8 +149,11 @@ export const roomStatusConfig: Record<string, { label: string; className: string
 
 // ── Adapter 함수 ──
 
+/** 팀 ID → 팀 이름 매핑. user.teams 배열에서 생성 가능 */
+export type TeamNameMap = Map<number, string>;
+
 /** API → 대시보드/회의 목록용 ViewModel */
-export function toMeetingViewModel(room: MeetingRoomResponse): MeetingViewModel {
+export function toMeetingViewModel(room: MeetingRoomResponse, teamMap?: TeamNameMap): MeetingViewModel {
   const dateObj = room.scheduledAt
     ? new Date(room.scheduledAt)
     : room.startedAt
@@ -170,6 +173,7 @@ export function toMeetingViewModel(room: MeetingRoomResponse): MeetingViewModel 
     type: room.type,
     accessScope: room.accessScope,
     locked: room.locked,
+    team: room.teamId && teamMap ? teamMap.get(room.teamId) : undefined,
     hasTranscript: room.status === "ENDED",
     tags: [],
     startedAt: room.startedAt,

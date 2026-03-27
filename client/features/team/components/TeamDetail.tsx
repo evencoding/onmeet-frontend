@@ -1,17 +1,12 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Users,
   Clock,
   Calendar,
   Users2,
-  Search,
-  Plus,
   Play,
-  Check,
-  X,
 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
 import { Avatar, AvatarFallback } from "@/shared/ui/avatar";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "@/features/auth/context";
@@ -49,20 +44,6 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
   const teamMeetings: MeetingRoomResponse[] = useMemo(
     () => (roomsData?.content ?? []).filter((room) => room.teamId === Number(teamId)),
     [roomsData, teamId],
-  );
-
-  const [isAddingMember, setIsAddingMember] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredEmployees = useMemo(
-    () =>
-      allEmployees.filter(
-        (emp) =>
-          !emp.teams.some((t) => String(t.id) === teamId) &&
-          (emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            emp.email.toLowerCase().includes(searchQuery.toLowerCase())),
-      ),
-    [allEmployees, teamId, searchQuery],
   );
 
   const getStatusBadge = (status: string) => {
@@ -129,87 +110,8 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
               {teamMembers.length}명
             </span>
           </div>
-          {!isAddingMember && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsAddingMember(true)}
-              className="gap-2 dark:border-purple-500/30 dark:text-white dark:hover:bg-purple-500/20 light:border-purple-300/50 light:text-purple-700 light:hover:bg-purple-100/30"
-            >
-              <Plus className="w-4 h-4" />
-              멤버 추가
-            </Button>
-          )}
+          {/* 팀원 추가는 팀 생성 시 memberIds로 관리 (별도 추가 API 미구현) */}
         </div>
-
-        {isAddingMember && (
-          <div className="mb-6 p-4 dark:bg-purple-500/10 light:bg-purple-50 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg space-y-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 w-4 h-4 dark:text-white/40 light:text-purple-600" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="이름, 이메일로 검색"
-                autoFocus
-                className="w-full pl-10 pr-4 py-2 border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg dark:bg-purple-500/10 light:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-600/50"
-              />
-            </div>
-
-            {filteredEmployees.length > 0 ? (
-              <div className="border dark:border-purple-500/30 light:border-purple-300/50 rounded-lg overflow-y-auto max-h-48 dark:bg-black/40 light:bg-white">
-                {filteredEmployees.map((employee) => (
-                  <div
-                    key={employee.id}
-                    className="w-full flex items-center gap-3 p-3 dark:border-b dark:border-purple-500/20 light:border-b light:border-purple-300/30 transition-colors dark:hover:bg-purple-500/20 light:hover:bg-purple-100/30 text-left"
-                  >
-                    <Avatar className="w-8 h-8">
-                      <AvatarFallback>{employee.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium dark:text-white light:text-purple-900">
-                        {employee.name}
-                      </p>
-                      <p className="text-xs dark:text-white/50 light:text-purple-600">
-                        {employee.jobTitle?.name ?? "-"} · {employee.email}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="p-4 text-center text-sm dark:text-white/60 light:text-purple-600">
-                {searchQuery ? "검색 결과가 없습니다" : "추가할 팀원이 없습니다"}
-              </div>
-            )}
-
-            <div className="flex gap-2 pt-2">
-              <Button
-                size="sm"
-                onClick={() => {
-                  setIsAddingMember(false);
-                  setSearchQuery("");
-                }}
-                className="flex-1 gap-2 bg-purple-600 dark:hover:bg-purple-700 light:hover:bg-purple-700 text-white"
-              >
-                <Check className="w-4 h-4" />
-                완료
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setIsAddingMember(false);
-                  setSearchQuery("");
-                }}
-                className="flex-1 gap-2 dark:border-purple-500/30 dark:text-white dark:hover:bg-purple-500/20 light:border-purple-300/50 light:text-purple-700 light:hover:bg-purple-100/30"
-              >
-                <X className="w-4 h-4" />
-                취소
-              </Button>
-            </div>
-          </div>
-        )}
 
         {isEmployeesLoading ? (
           <div className="space-y-3">

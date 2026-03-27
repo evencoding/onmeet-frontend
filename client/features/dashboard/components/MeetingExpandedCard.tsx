@@ -7,7 +7,7 @@ import RichTextEditor from "./RichTextEditor";
 import AudioPlayer from "./AudioPlayer";
 import { useAuth } from "@/features/auth/context";
 import { useMinutes, useTranscript, useUpdateMinutes, useRegenerateMinutes } from "@/features/ai/hooks";
-import type { MinutesStatus } from "@/features/ai/api";
+import type { MinutesStatus, SummaryResult } from "@/features/ai/api";
 import { useRecordings, useRecordingDownloadUrl } from "@/features/meeting/hooks/useRecording";
 import { toast } from "@/shared/hooks/use-toast";
 import { getErrorMessage } from "@/shared/utils/apiFetch";
@@ -32,18 +32,12 @@ interface MeetingExpandedCardProps {
   getStatusColor: (status: string) => string;
 }
 
-interface ParsedSummary {
-  summary?: string;
-  keyPoints?: string[];
-  [key: string]: unknown;
-}
-
-function parseSummaryJson(json: string | null | undefined): ParsedSummary | null {
+function parseUserEditedSummary(json: string | null | undefined): SummaryResult | null {
   if (!json) return null;
   try {
-    return JSON.parse(json) as ParsedSummary;
+    return JSON.parse(json) as SummaryResult;
   } catch {
-    return { summary: json };
+    return { description: json, keywords: null, decisions: null, actionItems: null };
   }
 }
 
@@ -91,13 +85,19 @@ export default function MeetingExpandedCard({
   const [transcriptTab, setTranscriptTab] = useState<"full" | "raw">("full");
   const [copiedMeetingId, setCopiedMeetingId] = useState<string | null>(null);
 
-  const parsed = useMemo(
-    () => parseSummaryJson(minutesData?.userEditedSummaryJson ?? minutesData?.summaryJson),
-    [minutesData],
-  );
+  const summaryResult: SummaryResult | null = useMemo(() => {
+    if (!minutesData) return null;
+    // 사용자 편집 JSON이 있으면 파싱, 없으면 백엔드의 구조화된 summary 사용
+    if (minutesData.userEditedSummaryJson) {
+      return parseUserEditedSummary(minutesData.userEditedSummaryJson);
+    }
+    return minutesData.summary;
+  }, [minutesData]);
 
-  const summary = parsed?.summary;
-  const keyPoints = parsed?.keyPoints;
+  const description = summaryResult?.description;
+  const keywords = summaryResult?.keywords;
+  const decisions = summaryResult?.decisions;
+  const actionItems = summaryResult?.actionItems;
   const transcript = transcriptData?.transcript;
 
   const firstRecordingUrl = useMemo(() => {
@@ -110,11 +110,17 @@ export default function MeetingExpandedCard({
   const handleSave = useCallback((meetingId: string) => {
     const content = editedContent[meetingId];
     if (!content) return;
+    const edited: SummaryResult = {
+      description: content,
+      keywords: summaryResult?.keywords ?? null,
+      decisions: summaryResult?.decisions ?? null,
+      actionItems: summaryResult?.actionItems ?? null,
+    };
     updateMinutesMutation.mutate(
       {
         roomId: Number(meetingId),
         userId,
-        data: { userEditedSummaryJson: JSON.stringify({ ...parsed, summary: content }) },
+        data: { userEditedSummaryJson: JSON.stringify(edited) },
       },
       {
         onSuccess: () => {
@@ -126,7 +132,7 @@ export default function MeetingExpandedCard({
       },
     );
     setEditingMeetingId(null);
-  }, [updateMinutesMutation, userId, editedContent, parsed]);
+  }, [updateMinutesMutation, userId, editedContent, summaryResult]);
 
   const handleRegenerate = useCallback(() => {
     regenerateMutation.mutate(
@@ -247,20 +253,49 @@ export default function MeetingExpandedCard({
             )}
 
             {/* Summary */}
-            {summary && (
-              <div className="space-y-2">
-                <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30">
-                  <p className="dark:text-white/80 light:text-purple-900 leading-relaxed whitespace-pre-wrap">{summary}</p>
-                </div>
+            {summaryResult && (
+              <div className="space-y-4">
+                {description && (
+                  <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30">
+                    <p className="dark:text-white/80 light:text-purple-900 leading-relaxed whitespace-pre-wrap">{description}</p>
+                  </div>
+                )}
 
-                {keyPoints && keyPoints.length > 0 && (
-                  <div className="mt-3">
-                    <p className="text-sm font-bold dark:text-white/70 light:text-purple-700 mb-2">주요 포인트</p>
+                {keywords && keywords.length > 0 && (
+                  <div>
+                    <p className="text-sm font-bold dark:text-white/70 light:text-purple-700 mb-2">키워드</p>
+                    <div className="flex flex-wrap gap-2">
+                      {keywords.map((kw, idx) => (
+                        <span key={idx} className="px-3 py-1 rounded-full text-xs font-semibold dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100 light:text-purple-800">
+                          {kw}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {decisions && decisions.length > 0 && (
+                  <div>
+                    <p className="text-sm font-bold dark:text-white/70 light:text-purple-700 mb-2">결정 사항</p>
                     <ul className="space-y-1">
-                      {keyPoints.map((point, idx) => (
+                      {decisions.map((item, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-sm dark:text-white/70 light:text-purple-800">
-                          <span className="dark:text-purple-400 light:text-purple-600 mt-0.5">•</span>
-                          {point}
+                          <span className="dark:text-green-400 light:text-green-600 mt-0.5">✓</span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {actionItems && actionItems.length > 0 && (
+                  <div>
+                    <p className="text-sm font-bold dark:text-white/70 light:text-purple-700 mb-2">액션 아이템</p>
+                    <ul className="space-y-1">
+                      {actionItems.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-sm dark:text-white/70 light:text-purple-800">
+                          <span className="dark:text-amber-400 light:text-amber-600 mt-0.5">→</span>
+                          {item}
                         </li>
                       ))}
                     </ul>
@@ -279,7 +314,7 @@ export default function MeetingExpandedCard({
                       handleSave(meeting.id);
                     } else {
                       setEditingMeetingId(meeting.id);
-                      setEditedContent({ ...editedContent, [meeting.id]: summary || "" });
+                      setEditedContent({ ...editedContent, [meeting.id]: description || "" });
                     }
                   }}
                   className="flex items-center gap-2 px-3 py-1.5 dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900 dark:hover:bg-purple-500/30 light:hover:bg-purple-100 rounded-lg transition-all"
@@ -321,7 +356,7 @@ export default function MeetingExpandedCard({
                 <div className="space-y-2">
                   {editingMeetingId === meeting.id ? (
                     <RichTextEditor
-                      value={editedContent[meeting.id] || summary || ""}
+                      value={editedContent[meeting.id] || description || ""}
                       onChange={(val) => setEditedContent({ ...editedContent, [meeting.id]: val })}
                       placeholder="회의 내용을 입력하세요..."
                       className="min-h-96"
@@ -331,7 +366,7 @@ export default function MeetingExpandedCard({
                       <div
                         className="dark:text-white/80 light:text-purple-900 text-sm leading-relaxed space-y-3 prose dark:prose-invert prose-sm max-w-none"
                         dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(editedContent[meeting.id] || summary || ""),
+                          __html: DOMPurify.sanitize(editedContent[meeting.id] || description || ""),
                         }}
                       />
                     </div>
@@ -364,7 +399,7 @@ export default function MeetingExpandedCard({
               hasRecordings={!!recordingsData && recordingsData.length > 0}
               rawTranscript={transcript}
               fullText={transcript}
-              summary={summary}
+              summary={description ?? undefined}
               onDownloadRecording={handleDownload}
               firstRecordingId={recordingsData?.[0]?.id}
             />

@@ -14,6 +14,7 @@ import {
   getStatusLabel,
   getStatusColor,
   type MeetingViewModel,
+  type TeamNameMap,
 } from "@/shared/adapters/meeting";
 import { toast } from "@/shared/hooks/use-toast";
 
@@ -53,9 +54,17 @@ export default function Summary() {
 
   const { data: historyData, isLoading: isHistoryLoading } = useRoomHistory(userId);
   const { data: scheduledData, isLoading: isScheduledLoading } = useScheduledRooms(userId);
-  const { data: activeData, isLoading: isActiveLoading } = useRooms(userId, { status: "ACTIVE" });
+  const { data: activeData, isLoading: isActiveLoading } = useRooms(userId, { status: "ACTIVE", hostUserId: user?.id });
 
   const isLoading = isHistoryLoading || isScheduledLoading || isActiveLoading;
+
+  const teamMap: TeamNameMap = useMemo(() => {
+    const map = new Map<number, string>();
+    if (user?.teams) {
+      for (const t of user.teams) map.set(t.id, t.name);
+    }
+    return map;
+  }, [user?.teams]);
 
   const allMeetings: Meeting[] = useMemo(() => {
     const rooms = mergeAndDedup(
@@ -63,8 +72,8 @@ export default function Summary() {
       scheduledData?.content,
       activeData?.content,
     );
-    return rooms.map(toMeetingViewModel);
-  }, [historyData, scheduledData, activeData]);
+    return rooms.map((r) => toMeetingViewModel(r, teamMap));
+  }, [historyData, scheduledData, activeData, teamMap]);
 
   const filteredMeetings = useMemo(() => allMeetings.filter((meeting) => {
     const matchesSearch =

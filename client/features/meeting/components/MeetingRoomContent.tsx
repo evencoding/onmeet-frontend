@@ -8,6 +8,7 @@ import {
   VideoOff,
   X,
   AlertTriangle,
+  Ban,
 } from "lucide-react";
 import {
   useParticipants,
@@ -17,6 +18,10 @@ import { RoomEvent, type RemoteParticipant } from "livekit-client";
 import { useShallow } from "zustand/react/shallow";
 import { useMeetingRoomStore } from "../store";
 import { endRoom, leaveRoom } from "../api/room";
+import { startRecording, stopRecording } from "../api/recording";
+import { bulkInviteToRoom } from "../api/invitation";
+import { muteParticipant, kickParticipant } from "../api/participant";
+import { toast } from "@/shared/hooks/use-toast";
 import AIRecordingRequestModal from "./AIRecordingRequestModal";
 import InviteParticipantModal from "./InviteParticipantModal";
 import ExitMeetingModal from "./ExitMeetingModal";
@@ -29,7 +34,7 @@ import MeetingToolbar from "./MeetingToolbar";
 // Each modal subscribes to only its own slice of state,
 // preventing layout re-renders when modal state changes.
 
-function ConnectedAIRecordingModal({ isHost }: { isHost: boolean }) {
+function ConnectedAIRecordingModal({ isHost, roomId, userId }: { isHost: boolean; roomId: string; userId: string }) {
   const { isOpen, isAIRecording, pendingAIRequests } = useMeetingRoomStore(
     useShallow((s) => ({
       isOpen: s.isAIRecordingRequestModalOpen,
@@ -53,13 +58,21 @@ function ConnectedAIRecordingModal({ isHost }: { isHost: boolean }) {
     });
   }, []);
 
-  const handleApprove = useCallback(() => {
+  const handleApprove = useCallback(async () => {
     const store = useMeetingRoomStore.getState();
-    store.setIsAIRecording(true);
+    try {
+      if (!store.isAIRecording) {
+        await startRecording(Number(roomId), userId);
+      }
+      store.setIsAIRecording(true);
+      toast({ title: "AI 녹음이 시작되었습니다" });
+    } catch (err) {
+      toast({ title: "녹음 시작 실패", description: String(err), variant: "destructive" });
+    }
     if (store.pendingAIRequests.length > 0) {
       store.removePendingAIRequest();
     }
-  }, []);
+  }, [roomId, userId]);
 
   const handleReject = useCallback(() => {
     const store = useMeetingRoomStore.getState();
@@ -84,18 +97,31 @@ function ConnectedAIRecordingModal({ isHost }: { isHost: boolean }) {
 
 function ConnectedInviteModal({
   roomId,
+  userId,
   participantIdentities,
 }: {
   roomId: string;
+  userId: string;
   participantIdentities: string[];
 }) {
   const isOpen = useMeetingRoomStore((s) => s.isInviteModalOpen);
+
+  const handleInvite = useCallback(async (members: { id: string; name: string; email: string }[]) => {
+    try {
+      const inviteeUserIds = members.map((m) => Number(m.id));
+      await bulkInviteToRoom(Number(roomId), userId, { inviteeUserIds });
+      toast({ title: "초대를 보냈습니다" });
+      useMeetingRoomStore.getState().setIsInviteModalOpen(false);
+    } catch (err) {
+      toast({ title: "초대 실패", description: String(err), variant: "destructive" });
+    }
+  }, [roomId, userId]);
 
   return (
     <InviteParticipantModal
       isOpen={isOpen}
       onClose={() => useMeetingRoomStore.getState().setIsInviteModalOpen(false)}
-      onInvite={() => {}}
+      onInvite={handleInvite}
       alreadyInvited={participantIdentities}
       meetingId={roomId}
     />
@@ -261,6 +287,10 @@ export default memo(function MeetingRoomContent({
   const handleDisconnect = useCallback(async () => {
     const roomIdNum = Number(roomId);
     try {
+      // 녹음 중이면 먼저 중지
+      if (useMeetingRoomStore.getState().isAIRecording) {
+        await stopRecording(roomIdNum, userId).catch(() => {});
+      }
       if (isHost) {
         await endRoom(roomIdNum, userId);
       } else {
@@ -383,6 +413,30 @@ export default memo(function MeetingRoomContent({
                     )}
                   </div>
                 </div>
+                {isHost && participant.identity !== userId && participant.metadata !== "host" && (
+                  <div className="flex items-center gap-1">
+                    {participant.isMicrophoneEnabled && (
+                      <button
+                        onClick={() => {
+                          muteParticipant(Number(roomId), Number(participant.identity), userId).catch(() => {});
+                        }}
+                        className="p-1 hover:bg-purple-500/30 rounded transition-colors"
+                        title="음소거"
+                      >
+                        <MicOff className="w-3.5 h-3.5 text-white/50 hover:text-white" />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        kickParticipant(Number(roomId), Number(participant.identity), userId).catch(() => {});
+                      }}
+                      className="p-1 hover:bg-red-500/30 rounded transition-colors"
+                      title="내보내기"
+                    >
+                      <Ban className="w-3.5 h-3.5 text-white/50 hover:text-red-400" />
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -399,8 +453,8 @@ export default memo(function MeetingRoomContent({
       )}
 
       {/* Modals — self-subscribing containers */}
-      <ConnectedAIRecordingModal isHost={isHost} />
-      <ConnectedInviteModal roomId={roomId} participantIdentities={participantIdentities} />
+      <ConnectedAIRecordingModal isHost={isHost} roomId={roomId} userId={userId} />
+      <ConnectedInviteModal roomId={roomId} userId={userId} participantIdentities={participantIdentities} />
       <ConnectedExitModal isHost={isHost} onConfirm={handleDisconnect} />
 
       {/* Host departure modal */}

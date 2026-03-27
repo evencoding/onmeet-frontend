@@ -133,7 +133,7 @@ export default function Schedule() {
                                   {meeting.title}
                                 </h3>
                                 {meeting.locked && (
-                                  <Lock className="w-4 h-4 dark:text-amber-400 light:text-amber-600 flex-shrink-0" title="잠금된 회의" />
+                                  <Lock className="w-4 h-4 dark:text-amber-400 light:text-amber-600 flex-shrink-0" />
                                 )}
                               </div>
                             </div>
