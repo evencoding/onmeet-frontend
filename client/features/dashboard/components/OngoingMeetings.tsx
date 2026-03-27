@@ -3,7 +3,8 @@ import { Clock, Users, Pencil, Trash2, Lock, Copy, Globe, Shield } from "lucide-
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { useAuth } from "@/features/auth/context";
-import { useRooms, useScheduledRooms, useCancelSchedule } from "@/features/meeting/hooks";
+import { useScheduledRooms, useCancelSchedule } from "@/features/meeting/hooks";
+import { useMyRooms } from "@/features/meeting/hooks/useRoomDiscovery";
 import type { MeetingRoomResponse } from "@/features/meeting/api";
 import MeetingEditModal from "@/features/schedule/components/MeetingEditModal";
 import { toast } from "@/shared/hooks/use-toast";
@@ -14,7 +15,7 @@ export default function OngoingMeetings() {
   const { user } = useAuth();
   const userId = user ? String(user.id) : "";
 
-  const { data: activeRoomsData, isLoading: isActiveLoading } = useRooms(userId, { status: "ACTIVE", hostUserId: user?.id });
+  const { data: activeRoomsArr, isLoading: isActiveLoading } = useMyRooms(userId, "ACTIVE");
   const { data: scheduledRoomsData, isLoading: isScheduledLoading } = useScheduledRooms(userId);
   const cancelScheduleMutation = useCancelSchedule();
 
@@ -23,7 +24,7 @@ export default function OngoingMeetings() {
 
   const isLoading = isActiveLoading || isScheduledLoading;
 
-  const activeRooms: MeetingRoomResponse[] = activeRoomsData?.content ?? [];
+  const activeRooms: MeetingRoomResponse[] = activeRoomsArr ?? [];
   const scheduledRooms: MeetingRoomResponse[] = scheduledRoomsData?.content ?? [];
 
   const meetings = [

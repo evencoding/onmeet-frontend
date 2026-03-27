@@ -22,6 +22,14 @@ export function searchRoomsByTag(tagName: string, userId: string) {
   );
 }
 
+export function listMyRooms(userId: string, status?: string) {
+  const qs = status ? `?status=${status}` : "";
+  return roomFetch<MeetingRoomResponse[]>(
+    `/rooms/my${qs}`,
+    userId,
+  );
+}
+
 export function listScheduledRooms(userId: string) {
   return roomFetch<Page<MeetingRoomResponse>>(
     `/rooms/scheduled`,
