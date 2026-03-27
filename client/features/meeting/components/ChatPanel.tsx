@@ -136,7 +136,10 @@ export default memo(function ChatPanel() {
           type="text"
           value={chatInput}
           onChange={(e) => useMeetingRoomStore.getState().setChatInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+          onKeyDown={(e) => {
+            if (e.nativeEvent.isComposing) return;
+            if (e.key === "Enter") handleSendMessage();
+          }}
           placeholder="메시지를 입력하세요..."
           className="flex-1 px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-sm text-white placeholder-white/50 focus:outline-none focus:border-purple-400"
         />

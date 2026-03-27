@@ -1,11 +1,20 @@
-import { memo } from "react";
-import { useParticipants } from "@livekit/components-react";
+import { memo, useMemo } from "react";
+import { useParticipants, useTracks } from "@livekit/components-react";
+import { Track } from "livekit-client";
 import { useShallow } from "zustand/react/shallow";
 import { useMeetingRoomStore } from "../store";
 import ParticipantTile from "./ParticipantTile";
 
 export default memo(function VideoGrid() {
   const participants = useParticipants();
+  const screenShareTracks = useTracks([Track.Source.ScreenShare]);
+
+  // 화면 공유 중인 참가자가 있으면 자동으로 speaker 모드 + 해당 참가자를 메인 뷰에
+  const screenShareParticipantIdx = useMemo(() => {
+    if (screenShareTracks.length === 0) return -1;
+    const ssIdentity = screenShareTracks[0].participant.identity;
+    return participants.findIndex((p) => p.identity === ssIdentity);
+  }, [screenShareTracks, participants]);
 
   const { viewMode, currentSpeaker, isAIRecording } = useMeetingRoomStore(
     useShallow((s) => ({
@@ -15,7 +24,11 @@ export default memo(function VideoGrid() {
     })),
   );
 
-  if (viewMode === "gallery") {
+  // 화면 공유 중이면 강제 speaker 모드
+  const effectiveViewMode = screenShareParticipantIdx >= 0 ? "speaker" : viewMode;
+  const effectiveSpeaker = screenShareParticipantIdx >= 0 ? screenShareParticipantIdx : currentSpeaker;
+
+  if (effectiveViewMode === "gallery") {
     return (
       <div className="grid grid-cols-2 gap-4 h-full overflow-auto max-w-4xl mx-auto">
         {participants.slice(0, 4).map((participant) => (
@@ -31,9 +44,9 @@ export default memo(function VideoGrid() {
   return (
     <div className="flex h-full gap-4">
       <div className="flex-1 rounded-2xl overflow-hidden border-2 border-purple-500 ring-2 ring-purple-500/30 relative">
-        {participants[currentSpeaker] && (
+        {participants[effectiveSpeaker] && (
           <ParticipantTile
-            participant={participants[currentSpeaker]}
+            participant={participants[effectiveSpeaker]}
             className="w-full h-full rounded-none border-0"
           />
         )}
@@ -52,7 +65,7 @@ export default memo(function VideoGrid() {
             key={participant.identity}
             onClick={() => useMeetingRoomStore.getState().setCurrentSpeaker(idx)}
             className={`relative w-full h-24 rounded-lg overflow-hidden border-2 transition-all ${
-              currentSpeaker === idx
+              effectiveSpeaker === idx
                 ? "border-purple-400"
                 : "border-purple-500/30 hover:border-purple-400"
             }`}

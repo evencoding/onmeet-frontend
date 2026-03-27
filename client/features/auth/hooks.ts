@@ -126,7 +126,7 @@ export function useValidateInvitation(email: string, code: string) {
 
 // ── Admin Query Hooks ──
 
-export function useAllEmployees(pageable?: Pageable) {
+export function useAllEmployees(pageable?: Pageable, enabled = true) {
   const stablePageable = useMemo(
     () => pageable,
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,7 +135,8 @@ export function useAllEmployees(pageable?: Pageable) {
   return useQuery({
     queryKey: AUTH_ADMIN_KEYS.employees(stablePageable),
     queryFn: () => getAllEmployees(stablePageable ?? {}),
-    staleTime: 30_000,
+    enabled,
+    staleTime: 5 * 60_000, // 5분 — 직원 목록은 자주 변경되지 않음
   });
 }
 
