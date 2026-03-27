@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Loader } from "lucide-react";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { LiveKitRoom } from "@livekit/components-react";
 import { useShallow } from "zustand/react/shallow";
 import MeetingPreparationModal from "@/features/meeting/components/MeetingPreparationModal";
@@ -42,6 +42,36 @@ export default function MeetingRoom() {
     userId,
   );
   const joinRoom = useJoinRoom();
+
+  // LiveKitRoom에 전달할 초기 미디어 상태 (토글해도 변하지 않음)
+  const initialMediaRef = useRef({ isMuted, isVideoOn, deviceSelection });
+
+  // 새로고침 복원: sessionStorage에 토큰 저장/복원
+  const SESSION_KEY = `onmeet_session_${roomId}`;
+  useEffect(() => {
+    if (token && phase === "connected") {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ token, isHost }));
+    }
+  }, [token, phase, isHost, SESSION_KEY]);
+
+  useEffect(() => {
+    if (phase === "preparing" && !token) {
+      const saved = sessionStorage.getItem(SESSION_KEY);
+      if (saved) {
+        try {
+          const { token: savedToken, isHost: savedIsHost } = JSON.parse(saved);
+          if (savedToken) {
+            const s = useMeetingRoomStore.getState();
+            s.setToken(savedToken);
+            s.setIsHost(savedIsHost);
+            s.setPhase("connected");
+          }
+        } catch {
+          sessionStorage.removeItem(SESSION_KEY);
+        }
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDeviceSelect = useCallback(
     (devices: DeviceSelection | null) => {
@@ -130,8 +160,9 @@ export default function MeetingRoom() {
   useEffect(() => {
     return () => {
       useMeetingRoomStore.getState().reset();
+      sessionStorage.removeItem(SESSION_KEY);
     };
-  }, []);
+  }, [SESSION_KEY]);
 
   if (!roomId || !Number.isFinite(roomIdNum)) {
     return (
@@ -200,15 +231,17 @@ export default function MeetingRoom() {
     );
   }
 
-  const audioOptions = !isMuted
-    ? deviceSelection?.microphoneId
-      ? { deviceId: deviceSelection.microphoneId }
+  // 초기 미디어 설정 — 토글해도 변하지 않는 ref 사용 (LiveKitRoom 재연결 방지)
+  const initMedia = initialMediaRef.current;
+  const audioOptions = !initMedia.isMuted
+    ? initMedia.deviceSelection?.microphoneId
+      ? { deviceId: initMedia.deviceSelection.microphoneId }
       : true
     : false;
 
-  const videoOptions = isVideoOn
-    ? deviceSelection?.cameraId
-      ? { deviceId: deviceSelection.cameraId }
+  const videoOptions = initMedia.isVideoOn
+    ? initMedia.deviceSelection?.cameraId
+      ? { deviceId: initMedia.deviceSelection.cameraId }
       : true
     : false;
 
