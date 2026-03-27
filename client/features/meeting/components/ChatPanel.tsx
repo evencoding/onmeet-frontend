@@ -8,6 +8,7 @@ import { toast } from "@/shared/hooks/use-toast";
 export default memo(function ChatPanel() {
   const room = useRoomContext();
   const encoder = useRef(new TextEncoder());
+  const isComposingRef = useRef(false);
 
   const { showChat, chatMessages, chatInput, noteText, showNoteInput } =
     useMeetingRoomStore(
@@ -136,9 +137,13 @@ export default memo(function ChatPanel() {
           type="text"
           value={chatInput}
           onChange={(e) => useMeetingRoomStore.getState().setChatInput(e.target.value)}
+          onCompositionStart={() => { isComposingRef.current = true; }}
+          onCompositionEnd={() => { isComposingRef.current = false; }}
           onKeyDown={(e) => {
-            if (e.nativeEvent.isComposing) return;
-            if (e.key === "Enter") handleSendMessage();
+            if (e.key !== "Enter") return;
+            if (isComposingRef.current || e.nativeEvent.isComposing || e.keyCode === 229) return;
+            e.preventDefault();
+            handleSendMessage();
           }}
           placeholder="메시지를 입력하세요..."
           className="flex-1 px-3 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg text-sm text-white placeholder-white/50 focus:outline-none focus:border-purple-400"
