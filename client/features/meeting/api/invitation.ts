@@ -45,3 +45,15 @@ export function declineInvitation(invitationId: number, userId: string) {
     method: "POST",
   });
 }
+
+export function acceptInvitationByRoom(roomId: number, userId: string) {
+  return roomFetch<void>(`/rooms/${roomId}/invitations/accept`, userId, {
+    method: "POST",
+  });
+}
+
+export function declineInvitationByRoom(roomId: number, userId: string) {
+  return roomFetch<void>(`/rooms/${roomId}/invitations/decline`, userId, {
+    method: "POST",
+  });
+}
