@@ -1,4 +1,5 @@
 import { X, Clock, Settings } from "lucide-react";
+import ModalTransition from "@/shared/components/ModalTransition";
 import { useState } from "react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
@@ -84,10 +85,8 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
 
   const isPending = createRoomMutation.isPending || scheduleRoomMutation.isPending;
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <ModalTransition isOpen={isOpen} onClose={onClose}>
       <div className="om-modal-card max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 z-20 dark:bg-purple-950/80 light:bg-white/90 px-8 py-6 border-b dark:border-purple-500/20 light:border-purple-200/50 flex items-center justify-between backdrop-blur-xl">
           <div>
@@ -188,6 +187,6 @@ export default function CreateMeetingModal({ isOpen, onClose }: CreateMeetingMod
           </div>
         </form>
       </div>
-    </div>
+    </ModalTransition>
   );
 }
