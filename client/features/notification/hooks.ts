@@ -141,14 +141,24 @@ export function useFcmSetup(userId: string | undefined) {
 
     (async () => {
       try {
-        const { messaging } = await import("@/shared/lib/firebase");
-        if (!messaging || cancelled) return;
+        const { messagingReady } = await import("@/shared/lib/firebase");
+        const resolvedMessaging = await messagingReady;
+        if (!resolvedMessaging || cancelled) return;
 
         const { getToken, onMessage } = await import("firebase/messaging");
         const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
         if (!vapidKey) return;
 
-        const token = await getToken(messaging, { vapidKey });
+        // PWA의 sw.js가 루트 스코프를 점유하므로 기존 SW registration 재사용
+        let swRegistration: ServiceWorkerRegistration | undefined;
+        if ("serviceWorker" in navigator) {
+          swRegistration = await navigator.serviceWorker.ready;
+        }
+
+        const token = await getToken(resolvedMessaging, {
+          vapidKey,
+          serviceWorkerRegistration: swRegistration,
+        });
         if (!token || cancelled) return;
 
         tokenRef.current = token;
@@ -160,12 +170,39 @@ export function useFcmSetup(userId: string | undefined) {
           data: { token, deviceId, deviceType: "WEB" },
         });
 
-        // 포그라운드 FCM 수신 리스너
-        unsubscribeForeground = onMessage(messaging, (payload) => {
+        // ① 사이트 보고 있음 → onMessage로 수신 (토스트 + 쿼리 갱신)
+        unsubscribeForeground = onMessage(resolvedMessaging, (payload) => {
           console.debug("[FCM] Foreground message:", payload);
+          const title = payload.notification?.title || payload.data?.title || "새 알림";
+          const body = payload.notification?.body || payload.data?.body || "";
+
+          // 브라우저 내 토스트
           qc.invalidateQueries({ queryKey: notiKeys.unreadCount(uid) });
           qc.invalidateQueries({ queryKey: notiKeys.lists(uid) });
+
+          // 포그라운드에서도 시스템 알림 표시 (Notification API)
+          if (Notification.permission === "granted") {
+            const n = new Notification(title, {
+              body,
+              icon: "/icons/brand-icon-transparent.png",
+              tag: payload.data?.dedupeKey,
+            });
+            n.onclick = () => {
+              window.focus();
+              const deeplink = payload.data?.deeplink;
+              if (deeplink) window.location.href = deeplink;
+              n.close();
+            };
+          }
         });
+
+        // 알림 권한 요청 (사용자가 아직 결정하지 않은 경우)
+        if (Notification.permission === "default") {
+          const permission = await Notification.requestPermission();
+          if (permission === "denied") {
+            console.debug("[FCM] Notification permission denied by user");
+          }
+        }
       } catch (err) {
         console.warn("FCM setup failed:", err);
       }

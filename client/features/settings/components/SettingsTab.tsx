@@ -19,7 +19,7 @@ export default function SettingsTab({
   return (
     <div className="space-y-6">
 
-      <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-purple-300/30 p-8">
+      <div className="om-card rounded-3xl p-8">
         <div className="flex items-center gap-3 mb-6">
           <Bell className="w-6 h-6 dark:text-purple-400 light:text-purple-600" />
           <h3 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
@@ -30,7 +30,7 @@ export default function SettingsTab({
           {settingItems.map((item) => (
             <div
               key={item.key}
-              className="flex items-center justify-between p-4 dark:bg-purple-500/10 light:bg-purple-50 rounded-xl"
+              className="flex items-center justify-between p-4 dark:bg-white/[0.03] light:bg-purple-50/80 dark:border dark:border-white/[0.04] light:border light:border-purple-200/50 rounded-xl"
             >
               <div>
                 <p className="font-medium dark:text-white light:text-purple-900">
@@ -54,7 +54,7 @@ export default function SettingsTab({
         </div>
       </div>
 
-      <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-purple-300/30 p-8">
+      <div className="om-card rounded-3xl p-8">
         <div className="flex items-center gap-3 mb-6">
           <Lock className="w-6 h-6 dark:text-purple-400 light:text-purple-600" />
           <h3 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">

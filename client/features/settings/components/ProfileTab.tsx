@@ -87,7 +87,7 @@ export default function ProfileTab({
   changePasswordIsPending,
 }: ProfileTabProps) {
   return (
-    <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/30 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/70 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-purple-300/30 p-8">
+    <div className="om-card rounded-3xl p-8">
       <div className="flex gap-8">
 
         <div className="flex flex-col items-center gap-3 flex-shrink-0">
@@ -139,7 +139,7 @@ export default function ProfileTab({
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all"
+                className="om-input"
               />
             ) : (
               <p className="text-lg dark:text-white/70 light:text-purple-700">{formData.name}</p>
@@ -263,7 +263,7 @@ export default function ProfileTab({
                           setPasswordForm((prev) => ({ ...prev, [field.name]: e.target.value }))
                         }
                         placeholder={field.placeholder}
-                        className="w-full px-4 py-3 pr-12 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-400/50 rounded-xl dark:bg-purple-500/10 light:bg-white light:shadow-md light:shadow-purple-200/20 dark:text-white light:text-purple-900 focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all placeholder:dark:text-white/30 placeholder:light:text-purple-400"
+                        className="om-input pr-12"
                       />
                       <button
                         type="button"

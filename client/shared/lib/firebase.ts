@@ -21,39 +21,32 @@ let app: FirebaseApp | null = null;
 let analytics: Analytics | null = null;
 let messaging: Messaging | null = null;
 
-if (isFirebaseConfigValid()) {
+// messaging 초기화를 Promise로 감싸서 race condition 방지
+const messagingReady: Promise<Messaging | null> = (async () => {
+  if (!isFirebaseConfigValid()) {
+    console.warn("Firebase configuration is incomplete. Some Firebase features may not work.");
+    return null;
+  }
+
   try {
     app = initializeApp(firebaseConfig);
     analytics = getAnalytics(app);
   } catch (error) {
     console.error("Firebase initialization error:", error);
+    return null;
   }
 
-  if (app) {
-    isSupported()
-      .then(async (supported) => {
-        if (!supported) return;
-        try {
-          // 서비스 워커에 Firebase config 전달 후 등록
-          if ("serviceWorker" in navigator) {
-            const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
-            // config을 서비스 워커에 전달
-            registration.active?.postMessage({ type: "FIREBASE_CONFIG", config: firebaseConfig });
-            navigator.serviceWorker.ready.then((reg) => {
-              reg.active?.postMessage({ type: "FIREBASE_CONFIG", config: firebaseConfig });
-            });
-          }
-          messaging = getMessaging(app!);
-        } catch (error) {
-          console.warn("Firebase Messaging init failed:", error);
-        }
-      })
-      .catch((err) => {
-        console.warn("Firebase Messaging support check failed:", err);
-      });
-  }
-} else {
-  console.warn("Firebase configuration is incomplete. Some Firebase features may not work.");
-}
+  try {
+    const supported = await isSupported();
+    if (!supported) return null;
 
-export { app, analytics, messaging };
+    // PWA의 sw.js가 이미 루트 스코프를 점유하므로 별도 SW 등록 대신 기존 SW 활용
+    messaging = getMessaging(app);
+    return messaging;
+  } catch (error) {
+    console.warn("Firebase Messaging init failed:", error);
+    return null;
+  }
+})();
+
+export { app, analytics, messaging, messagingReady };

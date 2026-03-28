@@ -31,12 +31,11 @@ export default function Layout({
         </div>
       )}
 
-      {/* Light mode — 깨끗한 회색+보라 틴트 */}
+      {/* Light mode — 배경은 회색 톤, 카드/사이드바는 흰색으로 구분 */}
       {theme === "light" && (
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 bg-[#f5f3f7]" />
-          <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-purple-100/40 via-transparent to-transparent" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-100/30 rounded-full filter blur-[100px]" />
+          <div className="absolute inset-0 bg-[#eae8ef]" />
+          <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-purple-100/30 via-transparent to-transparent" />
         </div>
       )}
 
@@ -68,7 +67,7 @@ export default function Layout({
           )}
 
           {showRecentPanel && (
-            <div className="hidden lg:flex lg:w-96 border-l flex-col overflow-hidden dark:border-purple-500/20 light:border-purple-200/60 dark:bg-purple-950/40 light:bg-white backdrop-blur-xl">
+            <div className="hidden lg:flex lg:w-96 border-l flex-col overflow-hidden dark:border-white/[0.06] light:border-purple-200 dark:bg-[#111116]/40 light:bg-white light:shadow-[-4px_0_16px_rgba(0,0,0,0.04)] backdrop-blur-xl">
               <div className="px-6 py-4 border-b dark:border-purple-500/20 light:border-purple-200/40">
                 <h2 className="text-base font-semibold om-text-primary">
                   최근 회의 기록
