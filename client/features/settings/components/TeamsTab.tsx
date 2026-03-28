@@ -160,7 +160,7 @@ export default function TeamsTab({
       )}
 
       {/* Active Teams Section */}
-      <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+      <div className="om-card rounded-3xl p-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold dark:text-white/90 light:text-purple-900">
             팀 목록

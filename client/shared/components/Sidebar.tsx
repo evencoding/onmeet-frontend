@@ -159,8 +159,8 @@ export default memo(function Sidebar({
                     ? "justify-center p-3"
                     : "justify-between px-4 py-3",
                   isActive
-                    ? "dark:bg-white/[0.06] dark:text-purple-400 light:bg-purple-100 light:text-purple-900 light:shadow-sm light:shadow-purple-200/30 light:border light:border-purple-300/50"
-                    : "dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-white/[0.04] light:text-purple-600 light:hover:text-purple-900 light:hover:bg-purple-100/80 light:hover:shadow-sm light:hover:shadow-purple-200/20",
+                    ? "dark:bg-white/[0.06] dark:text-purple-400 light:bg-purple-100 light:text-purple-800 light:shadow-sm light:border light:border-purple-300/60"
+                    : "dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-white/[0.04] light:text-purple-500 light:hover:text-purple-800 light:hover:bg-purple-50 light:hover:shadow-sm",
                 )}
               >
                 <div className="flex items-center gap-3">

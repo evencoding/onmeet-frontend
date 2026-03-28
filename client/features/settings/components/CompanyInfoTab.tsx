@@ -38,7 +38,7 @@ export default function CompanyInfoTab({
   };
 
   return (
-    <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 rounded-3xl dark:backdrop-blur-md light:backdrop-blur-sm p-8">
+    <div className="om-card rounded-3xl p-8">
       <div className="flex gap-8">
 
         <div className="flex flex-col items-center gap-3 flex-shrink-0">

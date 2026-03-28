@@ -135,13 +135,13 @@ export function getStatusLabel(status: string): string {
 export function getStatusColor(status: string): string {
   switch (status) {
     case "scheduled":
-      return "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/90 light:text-purple-900 light:border light:border-purple-300/60 light:shadow-sm light:shadow-purple-200/40";
+      return "om-badge-blue";
     case "in_progress":
-      return "dark:bg-green-500/20 dark:text-green-300 light:bg-green-100/90 light:text-green-900 light:border light:border-green-300/60 light:shadow-sm light:shadow-green-200/40";
+      return "om-badge-green";
     case "completed":
-      return "dark:bg-gray-500/20 dark:text-gray-300 light:bg-gray-100/90 light:text-gray-900 light:border light:border-gray-300/60 light:shadow-sm light:shadow-gray-200/40";
+      return "om-badge-gray";
     default:
-      return "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/90 light:text-purple-900 light:border light:border-purple-300/60 light:shadow-sm light:shadow-purple-200/40";
+      return "om-badge";
   }
 }
 
@@ -149,19 +149,19 @@ export function getStatusColor(status: string): string {
 export const roomStatusConfig: Record<string, { label: string; className: string }> = {
   ACTIVE: {
     label: "Active",
-    className: "dark:bg-green-500/30 dark:text-green-300 light:bg-green-100/70 light:text-green-800",
+    className: "om-badge-green",
   },
   ENDED: {
     label: "Closed",
-    className: "dark:bg-red-500/30 dark:text-red-300 light:bg-red-100/70 light:text-red-800",
+    className: "om-badge-red",
   },
   WAITING: {
     label: "Waiting",
-    className: "dark:bg-yellow-500/30 dark:text-yellow-300 light:bg-yellow-100/70 light:text-yellow-800",
+    className: "om-badge-amber",
   },
   CANCELLED: {
     label: "Cancelled",
-    className: "dark:bg-gray-500/30 dark:text-gray-300 light:bg-gray-100/70 light:text-gray-800",
+    className: "om-badge-gray",
   },
 };
 

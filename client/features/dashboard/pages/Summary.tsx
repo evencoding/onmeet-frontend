@@ -205,22 +205,22 @@ export default function Summary() {
                             {getStatusLabel(meeting.status)}
                           </span>
                           {meeting.type === "SCHEDULED" && (
-                            <span className="px-2 py-1 rounded text-xs font-semibold dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-800">
+                            <span className="om-badge-blue rounded">
                               예약
                             </span>
                           )}
                           {meeting.locked && (
-                            <span className="flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold dark:bg-amber-500/20 dark:text-amber-300 light:bg-amber-100 light:text-amber-800">
+                            <span className="flex items-center gap-1 om-badge-amber rounded">
                               <Lock className="w-3 h-3" />잠금
                             </span>
                           )}
                           {meeting.accessScope === "TEAM" && (
-                            <span className="flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold dark:bg-cyan-500/20 dark:text-cyan-300 light:bg-cyan-100 light:text-cyan-800">
+                            <span className="flex items-center gap-1 om-badge-cyan rounded">
                               <Shield className="w-3 h-3" />팀
                             </span>
                           )}
                           {meeting.accessScope === "ALL" && (
-                            <span className="flex items-center gap-1 px-2 py-1 rounded text-xs font-semibold dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-800">
+                            <span className="flex items-center gap-1 om-badge-green rounded">
                               <Globe className="w-3 h-3" />공개
                             </span>
                           )}
@@ -262,7 +262,7 @@ export default function Summary() {
                     {meeting.status === "completed" && (
                       <div className="flex items-center gap-2 flex-wrap mb-4">
                         {meeting.hasTranscript && (
-                          <span className="dark:bg-green-500/20 dark:text-green-300 light:bg-green-100/90 light:text-green-900 light:border light:border-green-300/60 light:shadow-sm light:shadow-green-200/40 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
+                          <span className="om-badge-green flex items-center gap-1.5">
                             <FileText className="w-3.5 h-3.5" />
                             회의록
                           </span>

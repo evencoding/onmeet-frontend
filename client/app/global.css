@@ -154,14 +154,15 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 .light .om-card {
-  @apply bg-white border border-purple-200/60 hover:border-purple-300;
+  background: linear-gradient(135deg, #ffffff 0%, #faf8ff 100%);
+  @apply border border-purple-200/70 hover:border-purple-400/60;
   box-shadow:
-    0 4px 16px rgba(147, 51, 234, 0.06),
+    0 4px 16px rgba(147, 51, 234, 0.07),
     0 1px 3px rgba(147, 51, 234, 0.04);
 }
 .light .om-card:hover {
   box-shadow:
-    0 8px 30px rgba(147, 51, 234, 0.1),
+    0 8px 30px rgba(147, 51, 234, 0.12),
     0 2px 6px rgba(147, 51, 234, 0.06);
 }
 
@@ -175,11 +176,12 @@
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.06);
 }
 .light .om-modal-card {
-  @apply bg-white backdrop-blur-xl border border-purple-200/70;
+  background: linear-gradient(145deg, #ffffff 0%, #faf8ff 100%);
+  @apply backdrop-blur-xl border border-purple-200/70;
   box-shadow:
     0 25px 60px -12px rgba(147, 51, 234, 0.15),
     0 8px 24px rgba(147, 51, 234, 0.06),
-    0 0 0 1px rgba(192, 132, 252, 0.08);
+    0 0 0 1px rgba(192, 132, 252, 0.1);
 }
 
 /* ── 인풋 ── */
@@ -192,8 +194,9 @@
          focus:bg-white/[0.07] focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20;
 }
 .light .om-input {
-  @apply border-2 border-purple-300/60 bg-purple-50
-         text-purple-950 placeholder-purple-400/60
+  background: linear-gradient(135deg, #f8f5ff 0%, #f3f0fa 100%);
+  @apply border-2 border-purple-300/50
+         text-purple-950 placeholder-purple-400/50
          focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-300/40
          shadow-sm;
 }
@@ -272,7 +275,8 @@
   @apply border border-white/[0.06] backdrop-blur-xl;
 }
 .light .om-panel {
-  @apply bg-white border border-purple-200/60;
+  background: linear-gradient(135deg, #ffffff 0%, #faf8ff 100%);
+  @apply border border-purple-200/60;
   box-shadow:
     0 4px 16px rgba(147, 51, 234, 0.05),
     0 1px 3px rgba(147, 51, 234, 0.03);
@@ -284,6 +288,31 @@
 }
 .dark .om-badge { @apply bg-white/[0.06] text-purple-400 border border-white/[0.06]; }
 .light .om-badge { @apply bg-purple-100 text-purple-700 border border-purple-200/50; }
+
+/* ── 컬러 뱃지 (라이트에서도 색감 유지) ── */
+.om-badge-green { @apply px-2.5 py-1 rounded-full text-xs font-semibold; }
+.dark .om-badge-green { @apply bg-green-500/20 text-green-300; }
+.light .om-badge-green { @apply bg-green-50 text-green-700 border border-green-300/60; }
+
+.om-badge-blue { @apply px-2.5 py-1 rounded-full text-xs font-semibold; }
+.dark .om-badge-blue { @apply bg-blue-500/20 text-blue-300; }
+.light .om-badge-blue { @apply bg-blue-50 text-blue-700 border border-blue-300/60; }
+
+.om-badge-red { @apply px-2.5 py-1 rounded-full text-xs font-semibold; }
+.dark .om-badge-red { @apply bg-red-500/20 text-red-300; }
+.light .om-badge-red { @apply bg-red-50 text-red-700 border border-red-300/60; }
+
+.om-badge-amber { @apply px-2.5 py-1 rounded-full text-xs font-semibold; }
+.dark .om-badge-amber { @apply bg-amber-500/20 text-amber-300; }
+.light .om-badge-amber { @apply bg-amber-50 text-amber-700 border border-amber-300/60; }
+
+.om-badge-cyan { @apply px-2.5 py-1 rounded-full text-xs font-semibold; }
+.dark .om-badge-cyan { @apply bg-cyan-500/20 text-cyan-300; }
+.light .om-badge-cyan { @apply bg-cyan-50 text-cyan-700 border border-cyan-300/60; }
+
+.om-badge-gray { @apply px-2.5 py-1 rounded-full text-xs font-semibold; }
+.dark .om-badge-gray { @apply bg-white/[0.06] text-white/60; }
+.light .om-badge-gray { @apply bg-gray-100 text-gray-600 border border-gray-300/60; }
 
 /* ── 그래디언트 텍스트 ── */
 .om-gradient-text {
