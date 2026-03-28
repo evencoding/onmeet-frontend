@@ -90,8 +90,13 @@ export function formatMeetingDuration(seconds: number): string {
 }
 
 export function formatMeetingDate(date: Date): string {
-  // format은 로컬 시간 기준이므로, Date 객체가 이미 올바르면 OK
-  return format(date, "yyyy년 MMM dd일 (eee)", { locale: ko });
+  return date.toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "short",
+    timeZone: "Asia/Seoul",
+  });
 }
 
 /** ISO 문자열을 한국 시간으로 포맷 (서버 UTC → KST) */
