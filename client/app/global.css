@@ -53,42 +53,42 @@
   }
 
   .dark {
-    --background: 270 30% 4%;
-    --foreground: 270 10% 92%;
+    --background: 240 6% 6%;
+    --foreground: 0 0% 93%;
 
-    --card: 270 20% 12%;
-    --card-foreground: 270 10% 88%;
+    --card: 240 5% 10%;
+    --card-foreground: 0 0% 90%;
 
-    --popover: 270 20% 12%;
-    --popover-foreground: 270 10% 88%;
+    --popover: 240 5% 10%;
+    --popover-foreground: 0 0% 90%;
 
-    --primary: 270 84% 56%;
+    --primary: 270 84% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 20% 20%;
-    --secondary-foreground: 270 84% 56%;
+    --secondary: 240 5% 15%;
+    --secondary-foreground: 270 80% 70%;
 
-    --muted: 270 15% 30%;
-    --muted-foreground: 270 10% 60%;
+    --muted: 240 4% 22%;
+    --muted-foreground: 240 5% 55%;
 
-    --accent: 270 84% 56%;
+    --accent: 270 84% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 270 20% 20%;
-    --input: 270 18% 15%;
-    --ring: 270 84% 56%;
+    --border: 240 5% 15%;
+    --input: 240 5% 12%;
+    --ring: 270 84% 60%;
 
-    --sidebar-background: 270 20% 8%;
-    --sidebar-foreground: 270 10% 88%;
-    --sidebar-primary: 270 84% 56%;
+    --sidebar-background: 240 6% 8%;
+    --sidebar-foreground: 0 0% 88%;
+    --sidebar-primary: 270 84% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 30% 18%;
-    --sidebar-accent-foreground: 270 84% 70%;
-    --sidebar-border: 270 20% 16%;
-    --sidebar-ring: 270 84% 56%;
+    --sidebar-accent: 240 5% 14%;
+    --sidebar-accent-foreground: 270 80% 75%;
+    --sidebar-border: 240 5% 13%;
+    --sidebar-ring: 270 84% 60%;
   }
 
   /* .light는 :root와 동일하므로 생략 — :root가 라이트 기본값 */
@@ -148,9 +148,10 @@
   @apply rounded-2xl transition-all duration-300;
 }
 .dark .om-card {
-  background: rgba(20, 12, 35, 0.7);
-  @apply border border-white/[0.06] hover:border-white/[0.12]
-         backdrop-blur-xl shadow-lg shadow-black/20;
+  background: rgba(18, 18, 24, 0.8);
+  @apply border border-white/[0.07] hover:border-purple-500/30
+         backdrop-blur-xl;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 .light .om-card {
   @apply bg-white border border-purple-200/60 hover:border-purple-300;
@@ -169,9 +170,9 @@
   @apply rounded-2xl transition-all duration-300;
 }
 .dark .om-modal-card {
-  background: rgba(18, 10, 32, 0.9);
-  @apply border border-white/[0.08] backdrop-blur-xl
-         shadow-2xl shadow-black/40;
+  background: rgba(16, 16, 22, 0.95);
+  @apply border border-white/[0.08] backdrop-blur-xl;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.06);
 }
 .light .om-modal-card {
   @apply bg-white backdrop-blur-xl border border-purple-200/70;
@@ -186,9 +187,9 @@
   @apply w-full px-4 py-3 rounded-xl transition-all duration-200;
 }
 .dark .om-input {
-  @apply border border-purple-500/30 bg-white/5 backdrop-blur-sm
-         text-white placeholder-white/40
-         focus:bg-white/10 focus:border-purple-500/60 focus:ring-2 focus:ring-purple-500/30;
+  @apply border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm
+         text-white placeholder-white/30
+         focus:bg-white/[0.07] focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20;
 }
 .light .om-input {
   @apply border-2 border-purple-300/60 bg-purple-50
@@ -226,7 +227,7 @@
 .om-divider {
   @apply h-px;
 }
-.dark .om-divider { @apply bg-purple-500/20; }
+.dark .om-divider { @apply bg-white/[0.06]; }
 .light .om-divider { @apply bg-purple-200; }
 
 /* ── 보조 텍스트/링크 ── */
@@ -253,8 +254,8 @@
   @apply rounded-xl font-medium transition-all duration-200;
 }
 .dark .om-btn-secondary {
-  @apply border border-purple-500/30 text-white/70
-         hover:bg-purple-500/20 hover:text-white;
+  @apply border border-white/[0.1] text-white/70
+         hover:bg-white/[0.06] hover:text-white;
 }
 .light .om-btn-secondary {
   @apply border-2 border-purple-200/70 text-purple-700
@@ -267,7 +268,7 @@
   @apply rounded-2xl p-6 transition-all duration-300;
 }
 .dark .om-panel {
-  background: rgba(20, 12, 35, 0.5);
+  background: rgba(18, 18, 24, 0.6);
   @apply border border-white/[0.06] backdrop-blur-xl;
 }
 .light .om-panel {
@@ -281,7 +282,7 @@
 .om-badge {
   @apply px-2.5 py-1 rounded-full text-xs font-semibold;
 }
-.dark .om-badge { @apply bg-purple-500/20 text-purple-300; }
+.dark .om-badge { @apply bg-white/[0.06] text-purple-400 border border-white/[0.06]; }
 .light .om-badge { @apply bg-purple-100 text-purple-700 border border-purple-200/50; }
 
 /* ── 그래디언트 텍스트 ── */

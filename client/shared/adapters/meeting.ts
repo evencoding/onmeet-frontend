@@ -11,7 +11,6 @@
  */
 
 import { format } from "date-fns";
-import { ko } from "date-fns/locale";
 import type { MeetingRoomResponse, RoomStatus, RoomType, AccessScope } from "@/features/meeting/api/types";
 
 // ── UI 모델 ──

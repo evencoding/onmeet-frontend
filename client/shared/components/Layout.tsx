@@ -22,13 +22,12 @@ export default function Layout({
 
   return (
     <div className="flex h-screen bg-background relative overflow-hidden">
-      {/* Dark mode — 깊은 보라+남색 그라데이션, 미세한 글로우 */}
+      {/* Dark mode — 중립 블랙 + 미세 보라 글로우 포인트 */}
       {theme === "dark" && (
         <div className="fixed inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-[#0a0612]" />
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-950/80 via-transparent to-indigo-950/40" />
-          <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-purple-600/8 rounded-full filter blur-[120px]" />
-          <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-indigo-600/6 rounded-full filter blur-[100px]" />
+          <div className="absolute inset-0 bg-[#101014]" />
+          <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-purple-500/[0.04] rounded-full filter blur-[120px]" />
+          <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-purple-600/[0.03] rounded-full filter blur-[100px]" />
         </div>
       )}
 
