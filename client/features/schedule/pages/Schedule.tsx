@@ -95,7 +95,7 @@ export default function Schedule() {
 
           <div>
             <div className="min-w-[320px] space-y-4">
-              <div className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-purple-950/20 dark:to-pink-900/10 light:bg-white/80 dark:border dark:border-purple-500/20 light:border light:border-purple-200/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-100/30 dark:backdrop-blur-xl light:backdrop-blur-md">
+              <div className="om-panel">
                 <h2 className="text-xl font-bold dark:text-white/90 light:text-purple-950 mb-4">
                   {format(selectedDate, "MMMM dd, yyyy (EEEE)", { locale: ko })}
                   의 회의
@@ -124,7 +124,7 @@ export default function Schedule() {
                       return (
                         <div
                           key={meeting.id}
-                          className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/60 rounded-2xl p-5 dark:hover:bg-purple-500/20 light:hover:shadow-lg light:hover:border-purple-400/70 transition-all duration-300"
+                          className="om-card p-5"
                         >
                           <div className="flex items-start justify-between gap-2 mb-3">
                             <div className="flex-1">

@@ -25,7 +25,7 @@ function formatTime(seconds: number): string {
 function formatDateTime(dateStr: string): string {
   if (!dateStr) return "-";
   const d = new Date(dateStr);
-  return d.toLocaleString("ko-KR", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  return d.toLocaleString("ko-KR", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: "Asia/Seoul" });
 }
 
 function formatDuration(startedAt: string, endedAt: string): string {

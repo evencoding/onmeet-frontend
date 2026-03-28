@@ -337,7 +337,15 @@ export default memo(function MeetingRoomContent({
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white overflow-hidden">
+    <div className="flex h-screen bg-black text-white overflow-hidden relative">
+      {/* AuthLayout 스타일 배경 */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900">
+        <div className="absolute inset-0 opacity-40">
+          <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+          <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+          <div className="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
+        </div>
+      </div>
       <div
         className={`flex-1 flex flex-col transition-all duration-300 ${
           showChat && showParticipants

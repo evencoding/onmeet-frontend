@@ -93,7 +93,7 @@ export default function Summary() {
 
   return (
     <>
-      <div className="max-w-6xl space-y-6 light:bg-gradient-to-br light:from-purple-50 light:via-white light:to-pink-50 light:rounded-3xl light:p-8">
+      <div className="max-w-6xl space-y-6">
 
         {!expandedMeeting && (
           <div>
@@ -104,7 +104,7 @@ export default function Summary() {
               모든 회의 기록을 한눈에 관리하고 확인하세요
             </p>
 
-            <div className="flex gap-3 mb-8 border-b-2 dark:border-purple-500/30 light:border-purple-300/70 pb-4">
+            <div className="flex gap-2 mb-8 border-b dark:border-purple-500/30 light:border-purple-200 pb-4">
               {([
                 { id: "all", label: "모든 회의" },
                 { id: "scheduled", label: "예정된 회의" },
@@ -116,8 +116,8 @@ export default function Summary() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-5 py-2.5 rounded-lg font-semibold transition-all duration-200 ${
                     activeTab === tab.id
-                      ? "dark:bg-purple-600 dark:text-white light:bg-gradient-to-r light:from-purple-600 light:to-purple-700 light:text-white light:shadow-lg light:shadow-purple-300/40"
-                      : "dark:bg-purple-500/10 dark:text-white/70 light:bg-white/60 light:text-purple-700 light:border light:border-purple-300/30 dark:hover:bg-purple-500/20 light:hover:bg-purple-100/70"
+                      ? "dark:bg-purple-600 dark:text-white light:bg-purple-600 light:text-white light:shadow-md light:shadow-purple-400/30"
+                      : "dark:bg-purple-500/10 dark:text-white/70 light:bg-white light:text-purple-600 light:border light:border-purple-300/60 light:shadow-sm dark:hover:bg-purple-500/20 light:hover:bg-purple-50 light:hover:border-purple-400"
                   }`}
                 >
                   {tab.label}
@@ -133,7 +133,7 @@ export default function Summary() {
               <select
                 value={featureFilter}
                 onChange={(e) => setFeatureFilter(e.target.value as typeof featureFilter)}
-                className="px-4 py-3 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 dark:rounded-xl light:rounded-xl dark:bg-purple-500/10 light:bg-white/80 light:shadow-md light:shadow-purple-200/40 dark:focus:bg-purple-500/20 light:focus:bg-white light:focus:border-purple-400 dark:focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all dark:text-white light:text-purple-900 text-sm appearance-none cursor-pointer font-medium"
+                className="om-input text-sm appearance-none cursor-pointer font-medium"
               >
                 <option value="all">모든 회의</option>
                 <option value="transcript">회의록 있음</option>
@@ -147,7 +147,7 @@ export default function Summary() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="회의 제목이나 내용으로 검색..."
-                  className="w-full px-4 py-3 pl-12 dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300 dark:rounded-xl light:rounded-xl dark:bg-purple-500/10 light:bg-white/80 light:shadow-md light:shadow-purple-200/40 dark:focus:bg-purple-500/20 light:focus:bg-white light:focus:border-purple-400 dark:focus:border-purple-400 focus:ring-2 dark:focus:ring-purple-500/20 light:focus:ring-purple-300/40 transition-all dark:text-white light:text-purple-900 dark:placeholder-white/40 light:placeholder-purple-700/70 font-medium"
+                  className="om-input pl-12 font-medium"
                 />
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 dark:text-white/40 light:text-purple-600" />
               </div>
@@ -182,7 +182,7 @@ export default function Summary() {
                 {filteredMeetings.map((meeting) => (
                   <div
                     key={meeting.id}
-                    className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-purple-950/30 dark:to-pink-900/20 light:bg-white/80 light:border light:border-purple-200/70 light:shadow-md light:shadow-purple-100/30 dark:border dark:border-purple-500/25 rounded-2xl p-6 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 dark:hover:border-purple-500/40 light:hover:shadow-xl light:hover:shadow-purple-200/40 light:hover:border-purple-300 hover:-translate-y-1 transition-all duration-300 dark:backdrop-blur-xl light:backdrop-blur-md group flex flex-col"
+                    className="om-card p-6 hover:-translate-y-1 group flex flex-col"
                   >
                     <button
                       onClick={() => setExpandedMeetingId(meeting.id)}

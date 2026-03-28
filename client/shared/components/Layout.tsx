@@ -33,13 +33,13 @@ export default function Layout({
         </div>
       )}
 
-      {/* Light mode — soft elegant gradient (AuthLayout 스타일) */}
+      {/* Light mode — subtle gradient background */}
       {theme === "light" && (
-        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-100/80 via-white to-pink-100/60 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 opacity-70">
-            <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob" />
-            <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000" />
-            <div className="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
+        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-50/50 via-slate-50 to-pink-50/30 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 opacity-50">
+            <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-blob" />
+            <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+            <div className="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-violet-100 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-4000" />
           </div>
         </div>
       )}
@@ -72,7 +72,7 @@ export default function Layout({
           )}
 
           {showRecentPanel && (
-            <div className="hidden lg:flex lg:w-96 border-l flex-col overflow-hidden dark:border-purple-500/20 light:border-purple-200/40 dark:bg-purple-950/40 light:bg-white/60 backdrop-blur-md">
+            <div className="hidden lg:flex lg:w-96 border-l flex-col overflow-hidden dark:border-purple-500/20 light:border-purple-200/60 dark:bg-purple-950/40 light:bg-white backdrop-blur-xl">
               <div className="px-6 py-4 border-b dark:border-purple-500/20 light:border-purple-200/40">
                 <h2 className="text-base font-semibold om-text-primary">
                   최근 회의 기록
