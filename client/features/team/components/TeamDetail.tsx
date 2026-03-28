@@ -93,7 +93,7 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
   }
 
   return (
-    <div className="max-w-4xl space-y-6">
+    <div className="space-y-6">
       <div
         className="bg-gradient-to-br rounded-2xl p-8 border border-border/40"
         style={{ backgroundColor: teamColor }}
@@ -101,12 +101,12 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
         <h1 className="text-4xl font-bold mb-2 text-white">{teamName}</h1>
       </div>
 
-      <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/60 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-white/80 light:to-purple-50 border dark:border-purple-500/30 light:border-purple-300/40 rounded-2xl p-6">
+      <div className="om-card p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Users className="w-5 h-5 dark:text-purple-400 light:text-purple-600" />
             <h2 className="text-lg font-bold dark:text-white light:text-purple-900">팀원</h2>
-            <span className="px-2 py-1 dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/70 light:text-purple-800 text-xs font-semibold rounded-full">
+            <span className="px-2 py-1 om-badge">
               {teamMembers.length}명
             </span>
           </div>
@@ -131,7 +131,7 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
             {teamMembers.map((member) => (
               <div
                 key={member.id}
-                className="flex items-center gap-3 p-4 dark:hover:bg-purple-500/10 light:hover:bg-purple-100/30 rounded-xl transition-colors border dark:border-purple-500/20 light:border-purple-300/30"
+                className="flex items-center gap-3 p-4 dark:hover:bg-white/[0.04] light:hover:bg-purple-50 rounded-xl transition-all duration-200 border dark:border-white/[0.06] light:border-purple-200/60 light:hover:shadow-sm"
               >
                 <Avatar>
                   <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
@@ -141,7 +141,7 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
                   <p className="text-xs dark:text-white/60 light:text-purple-600">
                     {member.jobTitle?.name ?? "-"}
                   </p>
-                  <p className="text-xs dark:text-white/40 light:text-purple-600/70 truncate">
+                  <p className="text-xs dark:text-white/40 light:text-purple-500 truncate">
                     {member.email}
                   </p>
                 </div>
@@ -151,12 +151,12 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
         )}
       </div>
 
-      <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/60 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-white/80 light:to-purple-50 border dark:border-purple-500/30 light:border-purple-300/40 rounded-2xl p-6">
+      <div className="om-card p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Calendar className="w-5 h-5 dark:text-purple-400 light:text-purple-600" />
             <h2 className="text-lg font-bold dark:text-white light:text-purple-900">회의 일정</h2>
-            <span className="px-2 py-1 dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/70 light:text-purple-800 text-xs font-semibold rounded-full">
+            <span className="px-2 py-1 om-badge">
               {teamMeetings.length}개
             </span>
           </div>
@@ -180,7 +180,7 @@ export default function TeamDetail({ teamId, teamName }: TeamDetailProps) {
             {teamMeetings.map((meeting) => (
               <div
                 key={meeting.id}
-                className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/40 dark:to-pink-900/20 light:bg-white border dark:border-purple-500/30 light:border-purple-300/40 rounded-xl p-5 dark:hover:shadow-lg light:hover:shadow-md transition-all duration-200 group"
+                className="om-card p-5 group"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

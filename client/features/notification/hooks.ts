@@ -145,16 +145,37 @@ export function useFcmSetup(userId: string | undefined) {
         const resolvedMessaging = await messagingReady;
         if (!resolvedMessaging || cancelled) return;
 
-        const { getToken, onMessage } = await import("firebase/messaging");
+        const { getToken, deleteToken, onMessage } = await import("firebase/messaging");
         const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
         if (!vapidKey) return;
 
-        // PWA의 sw.js가 루트 스코프를 점유하므로 기존 SW registration 재사용
+        // Firebase 전용 서비스 워커 등록 (PWA sw.js와 별도 스코프)
         let swRegistration: ServiceWorkerRegistration | undefined;
         if ("serviceWorker" in navigator) {
-          swRegistration = await navigator.serviceWorker.ready;
+          swRegistration = await navigator.serviceWorker.register(
+            "/firebase-messaging-sw.js",
+            { scope: "/firebase-cloud-messaging-push-scope" },
+          );
+          // SW 활성화 대기 후 Firebase config 전달 (백그라운드 메시지 처리용)
+          const sw = swRegistration.active ?? swRegistration.installing ?? swRegistration.waiting;
+          if (sw) {
+            const firebaseConfig = {
+              apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+              authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+              projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+              storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+              messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+              appId: import.meta.env.VITE_FIREBASE_APP_ID,
+            };
+            sw.postMessage({ type: "FIREBASE_CONFIG", config: firebaseConfig });
+          }
         }
 
+        // SW 마이그레이션: 이전 sw.js 기반 토큰을 firebase-messaging-sw.js 기반으로 전환
+        if (!localStorage.getItem("fcm_sw_migrated")) {
+          try { await deleteToken(resolvedMessaging); } catch { /* 기존 토큰 없으면 무시 */ }
+          localStorage.setItem("fcm_sw_migrated", "1");
+        }
         const token = await getToken(resolvedMessaging, {
           vapidKey,
           serviceWorkerRegistration: swRegistration,

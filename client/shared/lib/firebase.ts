@@ -40,7 +40,6 @@ const messagingReady: Promise<Messaging | null> = (async () => {
     const supported = await isSupported();
     if (!supported) return null;
 
-    // PWA의 sw.js가 이미 루트 스코프를 점유하므로 별도 SW 등록 대신 기존 SW 활용
     messaging = getMessaging(app);
     return messaging;
   } catch (error) {
