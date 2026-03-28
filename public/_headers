@@ -2,7 +2,7 @@
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https: data: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.onmeet.cloud wss://rtc.onmeet.cloud https://rtc.onmeet.cloud wss://livekit.onmeet.cloud https://livekit.onmeet.cloud wss://*.livekit.cloud https://*.sentry.io https://*.googleapis.com https://*.google-analytics.com; media-src 'self' blob:; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https: data: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.onmeet.cloud wss://rtc.onmeet.cloud https://rtc.onmeet.cloud wss://livekit.onmeet.cloud https://livekit.onmeet.cloud wss://*.livekit.cloud https://*.sentry.io https://*.googleapis.com https://*.google-analytics.com https://fcm.googleapis.com; media-src 'self' blob:; worker-src 'self' blob: https://www.gstatic.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'
 
 /assets/*
   Cache-Control: public, max-age=31536000, immutable

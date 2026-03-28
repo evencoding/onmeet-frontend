@@ -149,10 +149,13 @@ export function useFcmSetup(userId: string | undefined) {
         const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
         if (!vapidKey) return;
 
-        // PWA의 sw.js가 루트 스코프를 점유하므로 기존 SW registration 재사용
+        // Firebase 전용 서비스 워커 등록 (PWA sw.js와 별도 스코프)
         let swRegistration: ServiceWorkerRegistration | undefined;
         if ("serviceWorker" in navigator) {
-          swRegistration = await navigator.serviceWorker.ready;
+          swRegistration = await navigator.serviceWorker.register(
+            "/firebase-messaging-sw.js",
+            { scope: "/firebase-cloud-messaging-push-scope" },
+          );
         }
 
         const token = await getToken(resolvedMessaging, {
