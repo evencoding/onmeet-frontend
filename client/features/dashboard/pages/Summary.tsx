@@ -182,7 +182,7 @@ export default function Summary() {
                 {filteredMeetings.map((meeting) => (
                   <div
                     key={meeting.id}
-                    className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/30 light:to-pink-100/20 light:border-2 light:border-purple-300/70 light:shadow-lg light:shadow-purple-300/30 dark:border dark:border-purple-500/30 rounded-2xl p-6 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-xl light:hover:shadow-purple-400/40 light:hover:border-purple-400/80 hover:-translate-y-1 transition-all duration-300 dark:backdrop-blur-md light:backdrop-blur-md group flex flex-col"
+                    className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-purple-950/30 dark:to-pink-900/20 light:bg-white/80 light:border light:border-purple-200/70 light:shadow-md light:shadow-purple-100/30 dark:border dark:border-purple-500/25 rounded-2xl p-6 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 dark:hover:border-purple-500/40 light:hover:shadow-xl light:hover:shadow-purple-200/40 light:hover:border-purple-300 hover:-translate-y-1 transition-all duration-300 dark:backdrop-blur-xl light:backdrop-blur-md group flex flex-col"
                   >
                     <button
                       onClick={() => setExpandedMeetingId(meeting.id)}

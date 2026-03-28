@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
+import ThemeToggle from "@/shared/components/ThemeToggle";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Video,
@@ -84,6 +85,7 @@ export default function Landing() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
+            <ThemeToggle />
             <button
               onClick={() => navigate("/login")}
               className="px-6 py-2.5 dark:text-white/80 light:text-purple-700 font-medium dark:hover:text-white light:hover:text-purple-900 transition-colors"

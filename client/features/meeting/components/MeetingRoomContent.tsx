@@ -9,6 +9,10 @@ import {
   X,
   AlertTriangle,
   Ban,
+  Clock,
+  Users,
+  Copy,
+  Info,
 } from "lucide-react";
 import {
   useParticipants,
@@ -159,12 +163,20 @@ interface MeetingRoomContentProps {
   roomId: string;
   isHost: boolean;
   userId: string;
+  roomTitle?: string;
+  roomCode?: string;
+  scheduledAt?: string;
+  maxParticipants?: number;
 }
 
 export default memo(function MeetingRoomContent({
   roomId,
   isHost,
   userId,
+  roomTitle,
+  roomCode,
+  scheduledAt,
+  maxParticipants,
 }: MeetingRoomContentProps) {
   const navigate = useNavigate();
   const room = useRoomContext();
@@ -303,6 +315,20 @@ export default memo(function MeetingRoomContent({
     navigate("/");
   }, [room, navigate, roomId, isHost, userId]);
 
+  const [showInfo, setShowInfo] = useState(false);
+
+  const elapsedRef = useRef(0);
+  const [elapsed, setElapsed] = useState("00:00");
+  useEffect(() => {
+    const timer = setInterval(() => {
+      elapsedRef.current += 1;
+      const m = Math.floor(elapsedRef.current / 60).toString().padStart(2, "0");
+      const s = (elapsedRef.current % 60).toString().padStart(2, "0");
+      setElapsed(`${m}:${s}`);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   // PIP mode
   if (isPIPMode) {
     return (
@@ -322,36 +348,88 @@ export default memo(function MeetingRoomContent({
         }`}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-purple-500/20 bg-purple-900/20 backdrop-blur-md flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => useMeetingRoomStore.getState().setShowExitModal(true)}
-              className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
-              title="회의 나가기"
-            >
-              <Phone className="w-5 h-5 rotate-180" />
-            </button>
-            <h1 className="text-2xl font-bold">회의</h1>
-            <button
-              onClick={() => useMeetingRoomStore.getState().setIsPIPMode(true)}
-              className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
-              title="PIP 모드로 이동 (연결 유지)"
-            >
-              <Minimize className="w-5 h-5 text-purple-400" />
-            </button>
+        <div className="px-5 py-3 border-b border-purple-500/15 bg-gradient-to-r from-purple-950/60 via-purple-900/40 to-purple-950/60 backdrop-blur-xl">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0">
+              <button
+                onClick={() => useMeetingRoomStore.getState().setShowExitModal(true)}
+                className="p-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-lg transition-colors flex-shrink-0"
+                title="회의 나가기"
+              >
+                <Phone className="w-4 h-4 text-red-400 rotate-180" />
+              </button>
+
+              <div className="min-w-0">
+                <h1 className="text-lg font-bold truncate">{roomTitle || "회의"}</h1>
+                <div className="flex items-center gap-3 text-xs text-white/50">
+                  <span className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                    {elapsed}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Users className="w-3 h-3" />
+                    {participants.length}{maxParticipants ? `/${maxParticipants}` : ""}
+                  </span>
+                  {roomCode && (
+                    <button
+                      onClick={() => { navigator.clipboard.writeText(roomCode); toast({ title: "회의 코드 복사됨" }); }}
+                      className="flex items-center gap-1 hover:text-white/80 transition-colors"
+                      title="회의 코드 복사"
+                    >
+                      <Copy className="w-3 h-3" />
+                      {roomCode}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <button
+                onClick={() => setShowInfo(!showInfo)}
+                className={`p-2 rounded-lg transition-colors ${showInfo ? "bg-purple-500/30 text-purple-300" : "hover:bg-purple-500/20 text-white/60"}`}
+                title="회의 정보"
+              >
+                <Info className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => useMeetingRoomStore.getState().setIsPIPMode(true)}
+                className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors text-white/60"
+                title="PIP 모드"
+              >
+                <Minimize className="w-4 h-4" />
+              </button>
+              <button
+                onClick={toggleFullscreen}
+                className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors text-white/60"
+                title="전체화면"
+              >
+                <Maximize className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-white/60">
-              {participants.length} 명 참여 중
-            </span>
-            <button
-              onClick={toggleFullscreen}
-              className="p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
-              title="전체화면"
-            >
-              <Maximize className="w-5 h-5" />
-            </button>
-          </div>
+
+          {/* 회의 정보 패널 */}
+          {showInfo && (
+            <div className="mt-3 pt-3 border-t border-purple-500/15 grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="bg-purple-500/10 rounded-lg px-3 py-2">
+                <p className="text-[10px] text-white/40 uppercase tracking-wider">회의 코드</p>
+                <p className="text-sm font-mono font-semibold text-purple-300">{roomCode || "-"}</p>
+              </div>
+              <div className="bg-purple-500/10 rounded-lg px-3 py-2">
+                <p className="text-[10px] text-white/40 uppercase tracking-wider">참여자</p>
+                <p className="text-sm font-semibold">{participants.length}명 {maxParticipants ? `/ 최대 ${maxParticipants}명` : ""}</p>
+              </div>
+              <div className="bg-purple-500/10 rounded-lg px-3 py-2">
+                <p className="text-[10px] text-white/40 uppercase tracking-wider">경과 시간</p>
+                <p className="text-sm font-mono font-semibold text-green-400">{elapsed}</p>
+              </div>
+              <div className="bg-purple-500/10 rounded-lg px-3 py-2">
+                <p className="text-[10px] text-white/40 uppercase tracking-wider">역할</p>
+                <p className="text-sm font-semibold">{isHost ? "호스트" : "참가자"}</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Video area */}

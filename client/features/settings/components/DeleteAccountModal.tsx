@@ -22,8 +22,8 @@ export default function DeleteAccountModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="dark:bg-black/90 light:bg-gradient-to-br light:from-white light:to-red-50/30 dark:border dark:border-red-500/30 light:border-2 light:border-red-300/60 rounded-2xl shadow-2xl max-w-md w-full p-8 dark:backdrop-blur-md light:backdrop-blur-md light:shadow-xl light:shadow-red-200/30">
+    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 light:bg-purple-900/15 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="om-modal-card max-w-md w-full p-8">
         <div className="flex items-center justify-center w-12 h-12 rounded-full dark:bg-red-500/20 light:bg-red-100 mx-auto mb-4">
           <AlertTriangle className="w-6 h-6 dark:text-red-400 light:text-red-600" />
         </div>

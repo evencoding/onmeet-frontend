@@ -50,13 +50,13 @@ export default function TeamBoard() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "ACTIVE":
-        return "bg-green-100 text-green-700";
+        return "dark:bg-green-500/30 dark:text-green-300 light:bg-green-100 light:text-green-700";
       case "WAITING":
-        return "bg-blue-100 text-blue-700";
+        return "dark:bg-blue-500/30 dark:text-blue-300 light:bg-blue-100 light:text-blue-700";
       case "ENDED":
-        return "bg-gray-100 text-gray-700";
+        return "dark:bg-gray-500/30 dark:text-gray-300 light:bg-gray-100 light:text-gray-700";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "dark:bg-gray-500/30 dark:text-gray-300 light:bg-gray-100 light:text-gray-700";
     }
   };
 

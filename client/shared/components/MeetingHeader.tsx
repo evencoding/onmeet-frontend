@@ -180,7 +180,7 @@ export default function MeetingHeader() {
   };
 
   return (
-    <div className="px-6 py-4 border-b border-border/20 dark:bg-slate-900/30 light:bg-white light:shadow-card flex items-center justify-between">
+    <div className="px-6 py-4 border-b dark:border-purple-500/20 light:border-purple-200/40 dark:bg-purple-950/40 dark:backdrop-blur-xl light:bg-white/80 light:backdrop-blur-xl light:shadow-sm light:shadow-purple-100/30 flex items-center justify-between">
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-sm font-bold text-white">
           {user?.name?.charAt(0) ?? "U"}
@@ -222,9 +222,9 @@ export default function MeetingHeader() {
           {isDropdownOpen &&
             createPortal(
               <div
-                className="fixed w-96 dark:bg-slate-900 light:bg-white dark:border dark:border-border/20 light:border light:border-border/40 rounded-xl shadow-2xl dark:backdrop-blur-md light:shadow-lg z-[999999]"
+                className="fixed w-96 dark:bg-purple-950/95 light:bg-white/95 dark:border dark:border-purple-500/20 light:border light:border-purple-200/70 rounded-2xl backdrop-blur-xl dark:shadow-2xl dark:shadow-purple-500/20 light:shadow-2xl light:shadow-purple-300/30 z-[999999]"
                 style={{
-                  top: `${dropdownPosition.top}px`,
+                  top: "12px",
                   right: `${dropdownPosition.right}px`,
                 }}
               >

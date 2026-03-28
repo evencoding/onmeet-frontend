@@ -114,7 +114,7 @@ export default function OngoingMeetings() {
           return (
             <div
               key={meeting.id}
-              className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/40 dark:to-pink-900/20 light:bg-white dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/60 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-md light:hover:shadow-purple-300/30 light:hover:border-purple-400/60 hover:-translate-y-0.5 group dark:backdrop-blur-md"
+              className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-purple-950/30 dark:to-pink-900/20 light:bg-white/80 dark:border dark:border-purple-500/25 light:border light:border-purple-200/70 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 dark:hover:border-purple-500/40 light:hover:shadow-lg light:hover:shadow-purple-200/40 light:hover:border-purple-300 hover:-translate-y-0.5 group dark:backdrop-blur-xl light:backdrop-blur-md"
             >
               <div
                 className={`h-1 ${
@@ -251,7 +251,7 @@ export default function OngoingMeetings() {
 
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="dark:bg-gradient-to-br dark:from-purple-900/80 dark:via-black/90 dark:to-pink-900/60 light:bg-white rounded-2xl p-6 max-w-sm w-full dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/40 light:shadow-xl dark:backdrop-blur-xl">
+          <div className="om-modal-card p-6 max-w-sm w-full">
             <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-2">
               회의를 삭제하시겠습니까?
             </h3>

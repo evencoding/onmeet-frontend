@@ -18,13 +18,13 @@ function getAvatarColor(index: number) {
 function getStatusStyle(status: string) {
   switch (status) {
     case "ACTIVE":
-      return { className: "bg-emerald-100 text-emerald-700", label: "Active" };
+      return { className: "dark:bg-emerald-500/30 dark:text-emerald-300 light:bg-emerald-100 light:text-emerald-700", label: "Active" };
     case "SCHEDULED":
-      return { className: "bg-blue-100 text-blue-700", label: "Scheduled" };
+      return { className: "dark:bg-blue-500/30 dark:text-blue-300 light:bg-blue-100 light:text-blue-700", label: "Scheduled" };
     case "ENDED":
-      return { className: "bg-gray-100 text-gray-600", label: "Ended" };
+      return { className: "dark:bg-gray-500/30 dark:text-gray-300 light:bg-gray-100 light:text-gray-600", label: "Ended" };
     default:
-      return { className: "bg-gray-100 text-gray-700", label: status };
+      return { className: "dark:bg-gray-500/30 dark:text-gray-300 light:bg-gray-100 light:text-gray-700", label: status };
   }
 }
 
