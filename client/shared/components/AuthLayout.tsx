@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { useTheme } from "@/shared/contexts/ThemeContext";
+import ThemeToggle from "./ThemeToggle";
 
 interface AuthLayoutProps {
   subtitle: string;
@@ -55,6 +56,11 @@ export default function AuthLayout({
         isDark ? "bg-black text-white" : "text-purple-950"
       }`}
     >
+      {/* Theme Toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       {/* Background */}
       <div
         className={`fixed inset-0 -z-10 bg-gradient-to-br ${

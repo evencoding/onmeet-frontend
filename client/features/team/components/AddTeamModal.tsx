@@ -156,7 +156,7 @@ export default function AddTeamModal({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={handleClose}>
-      <AlertDialogContent className="max-w-lg max-h-[90vh] overflow-y-auto dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-white dark:border dark:border-purple-500/30 light:border light:border-purple-300/40 dark:backdrop-blur-md light:backdrop-blur-sm">
+      <AlertDialogContent className="max-w-lg max-h-[90vh] overflow-y-auto om-modal-card">
         <AlertDialogHeader>
           <div className="flex items-center justify-between">
             <AlertDialogTitle className="dark:text-white/90 light:text-purple-900">

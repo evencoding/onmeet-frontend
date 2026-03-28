@@ -71,10 +71,10 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="min-h-screen flex items-center justify-center bg-background">
           <div className="text-center space-y-4 max-w-md px-6">
-            <h1 className="text-2xl font-bold text-white">문제가 발생했습니다</h1>
-            <p className="text-white/60 text-sm">
+            <h1 className="text-2xl font-bold text-foreground">문제가 발생했습니다</h1>
+            <p className="text-muted-foreground text-sm">
               예상치 못한 오류가 발생했습니다. 페이지를 새로고침 해주세요.
             </p>
             <button
@@ -95,7 +95,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryStat
 }
 
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-black">
+  <div className="min-h-screen flex items-center justify-center bg-background">
     <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
   </div>
 );

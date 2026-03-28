@@ -90,7 +90,7 @@ export default memo(function Sidebar({
   return (
     <div
       className={cn(
-        "flex flex-col h-screen transition-all duration-300 dark:bg-purple-950/80 dark:border-r dark:border-purple-500/20 dark:backdrop-blur-md light:bg-gradient-to-b light:from-white light:via-purple-50/40 light:to-pink-50/30 light:border-r light:border-purple-200/60 light:shadow-lg light:shadow-purple-100/40",
+        "flex flex-col h-screen transition-all duration-300 dark:bg-gradient-to-b dark:from-purple-950/90 dark:via-black/80 dark:to-purple-950/90 dark:border-r dark:border-purple-500/20 dark:backdrop-blur-xl light:bg-gradient-to-b light:from-white/95 light:via-purple-50/30 light:to-white/95 light:border-r light:border-purple-200/60 light:shadow-xl light:shadow-purple-100/50 light:backdrop-blur-xl",
         isCollapsed ? "w-20" : "w-72",
       )}
     >

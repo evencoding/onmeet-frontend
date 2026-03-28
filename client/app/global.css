@@ -12,23 +12,23 @@
    * A different format will require also updating the theme in tailwind.config.ts.
   */
   :root {
-    --background: 270 20% 8%;
-    --foreground: 270 10% 92%;
+    --background: 270 30% 98%;
+    --foreground: 270 30% 15%;
 
-    --card: 270 20% 12%;
-    --card-foreground: 270 10% 88%;
+    --card: 0 0% 100%;
+    --card-foreground: 270 30% 15%;
 
-    --popover: 270 20% 12%;
-    --popover-foreground: 270 10% 88%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 270 30% 15%;
 
     --primary: 270 84% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 20% 20%;
+    --secondary: 270 30% 92%;
     --secondary-foreground: 270 84% 56%;
 
-    --muted: 270 15% 30%;
-    --muted-foreground: 270 10% 60%;
+    --muted: 270 15% 75%;
+    --muted-foreground: 270 20% 40%;
 
     --accent: 270 84% 56%;
     --accent-foreground: 0 0% 100%;
@@ -36,19 +36,19 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 270 20% 20%;
-    --input: 270 18% 15%;
+    --border: 270 30% 90%;
+    --input: 270 20% 96%;
     --ring: 270 84% 56%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 270 20% 8%;
-    --sidebar-foreground: 270 10% 88%;
+    --sidebar-background: 270 30% 98%;
+    --sidebar-foreground: 270 30% 15%;
     --sidebar-primary: 270 84% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 30% 18%;
-    --sidebar-accent-foreground: 270 84% 70%;
-    --sidebar-border: 270 20% 16%;
+    --sidebar-accent: 270 30% 94%;
+    --sidebar-accent-foreground: 270 84% 50%;
+    --sidebar-border: 270 30% 90%;
     --sidebar-ring: 270 84% 56%;
   }
 
@@ -141,12 +141,12 @@
   }
 
   body.dark {
-    background: linear-gradient(135deg, hsl(270, 20%, 8%) 0%, hsl(280, 18%, 10%) 50%, hsl(270, 20%, 8%) 100%);
+    background: linear-gradient(145deg, hsl(270, 30%, 6%) 0%, hsl(280, 20%, 4%) 40%, hsl(300, 15%, 8%) 100%);
     background-attachment: fixed;
   }
 
   body.light {
-    background: linear-gradient(135deg, hsl(270, 30%, 98%) 0%, hsl(280, 25%, 97%) 50%, hsl(270, 30%, 98%) 100%);
+    background: linear-gradient(145deg, hsl(270, 40%, 97%) 0%, hsl(0, 0%, 100%) 40%, hsl(330, 30%, 97%) 100%);
     background-attachment: fixed;
   }
 
@@ -183,6 +183,42 @@
 }
 
 /* ── Design Token Utility Classes ── */
+
+/* 모달 오버레이 */
+.om-modal-overlay {
+  @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+}
+
+.om-modal-overlay.dark {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+.om-modal-overlay.light {
+  background: rgba(120, 80, 160, 0.15);
+  backdrop-filter: blur(8px);
+}
+
+/* 모달 카드 — light: 글래스모피즘 */
+.om-modal-card {
+  @apply rounded-2xl transition-all duration-300;
+}
+
+.dark .om-modal-card {
+  @apply bg-gradient-to-br from-purple-900/60 via-purple-950/80 to-pink-900/40
+         border border-purple-500/25 backdrop-blur-xl
+         shadow-2xl shadow-purple-500/20;
+}
+
+.light .om-modal-card {
+  @apply bg-white/95 backdrop-blur-xl
+         border border-purple-200/80
+         shadow-2xl shadow-purple-300/30;
+  box-shadow:
+    0 25px 50px -12px rgba(147, 51, 234, 0.15),
+    0 0 0 1px rgba(192, 132, 252, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
 
 /* 그래디언트 버튼 — Primary CTA */
 .om-btn-primary {

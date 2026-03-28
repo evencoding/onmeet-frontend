@@ -166,7 +166,7 @@ export default function MeetingRoom() {
 
   if (!roomId || !Number.isFinite(roomIdNum)) {
     return (
-      <div className="flex h-screen items-center justify-center bg-black text-white">
+      <div className="flex h-screen items-center justify-center bg-background text-foreground">
         <p>유효하지 않은 회의 링크입니다.</p>
       </div>
     );
@@ -259,7 +259,7 @@ export default function MeetingRoom() {
         useMeetingRoomStore.getState().setPhase("disconnected");
       }}
     >
-      <MeetingRoomContent roomId={roomId} isHost={isHost} userId={userId} />
+      <MeetingRoomContent roomId={roomId} isHost={isHost} userId={userId} roomTitle={roomData?.title} roomCode={roomData?.roomCode} scheduledAt={roomData?.scheduledAt} maxParticipants={roomData?.maxParticipants} />
     </LiveKitRoom>
   );
 }

@@ -95,7 +95,7 @@ export default function Schedule() {
 
           <div>
             <div className="min-w-[320px] space-y-4">
-              <div className="dark:bg-purple-500/10 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/20 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-300/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-200/30">
+              <div className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-purple-950/20 dark:to-pink-900/10 light:bg-white/80 dark:border dark:border-purple-500/20 light:border light:border-purple-200/70 rounded-2xl p-6 light:shadow-lg light:shadow-purple-100/30 dark:backdrop-blur-xl light:backdrop-blur-md">
                 <h2 className="text-xl font-bold dark:text-white/90 light:text-purple-950 mb-4">
                   {format(selectedDate, "MMMM dd, yyyy (EEEE)", { locale: ko })}
                   의 회의
@@ -230,7 +230,7 @@ export default function Schedule() {
 
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="dark:bg-gradient-to-br dark:from-purple-900/80 dark:via-black/90 dark:to-pink-900/60 light:bg-white rounded-2xl p-6 max-w-sm w-full dark:border dark:border-purple-500/30 light:border-2 light:border-purple-300/40 light:shadow-xl dark:backdrop-blur-xl">
+          <div className="om-modal-card p-6 max-w-sm w-full">
             <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-2">
               회의를 삭제하시겠습니까?
             </h3>

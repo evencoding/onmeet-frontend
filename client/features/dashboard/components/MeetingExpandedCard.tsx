@@ -375,10 +375,31 @@ export default function MeetingExpandedCard({
               )}
 
               {transcriptTab === "raw" && transcript && (
-                <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto">
-                  <div className="dark:text-white/80 light:text-purple-900 text-sm leading-relaxed whitespace-pre-wrap font-mono">
-                    {transcript}
-                  </div>
+                <div className="dark:bg-purple-500/10 light:bg-purple-50 dark:border dark:border-purple-500/20 light:border-2 light:border-purple-200 rounded-xl p-6 light:shadow-md light:shadow-purple-200/30 max-h-96 overflow-y-auto space-y-3">
+                  {transcript.split("\n").filter(Boolean).map((line, idx) => {
+                    const match = line.match(/^\[(\w+)\]\s*\((\d+)~(\d+)\)\s*(user-\d+|[^:]+):\s*(.+)$/);
+                    if (!match) {
+                      return <p key={idx} className="text-sm dark:text-white/60 light:text-purple-700">{line}</p>;
+                    }
+                    const [, type, startMs, , speaker, text] = match;
+                    const startDate = new Date(Number(startMs));
+                    const time = startDate.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+                    const isVoice = type === "VOICE";
+                    return (
+                      <div key={idx} className="flex gap-3">
+                        <div className="flex flex-col items-center flex-shrink-0 w-20">
+                          <span className="text-[10px] dark:text-white/40 light:text-purple-500 font-mono">{time}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded mt-0.5 ${isVoice ? "dark:bg-blue-500/20 dark:text-blue-300 light:bg-blue-100 light:text-blue-700" : "dark:bg-green-500/20 dark:text-green-300 light:bg-green-100 light:text-green-700"}`}>
+                            {isVoice ? "음성" : "채팅"}
+                          </span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold dark:text-purple-300 light:text-purple-700 mb-0.5">{speaker}</p>
+                          <p className="text-sm dark:text-white/80 light:text-purple-900 leading-relaxed">{text}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -397,6 +418,7 @@ export default function MeetingExpandedCard({
               meetingId={meeting.id}
               meetingTitle={meeting.title}
               hasRecordings={!!recordingsData && recordingsData.length > 0}
+              recordings={recordingsData ?? []}
               rawTranscript={transcript}
               fullText={transcript}
               summary={description ?? undefined}

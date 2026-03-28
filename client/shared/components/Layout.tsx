@@ -22,21 +22,25 @@ export default function Layout({
 
   return (
     <div className="flex h-screen bg-background relative overflow-hidden">
-      {/* Dark mode — purple blob background */}
+      {/* Dark mode — premium gradient (AuthLayout 스타일) */}
       {theme === "dark" && (
         <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900 overflow-hidden">
-          <div className="absolute top-0 -left-40 w-80 h-80 bg-purple-500/10 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob"></div>
-          <div className="absolute -top-20 -right-60 w-96 h-96 bg-pink-500/10 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-20 left-1/3 w-72 h-72 bg-blue-500/5 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-blob animation-delay-4000"></div>
+          <div className="absolute inset-0 opacity-40">
+            <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+            <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
+            <div className="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
+          </div>
         </div>
       )}
 
-      {/* Light mode — soft purple background */}
+      {/* Light mode — soft elegant gradient (AuthLayout 스타일) */}
       {theme === "light" && (
-        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-50/60 via-white to-pink-50/40 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 -right-40 w-[500px] h-[500px] bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-          <div className="absolute -bottom-20 -left-40 w-[450px] h-[450px] bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-blob animation-delay-2000"></div>
-          <div className="absolute top-1/3 left-1/2 w-[400px] h-[400px] bg-violet-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-100/80 via-white to-pink-100/60 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 opacity-70">
+            <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob" />
+            <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000" />
+            <div className="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
+          </div>
         </div>
       )}
 
