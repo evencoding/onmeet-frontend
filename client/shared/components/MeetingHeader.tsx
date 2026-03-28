@@ -100,7 +100,7 @@ export default function MeetingHeader() {
       toast({ title: "초대를 거절했습니다" });
     } catch (err) {
       console.error("Decline invitation failed:", err);
-      toast({ title: "초대 거절 실패", description: String((err as any)?.message || err), variant: "destructive" });
+      toast({ title: "초대 거절 실패", description: err instanceof Error ? err.message : "거절에 실패했습니다", variant: "destructive" });
     } finally {
       setProcessingInvite(null);
     }
@@ -180,7 +180,7 @@ export default function MeetingHeader() {
   };
 
   return (
-    <div className="px-6 py-4 border-b dark:border-purple-500/20 light:border-purple-200/60 dark:bg-purple-950/40 dark:backdrop-blur-xl light:bg-white light:shadow-[0_1px_3px_rgba(147,51,234,0.06)] flex items-center justify-between">
+    <div className="px-6 py-4 border-b dark:border-white/[0.06] light:border-purple-200/60 dark:bg-[#0e0820]/60 dark:backdrop-blur-xl light:bg-white light:shadow-[0_1px_3px_rgba(147,51,234,0.06)] flex items-center justify-between">
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-sm font-bold text-white">
           {user?.name?.charAt(0) ?? "U"}
@@ -222,7 +222,7 @@ export default function MeetingHeader() {
           {isDropdownOpen &&
             createPortal(
               <div
-                className="fixed w-96 dark:bg-purple-950/95 light:bg-white/95 dark:border dark:border-purple-500/20 light:border light:border-purple-200/70 rounded-2xl backdrop-blur-xl dark:shadow-2xl dark:shadow-purple-500/20 light:shadow-2xl light:shadow-purple-300/30 z-[999999]"
+                className="fixed w-96 dark:bg-[#120a22]/95 light:bg-white dark:border dark:border-white/[0.08] light:border light:border-purple-200/70 rounded-2xl backdrop-blur-xl dark:shadow-2xl dark:shadow-black/40 light:shadow-2xl light:shadow-purple-200/25 z-[999999]"
                 style={{
                   top: "12px",
                   right: `${dropdownPosition.right}px`,

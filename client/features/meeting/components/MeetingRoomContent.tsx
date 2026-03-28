@@ -9,7 +9,6 @@ import {
   X,
   AlertTriangle,
   Ban,
-  Clock,
   Users,
   Copy,
   Info,
@@ -165,7 +164,6 @@ interface MeetingRoomContentProps {
   userId: string;
   roomTitle?: string;
   roomCode?: string;
-  scheduledAt?: string;
   maxParticipants?: number;
 }
 
@@ -175,7 +173,6 @@ export default memo(function MeetingRoomContent({
   userId,
   roomTitle,
   roomCode,
-  scheduledAt,
   maxParticipants,
 }: MeetingRoomContentProps) {
   const navigate = useNavigate();
@@ -268,7 +265,7 @@ export default memo(function MeetingRoomContent({
       room.off(RoomEvent.ParticipantDisconnected, handleParticipantDisconnected);
       if (countdownRef.current) clearInterval(countdownRef.current);
     };
-  }, [room, isHost]);
+  }, [room, isHost, roomId, userId]);
 
   const handleHostLeftExit = useCallback(async () => {
     if (countdownRef.current) clearInterval(countdownRef.current);

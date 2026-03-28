@@ -22,25 +22,22 @@ export default function Layout({
 
   return (
     <div className="flex h-screen bg-background relative overflow-hidden">
-      {/* Dark mode — premium gradient (AuthLayout 스타일) */}
+      {/* Dark mode — 깊은 보라+남색 그라데이션, 미세한 글로우 */}
       {theme === "dark" && (
-        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900 overflow-hidden">
-          <div className="absolute inset-0 opacity-40">
-            <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
-            <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-            <div className="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
-          </div>
+        <div className="fixed inset-0 -z-10 overflow-hidden">
+          <div className="absolute inset-0 bg-[#0a0612]" />
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-950/80 via-transparent to-indigo-950/40" />
+          <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-purple-600/8 rounded-full filter blur-[120px]" />
+          <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-indigo-600/6 rounded-full filter blur-[100px]" />
         </div>
       )}
 
-      {/* Light mode — subtle gradient background */}
+      {/* Light mode — 깨끗한 회색+보라 틴트 */}
       {theme === "light" && (
-        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-50/50 via-slate-50 to-pink-50/30 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 opacity-50">
-            <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-blob" />
-            <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-            <div className="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-violet-100 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-4000" />
-          </div>
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-[#f5f3f7]" />
+          <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-purple-100/40 via-transparent to-transparent" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-100/30 rounded-full filter blur-[100px]" />
         </div>
       )}
 
