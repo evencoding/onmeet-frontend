@@ -276,7 +276,11 @@ export default function MeetingHeader() {
                         } dark:hover:bg-white/[0.04] light:hover:bg-purple-50`}
                       >
                         <button
-                          onClick={() => handleNotificationClick(notification.id)}
+                          onClick={() => {
+                            if (notification.type !== "MEETING_INVITATION") {
+                              handleNotificationClick(notification.id);
+                            }
+                          }}
                           className="flex-1 text-left"
                         >
                           <p className="font-medium text-sm text-foreground mb-1">
@@ -290,7 +294,7 @@ export default function MeetingHeader() {
                           </p>
                         </button>
 
-                        {notification.type === "MEETING_INVITATION" && !notification.read && (
+                        {notification.type === "MEETING_INVITATION" && (
                           <div className="flex items-center gap-1.5 ml-2 flex-shrink-0">
                             <button
                               onClick={(e) => { e.stopPropagation(); handleAcceptInvitation(notification); }}

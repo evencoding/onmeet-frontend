@@ -148,7 +148,17 @@ export function useFcmSetup(userId: string | undefined) {
         const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
         if (!vapidKey) return;
 
-        const token = await getToken(messaging, { vapidKey });
+        // 서비스 워커 등록 후 해당 registration을 getToken에 전달
+        // → 다른 탭/백그라운드에서도 FCM 수신 가능
+        let swRegistration: ServiceWorkerRegistration | undefined;
+        if ("serviceWorker" in navigator) {
+          swRegistration = await navigator.serviceWorker.ready;
+        }
+
+        const token = await getToken(messaging, {
+          vapidKey,
+          serviceWorkerRegistration: swRegistration,
+        });
         if (!token || cancelled) return;
 
         tokenRef.current = token;
@@ -160,12 +170,36 @@ export function useFcmSetup(userId: string | undefined) {
           data: { token, deviceId, deviceType: "WEB" },
         });
 
-        // 포그라운드 FCM 수신 리스너
+        // ① 사이트 보고 있음 → onMessage로 수신 (토스트 + 쿼리 갱신)
         unsubscribeForeground = onMessage(messaging, (payload) => {
           console.debug("[FCM] Foreground message:", payload);
+          const title = payload.notification?.title || payload.data?.title || "새 알림";
+          const body = payload.notification?.body || payload.data?.body || "";
+
+          // 브라우저 내 토스트
           qc.invalidateQueries({ queryKey: notiKeys.unreadCount(uid) });
           qc.invalidateQueries({ queryKey: notiKeys.lists(uid) });
+
+          // 포그라운드에서도 시스템 알림 표시 (Notification API)
+          if (Notification.permission === "granted") {
+            const n = new Notification(title, {
+              body,
+              icon: "/icons/brand-icon-transparent.png",
+              tag: payload.data?.dedupeKey,
+            });
+            n.onclick = () => {
+              window.focus();
+              const deeplink = payload.data?.deeplink;
+              if (deeplink) window.location.href = deeplink;
+              n.close();
+            };
+          }
         });
+
+        // 알림 권한 요청 (아직 안 했으면)
+        if (Notification.permission === "default") {
+          Notification.requestPermission();
+        }
       } catch (err) {
         console.warn("FCM setup failed:", err);
       }
