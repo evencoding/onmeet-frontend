@@ -31,13 +31,21 @@ if (isFirebaseConfigValid()) {
 
   if (app) {
     isSupported()
-      .then((supported) => {
-        if (supported) {
-          try {
-            messaging = getMessaging(app!);
-          } catch (error) {
-            console.warn("Firebase Messaging init failed:", error);
+      .then(async (supported) => {
+        if (!supported) return;
+        try {
+          // 서비스 워커에 Firebase config 전달 후 등록
+          if ("serviceWorker" in navigator) {
+            const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+            // config을 서비스 워커에 전달
+            registration.active?.postMessage({ type: "FIREBASE_CONFIG", config: firebaseConfig });
+            navigator.serviceWorker.ready.then((reg) => {
+              reg.active?.postMessage({ type: "FIREBASE_CONFIG", config: firebaseConfig });
+            });
           }
+          messaging = getMessaging(app!);
+        } catch (error) {
+          console.warn("Firebase Messaging init failed:", error);
         }
       })
       .catch((err) => {

@@ -1,4 +1,5 @@
 import { AlertTriangle } from "lucide-react";
+import ModalTransition from "@/shared/components/ModalTransition";
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -19,10 +20,8 @@ export default function DeleteAccountModal({
   onDelete,
   isPending,
 }: DeleteAccountModalProps) {
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 light:bg-purple-900/15 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <ModalTransition isOpen={isOpen} onClose={onClose}>
       <div className="om-modal-card max-w-md w-full p-8">
         <div className="flex items-center justify-center w-12 h-12 rounded-full dark:bg-red-500/20 light:bg-red-100 mx-auto mb-4">
           <AlertTriangle className="w-6 h-6 dark:text-red-400 light:text-red-600" />
@@ -68,6 +67,6 @@ export default function DeleteAccountModal({
           </button>
         </div>
       </div>
-    </div>
+    </ModalTransition>
   );
 }

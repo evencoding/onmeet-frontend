@@ -9,10 +9,12 @@ import { Toaster } from "@/shared/ui/toaster";
 import { Toaster as Sonner } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import { AuthProvider, useAuth } from "@/features/auth/context";
 import { ThemeProvider } from "@/shared/contexts/ThemeContext";
 import Layout from "@/shared/components/Layout";
+import PageTransition from "@/shared/components/PageTransition";
 
 if (import.meta.env.VITE_SENTRY_DSN) {
   Sentry.init({
@@ -108,6 +110,7 @@ const ContentLoader = () => (
 
 function ProtectedLayout() {
   const { isAuthenticated, isLoading, isPasswordReset } = useAuth();
+  const location = useLocation();
 
   if (isLoading) return <PageLoader />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
@@ -115,11 +118,13 @@ function ProtectedLayout() {
 
   return (
     <Layout>
-      <Suspense fallback={<ContentLoader />}>
-        <div className="animate-in fade-in duration-200">
-          <Outlet />
-        </div>
-      </Suspense>
+      <AnimatePresence mode="wait">
+        <Suspense fallback={<ContentLoader />} key={location.pathname}>
+          <PageTransition key={location.pathname}>
+            <Outlet />
+          </PageTransition>
+        </Suspense>
+      </AnimatePresence>
     </Layout>
   );
 }
@@ -163,9 +168,9 @@ const HomeRoute = () => {
 
   return (
     <Layout>
-      <div className="animate-in fade-in duration-200">
+      <PageTransition>
         <Index />
-      </div>
+      </PageTransition>
     </Layout>
   );
 };

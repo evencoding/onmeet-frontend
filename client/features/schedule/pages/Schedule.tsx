@@ -5,6 +5,7 @@ import CalendarView from "@/features/schedule/components/CalendarView";
 import MeetingBookingModal from "@/features/schedule/components/MeetingBookingModal";
 import MeetingEditModal from "@/features/schedule/components/MeetingEditModal";
 import { Clock, MapPin, Users, Pencil, Trash2, Lock, Copy } from "lucide-react";
+import ModalTransition from "@/shared/components/ModalTransition";
 import { format, isSameDay, startOfMonth } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useAuth } from "@/features/auth/context";
@@ -228,14 +229,13 @@ export default function Schedule() {
         />
       )}
 
-      {deleteTarget && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <ModalTransition isOpen={!!deleteTarget} onClose={() => setDeleteTarget(null)}>
           <div className="om-modal-card p-6 max-w-sm w-full">
             <h3 className="text-lg font-bold dark:text-white/90 light:text-purple-950 mb-2">
               회의를 삭제하시겠습니까?
             </h3>
             <p className="text-sm dark:text-white/60 light:text-purple-600 mb-1">
-              <span className="font-semibold dark:text-white/80 light:text-purple-800">{deleteTarget.title}</span>
+              <span className="font-semibold dark:text-white/80 light:text-purple-800">{deleteTarget?.title}</span>
             </p>
             <p className="text-xs dark:text-white/40 light:text-purple-500 mb-6">
               삭제된 회의는 복구할 수 없습니다.
@@ -257,8 +257,7 @@ export default function Schedule() {
               </button>
             </div>
           </div>
-        </div>
-      )}
+      </ModalTransition>
     </>
   );
 }
