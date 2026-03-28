@@ -129,19 +129,22 @@ const FCM_TOKEN_KEY = "onmeet_fcm_token";
 export function useFcmSetup(userId: string | undefined) {
   const registerMutation = useRegisterFcmToken();
   const unregisterMutation = useUnregisterFcmToken();
+  const qc = useQueryClient();
   const tokenRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!userId) return;
+    const uid = userId;
 
     let cancelled = false;
+    let unsubscribeForeground: (() => void) | null = null;
 
     (async () => {
       try {
         const { messaging } = await import("@/shared/lib/firebase");
         if (!messaging || cancelled) return;
 
-        const { getToken } = await import("firebase/messaging");
+        const { getToken, onMessage } = await import("firebase/messaging");
         const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
         if (!vapidKey) return;
 
@@ -151,10 +154,17 @@ export function useFcmSetup(userId: string | undefined) {
         tokenRef.current = token;
         localStorage.setItem(FCM_TOKEN_KEY, token);
 
-        const deviceId = `${navigator.userAgent}-${userId}`;
+        const deviceId = `${navigator.userAgent}-${uid}`;
         registerMutation.mutate({
-          userId,
+          userId: uid,
           data: { token, deviceId, deviceType: "WEB" },
+        });
+
+        // 포그라운드 FCM 수신 리스너
+        unsubscribeForeground = onMessage(messaging, (payload) => {
+          console.debug("[FCM] Foreground message:", payload);
+          qc.invalidateQueries({ queryKey: notiKeys.unreadCount(uid) });
+          qc.invalidateQueries({ queryKey: notiKeys.lists(uid) });
         });
       } catch (err) {
         console.warn("FCM setup failed:", err);
@@ -163,6 +173,7 @@ export function useFcmSetup(userId: string | undefined) {
 
     return () => {
       cancelled = true;
+      unsubscribeForeground?.();
       const token = tokenRef.current ?? localStorage.getItem(FCM_TOKEN_KEY);
       if (token && userId) {
         unregisterMutation.mutate({ userId, token });
