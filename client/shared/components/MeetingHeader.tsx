@@ -74,6 +74,7 @@ export default function MeetingHeader() {
   const { connected: sseConnected } = useNotificationSSE(userId || undefined, handleSSEMessage);
   useFcmSetup(userId || undefined);
   const [processingInvite, setProcessingInvite] = useState<number | null>(null);
+  const [respondedInvites, setRespondedInvites] = useState<Set<number>>(new Set());
 
   const handleAcceptInvitation = useCallback(async (notification: NotificationResponseDto) => {
     if (!userId || !notification.resourceId) return;
@@ -81,6 +82,7 @@ export default function MeetingHeader() {
     try {
       await acceptInvitationByRoom(Number(notification.resourceId), userId);
       markAsReadMutation.mutate({ notificationId: notification.id, userId });
+      setRespondedInvites((s) => new Set(s).add(notification.id));
       toast({ title: "초대를 수락했습니다" });
       setIsDropdownOpen(false);
       navigate(`/meeting/${notification.resourceId}`);
@@ -101,6 +103,7 @@ export default function MeetingHeader() {
     try {
       await declineInvitationByRoom(Number(notification.resourceId), userId);
       markAsReadMutation.mutate({ notificationId: notification.id, userId });
+      setRespondedInvites((s) => new Set(s).add(notification.id));
       toast({ title: "초대를 거절했습니다" });
     } catch (err) {
       console.error("Decline invitation failed:", err);
@@ -184,7 +187,7 @@ export default function MeetingHeader() {
   };
 
   return (
-    <div className="px-6 py-4 border-b dark:border-white/[0.06] light:border-purple-200/60 dark:bg-[#111116]/60 dark:backdrop-blur-xl light:bg-white light:shadow-[0_1px_3px_rgba(147,51,234,0.06)] flex items-center justify-between">
+    <div className="px-6 py-4 border-b dark:border-white/[0.06] light:border-purple-200 dark:bg-[#111116]/60 dark:backdrop-blur-xl light:bg-white light:shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-between">
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-sm font-bold text-white">
           {user?.name?.charAt(0) ?? "U"}
@@ -294,7 +297,7 @@ export default function MeetingHeader() {
                           </p>
                         </button>
 
-                        {notification.type === "MEETING_INVITATION" && (
+                        {notification.type === "MEETING_INVITATION" && !respondedInvites.has(notification.id) && (
                           <div className="flex items-center gap-1.5 ml-2 flex-shrink-0">
                             <button
                               onClick={(e) => { e.stopPropagation(); handleAcceptInvitation(notification); }}

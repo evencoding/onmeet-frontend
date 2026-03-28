@@ -135,11 +135,11 @@ export function getStatusLabel(status: string): string {
 export function getStatusColor(status: string): string {
   switch (status) {
     case "scheduled":
-      return "om-badge-blue";
+      return "om-badge om-badge-blue";
     case "in_progress":
-      return "om-badge-green";
+      return "om-badge om-badge-green";
     case "completed":
-      return "om-badge-gray";
+      return "om-badge om-badge-gray";
     default:
       return "om-badge";
   }
@@ -149,19 +149,19 @@ export function getStatusColor(status: string): string {
 export const roomStatusConfig: Record<string, { label: string; className: string }> = {
   ACTIVE: {
     label: "Active",
-    className: "om-badge-green",
+    className: "om-badge om-badge-green",
   },
   ENDED: {
     label: "Closed",
-    className: "om-badge-red",
+    className: "om-badge om-badge-red",
   },
   WAITING: {
     label: "Waiting",
-    className: "om-badge-amber",
+    className: "om-badge om-badge-amber",
   },
   CANCELLED: {
     label: "Cancelled",
-    className: "om-badge-gray",
+    className: "om-badge om-badge-gray",
   },
 };
 

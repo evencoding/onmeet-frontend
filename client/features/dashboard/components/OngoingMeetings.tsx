@@ -159,22 +159,22 @@ export default function OngoingMeetings() {
 
                   <div className="flex items-center gap-2 flex-wrap">
                     {meeting.type === "SCHEDULED" && (
-                      <span className="om-badge-blue rounded">
+                      <span className="om-badge om-badge-blue">
                         예약
                       </span>
                     )}
                     {meeting.accessScope === "TEAM" && (
-                      <span className="flex items-center gap-1 om-badge-cyan rounded">
+                      <span className="flex items-center gap-1 om-badge om-badge-cyan">
                         <Shield className="w-3 h-3" />팀
                       </span>
                     )}
                     {meeting.accessScope === "ALL" && (
-                      <span className="flex items-center gap-1 om-badge-green rounded">
+                      <span className="flex items-center gap-1 om-badge om-badge-green">
                         <Globe className="w-3 h-3" />공개
                       </span>
                     )}
                     {meeting.locked && (
-                      <span className="flex items-center gap-1 om-badge-amber rounded">
+                      <span className="flex items-center gap-1 om-badge om-badge-amber">
                         <Lock className="w-3 h-3" />잠금
                       </span>
                     )}

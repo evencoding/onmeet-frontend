@@ -196,9 +196,12 @@ export function useFcmSetup(userId: string | undefined) {
           }
         });
 
-        // 알림 권한 요청 (아직 안 했으면)
+        // 알림 권한 요청 (사용자가 아직 결정하지 않은 경우)
         if (Notification.permission === "default") {
-          Notification.requestPermission();
+          const permission = await Notification.requestPermission();
+          if (permission === "denied") {
+            console.debug("[FCM] Notification permission denied by user");
+          }
         }
       } catch (err) {
         console.warn("FCM setup failed:", err);

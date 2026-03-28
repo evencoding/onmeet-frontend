@@ -90,7 +90,7 @@ export default memo(function Sidebar({
   return (
     <div
       className={cn(
-        "flex flex-col h-screen transition-all duration-300 dark:bg-[#111116]/90 dark:border-r dark:border-white/[0.06] dark:backdrop-blur-xl light:bg-white light:border-r light:border-purple-200/60 light:shadow-[4px_0_24px_-4px_rgba(147,51,234,0.06)]",
+        "flex flex-col h-screen transition-all duration-300 dark:bg-[#111116]/90 dark:border-r dark:border-white/[0.06] dark:backdrop-blur-xl light:bg-white light:border-r light:border-purple-200 light:shadow-[6px_0_20px_-2px_rgba(0,0,0,0.06)]",
         isCollapsed ? "w-20" : "w-72",
       )}
     >
