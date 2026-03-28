@@ -13,7 +13,7 @@ vi.mock("@/features/auth/api", () => ({
   validateInvitation: vi.fn(),
   guestLogin: vi.fn(),
   findPassword: vi.fn(),
-  getAllEmployees: vi.fn(),
+  getInvitableMembers: vi.fn(),
   getJobTitles: vi.fn(),
   updateProfile: vi.fn(),
   withdraw: vi.fn(),
@@ -67,7 +67,7 @@ import {
   validateInvitation,
   guestLogin,
   findPassword,
-  getAllEmployees,
+  getInvitableMembers,
   getJobTitles,
   updateProfile,
   withdraw,
@@ -248,8 +248,8 @@ describe("useValidateInvitation", () => {
 // ── useAllEmployees ──
 
 describe("useAllEmployees", () => {
-  it("calls getAllEmployees with pageable", async () => {
-    vi.mocked(getAllEmployees).mockResolvedValue({ content: [] } as any);
+  it("calls getInvitableMembers with pageable", async () => {
+    vi.mocked(getInvitableMembers).mockResolvedValue({ content: [] } as any);
 
     const pageable = { page: 0, size: 10 };
     const { result } = renderHook(() => useAllEmployees(pageable), {
@@ -257,18 +257,18 @@ describe("useAllEmployees", () => {
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(getAllEmployees).toHaveBeenCalledWith(pageable);
+    expect(getInvitableMembers).toHaveBeenCalledWith(pageable);
   });
 
-  it("calls getAllEmployees with empty object when no pageable given", async () => {
-    vi.mocked(getAllEmployees).mockResolvedValue({ content: [] } as any);
+  it("calls getInvitableMembers with empty object when no pageable given", async () => {
+    vi.mocked(getInvitableMembers).mockResolvedValue({ content: [] } as any);
 
     const { result } = renderHook(() => useAllEmployees(), {
       wrapper: createWrapper(),
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(getAllEmployees).toHaveBeenCalledWith({});
+    expect(getInvitableMembers).toHaveBeenCalledWith({});
   });
 });
 
