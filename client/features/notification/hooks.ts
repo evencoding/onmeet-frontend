@@ -141,21 +141,21 @@ export function useFcmSetup(userId: string | undefined) {
 
     (async () => {
       try {
-        const { messaging } = await import("@/shared/lib/firebase");
-        if (!messaging || cancelled) return;
+        const { messagingReady } = await import("@/shared/lib/firebase");
+        const resolvedMessaging = await messagingReady;
+        if (!resolvedMessaging || cancelled) return;
 
         const { getToken, onMessage } = await import("firebase/messaging");
         const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
         if (!vapidKey) return;
 
-        // 서비스 워커 등록 후 해당 registration을 getToken에 전달
-        // → 다른 탭/백그라운드에서도 FCM 수신 가능
+        // PWA의 sw.js가 루트 스코프를 점유하므로 기존 SW registration 재사용
         let swRegistration: ServiceWorkerRegistration | undefined;
         if ("serviceWorker" in navigator) {
           swRegistration = await navigator.serviceWorker.ready;
         }
 
-        const token = await getToken(messaging, {
+        const token = await getToken(resolvedMessaging, {
           vapidKey,
           serviceWorkerRegistration: swRegistration,
         });
@@ -171,7 +171,7 @@ export function useFcmSetup(userId: string | undefined) {
         });
 
         // ① 사이트 보고 있음 → onMessage로 수신 (토스트 + 쿼리 갱신)
-        unsubscribeForeground = onMessage(messaging, (payload) => {
+        unsubscribeForeground = onMessage(resolvedMessaging, (payload) => {
           console.debug("[FCM] Foreground message:", payload);
           const title = payload.notification?.title || payload.data?.title || "새 알림";
           const body = payload.notification?.body || payload.data?.body || "";
