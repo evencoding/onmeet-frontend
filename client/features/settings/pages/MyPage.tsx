@@ -190,7 +190,7 @@ export default function MyPage() {
 
   return (
     <>
-      <div className="max-w-4xl space-y-6">
+      <div className="space-y-6">
 
         <div className="flex items-center justify-between border-b dark:border-purple-500/20 light:border-purple-300/40">
           <div className="flex gap-2">

@@ -103,6 +103,19 @@
     @apply text-foreground;
   }
 
+  /* 라이트 모드 인풋/셀렉트 기본 스타일 — 배경 구분감 */
+  .light input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  .light textarea,
+  .light select {
+    background-color: #f5f2fa;
+  }
+
+  .light input:focus,
+  .light textarea:focus,
+  .light select:focus {
+    background-color: #ffffff;
+  }
+
   body {
     background: hsl(var(--background));
   }
