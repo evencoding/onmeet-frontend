@@ -67,7 +67,11 @@ export default function MeetingHeader() {
   const markAllAsReadMutation = useMarkAllAsRead();
   const deleteMutation = useDeleteNotification();
   const deleteAllMutation = useDeleteAllNotifications();
-  const { connected: sseConnected } = useNotificationSSE(userId || undefined);
+  const handleSSEMessage = useCallback((notification: NotificationResponseDto) => {
+    toast({ title: notification.title, description: notification.body });
+    setIsDropdownOpen(true);
+  }, []);
+  const { connected: sseConnected } = useNotificationSSE(userId || undefined, handleSSEMessage);
   useFcmSetup(userId || undefined);
   const [processingInvite, setProcessingInvite] = useState<number | null>(null);
 
@@ -100,7 +104,7 @@ export default function MeetingHeader() {
       toast({ title: "초대를 거절했습니다" });
     } catch (err) {
       console.error("Decline invitation failed:", err);
-      toast({ title: "초대 거절 실패", description: String((err as any)?.message || err), variant: "destructive" });
+      toast({ title: "초대 거절 실패", description: err instanceof Error ? err.message : "거절에 실패했습니다", variant: "destructive" });
     } finally {
       setProcessingInvite(null);
     }
@@ -180,7 +184,7 @@ export default function MeetingHeader() {
   };
 
   return (
-    <div className="px-6 py-4 border-b dark:border-purple-500/20 light:border-purple-200/40 dark:bg-purple-950/40 dark:backdrop-blur-xl light:bg-white/80 light:backdrop-blur-xl light:shadow-sm light:shadow-purple-100/30 flex items-center justify-between">
+    <div className="px-6 py-4 border-b dark:border-white/[0.06] light:border-purple-200/60 dark:bg-[#111116]/60 dark:backdrop-blur-xl light:bg-white light:shadow-[0_1px_3px_rgba(147,51,234,0.06)] flex items-center justify-between">
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-sm font-bold text-white">
           {user?.name?.charAt(0) ?? "U"}
@@ -205,7 +209,7 @@ export default function MeetingHeader() {
           <button
             ref={bellButtonRef}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="relative p-2 hover:bg-slate-800/50 dark:hover:bg-slate-800/50 light:hover:bg-slate-100/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+            className="relative p-2 dark:hover:bg-white/[0.06] light:hover:bg-purple-100 light:hover:shadow-sm rounded-lg transition-all duration-200 text-muted-foreground hover:text-foreground"
           >
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && (
@@ -222,7 +226,7 @@ export default function MeetingHeader() {
           {isDropdownOpen &&
             createPortal(
               <div
-                className="fixed w-96 dark:bg-purple-950/95 light:bg-white/95 dark:border dark:border-purple-500/20 light:border light:border-purple-200/70 rounded-2xl backdrop-blur-xl dark:shadow-2xl dark:shadow-purple-500/20 light:shadow-2xl light:shadow-purple-300/30 z-[999999]"
+                className="fixed w-96 dark:bg-[#151519]/95 light:bg-white dark:border dark:border-white/[0.08] light:border light:border-purple-200/70 rounded-2xl backdrop-blur-xl dark:shadow-2xl dark:shadow-black/40 light:shadow-2xl light:shadow-purple-200/25 z-[999999]"
                 style={{
                   top: "12px",
                   right: `${dropdownPosition.right}px`,
@@ -242,14 +246,14 @@ export default function MeetingHeader() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={handleMarkAllAsRead}
-                        className="p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md hover:dark:bg-slate-800 hover:light:bg-slate-100"
+                        className="p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-md dark:hover:bg-white/[0.06] light:hover:bg-purple-100"
                         title="모두 읽음"
                       >
                         <CheckCheck className="w-4 h-4" />
                       </button>
                       <button
                         onClick={handleDeleteAll}
-                        className="p-1.5 text-muted-foreground hover:text-destructive transition-colors rounded-md hover:dark:bg-slate-800 hover:light:bg-slate-100"
+                        className="p-1.5 text-muted-foreground hover:text-destructive transition-colors rounded-md dark:hover:bg-white/[0.06] light:hover:bg-purple-100"
                         title="모두 삭제"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -269,7 +273,7 @@ export default function MeetingHeader() {
                           notification.read
                             ? "dark:bg-slate-800/30 light:bg-slate-50/60"
                             : "dark:bg-slate-800/50 light:bg-blue-50/40 light:border-b light:border-blue-200/40"
-                        } hover:dark:bg-slate-800/60 hover:light:bg-blue-50/60`}
+                        } dark:hover:bg-white/[0.04] light:hover:bg-purple-50`}
                       >
                         <button
                           onClick={() => handleNotificationClick(notification.id)}
@@ -291,7 +295,7 @@ export default function MeetingHeader() {
                             <button
                               onClick={(e) => { e.stopPropagation(); handleAcceptInvitation(notification); }}
                               disabled={processingInvite === notification.id}
-                              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg dark:bg-green-500/20 dark:text-green-300 dark:hover:bg-green-500/30 light:bg-green-100 light:text-green-700 light:hover:bg-green-200 transition-colors disabled:opacity-50"
+                              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg dark:bg-green-500/20 dark:text-green-300 dark:hover:bg-green-500/30 light:bg-green-600 light:text-white light:hover:bg-green-700 light:shadow-sm transition-colors disabled:opacity-50"
                               title="초대 수락"
                             >
                               <Check className="w-3.5 h-3.5" />수락
@@ -299,7 +303,7 @@ export default function MeetingHeader() {
                             <button
                               onClick={(e) => { e.stopPropagation(); handleDeclineInvitation(notification); }}
                               disabled={processingInvite === notification.id}
-                              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg dark:bg-red-500/20 dark:text-red-300 dark:hover:bg-red-500/30 light:bg-red-100 light:text-red-700 light:hover:bg-red-200 transition-colors disabled:opacity-50"
+                              className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg dark:bg-red-500/20 dark:text-red-300 dark:hover:bg-red-500/30 light:border light:border-red-300 light:text-red-600 light:hover:bg-red-50 light:hover:border-red-400 transition-colors disabled:opacity-50"
                               title="초대 거절"
                             >
                               <XCircle className="w-3.5 h-3.5" />거절
@@ -332,7 +336,7 @@ export default function MeetingHeader() {
             )}
         </div>
 
-        <button className="p-2 hover:bg-slate-800/50 dark:hover:bg-slate-800/50 light:hover:bg-slate-100/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground">
+        <button className="p-2 dark:hover:bg-white/[0.06] light:hover:bg-purple-100 light:hover:shadow-sm rounded-lg transition-all duration-200 text-muted-foreground hover:text-foreground">
           <MoreVertical className="w-5 h-5" />
         </button>
       </div>

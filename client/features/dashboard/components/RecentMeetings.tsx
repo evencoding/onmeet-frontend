@@ -94,7 +94,7 @@ export default function RecentMeetings() {
             return (
               <div
                 key={meeting.id}
-                className="dark:bg-gradient-to-br dark:from-purple-900/30 dark:via-black/40 dark:to-pink-900/20 light:bg-white light:border-2 light:border-purple-300/60 dark:border dark:border-purple-500/30 rounded-2xl p-5 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 light:hover:shadow-md light:hover:shadow-purple-300/30 light:hover:border-purple-400/60 transition-all duration-300 group dark:backdrop-blur-md light:backdrop-blur-sm"
+                className="om-card p-5 group"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">

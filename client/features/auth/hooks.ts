@@ -9,7 +9,7 @@ import {
   validateInvitation as validateInvitationApi,
   guestLogin as guestLoginApi,
   findPassword as findPasswordApi,
-  getAllEmployees,
+  getInvitableMembers,
   getJobTitles,
   updateProfile,
   withdraw,
@@ -134,7 +134,7 @@ export function useAllEmployees(pageable?: Pageable, enabled = true) {
   );
   return useQuery({
     queryKey: AUTH_ADMIN_KEYS.employees(stablePageable),
-    queryFn: () => getAllEmployees(stablePageable ?? {}),
+    queryFn: () => getInvitableMembers(stablePageable ?? {}),
     enabled,
     staleTime: 5 * 60_000, // 5분 — 직원 목록은 자주 변경되지 않음
   });

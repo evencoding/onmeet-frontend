@@ -7,7 +7,7 @@ vi.mock("./auth-fetch", () => ({
 }));
 
 import {
-  getAllEmployees,
+  getInvitableMembers,
   deactivateUser,
   activateUser,
   resetProfileImage,
@@ -27,10 +27,10 @@ beforeEach(() => {
 });
 
 describe("manager API", () => {
-  it("getAllEmployees with pagination", async () => {
-    await getAllEmployees({ page: 0, size: 10 });
+  it("getInvitableMembers with pagination", async () => {
+    await getInvitableMembers({ page: 0, size: 10 });
     const url = mockAuthFetch.mock.calls[0][0] as string;
-    expect(url).toContain("/v1/manager/employees");
+    expect(url).toContain("/v1/members/invitable");
     expect(url).toContain("page=0");
     expect(url).toContain("size=10");
   });

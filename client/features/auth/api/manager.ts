@@ -13,10 +13,10 @@ import type {
   CompanyResponse,
 } from "./types";
 
-export function getAllEmployees(
+export function getInvitableMembers(
   pageable: Pageable,
 ): Promise<PageResponse<UserResponseDto>> {
-  return authFetch(`/v1/manager/employees${pageQs(pageable)}`);
+  return authFetch(`/v1/members/invitable${pageQs(pageable)}`);
 }
 
 export function deactivateUser(userId: number): Promise<UserResponseDto> {

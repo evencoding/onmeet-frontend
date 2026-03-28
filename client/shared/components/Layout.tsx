@@ -22,25 +22,21 @@ export default function Layout({
 
   return (
     <div className="flex h-screen bg-background relative overflow-hidden">
-      {/* Dark mode — premium gradient (AuthLayout 스타일) */}
+      {/* Dark mode — 중립 블랙 + 미세 보라 글로우 포인트 */}
       {theme === "dark" && (
-        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-950 via-black to-purple-900 overflow-hidden">
-          <div className="absolute inset-0 opacity-40">
-            <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
-            <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-            <div className="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
-          </div>
+        <div className="fixed inset-0 -z-10 overflow-hidden">
+          <div className="absolute inset-0 bg-[#101014]" />
+          <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-purple-500/[0.04] rounded-full filter blur-[120px]" />
+          <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-purple-600/[0.03] rounded-full filter blur-[100px]" />
         </div>
       )}
 
-      {/* Light mode — soft elegant gradient (AuthLayout 스타일) */}
+      {/* Light mode — 깨끗한 회색+보라 틴트 */}
       {theme === "light" && (
-        <div className="fixed inset-0 -z-10 bg-gradient-to-br from-purple-100/80 via-white to-pink-100/60 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 opacity-70">
-            <div className="absolute top-0 -left-20 w-[500px] h-[500px] bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob" />
-            <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000" />
-            <div className="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000" />
-          </div>
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-[#f5f3f7]" />
+          <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-purple-100/40 via-transparent to-transparent" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-100/30 rounded-full filter blur-[100px]" />
         </div>
       )}
 
@@ -72,7 +68,7 @@ export default function Layout({
           )}
 
           {showRecentPanel && (
-            <div className="hidden lg:flex lg:w-96 border-l flex-col overflow-hidden dark:border-purple-500/20 light:border-purple-200/40 dark:bg-purple-950/40 light:bg-white/60 backdrop-blur-md">
+            <div className="hidden lg:flex lg:w-96 border-l flex-col overflow-hidden dark:border-purple-500/20 light:border-purple-200/60 dark:bg-purple-950/40 light:bg-white backdrop-blur-xl">
               <div className="px-6 py-4 border-b dark:border-purple-500/20 light:border-purple-200/40">
                 <h2 className="text-base font-semibold om-text-primary">
                   최근 회의 기록

@@ -12,123 +12,86 @@
    * A different format will require also updating the theme in tailwind.config.ts.
   */
   :root {
-    --background: 270 30% 98%;
-    --foreground: 270 30% 15%;
+    --background: 270 15% 96%;
+    --foreground: 270 40% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 270 30% 15%;
+    --card-foreground: 270 40% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 270 30% 15%;
+    --popover-foreground: 270 40% 12%;
 
     --primary: 270 84% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 30% 92%;
-    --secondary-foreground: 270 84% 56%;
+    --secondary: 270 25% 90%;
+    --secondary-foreground: 270 84% 50%;
 
-    --muted: 270 15% 75%;
-    --muted-foreground: 270 20% 40%;
+    --muted: 270 15% 70%;
+    --muted-foreground: 270 25% 35%;
 
     --accent: 270 84% 56%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 84% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 270 30% 90%;
-    --input: 270 20% 96%;
+    --border: 270 30% 85%;
+    --input: 270 20% 92%;
     --ring: 270 84% 56%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 270 30% 98%;
-    --sidebar-foreground: 270 30% 15%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 270 40% 12%;
     --sidebar-primary: 270 84% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 30% 94%;
-    --sidebar-accent-foreground: 270 84% 50%;
-    --sidebar-border: 270 30% 90%;
+    --sidebar-accent: 270 30% 92%;
+    --sidebar-accent-foreground: 270 84% 45%;
+    --sidebar-border: 270 25% 88%;
     --sidebar-ring: 270 84% 56%;
   }
 
   .dark {
-    --background: 270 20% 8%;
-    --foreground: 270 10% 92%;
+    --background: 240 6% 6%;
+    --foreground: 0 0% 93%;
 
-    --card: 270 20% 12%;
-    --card-foreground: 270 10% 88%;
+    --card: 240 5% 10%;
+    --card-foreground: 0 0% 90%;
 
-    --popover: 270 20% 12%;
-    --popover-foreground: 270 10% 88%;
+    --popover: 240 5% 10%;
+    --popover-foreground: 0 0% 90%;
 
-    --primary: 270 84% 56%;
+    --primary: 270 84% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 270 20% 20%;
-    --secondary-foreground: 270 84% 56%;
+    --secondary: 240 5% 15%;
+    --secondary-foreground: 270 80% 70%;
 
-    --muted: 270 15% 30%;
-    --muted-foreground: 270 10% 60%;
+    --muted: 240 4% 22%;
+    --muted-foreground: 240 5% 55%;
 
-    --accent: 270 84% 56%;
+    --accent: 270 84% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 270 20% 20%;
-    --input: 270 18% 15%;
-    --ring: 270 84% 56%;
+    --border: 240 5% 15%;
+    --input: 240 5% 12%;
+    --ring: 270 84% 60%;
 
-    --sidebar-background: 270 20% 8%;
-    --sidebar-foreground: 270 10% 88%;
-    --sidebar-primary: 270 84% 56%;
+    --sidebar-background: 240 6% 8%;
+    --sidebar-foreground: 0 0% 88%;
+    --sidebar-primary: 270 84% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 30% 18%;
-    --sidebar-accent-foreground: 270 84% 70%;
-    --sidebar-border: 270 20% 16%;
-    --sidebar-ring: 270 84% 56%;
+    --sidebar-accent: 240 5% 14%;
+    --sidebar-accent-foreground: 270 80% 75%;
+    --sidebar-border: 240 5% 13%;
+    --sidebar-ring: 270 84% 60%;
   }
 
-  .light {
-    --background: 270 30% 98%;
-    --foreground: 270 30% 15%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 270 30% 15%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 270 30% 15%;
-
-    --primary: 270 84% 56%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 270 30% 92%;
-    --secondary-foreground: 270 84% 56%;
-
-    --muted: 270 15% 75%;
-    --muted-foreground: 270 20% 40%;
-
-    --accent: 270 84% 56%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 270 30% 90%;
-    --input: 270 20% 96%;
-    --ring: 270 84% 56%;
-
-    --sidebar-background: 270 30% 98%;
-    --sidebar-foreground: 270 30% 15%;
-    --sidebar-primary: 270 84% 56%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 270 30% 94%;
-    --sidebar-accent-foreground: 270 84% 50%;
-    --sidebar-border: 270 30% 90%;
-    --sidebar-ring: 270 84% 56%;
-  }
+  /* .light는 :root와 동일하므로 생략 — :root가 라이트 기본값 */
 }
 
 @layer base {
@@ -140,14 +103,8 @@
     @apply text-foreground;
   }
 
-  body.dark {
-    background: linear-gradient(145deg, hsl(270, 30%, 6%) 0%, hsl(280, 20%, 4%) 40%, hsl(300, 15%, 8%) 100%);
-    background-attachment: fixed;
-  }
-
-  body.light {
-    background: linear-gradient(145deg, hsl(270, 40%, 97%) 0%, hsl(0, 0%, 100%) 40%, hsl(330, 30%, 97%) 100%);
-    background-attachment: fixed;
+  body {
+    background: hsl(var(--background));
   }
 
   :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
@@ -182,72 +139,161 @@
   }
 }
 
-/* ── Design Token Utility Classes ── */
+/* ══════════════════════════════════════════
+   Design Token System (로그인 카드 스타일 기반)
+   ══════════════════════════════════════════ */
 
-/* 모달 오버레이 */
-.om-modal-overlay {
-  @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+/* ── 카드 ── */
+.om-card {
+  @apply rounded-2xl transition-all duration-300;
+}
+.dark .om-card {
+  background: rgba(18, 18, 24, 0.8);
+  @apply border border-white/[0.07] hover:border-purple-500/30
+         backdrop-blur-xl;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+.light .om-card {
+  @apply bg-white border border-purple-200/60 hover:border-purple-300;
+  box-shadow:
+    0 4px 16px rgba(147, 51, 234, 0.06),
+    0 1px 3px rgba(147, 51, 234, 0.04);
+}
+.light .om-card:hover {
+  box-shadow:
+    0 8px 30px rgba(147, 51, 234, 0.1),
+    0 2px 6px rgba(147, 51, 234, 0.06);
 }
 
-.om-modal-overlay.dark {
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-}
-
-.om-modal-overlay.light {
-  background: rgba(120, 80, 160, 0.15);
-  backdrop-filter: blur(8px);
-}
-
-/* 모달 카드 — light: 글래스모피즘 */
+/* ── 모달 카드 ── */
 .om-modal-card {
   @apply rounded-2xl transition-all duration-300;
 }
-
 .dark .om-modal-card {
-  @apply bg-gradient-to-br from-purple-900/60 via-purple-950/80 to-pink-900/40
-         border border-purple-500/25 backdrop-blur-xl
-         shadow-2xl shadow-purple-500/20;
+  background: rgba(16, 16, 22, 0.95);
+  @apply border border-white/[0.08] backdrop-blur-xl;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.06);
 }
-
 .light .om-modal-card {
-  @apply bg-white/95 backdrop-blur-xl
-         border border-purple-200/80
-         shadow-2xl shadow-purple-300/30;
+  @apply bg-white backdrop-blur-xl border border-purple-200/70;
   box-shadow:
-    0 25px 50px -12px rgba(147, 51, 234, 0.15),
-    0 0 0 1px rgba(192, 132, 252, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    0 25px 60px -12px rgba(147, 51, 234, 0.15),
+    0 8px 24px rgba(147, 51, 234, 0.06),
+    0 0 0 1px rgba(192, 132, 252, 0.08);
 }
 
-/* 그래디언트 버튼 — Primary CTA */
+/* ── 인풋 ── */
+.om-input {
+  @apply w-full px-4 py-3 rounded-xl transition-all duration-200;
+}
+.dark .om-input {
+  @apply border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm
+         text-white placeholder-white/30
+         focus:bg-white/[0.07] focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20;
+}
+.light .om-input {
+  @apply border-2 border-purple-300/60 bg-purple-50
+         text-purple-950 placeholder-purple-400/60
+         focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-300/40
+         shadow-sm;
+}
+
+/* ── 라벨 ── */
+.om-label {
+  @apply text-sm font-semibold flex items-center gap-2;
+}
+.dark .om-label { @apply text-white/90; }
+.light .om-label { @apply text-purple-900; }
+
+/* ── 아이콘 (보조) ── */
+.om-icon { @apply w-4 h-4; }
+.dark .om-icon { @apply text-purple-400; }
+.light .om-icon { @apply text-purple-600; }
+
+/* ── 제목 ── */
+.om-title {
+  @apply text-2xl font-bold;
+}
+.dark .om-title { @apply text-white; }
+.light .om-title { @apply text-purple-950; }
+
+.om-subtitle {
+  @apply text-sm;
+}
+.dark .om-subtitle { @apply text-white/60; }
+.light .om-subtitle { @apply text-purple-600; }
+
+/* ── 구분선 ── */
+.om-divider {
+  @apply h-px;
+}
+.dark .om-divider { @apply bg-white/[0.06]; }
+.light .om-divider { @apply bg-purple-200; }
+
+/* ── 보조 텍스트/링크 ── */
+.om-text-link {
+  @apply font-semibold transition-colors;
+}
+.dark .om-text-link { @apply text-purple-300 hover:text-pink-300; }
+.light .om-text-link { @apply text-purple-600 hover:text-purple-800; }
+
+/* ── 그래디언트 버튼 — Primary CTA ── */
 .om-btn-primary {
   @apply bg-gradient-to-r from-purple-600 to-pink-600
          hover:from-purple-700 hover:to-pink-700
          text-white font-semibold rounded-xl
          shadow-lg shadow-purple-500/30
-         hover:shadow-xl
+         hover:shadow-xl hover:shadow-purple-500/50
          transition-all duration-300
-         disabled:opacity-50 disabled:cursor-not-allowed;
+         disabled:opacity-50 disabled:cursor-not-allowed
+         flex items-center justify-center gap-2;
 }
 
-/* 그래디언트 텍스트 */
+/* ── 세컨더리 버튼 ── */
+.om-btn-secondary {
+  @apply rounded-xl font-medium transition-all duration-200;
+}
+.dark .om-btn-secondary {
+  @apply border border-white/[0.1] text-white/70
+         hover:bg-white/[0.06] hover:text-white;
+}
+.light .om-btn-secondary {
+  @apply border-2 border-purple-200/70 text-purple-700
+         hover:bg-purple-50 hover:border-purple-300
+         hover:shadow-sm;
+}
+
+/* ── 섹션 패널 ── */
+.om-panel {
+  @apply rounded-2xl p-6 transition-all duration-300;
+}
+.dark .om-panel {
+  background: rgba(18, 18, 24, 0.6);
+  @apply border border-white/[0.06] backdrop-blur-xl;
+}
+.light .om-panel {
+  @apply bg-white border border-purple-200/60;
+  box-shadow:
+    0 4px 16px rgba(147, 51, 234, 0.05),
+    0 1px 3px rgba(147, 51, 234, 0.03);
+}
+
+/* ── 뱃지 ── */
+.om-badge {
+  @apply px-2.5 py-1 rounded-full text-xs font-semibold;
+}
+.dark .om-badge { @apply bg-white/[0.06] text-purple-400 border border-white/[0.06]; }
+.light .om-badge { @apply bg-purple-100 text-purple-700 border border-purple-200/50; }
+
+/* ── 그래디언트 텍스트 ── */
 .om-gradient-text {
   @apply bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent;
 }
 
-/* 텍스트 색상 (CSS 변수 기반 — dark/light 자동 대응) */
-.om-text-primary {
-  color: hsl(var(--foreground));
-}
-
-.om-text-secondary {
-  color: hsl(var(--muted-foreground));
-}
-
-.om-text-muted {
-  color: hsl(var(--muted-foreground) / 0.7);
-}
+/* ── 텍스트 색상 (CSS 변수 기반) ── */
+.om-text-primary { color: hsl(var(--foreground)); }
+.om-text-secondary { color: hsl(var(--muted-foreground)); }
+.om-text-muted { color: hsl(var(--muted-foreground) / 0.7); }
 
 @keyframes blob {
   0%, 100% { transform: translate(0, 0) scale(1); }

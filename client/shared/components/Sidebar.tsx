@@ -90,7 +90,7 @@ export default memo(function Sidebar({
   return (
     <div
       className={cn(
-        "flex flex-col h-screen transition-all duration-300 dark:bg-gradient-to-b dark:from-purple-950/90 dark:via-black/80 dark:to-purple-950/90 dark:border-r dark:border-purple-500/20 dark:backdrop-blur-xl light:bg-gradient-to-b light:from-white/95 light:via-purple-50/30 light:to-white/95 light:border-r light:border-purple-200/60 light:shadow-xl light:shadow-purple-100/50 light:backdrop-blur-xl",
+        "flex flex-col h-screen transition-all duration-300 dark:bg-[#111116]/90 dark:border-r dark:border-white/[0.06] dark:backdrop-blur-xl light:bg-white light:border-r light:border-purple-200/60 light:shadow-[4px_0_24px_-4px_rgba(147,51,234,0.06)]",
         isCollapsed ? "w-20" : "w-72",
       )}
     >
@@ -131,7 +131,7 @@ export default memo(function Sidebar({
           {onToggleCollapse && (
             <button
               onClick={onToggleCollapse}
-              className="p-2 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 rounded-lg transition-colors"
+              className="p-2 dark:hover:bg-purple-500/20 light:hover:bg-purple-100 light:hover:shadow-sm rounded-lg transition-all duration-200"
               title={isCollapsed ? "사이드바 확대" : "사이드바 축소"}
               aria-label={isCollapsed ? "사이드바 확대" : "사이드바 축소"}
             >
@@ -159,8 +159,8 @@ export default memo(function Sidebar({
                     ? "justify-center p-3"
                     : "justify-between px-4 py-3",
                   isActive
-                    ? "dark:bg-purple-500/20 dark:text-purple-300 light:bg-gradient-to-r light:from-purple-100/80 light:to-pink-50/40 light:text-purple-900 light:shadow-sm light:shadow-purple-200/30 light:border light:border-purple-200/50"
-                    : "dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-purple-500/10 light:text-purple-700 light:hover:text-purple-900 light:hover:bg-purple-50/80",
+                    ? "dark:bg-white/[0.06] dark:text-purple-400 light:bg-purple-100 light:text-purple-900 light:shadow-sm light:shadow-purple-200/30 light:border light:border-purple-300/50"
+                    : "dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-white/[0.04] light:text-purple-600 light:hover:text-purple-900 light:hover:bg-purple-100/80 light:hover:shadow-sm light:hover:shadow-purple-200/20",
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -216,8 +216,8 @@ export default memo(function Sidebar({
                   className={cn(
                     "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group",
                     selectedTeamId === String(team.id)
-                      ? "dark:bg-purple-500/20 dark:text-purple-300 light:bg-purple-100/80 light:text-purple-900"
-                      : "dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-purple-500/10 light:text-purple-700 light:hover:text-purple-900 light:hover:bg-purple-50",
+                      ? "dark:bg-white/[0.06] dark:text-purple-400 light:bg-purple-100 light:text-purple-900 light:border light:border-purple-300/40"
+                      : "dark:text-white/60 dark:hover:text-white/90 dark:hover:bg-white/[0.04] light:text-purple-600 light:hover:text-purple-900 light:hover:bg-purple-100/80 light:hover:shadow-sm",
                   )}
                   title={`${team.name} 팀 선택`}
                 >
@@ -245,7 +245,7 @@ export default memo(function Sidebar({
 
           <button
             onClick={() => setIsAddTeamModalOpen(true)}
-            className="w-full flex items-center gap-3 px-4 py-2.5 dark:text-white/50 dark:hover:text-white/80 dark:hover:bg-purple-500/10 light:text-purple-600 light:hover:text-purple-900 light:hover:bg-purple-50 rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 dark:text-white/50 dark:hover:text-white/80 dark:hover:bg-white/[0.04] light:text-purple-500 light:hover:text-purple-800 light:hover:bg-purple-100/80 light:hover:shadow-sm rounded-xl transition-all duration-200"
           >
             <Plus className="w-5 h-5" />
             <span className="text-sm font-medium">{t("nav.addTeam")}</span>

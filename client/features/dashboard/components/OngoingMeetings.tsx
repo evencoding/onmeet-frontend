@@ -114,7 +114,7 @@ export default function OngoingMeetings() {
           return (
             <div
               key={meeting.id}
-              className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-purple-950/30 dark:to-pink-900/20 light:bg-white/80 dark:border dark:border-purple-500/25 light:border light:border-purple-200/70 rounded-2xl overflow-hidden transition-all duration-300 dark:hover:shadow-lg dark:hover:shadow-purple-500/20 dark:hover:border-purple-500/40 light:hover:shadow-lg light:hover:shadow-purple-200/40 light:hover:border-purple-300 hover:-translate-y-0.5 group dark:backdrop-blur-xl light:backdrop-blur-md"
+              className="om-card overflow-hidden hover:-translate-y-0.5 group"
             >
               <div
                 className={`h-1 ${

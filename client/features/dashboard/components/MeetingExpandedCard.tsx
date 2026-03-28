@@ -159,7 +159,7 @@ export default function MeetingExpandedCard({
   const isRegenerating = minutesData?.status === "REGENERATING" || regenerateMutation.isPending;
 
   return (
-    <div className="dark:bg-gradient-to-br dark:from-purple-900/40 dark:via-black/80 dark:to-pink-900/30 light:bg-gradient-to-br light:from-white light:via-purple-50/40 light:to-pink-100/30 light:border-2 light:border-purple-300/70 light:shadow-xl light:shadow-purple-300/40 dark:border dark:border-purple-500/30 rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <div className="om-card rounded-3xl p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
       <div className="space-y-6">
         <div className="flex items-start justify-between">
           <div>
@@ -383,7 +383,7 @@ export default function MeetingExpandedCard({
                     }
                     const [, type, startMs, , speaker, text] = match;
                     const startDate = new Date(Number(startMs));
-                    const time = startDate.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+                    const time = startDate.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: "Asia/Seoul" });
                     const isVoice = type === "VOICE";
                     return (
                       <div key={idx} className="flex gap-3">

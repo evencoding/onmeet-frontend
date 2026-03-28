@@ -11,7 +11,6 @@
  */
 
 import { format } from "date-fns";
-import { ko } from "date-fns/locale";
 import type { MeetingRoomResponse, RoomStatus, RoomType, AccessScope } from "@/features/meeting/api/types";
 
 // ── UI 모델 ──
@@ -56,12 +55,14 @@ export interface CalendarMeetingViewModel {
   accessScope: AccessScope;
 }
 
-// ── 포맷터 (공통) ──
+// ── 포맷터 (공통, Asia/Seoul 기준) ──
 
 export function formatMeetingTime(dateStr: string): string {
   if (!dateStr) return "";
   try {
-    return format(new Date(dateStr), "h:mm a");
+    return new Date(dateStr).toLocaleTimeString("ko-KR", {
+      hour: "2-digit", minute: "2-digit", timeZone: "Asia/Seoul",
+    });
   } catch {
     return "";
   }
@@ -70,8 +71,9 @@ export function formatMeetingTime(dateStr: string): string {
 export function formatMeetingTimeKo(dateStr: string): string {
   if (!dateStr) return "";
   try {
-    const date = new Date(dateStr);
-    return date.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" });
+    return new Date(dateStr).toLocaleTimeString("ko-KR", {
+      hour: "2-digit", minute: "2-digit", timeZone: "Asia/Seoul",
+    });
   } catch {
     return "";
   }
@@ -87,7 +89,23 @@ export function formatMeetingDuration(seconds: number): string {
 }
 
 export function formatMeetingDate(date: Date): string {
-  return format(date, "yyyy년 MMM dd일 (eee)", { locale: ko });
+  return date.toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "short",
+    timeZone: "Asia/Seoul",
+  });
+}
+
+/** ISO 문자열을 한국 시간으로 포맷 (서버 UTC → KST) */
+export function formatDateTimeKST(dateStr: string): string {
+  if (!dateStr) return "";
+  return new Date(dateStr).toLocaleString("ko-KR", {
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit",
+    timeZone: "Asia/Seoul",
+  });
 }
 
 // ── 상태 매핑 ──
