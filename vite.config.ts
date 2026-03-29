@@ -61,6 +61,7 @@ export default defineConfig(({ mode }): UserConfig => ({
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api/, /^\/auth/, /^\/notification/, /^\/video/],
+        importScripts: ["/firebase-messaging-sw.js"],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\.onmeet\.cloud\/.*/i,
